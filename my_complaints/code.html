@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Complaints - Avenue360</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#ffb691",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "primary": "#005bbf",
+                        "on-error-container": "#93000a",
+                        "surface-container-low": "#f3f4f5",
+                        "surface-container": "#edeeef",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "on-tertiary-container": "#0e0200",
+                        "surface-tint": "#005bc0",
+                        "secondary-container": "#fdaf0b",
+                        "secondary-fixed": "#ffddaf",
+                        "outline": "#727785",
+                        "primary-container": "#1a73e8",
+                        "on-tertiary-fixed": "#341100",
+                        "primary-fixed": "#d8e2ff",
+                        "on-surface-variant": "#414754",
+                        "on-secondary-fixed-variant": "#614000",
+                        "on-background": "#191c1d",
+                        "tertiary-fixed": "#ffdbcb",
+                        "surface-bright": "#f8f9fa",
+                        "on-primary-container": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed": "#001a41",
+                        "surface-variant": "#e1e3e4",
+                        "background": "#f8f9fa",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#e7e8e9",
+                        "on-primary-fixed-variant": "#004493",
+                        "secondary": "#805600",
+                        "outline-variant": "#c1c6d6",
+                        "inverse-primary": "#adc7ff",
+                        "tertiary": "#9e4300",
+                        "surface-container-highest": "#e1e3e4",
+                        "tertiary-container": "#c55500",
+                        "primary-fixed-dim": "#adc7ff",
+                        "on-error": "#ffffff",
+                        "secondary-fixed-dim": "#ffba43",
+                        "inverse-surface": "#2e3132",
+                        "surface-dim": "#d9dadb",
+                        "on-surface": "#191c1d",
+                        "on-secondary-fixed": "#281800",
+                        "on-secondary-container": "#694600",
+                        "on-primary": "#ffffff",
+                        "surface": "#f8f9fa"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
+        h1, h2, h3, h4, h5, h6, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-24 md:pb-0 font-body antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-[0_12px_32px_rgba(25,28,29,0.06)] bg-slate-100/50 dark:bg-slate-800/50">
+<div class="flex items-center justify-between px-6 py-4 w-full">
+<button aria-label="Go back" class="text-blue-600 dark:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-200 p-2 -ml-2 rounded-full">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-['Plus_Jakarta_Sans'] font-semibold tracking-tight text-xl font-bold text-slate-900 dark:text-slate-50">My Complaints</h1>
+<button aria-label="User profile" class="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-200 p-1 -mr-1 rounded-full overflow-hidden w-10 h-10 border border-outline-variant/15">
+<img alt="Resident User" class="w-full h-full object-cover" data-alt="Portrait of a smiling young professional in a modern apartment setting with natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAs5fHBRla4-iY_ODax1lj0ddrBSU989zuHIqLO4KbBZnhCXcA2Zw7CpoMVBU3Ji0X8nRerX9LgwfbohINjExRkWKSQSWC2UHrBWBvPxlFudziZ3M_6FqyFb42svZTn8SUCwckqzZF1kk12CoK5Ox26T8I3dyrIq9AP0XbbIsAfI88reORWNmhTXjUDzArDTIsKoST3qJF4BdYCb8-6DLFI2g9cRcOcZ8f5p_8An6qEBOtLQya0BoyCRxGTLg2NHOEc3UxVEdF58Zg"/>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="pt-24 px-4 md:px-8 max-w-4xl mx-auto space-y-6">
+<!-- Tab Switcher -->
+<div class="bg-surface-container-low rounded-xl p-1 flex shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] border border-outline-variant/15">
+<button class="flex-1 bg-surface-container-lowest text-primary shadow-[0_4px_12px_rgba(0,0,0,0.04)] rounded-[14px] py-2.5 font-headline font-semibold text-sm transition-all flex items-center justify-center gap-2">
+                Active <span class="bg-primary-container text-on-primary-container text-[10px] px-2 py-0.5 rounded-full font-label tracking-wide">2</span>
+</button>
+<button class="flex-1 text-on-surface-variant hover:text-on-surface rounded-[14px] py-2.5 font-headline font-medium text-sm transition-all flex items-center justify-center gap-2">
+                History <span class="bg-surface-variant text-on-surface-variant text-[10px] px-2 py-0.5 rounded-full font-label tracking-wide">5</span>
+</button>
+</div>
+<!-- Complaint Cards List -->
+<div class="space-y-4">
+<!-- Card 1: In Progress -->
+<article class="bg-surface-container-lowest rounded-DEFAULT p-5 shadow-[0_12px_32px_rgba(25,28,29,0.03)] border border-outline-variant/15 hover:shadow-[0_16px_40px_rgba(25,28,29,0.06)] transition-shadow duration-300 relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-secondary-container to-secondary-fixed"></div>
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-2">
+<span class="font-label text-xs tracking-wider text-on-surface-variant uppercase">#CMP-8902</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-body text-xs text-on-surface-variant">Today, 09:30 AM</span>
+</div>
+<div class="bg-secondary-container/10 text-secondary-container px-3 py-1 rounded-full text-xs font-semibold font-headline flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-container animate-pulse"></span>
+                        In Progress
+                    </div>
+</div>
+<h3 class="font-headline font-semibold text-lg text-on-surface mb-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-outline" data-icon="water_drop" data-weight="fill" style="font-variation-settings: 'FILL' 1;">water_drop</span>
+                    Master Bathroom Leak
+                </h3>
+<p class="font-body text-sm text-on-surface-variant leading-relaxed mb-4 line-clamp-2">
+                    Continuous water dripping from the ceiling above the shower area. It started yesterday evening and seems to be getting worse.
+                </p>
+<div class="flex items-center justify-between pt-4 border-t border-outline-variant/15">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" data-icon="engineering">engineering</span>
+</div>
+<div>
+<p class="font-label text-[10px] text-on-surface-variant uppercase tracking-wider">Assigned To</p>
+<p class="font-headline text-sm font-medium text-on-surface">Mike (Plumbing)</p>
+</div>
+</div>
+<button class="text-primary text-sm font-medium font-headline hover:underline">View Details</button>
+</div>
+</article>
+<!-- Card 2: Pending -->
+<article class="bg-surface-container-lowest rounded-DEFAULT p-5 shadow-[0_12px_32px_rgba(25,28,29,0.03)] border border-outline-variant/15 hover:shadow-[0_16px_40px_rgba(25,28,29,0.06)] transition-shadow duration-300 relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-1.5 h-full bg-surface-variant"></div>
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-2">
+<span class="font-label text-xs tracking-wider text-on-surface-variant uppercase">#CMP-8895</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-body text-xs text-on-surface-variant">Oct 24, 14:15 PM</span>
+</div>
+<div class="bg-surface-variant/30 text-on-surface-variant px-3 py-1 rounded-full text-xs font-semibold font-headline flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+                        Pending
+                    </div>
+</div>
+<h3 class="font-headline font-semibold text-lg text-on-surface mb-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-outline" data-icon="electrical_services" data-weight="fill" style="font-variation-settings: 'FILL' 1;">electrical_services</span>
+                    Hallway Light Flickering
+                </h3>
+<p class="font-body text-sm text-on-surface-variant leading-relaxed mb-4 line-clamp-2">
+                    The main light fixture in the entryway hallway is flickering constantly when turned on. Needs bulb replacement or wiring check.
+                </p>
+<div class="flex items-center justify-between pt-4 border-t border-outline-variant/15">
+<div class="flex items-center gap-2 opacity-50">
+<div class="w-8 h-8 rounded-full border border-dashed border-outline-variant flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" data-icon="hourglass_empty">hourglass_empty</span>
+</div>
+<div>
+<p class="font-label text-[10px] text-on-surface-variant uppercase tracking-wider">Status</p>
+<p class="font-headline text-sm font-medium text-on-surface">Awaiting Assignment</p>
+</div>
+</div>
+<button class="text-primary text-sm font-medium font-headline hover:underline">View Details</button>
+</div>
+</article>
+</div>
+</main>
+<!-- Floating Action Button -->
+<button aria-label="Raise Complaint" class="fixed bottom-28 md:bottom-8 right-6 w-14 h-14 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-[20px] shadow-[0_12px_32px_rgba(26,115,232,0.3)] hover:shadow-[0_16px_40px_rgba(26,115,232,0.4)] flex items-center justify-center transition-all duration-300 hover:-translate-y-1 z-40 group">
+<span class="material-symbols-outlined text-3xl group-hover:rotate-90 transition-transform duration-300" data-icon="add">add</span>
+</button>
+<!-- BottomNavBar -->
+<!-- Desktop Sidebar Overlay (Hidden on Mobile, simplified representation for design system adherence) -->
+<aside class="hidden md:flex flex-col fixed left-0 top-0 h-full w-64 bg-surface-container-lowest border-r border-outline-variant/15 z-40 pt-24 px-4 shadow-[12px_0_32px_rgba(0,0,0,0.02)]">
+<div class="space-y-2">
+<button class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-low transition-colors font-headline font-medium">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+                Home
+            </button>
+<button class="w-full flex items-center gap-4 px-4 py-3 rounded-xl bg-primary-fixed text-on-primary-fixed-variant font-headline font-bold transition-colors">
+<span class="material-symbols-outlined" data-icon="assignment_late" data-weight="fill" style="font-variation-settings: 'FILL' 1;">assignment_late</span>
+                Complaints
+            </button>
+<button class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-low transition-colors font-headline font-medium">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+                Services
+            </button>
+<button class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-low transition-colors font-headline font-medium">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+                Profile
+            </button>
+</div>
+</aside>
+</body></html>

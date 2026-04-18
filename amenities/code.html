@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Avenue360 - Amenities</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary-fixed-variant": "#783100",
+                      "on-secondary": "#ffffff",
+                      "background": "#f8f9fa",
+                      "tertiary": "#9e4300",
+                      "outline": "#727785",
+                      "on-tertiary": "#ffffff",
+                      "surface": "#f8f9fa",
+                      "on-secondary-fixed": "#281800",
+                      "error": "#ba1a1a",
+                      "on-secondary-fixed-variant": "#614000",
+                      "tertiary-fixed-dim": "#ffb691",
+                      "tertiary-container": "#c55500",
+                      "inverse-surface": "#2e3132",
+                      "on-primary-fixed-variant": "#004493",
+                      "on-secondary-container": "#694600",
+                      "inverse-primary": "#adc7ff",
+                      "surface-bright": "#f8f9fa",
+                      "on-primary-container": "#ffffff",
+                      "on-background": "#191c1d",
+                      "surface-tint": "#005bc0",
+                      "on-surface": "#191c1d",
+                      "surface-container-lowest": "#ffffff",
+                      "on-surface-variant": "#414754",
+                      "on-primary-fixed": "#001a41",
+                      "primary-container": "#1a73e8",
+                      "outline-variant": "#c1c6d6",
+                      "primary": "#005bbf",
+                      "on-primary": "#ffffff",
+                      "surface-container-high": "#e7e8e9",
+                      "secondary": "#805600",
+                      "on-error-container": "#93000a",
+                      "secondary-fixed": "#ffddaf",
+                      "secondary-fixed-dim": "#ffba43",
+                      "error-container": "#ffdad6",
+                      "surface-container": "#edeeef",
+                      "secondary-container": "#fdaf0b",
+                      "surface-container-low": "#f3f4f5",
+                      "surface-dim": "#d9dadb",
+                      "primary-fixed-dim": "#adc7ff",
+                      "on-error": "#ffffff",
+                      "surface-container-highest": "#e1e3e4",
+                      "on-tertiary-container": "#0e0200",
+                      "on-tertiary-fixed": "#341100",
+                      "tertiary-fixed": "#ffdbcb",
+                      "inverse-on-surface": "#f0f1f2",
+                      "surface-variant": "#e1e3e4",
+                      "primary-fixed": "#d8e2ff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {},
+              "fontFamily": {
+                      "headline": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "body": [
+                              "Inter"
+                      ],
+                      "label": [
+                              "Inter"
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body antialiased min-h-screen pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-sm dark:shadow-none flex items-center justify-between px-6 h-16 w-full no-border tonal-layering md:hidden">
+<div class="flex items-center gap-3">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100/50 dark:hover:bg-slate-800/50 transition-colors active:scale-95 duration-200 text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+</div>
+<div class="text-xl font-bold tracking-tighter text-slate-900 dark:text-slate-100 font-['Plus_Jakarta_Sans'] tracking-tight">
+            Avenue360
+        </div>
+</header>
+<!-- Main Content -->
+<main class="pt-20 px-4 md:px-8 max-w-7xl mx-auto space-y-8 pb-10">
+<!-- Header & Search -->
+<section class="space-y-4">
+<div class="flex justify-between items-end">
+<div>
+<h1 class="font-headline text-3xl font-bold tracking-tight text-on-surface">Amenities</h1>
+<p class="font-body text-on-surface-variant mt-1 text-sm">Discover and book resident facilities</p>
+</div>
+</div>
+<!-- Search Bar -->
+<div class="relative bg-surface-container-high rounded-sm flex items-center px-4 py-3 focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-surface transition-shadow">
+<span class="material-symbols-outlined text-on-surface-variant mr-3" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 w-full text-on-surface font-body placeholder:text-on-surface-variant/70 p-0" placeholder="Search for pools, gyms, lounges..." type="text"/>
+<div class="absolute bottom-0 left-0 w-full h-[2px] bg-primary scale-x-0 transition-transform origin-left focus-within:scale-x-100"></div>
+</div>
+</section>
+<!-- Categories (Bento Grid Style) -->
+<section>
+<h2 class="font-headline text-lg font-semibold tracking-tight text-on-surface mb-4">Categories</h2>
+<div class="grid grid-cols-3 gap-3">
+<div class="bg-surface-container-lowest rounded-[16px] p-4 flex flex-col items-center justify-center gap-2 shadow-[0_4px_12px_rgba(25,28,29,0.03)] active:scale-95 transition-transform">
+<div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed">
+<span class="material-symbols-outlined" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="font-body text-xs font-medium text-on-surface">Popular</span>
+</div>
+<div class="bg-surface-container-lowest rounded-[16px] p-4 flex flex-col items-center justify-center gap-2 shadow-[0_4px_12px_rgba(25,28,29,0.03)] active:scale-95 transition-transform">
+<div class="w-10 h-10 rounded-full bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed">
+<span class="material-symbols-outlined" data-icon="spa" data-weight="fill" style="font-variation-settings: 'FILL' 1;">spa</span>
+</div>
+<span class="font-body text-xs font-medium text-on-surface">Wellness</span>
+</div>
+<div class="bg-surface-container-lowest rounded-[16px] p-4 flex flex-col items-center justify-center gap-2 shadow-[0_4px_12px_rgba(25,28,29,0.03)] active:scale-95 transition-transform">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed">
+<span class="material-symbols-outlined" data-icon="sports_esports" data-weight="fill" style="font-variation-settings: 'FILL' 1;">sports_esports</span>
+</div>
+<span class="font-body text-xs font-medium text-on-surface">Entertainment</span>
+</div>
+</div>
+</section>
+<!-- Featured Amenities -->
+<section class="space-y-4">
+<div class="flex justify-between items-center">
+<h2 class="font-headline text-lg font-semibold tracking-tight text-on-surface">Featured Spaces</h2>
+<button class="font-body text-sm text-primary font-medium hover:underline">View All</button>
+</div>
+<!-- Amenity Cards Stack -->
+<div class="space-y-4">
+<!-- Card 1: Pool -->
+<div class="bg-surface-container-lowest rounded-[16px] overflow-hidden shadow-[0_8px_24px_rgba(25,28,29,0.04)]">
+<div class="h-40 relative w-full bg-surface-container-high bg-cover bg-center" data-alt="infinity pool at sunset overlooking a city skyline with luxurious lounge chairs and soft golden hour lighting reflecting off the water" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBxzm-dGnr-qUg3CunB_AYuyZuRG37ek0vFJXPFvgBu9IsZxGmlsT2ZZLza2KHK_VyptCVsa6goNGYiVM5iVQKh2OoXgJynnq17ZycQz0mx8QAYHbEF0hJ_3gItSrmGv3HmW8MqICkRx8gCK72ehyb5pMt1QXRPhq6nN-ZLuoPXiDD3AQhXTveXvWkmKzAO_rxNGKCqQr1Lw2wRnscP3PZDO8GW1hI4UrxhOgefXRQh2dksJSD1hHW8b67QYBbSIpOA0mNo3gLzDq0')">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"></div>
+<div class="absolute top-3 right-3 bg-surface-container-lowest/20 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10">
+<span class="font-label text-[10px] uppercase tracking-wider text-white font-medium">Open</span>
+</div>
+</div>
+<div class="p-4 flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline text-lg font-semibold text-on-surface leading-tight">Infinity Pool</h3>
+<p class="font-body text-xs text-on-surface-variant mt-0.5">Available till 9 PM</p>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-sm" data-icon="pool">pool</span>
+</div>
+</div>
+<button class="w-full py-2.5 bg-gradient-to-br from-primary to-primary-container text-on-primary font-body text-sm font-medium rounded-xl active:scale-95 transition-transform">
+                             Book Now
+                         </button>
+</div>
+</div>
+<!-- Card 2: Gym -->
+<div class="bg-surface-container-lowest rounded-[16px] overflow-hidden shadow-[0_8px_24px_rgba(25,28,29,0.04)]">
+<div class="h-40 relative w-full bg-surface-container-high bg-cover bg-center" data-alt="modern fitness center with state of the art treadmills and weights bathed in clean bright natural light from large windows" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBWTTQ3UiXvD57t3y9l3xUZ6A7KeczByka3Xq2UojS4x44ReWHVyDmubL-CWJdb92iI2_iul9NP715Lo5AEkuYEu5dVcMtl2zeBkEsip6MvgrHMiAPxkZbbklk1MPOkK-KfWusX6tiNrBDemlRUUiOky0JZU0DExSaYFrEpEQ_wOFWUIvuh1QvGxVU74XYTBZ0U9H0Ay5rnnPJkaURiBg_cddNE8CFalkWpo38jzdNFFKtfsxN4kJKY9i7prr1n-dTnHdHtAQgXCWA')">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"></div>
+<div class="absolute top-3 right-3 bg-secondary-container/90 backdrop-blur-sm px-2.5 py-1 rounded-full">
+<span class="font-label text-[10px] uppercase tracking-wider text-on-secondary-container font-medium">Busy</span>
+</div>
+</div>
+<div class="p-4 flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline text-lg font-semibold text-on-surface leading-tight">Modern Gym</h3>
+<p class="font-body text-xs text-on-surface-variant mt-0.5 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="group">group</span> 4 people there
+                                 </p>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-sm" data-icon="fitness_center">fitness_center</span>
+</div>
+</div>
+<button class="w-full py-2.5 bg-transparent border border-outline-variant/30 text-primary font-body text-sm font-medium rounded-xl hover:bg-surface-container-low active:scale-95 transition-all">
+                             View Details
+                         </button>
+</div>
+</div>
+<!-- Card 3: Lounge -->
+<div class="bg-surface-container-lowest rounded-[16px] overflow-hidden shadow-[0_8px_24px_rgba(25,28,29,0.04)]">
+<div class="h-40 relative w-full bg-surface-container-high bg-cover bg-center" data-alt="elegant contemporary rooftop lounge area with comfortable seating fire pits and ambient string lights during twilight" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBDq3lh2XEgyajN8zt4b-iBTuyGgfLZ9xixqax5xpr6ARMb_IM08URqgsQP3JJMAkGmCteSoVbiCQxeizU-wbEAdOHx6Py9gwomw7roFtjmjp-e1DLYSHphrozp2e3ONAn6Ydf0L9KPF98xFHcwt8jrotPoIX8WKusFNIR27KVZ6tcLGyY87Qy9Z5mykcaifpD29m4gm9oLN1n7ax8_fiVOek9gGTivFz_CntCiTQq7BXrVqpdz2s1cSb7WdeUQNZ-411uOLfrM9Bk')">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"></div>
+<div class="absolute top-3 right-3 bg-surface-container-lowest/20 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10">
+<span class="font-label text-[10px] uppercase tracking-wider text-white font-medium">Booking Required</span>
+</div>
+</div>
+<div class="p-4 flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline text-lg font-semibold text-on-surface leading-tight">Rooftop Lounge</h3>
+<p class="font-body text-xs text-on-surface-variant mt-0.5">Private events &amp; gatherings</p>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-sm" data-icon="deck">deck</span>
+</div>
+</div>
+<button class="w-full py-2.5 bg-gradient-to-br from-primary to-primary-container text-on-primary font-body text-sm font-medium rounded-xl active:scale-95 transition-transform">
+                             Book Now
+                         </button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+</body></html>
