@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-container": "#0e0200",
+                        "tertiary-container": "#c55500",
+                        "primary-fixed-dim": "#adc7ff",
+                        "secondary-fixed": "#ffddaf",
+                        "background": "#f8f9fa",
+                        "surface-container-low": "#f3f4f5",
+                        "surface-container-highest": "#e1e3e4",
+                        "surface-bright": "#f8f9fa",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#ffffff",
+                        "tertiary-fixed": "#ffdbcb",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "primary-container": "#1a73e8",
+                        "on-secondary-fixed": "#281800",
+                        "on-background": "#191c1d",
+                        "inverse-primary": "#adc7ff",
+                        "surface": "#f8f9fa",
+                        "surface-container-high": "#e7e8e9",
+                        "primary-fixed": "#d8e2ff",
+                        "on-secondary-fixed-variant": "#614000",
+                        "on-primary-fixed": "#001a41",
+                        "tertiary": "#9e4300",
+                        "surface-container": "#edeeef",
+                        "outline-variant": "#c1c6d6",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed": "#341100",
+                        "on-secondary-container": "#694600",
+                        "tertiary-fixed-dim": "#ffb691",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-tint": "#005bc0",
+                        "secondary-fixed-dim": "#ffba43",
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#414754",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#e1e3e4",
+                        "error": "#ba1a1a",
+                        "secondary-container": "#fdaf0b",
+                        "primary": "#005bbf",
+                        "outline": "#727785",
+                        "on-primary-fixed-variant": "#004493",
+                        "inverse-surface": "#2e3132",
+                        "on-surface": "#191c1d",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "surface-dim": "#d9dadb",
+                        "secondary": "#805600"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .brand-logo { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-header {
+            background: rgba(248, 249, 250, 0.8);
+            backdrop-filter: blur(24px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- Top Navigation Shell (Hidden as per Login Rule, but maintaining brand anchor logic) -->
+<!-- The prompt asks for a Login screen, so standard Nav Shell is suppressed per "Shell Visibility & Relevance" rule. -->
+<main class="flex-grow flex flex-col px-6 pt-12 pb-8 max-w-md mx-auto w-full">
+<!-- Brand Identity Section -->
+<div class="flex flex-col items-center mb-10">
+<div class="w-16 h-16 bg-primary-container rounded-xl flex items-center justify-center shadow-lg mb-6">
+<span class="material-symbols-outlined text-white text-4xl" data-icon="domain">domain</span>
+</div>
+<h1 class="text-3xl font-extrabold tracking-tight text-on-surface brand-logo">Avenue360</h1>
+<p class="text-on-surface-variant font-medium mt-2 text-center opacity-70">Experience the Digital Concierge</p>
+</div>
+<!-- Role Selector (Segment Control) -->
+<div class="bg-surface-container-high p-1 rounded-full flex mb-10 relative overflow-hidden">
+<button class="flex-1 py-3 text-sm font-semibold rounded-full bg-surface-container-lowest text-primary shadow-sm z-10 transition-all duration-300">
+                Resident
+            </button>
+<button class="flex-1 py-3 text-sm font-semibold text-on-surface-variant z-10 transition-all duration-300 hover:text-on-surface">
+                Guard
+            </button>
+<button class="flex-1 py-3 text-sm font-semibold text-on-surface-variant z-10 transition-all duration-300 hover:text-on-surface">
+                Admin
+            </button>
+</div>
+<!-- Login Form -->
+<div class="space-y-6">
+<div class="space-y-4">
+<!-- Input Group -->
+<div class="relative">
+<label class="block text-[11px] uppercase tracking-widest font-bold text-outline mb-1.5 ml-4 font-label">Identity</label>
+<div class="flex items-center bg-surface-container-high rounded-xl px-4 py-4 focus-within:ring-2 ring-primary/20 transition-all">
+<span class="material-symbols-outlined text-outline mr-3" data-icon="alternate_email">alternate_email</span>
+<input class="bg-transparent border-none focus:ring-0 w-full text-on-surface placeholder:text-outline/60 font-body" placeholder="Email or Phone Number" type="text"/>
+</div>
+</div>
+<div class="relative">
+<label class="block text-[11px] uppercase tracking-widest font-bold text-outline mb-1.5 ml-4 font-label">Security</label>
+<div class="flex items-center bg-surface-container-high rounded-xl px-4 py-4 focus-within:ring-2 ring-primary/20 transition-all">
+<span class="material-symbols-outlined text-outline mr-3" data-icon="lock">lock</span>
+<input class="bg-transparent border-none focus:ring-0 w-full text-on-surface placeholder:text-outline/60 font-body" placeholder="Enter Password" type="password"/>
+<span class="material-symbols-outlined text-outline cursor-pointer" data-icon="visibility">visibility</span>
+</div>
+</div>
+</div>
+<!-- Forgot Password -->
+<div class="flex justify-end px-2">
+<a class="text-sm font-semibold text-primary hover:underline underline-offset-4" href="#">Forgot Password?</a>
+</div>
+<!-- Login Action -->
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-white py-5 rounded-full font-bold text-lg shadow-[0_12px_32px_rgba(0,91,191,0.2)] active:scale-95 transition-transform">
+                Login
+            </button>
+</div>
+<!-- Secondary Journey -->
+<div class="mt-8 text-center">
+<p class="text-on-surface-variant text-sm font-medium">
+                New to the community? 
+                <a class="text-primary font-bold ml-1 hover:underline underline-offset-4" href="#">Sign Up</a>
+</p>
+</div>
+<!-- Social Integration Section -->
+<div class="mt-auto pt-10">
+<div class="relative flex items-center mb-8">
+<div class="flex-grow h-[1px] bg-outline-variant opacity-30"></div>
+<span class="px-4 text-[10px] font-bold uppercase tracking-[0.2em] text-outline">or continue with</span>
+<div class="flex-grow h-[1px] bg-outline-variant opacity-30"></div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-3 py-4 bg-surface-container-lowest rounded-full shadow-sm hover:bg-surface-container-low transition-colors active:scale-95">
+<img alt="" class="w-5 h-5" data-alt="Official Google logo icon with vibrant four-color aesthetic on a clean white circular background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAupyrNPmJrg_4eA0mvCwgAggX6FwHdEp_AcKWTBhbSGtHkuwNQQm9rN7n2Xu_RY1Uy7j4Td98zMWFVl2ew-yxr-ACJY1beEWpP02v2VF4rCAvoUMc-Mn6XswXJ5cPiIUjMLwe2eLl8yU-7WJsIqNKLVLQH3Al0fhrLmRSbBpQtlvgLeTUNligiGldJMi4uwEajBYT-XUj9ednUXdLp_ucfaycMw81jyl0WStD1_anYBfLb0xqP5EJD_H-R3ViXpHoA7oTQvmol8aQ"/>
+<span class="font-semibold text-sm">Google</span>
+</button>
+<button class="flex items-center justify-center gap-3 py-4 bg-surface-container-lowest rounded-full shadow-sm hover:bg-surface-container-low transition-colors active:scale-95">
+<span class="material-symbols-outlined text-on-surface" data-icon="apple" style="font-variation-settings: 'FILL' 1;">ios</span>
+<span class="font-semibold text-sm">Apple</span>
+</button>
+</div>
+</div>
+<!-- Footer Decoration / Branding -->
+<div class="mt-10 text-center opacity-30">
+<p class="text-[10px] font-label tracking-widest uppercase text-on-surface-variant">Elevating Modern Living</p>
+</div>
+</main>
+<!-- Bottom Nav Suppression for Login Screen per "Shell Visibility & Relevance" rule -->
+<!-- Background Texture (Subtle) -->
+<div class="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
+<div class="absolute top-[-10%] right-[-10%] w-[50%] h-[40%] bg-primary-fixed/20 blur-[120px] rounded-full"></div>
+<div class="absolute bottom-[-5%] left-[-5%] w-[40%] h-[30%] bg-secondary-fixed/10 blur-[100px] rounded-full"></div>
+</div>
+</body></html>

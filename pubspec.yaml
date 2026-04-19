@@ -1,5 +1,5 @@
 name: stitch_avenue_360_v2
-description: "A Flutter shell for the Avenue360 HTML mockup pages."
+description: "A native Flutter implementation of the Avenue360 screen set."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -32,7 +32,7 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
-  webview_flutter: ^4.13.1
+  google_fonts: ^8.0.2
 
 dev_dependencies:
   flutter_test:
@@ -51,13 +51,3 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   uses-material-design: true
-  assets:
-    - amenities/
-    - community_feed_notices/
-    - home_with_essential_notifications/
-    - manage_bills_recharges/
-    - my_complaints/
-    - my_profile/
-    - navigation_drawer/
-    - notifications/
-    - visitor_pre_approval/

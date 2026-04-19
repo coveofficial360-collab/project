@@ -1,0 +1,3656 @@
+import 'package:flutter/material.dart';
+
+import '../../../app/app_page.dart';
+import '../../../theme/avenue_theme.dart';
+import '../../common/presentation/avenue_ui.dart';
+
+const _residentAvatarUrl =
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuCJ6EpMNgN7n9bh8EVIUs7N5SOo5Yl-IMIN9XmH6Yy-5ZQFuibLZUhdy_fSA1wZksMCirCpeAxKY-X3RhGG21edbtajSTdvIKPF-bAU_cgdKsh8O4-U9Ynedpa_iOPQvDGGNY_u9vM9PIETZpc_crPtmFthrBwf51AmmWx8Ymv72rHR1kQRjARNXhFro_rBfoEztKMZBRHWwESolqtAF7ekTFs603tp08kexUAy68IjY7VYyjoJirw5E8Oxqte5m_7dGXGGMAFX3P1e';
+const _drawerAvatarUrl =
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuD01jq6wwzAfe2He4lwz5A50plLRcj7bguj_gHupxb2Xyzx1N-F443OX9XNc9J6Ve9_nqOzimLwAfaql-8laH4BiOytzTjxbvNAJ5WFqdKZI6byAFx5O0lEdoe92DfLxSIyy4KerqQGyh6u8mp4aN0fEJNro_wbIsW3QBLNFojkBRs5VeUfFwiqR2QtlepC04Hq2oZVddgQoIfMiXPwedtIoFNl3jlTU3Cq3pyjJ-9LRrSPeZZzMUzjeOt0_XisT33hovPAJlUdtcwE';
+const _profileAvatarUrl =
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuBg0i9YM5IEGdzLL17BoAjodnNcI3uMuhlrCCaBsSoWkHRuSTvuGGhC3LFb4q5Ebhr6wd0gKAU0tpfQsVa1Ys8kTPY4dwv5W1Rl_zaSIuSjTYx65EmI1873v2bqyYHmUjy10zff8OscnqTSqj6qLPrCX_mFqd5jOt4dcplv9SyfqD-xCFPkQzuakDhkKqvAvyELUbJ6nDQNQZ1YOlcDG4zOTMzbqZJzpihPXVJGtaro8oaY97tXbO0iD3P0D494f5t46VwIZa9jS5-3';
+const _priyaAvatarUrl =
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuD3Uk5EaMJ3WGJLsCQIg0a8LodV8CLG2W9bMsn7CcIyoqx9U7LcfG4_VR-DfkFaZPR34SnVXHP4vBab2ZWDLOQbcCR_hElFK_EaI4SlnnL0R9rQxf11fdtxaN9chpV9j_h1PgVHoSMHdzduyg0Gd-Ya4jg2l56D-g8OxQeLhfgT_3TgQcJYCIe7Y_109_0DS4xIKG8TA2X5uKoQ4NDEz8vwaeglPMmejbSzALb6wnlkQU3nrQF8yIk1Wc79aE2fGc6Qv6GyN8TPoAPW';
+const _arjunAvatarUrl =
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuAkRLFKvKweGErGZn82oznlhjf66TuhSQlDOmesGonInjMpTkI4dBf5XvJUaVdAAEEifC4jUzTK4I1OyDBQH5zkBReluC3cu9yzWyzbPz48dj7AhmHfjmV5D9OCJJ1CVKi8pxPnpQ0IC2ajf-9jemSErS3MdXE7m4KF2NJoJj9RbzrvlJtf6ml7Xq0oKbZoChNiiT_gbSkVuqexUsAVzEdjvWMx3G4JEDBKqV_b4pd-6JdFnk5RTb2y8M5_682IlIM1r7RIDoscfnJ3';
+const _guestAvatarUrl =
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuAkrCaO4iRaep9vrU3FOtilMA7koGYVNB_3T1RY_imWxBxtmpiFaBC0lxc8NhAj4ZDYILwhiu8Z0_zR3h9tpaUkd4y3blt_r43WSXxUzp5pMRHf6gWhjOaz1laMK0sXdVs9PxpOyWApWuz4jtkeMxie5Ro_ClQxNfBumcnipFGy7FFKHUjgAWbI6p_xlXO2WdjdhcAlHpb7vuU8hb8jyNcglngUGexJ27oNBjt7a4b88QkjnqSLwN2UZBR-AJ2fEeOLcgnJdGNq-Bwe';
+const _poolImageUrl =
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuBxzm-dGnr-qUg3CunB_AYuyZuRG37ek0vFJXPFvgBu9IsZxGmlsT2ZZLza2KHK_VyptCVsa6goNGYiVM5iVQKh2OoXgJynnq17ZycQz0mx8QAYHbEF0hJ_3gItSrmGv3HmW8MqICkRx8gCK72ehyb5pMt1QXRPhq6nN-ZLuoPXiDD3AQhXTveXvWkmKzAO_rxNGKCqQr1Lw2wRnscP3PZDO8GW1hI4UrxhOgefXRQh2dksJSD1hHW8b67QYBbSIpOA0mNo3gLzDq0';
+const _bookingPoolImageUrl =
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuDkxSj9F5pI8TpJqXogBdv9M60AYkORAkulvAUMaotV1m5eiR-JJUlyFXOupMlbmmkEwJQfA4Ge1LtgS1loXrr_nMuNHW5g_O_KhErhR15b29WQEIQcTAVsdVz35RmjqTKmLrC4bc2Y4ZSHxnBlazfcV15AduiRk1d9kPrj1wiiQ8LUzRNj3bgJ1djkMGHondFnRt-ZN904ID2BvqOV5B_dxc4p7flx_jY0c77MDJ1FLSw7FknWaYNRiMnEzY0x0x6f23zO3uHDTe0';
+const _gymImageUrl =
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuBWTTQ3UiXvD57t3y9l3xUZ6A7KeczByka3Xq2UojS4x44ReWHVyDmubL-CWJdb92iI2_iul9NP715Lo5AEkuYEu5dVcMtl2zeBkEsip6MvgrHMiAPxkZbbklk1MPOkK-KfWusX6tiNrBDemlRUUiOky0JZU0DExSaYFrEpEQ_wOFWUIvuh1QvGxVU74XYTBZ0U9H0Ay5rnnPJkaURiBg_cddNE8CFalkWpo38jzdNFFKtfsxN4kJKY9i7prr1n-dTnHdHtAQgXCWA';
+const _gymDetailImageUrl =
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuCDgtAD5nxPhJnLsKnPb51MHwwF3EmDmaroxehgRLOzk8Au236wW9kk8iNdZnuumakmCp8IxbPGTAwq1jG3bwtvPFSSBExVHXFqHiYJKUqBjklvLivt1dLvKmGqqdTTYbnlSMwnE1VEdOSjCmB3uYVuiLcuLmZW0Su-IZ2Z7YIH7oyRBwydQRaQ11rPHoVPicramdcAN6Qy8Noq0i89s_muiCUERDPjB4V48OS_eomq-_CmW-d_XqPurFHHNVQEb5_ILLjkLkKm_E8';
+const _loungeImageUrl =
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuBDq3lh2XEgyajN8zt4b-iBTuyGgfLZ9xixqax5xpr6ARMb_IM08URqgsQP3JJMAkGmCteSoVbiCQxeizU-wbEAdOHx6Py9gwomw7roFtjmjp-e1DLYSHphrozp2e3ONAn6Ydf0L9KPF98xFHcwt8jrotPoIX8WKusFNIR27KVZ6tcLGyY87Qy9Z5mykcaifpD29m4gm9oLN1n7ax8_fiVOek9gGTivFz_CntCiTQq7BXrVqpdz2s1cSb7WdeUQNZ-411uOLfrM9Bk';
+const _noticesEventImageUrl =
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuDkmW20f9rTZrHOuu7ObTips3uRMBnVQPCCNmagXZxn0n3ku8HbWnWmXuOwAF8Y_LhThFupg86DxIu0i-bpgwqeGrmvsU-U8_cQLVm8FFqi0FCcWHp22zgRb6gurG3qqVPTrFfc73xUUOfBnBD7bg38b4dam-35LIYLWqwkHSH2TZTn_Erwce7_FRIvkwaCZgUtcS9RrYf7Weps72sFqzQwIZ86taaWhbApvWXJC-k5IgOqr8zLBVHYNHyTQpG40ssJWoqPel6lh0wg';
+const _noticesThumbImageUrl =
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuCT84Dnqvr_05ufLKIEan25BSCHd0RlyUjmdnEESu2sMLINldbznBfhhEfbydwEQe-nH3OsMX3HFyr6_aLPhypPQYTb_LHLUKT1p3RX-z8pqFi-ceajA06k5JEO_vCPjxnmsPLazeZisAyTzry5IFExOkO7FUrdjdKjnd6VGeJMF4CX3IxjecTXOA-N-pv3plwQ5F-yGZPs6Z_EEgFRqTWy_vnkqnd23piPX6xDIzG_TjNVmLX5xu4LDTkY7CLfOnplnVQwQKp3Vl75';
+
+final _residentNavItems = [
+  const AvenueNavItem(
+    label: 'HOME',
+    icon: Icons.home_rounded,
+    page: AppPage.home,
+  ),
+  const AvenueNavItem(
+    label: 'AMENITIES',
+    icon: Icons.pool_rounded,
+    page: AppPage.amenities,
+  ),
+  const AvenueNavItem(
+    label: 'NOTICES',
+    icon: Icons.campaign_outlined,
+    page: AppPage.notices,
+  ),
+  const AvenueNavItem(
+    label: 'COMPLAINTS',
+    icon: Icons.report_problem_outlined,
+    page: AppPage.complaints,
+  ),
+];
+
+final _visitorNavItems = [
+  const AvenueNavItem(
+    label: 'HOME',
+    icon: Icons.home_rounded,
+    page: AppPage.home,
+  ),
+  const AvenueNavItem(
+    label: 'VISITORS',
+    icon: Icons.group_outlined,
+    page: AppPage.visitor,
+  ),
+  const AvenueNavItem(
+    label: 'SERVICES',
+    icon: Icons.grid_view_rounded,
+    page: AppPage.amenities,
+  ),
+  const AvenueNavItem(
+    label: 'PROFILE',
+    icon: Icons.person_outline_rounded,
+    page: AppPage.profile,
+  ),
+];
+
+final _billingNavItems = [
+  const AvenueNavItem(
+    label: 'HOME',
+    icon: Icons.home_rounded,
+    page: AppPage.home,
+  ),
+  const AvenueNavItem(
+    label: 'BILLS',
+    icon: Icons.receipt_long_outlined,
+    page: AppPage.bills,
+  ),
+  const AvenueNavItem(
+    label: 'NOTICES',
+    icon: Icons.campaign_outlined,
+    page: AppPage.notices,
+  ),
+  const AvenueNavItem(
+    label: 'PROFILE',
+    icon: Icons.person_outline_rounded,
+    page: AppPage.profile,
+  ),
+];
+
+class ResidentDrawerScreen extends StatelessWidget {
+  const ResidentDrawerScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueScaffold(
+      backgroundColor: const Color(0xFFB8B8B8),
+      body: SafeArea(
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Container(
+            width: 310,
+            height: double.infinity,
+            padding: const EdgeInsets.fromLTRB(20, 28, 20, 24),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(34),
+                bottomRight: Radius.circular(34),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    AvenueNetworkAvatar(
+                      imageUrl: _drawerAvatarUrl,
+                      size: 64,
+                      fallbackLabel: 'AS',
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'Aditya Sharma',
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Flat B-204',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: AvenueColors.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const AvenuePill(
+                  label: 'ACTIVE MEMBER',
+                  backgroundColor: Color(0x1AFFBA43),
+                  foregroundColor: Color(0xFFE29B00),
+                ),
+                const SizedBox(height: 28),
+                _DrawerItem(
+                  label: 'Dashboard',
+                  icon: Icons.dashboard_customize_rounded,
+                  selected: true,
+                  onTap: () => goToPage(context, AppPage.home, replace: true),
+                ),
+                const SizedBox(height: 8),
+                _DrawerItem(
+                  label: 'Payments',
+                  icon: Icons.payments_outlined,
+                  onTap: () => goToPage(context, AppPage.bills, replace: true),
+                ),
+                const SizedBox(height: 8),
+                _DrawerItem(
+                  label: 'My Complaints',
+                  icon: Icons.info_outline_rounded,
+                  onTap: () =>
+                      goToPage(context, AppPage.complaints, replace: true),
+                ),
+                const SizedBox(height: 8),
+                _DrawerItem(
+                  label: 'Notice Board',
+                  icon: Icons.campaign_outlined,
+                  onTap: () =>
+                      goToPage(context, AppPage.notices, replace: true),
+                ),
+                const SizedBox(height: 8),
+                _DrawerItem(
+                  label: 'Amenities',
+                  icon: Icons.pool_rounded,
+                  onTap: () =>
+                      goToPage(context, AppPage.amenities, replace: true),
+                ),
+                const SizedBox(height: 8),
+                const _DrawerItem(label: 'Support', icon: Icons.help_outline),
+                const SizedBox(height: 8),
+                const _DrawerItem(label: 'Settings', icon: Icons.settings),
+                const Spacer(),
+                TextButton.icon(
+                  onPressed: () =>
+                      goToPage(context, AppPage.login, replace: true),
+                  icon: const Icon(
+                    Icons.logout_rounded,
+                    color: Color(0xFFD32F2F),
+                  ),
+                  label: Text(
+                    'Logout',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: const Color(0xFFD32F2F),
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueScaffold(
+      topBar: AvenueTopBar(
+        title: 'Avenue360',
+        centerTitle: false,
+        leading: AvenueIconButton(
+          icon: Icons.menu_rounded,
+          onPressed: () => goToPage(context, AppPage.drawer),
+        ),
+        titleWidget: Row(
+          children: [
+            const Icon(
+              Icons.apartment_rounded,
+              color: AvenueColors.primary,
+              size: 20,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              'Avenue360',
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+            ),
+          ],
+        ),
+        actions: [
+          AvenueIconButton(
+            icon: Icons.notifications_none_rounded,
+            onPressed: () => goToPage(context, AppPage.notifications),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 18, left: 6),
+            child: GestureDetector(
+              onTap: () => goToPage(context, AppPage.profile),
+              child: const AvenueNetworkAvatar(
+                imageUrl: _residentAvatarUrl,
+                size: 36,
+                fallbackLabel: 'A',
+              ),
+            ),
+          ),
+        ],
+      ),
+      body: _ResidentScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _MaintenanceCard(onPayTap: () => goToPage(context, AppPage.bills)),
+            const SizedBox(height: 20),
+            AvenueSectionHeader(
+              title: 'Bills & recharges',
+              actionLabel: 'Manage',
+              onActionTap: () => goToPage(context, AppPage.bills),
+            ),
+            const SizedBox(height: 16),
+            const _QuickBillsRow(),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: _FeatureActionCard(
+                    icon: Icons.group_add_rounded,
+                    iconBackground: const Color(0xFFE8EFFF),
+                    iconColor: AvenueColors.primary,
+                    title: 'Pre-Approve\nVisitor',
+                    onTap: () => goToPage(context, AppPage.visitor),
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: _FeatureActionCard(
+                    icon: Icons.campaign_rounded,
+                    iconBackground: const Color(0xFFFFE8E6),
+                    iconColor: const Color(0xFFE04A3F),
+                    title: 'Raise\nComplaint',
+                    onTap: () => goToPage(context, AppPage.complaints),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 26),
+            AvenueSectionHeader(
+              title: 'Essential Notifications',
+              actionLabel: 'View All',
+              onActionTap: () => goToPage(context, AppPage.notifications),
+            ),
+            const SizedBox(height: 14),
+            const _NotificationPreviewTile(
+              icon: Icons.receipt_long_rounded,
+              iconColor: Color(0xFFC7483D),
+              iconBackground: Color(0xFFFFE7E5),
+              title: 'Elevator Maintenance',
+              subtitle:
+                  'Tower B lifts will be under routine maintenance from 2 PM to 4 PM today.',
+              timeLabel: '2 hrs ago',
+            ),
+            const SizedBox(height: 12),
+            const _NotificationPreviewTile(
+              icon: Icons.water_drop_rounded,
+              iconColor: AvenueColors.onSurface,
+              iconBackground: Color(0xFFE9EEFF),
+              title: 'Water Supply Update',
+              subtitle:
+                  'Scheduled water supply interruption for tank cleaning on Sunday morning.',
+              timeLabel: 'Yesterday',
+            ),
+          ],
+        ),
+      ),
+      bottomNavigation: AvenueBottomNavigationBar(
+        items: _residentNavItems,
+        currentPage: AppPage.home,
+      ),
+    );
+  }
+}
+
+class AmenitiesScreen extends StatelessWidget {
+  const AmenitiesScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueScaffold(
+      topBar: AvenueTopBar(
+        title: 'Avenue360',
+        leading: AvenueIconButton(
+          icon: Icons.arrow_back_ios_new_rounded,
+          onPressed: () => goBackOrHome(context),
+          size: 40,
+        ),
+      ),
+      body: _ResidentScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Amenities',
+              style: Theme.of(
+                context,
+              ).textTheme.displayMedium?.copyWith(fontSize: 22),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Discover and book resident facilities',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: AvenueColors.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 16),
+            const AvenueSearchField(
+              hintText: 'Search for pools, gyms, lounges...',
+            ),
+            const SizedBox(height: 22),
+            Text(
+              'Categories',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+            ),
+            const SizedBox(height: 12),
+            const Row(
+              children: [
+                Expanded(
+                  child: _CategoryBubble(
+                    icon: Icons.star_rounded,
+                    label: 'Popular',
+                    backgroundColor: Color(0xFFE8EEFF),
+                  ),
+                ),
+                SizedBox(width: 12),
+                Expanded(
+                  child: _CategoryBubble(
+                    icon: Icons.spa_outlined,
+                    label: 'Wellness',
+                    backgroundColor: Color(0xFFFFF0E7),
+                  ),
+                ),
+                SizedBox(width: 12),
+                Expanded(
+                  child: _CategoryBubble(
+                    icon: Icons.sports_esports_rounded,
+                    label: 'Entertainment',
+                    backgroundColor: Color(0xFFFFF2DB),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            AvenueSectionHeader(
+              title: 'Featured Spaces',
+              actionLabel: 'View All',
+              onActionTap: () {},
+            ),
+            const SizedBox(height: 14),
+            _AmenityCard(
+              imageUrl: _poolImageUrl,
+              status: 'OPEN',
+              title: 'Infinity Pool',
+              subtitle: 'Available till 9 PM',
+              icon: Icons.pool_rounded,
+              primaryActionLabel: 'Book Now',
+              onTap: () => goToPage(context, AppPage.amenityBooking),
+            ),
+            const SizedBox(height: 16),
+            _AmenityCard(
+              imageUrl: _gymImageUrl,
+              status: 'BUSY',
+              statusBackground: const Color(0xFFFFC43B),
+              statusForeground: const Color(0xFF6B4B00),
+              title: 'Modern Gym',
+              subtitle: '4 people there',
+              icon: Icons.fitness_center_rounded,
+              primaryActionLabel: 'View Details',
+              outlinedButton: true,
+              onTap: () => goToPage(context, AppPage.amenityDetailsGym),
+            ),
+            const SizedBox(height: 16),
+            _AmenityCard(
+              imageUrl: _loungeImageUrl,
+              status: 'BOOKING REQUIRED',
+              title: 'Rooftop Lounge',
+              subtitle: 'Private events & gatherings',
+              icon: Icons.deck_rounded,
+              primaryActionLabel: 'Book Now',
+              onTap: () => goToPage(context, AppPage.amenityBooking),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigation: AvenueBottomNavigationBar(
+        items: _residentNavItems,
+        currentPage: AppPage.amenities,
+      ),
+    );
+  }
+}
+
+class AmenityBookingScreen extends StatelessWidget {
+  const AmenityBookingScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueScaffold(
+      topBar: AvenueTopBar(
+        title: 'AmenityBooking',
+        leading: AvenueIconButton(
+          icon: Icons.arrow_back_ios_new_rounded,
+          onPressed: () => goBackOrHome(context),
+          size: 40,
+        ),
+        actions: const [
+          Padding(
+            padding: EdgeInsets.only(right: 18),
+            child: AvenueNetworkAvatar(
+              imageUrl:
+                  'https://lh3.googleusercontent.com/aida-public/AB6AXuB1YXMzmKZSPkhaEw73PawWxa3olLvM1izNAiYnNfpQeM5ZfE5lkz5i2dDIKtlX_YImkpolNHFuk5sRi2rInVSUpF5ctoJPzdkQz0UGE7VS5S2XM11HbfzZXVyM8k6NrenPifXFp0XcVSVueOpZo0vLywTrOmKupKiHU_ETdxsy1qDjaC4IklvXjJ_BklTdB9mZQ9ZPyuexoAotp7vzvSFH-cGTNSm2Hirs3a5armdGnnl_ZGG6SVAs-Q44-D5n5rjZngQ0rqL6O0A',
+              size: 34,
+              fallbackLabel: 'A',
+            ),
+          ),
+        ],
+      ),
+      body: _ResidentScrollView(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _HeroImageCard(
+              imageUrl: _bookingPoolImageUrl,
+              height: 206,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(18, 16, 18, 18),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const AvenuePill(
+                      label: 'EXCLUSIVE ACCESS',
+                      backgroundColor: Color(0x22000000),
+                      foregroundColor: Colors.white,
+                    ),
+                    const Spacer(),
+                    Text(
+                      'Infinity Pool at Avenue360',
+                      style: Theme.of(context).textTheme.displayMedium
+                          ?.copyWith(color: Colors.white, fontSize: 20),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Rooftop Terrace, North Tower',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Colors.white.withValues(alpha: 0.88),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 18),
+            Row(
+              children: [
+                Text(
+                  'Select Date',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  'May 2024',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AvenueColors.primary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            const Row(
+              children: [
+                Expanded(
+                  child: _DateChip(
+                    dayLabel: 'MON',
+                    dateLabel: '20',
+                    selected: true,
+                  ),
+                ),
+                SizedBox(width: 8),
+                Expanded(
+                  child: _DateChip(dayLabel: 'TUE', dateLabel: '21'),
+                ),
+                SizedBox(width: 8),
+                Expanded(
+                  child: _DateChip(dayLabel: 'WED', dateLabel: '22'),
+                ),
+                SizedBox(width: 8),
+                Expanded(
+                  child: _DateChip(dayLabel: 'THU', dateLabel: '23'),
+                ),
+                SizedBox(width: 8),
+                Expanded(
+                  child: _DateChip(dayLabel: 'FRI', dateLabel: '24'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 22),
+            Text(
+              'Select Time Slot',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+            ),
+            const SizedBox(height: 12),
+            const Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                _TimeChip(label: '06:00 - 08:00'),
+                _TimeChip(label: '10:00 - 12:00', selected: true),
+                _TimeChip(label: '14:00 - 16:00'),
+                _TimeChip(label: '16:00 - 18:00'),
+                _TimeChip(label: '20:00 - 22:00'),
+              ],
+            ),
+            const SizedBox(height: 18),
+            AvenueCard(
+              padding: const EdgeInsets.all(18),
+              radius: 26,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Number of\nGuests',
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w800),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'Max 4 guests per residence',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const _CounterButton(icon: Icons.remove_rounded),
+                  Container(
+                    width: 54,
+                    alignment: Alignment.center,
+                    child: Text(
+                      '02',
+                      style: Theme.of(context).textTheme.headlineMedium
+                          ?.copyWith(fontWeight: FontWeight.w800),
+                    ),
+                  ),
+                  const _CounterButton(icon: Icons.add_rounded, filled: true),
+                ],
+              ),
+            ),
+            const SizedBox(height: 18),
+            AvenueCard(
+              padding: const EdgeInsets.all(18),
+              radius: 26,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.info_rounded,
+                        color: AvenueColors.primary,
+                        size: 18,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Booking Guidelines',
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w800),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+                  const _BulletLine(
+                    text:
+                        'Residents must carry their digital ID for verification at the entrance.',
+                  ),
+                  const SizedBox(height: 10),
+                  const _BulletLine(
+                    text:
+                        'No glassware or breakable containers allowed in the pool area.',
+                  ),
+                  const SizedBox(height: 10),
+                  const _BulletLine(
+                    text:
+                        'Personal towels are mandatory; pool-side service is currently unavailable.',
+                  ),
+                  const SizedBox(height: 10),
+                  const _BulletLine(
+                    text: 'Shower is mandatory before entering the pool water.',
+                  ),
+                  const SizedBox(height: 10),
+                  const _BulletLine(
+                    text:
+                        'Cancellations must be made at least 2 hours in advance.',
+                  ),
+                  const SizedBox(height: 18),
+                  const Divider(height: 1),
+                  const SizedBox(height: 14),
+                  const _BookingSummaryRow(
+                    label: 'Booking Fee',
+                    value: 'Complimentary',
+                  ),
+                  const SizedBox(height: 6),
+                  const _BookingSummaryRow(
+                    label: 'Guest Charges',
+                    value: '\$0.00',
+                  ),
+                  const SizedBox(height: 14),
+                  Text(
+                    'TOTAL ESTIMATE',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '\$0.00',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.displayMedium?.copyWith(fontSize: 26),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            AvenuePrimaryButton(
+              label: 'Confirm Booking',
+              icon: Icons.check_circle_rounded,
+              onPressed: () {},
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class AmenityDetailsGymScreen extends StatelessWidget {
+  const AmenityDetailsGymScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueScaffold(
+      topBar: AvenueTopBar(
+        title: 'AmenityDetails',
+        leading: AvenueIconButton(
+          icon: Icons.arrow_back_ios_new_rounded,
+          onPressed: () => goBackOrHome(context),
+          size: 40,
+        ),
+        actions: [
+          AvenueIconButton(icon: Icons.share_outlined, onPressed: () {}),
+          const SizedBox(width: 12),
+        ],
+      ),
+      body: _ResidentScrollView(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+        child: Column(
+          children: [
+            _HeroImageCard(
+              imageUrl: _gymDetailImageUrl,
+              height: 260,
+              borderRadius: 32,
+              child: Padding(
+                padding: const EdgeInsets.all(18),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: const [
+                        AvenuePill(
+                          label: 'BUSY',
+                          backgroundColor: Color(0xFFFFC43B),
+                          foregroundColor: Color(0xFF6B4B00),
+                        ),
+                        SizedBox(width: 8),
+                        AvenuePill(
+                          label: 'LVL 4',
+                          backgroundColor: Color(0x33000000),
+                          foregroundColor: Colors.white,
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+                    Text(
+                      'Modern Gym',
+                      style: Theme.of(context).textTheme.displayMedium
+                          ?.copyWith(color: Colors.white, fontSize: 22),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Transform.translate(
+              offset: const Offset(0, -22),
+              child: AvenueCard(
+                radius: 32,
+                padding: const EdgeInsets.fromLTRB(20, 22, 20, 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Elevate your wellness journey in our state-of-the-art fitness center. Designed with an editorial eye, the gym combines panoramic city views with premium Matrix equipment and a dedicated sanctuary for mindful movement.',
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: AvenueColors.onSurfaceVariant,
+                        height: 1.55,
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    Row(
+                      children: [
+                        Text(
+                          'Live Occupancy',
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w800),
+                        ),
+                        const Spacer(),
+                        Text(
+                          '80% Full',
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
+                                color: AvenueColors.primary,
+                                fontWeight: FontWeight.w800,
+                              ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(999),
+                      child: LinearProgressIndicator(
+                        value: 0.8,
+                        minHeight: 8,
+                        backgroundColor: AvenueColors.surfaceHigh,
+                        valueColor: const AlwaysStoppedAnimation(
+                          AvenueColors.primary,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Peak hours expected until 8:00 PM',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    const SizedBox(height: 18),
+                    const Row(
+                      children: [
+                        Expanded(
+                          child: _InfoMiniCard(
+                            icon: Icons.schedule_rounded,
+                            title: 'Operating\nHours',
+                            subtitle: 'Daily\n6:00 AM - 10:00 PM',
+                          ),
+                        ),
+                        SizedBox(width: 12),
+                        Expanded(
+                          child: _InfoMiniCard(
+                            icon: Icons.flash_on_rounded,
+                            title: 'Peak Time',
+                            subtitle: 'Evenings\n5:00 PM - 8:00 PM',
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 18),
+                    Text(
+                      'Amenities & Equipment',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    const Wrap(
+                      spacing: 12,
+                      runSpacing: 12,
+                      children: [
+                        _EquipmentChip(
+                          icon: Icons.directions_run_rounded,
+                          label: 'CARDIO',
+                        ),
+                        _EquipmentChip(
+                          icon: Icons.fitness_center_rounded,
+                          label: 'WEIGHTS',
+                        ),
+                        _EquipmentChip(
+                          icon: Icons.self_improvement_rounded,
+                          label: 'YOGA AREA',
+                        ),
+                        _EquipmentChip(
+                          icon: Icons.lock_outline_rounded,
+                          label: 'LOCKERS',
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      'Book a Slot',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const AvenuePill(
+                      label: 'AVAILABLE NOW',
+                      backgroundColor: Color(0x1A8FA8FF),
+                      foregroundColor: Color(0xFF6E82FF),
+                    ),
+                    const SizedBox(height: 14),
+                    AvenuePrimaryButton(
+                      label: 'Reserve 60 Minute Session',
+                      onPressed: () =>
+                          goToPage(context, AppPage.amenityBooking),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class NoticesScreen extends StatelessWidget {
+  const NoticesScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueScaffold(
+      topBar: AvenueTopBar(
+        title: 'NoticeBoard',
+        leading: AvenueIconButton(
+          icon: Icons.arrow_back_ios_new_rounded,
+          onPressed: () => goBackOrHome(context),
+          size: 40,
+        ),
+      ),
+      body: _ResidentScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  _FilterChip(label: 'All', selected: true),
+                  SizedBox(width: 10),
+                  _FilterChip(label: 'Urgent'),
+                  SizedBox(width: 10),
+                  _FilterChip(label: 'General'),
+                  SizedBox(width: 10),
+                  _FilterChip(label: 'Events'),
+                ],
+              ),
+            ),
+            const SizedBox(height: 18),
+            const _UrgentNoticeCard(),
+            const SizedBox(height: 16),
+            _EventNoticeCard(imageUrl: _noticesEventImageUrl, onTap: () {}),
+            const SizedBox(height: 16),
+            const _StandardNoticeCard(
+              title: 'Water Tank Cleaning Schedule',
+              category: 'GENERAL',
+              dateText: 'Yesterday',
+              body:
+                  'Routine cleaning of the main water tanks is scheduled for this weekend. There may be minor pressure fluctuations between 10 AM and 2 PM.',
+              icon: Icons.campaign_rounded,
+              iconColor: AvenueColors.primary,
+              cta: 'READ MORE',
+            ),
+            const SizedBox(height: 16),
+            const _StandardNoticeCard(
+              title: 'New Electric Charging Stations',
+              category: 'FACILITY',
+              dateText: 'Oct 20',
+              body:
+                  'Four new Level 2 EV charging stations have been installed in the lower basement parking. They are now operational and available for resident use.',
+              icon: Icons.eco_rounded,
+              iconColor: Color(0xFF846000),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigation: AvenueBottomNavigationBar(
+        items: _residentNavItems,
+        currentPage: AppPage.notices,
+      ),
+    );
+  }
+}
+
+class BillsScreen extends StatelessWidget {
+  const BillsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueScaffold(
+      topBar: AvenueTopBar(
+        title: 'Manage Bills',
+        leading: AvenueIconButton(
+          icon: Icons.arrow_back_ios_new_rounded,
+          onPressed: () => goBackOrHome(context),
+          size: 40,
+        ),
+        actions: [
+          AvenueIconButton(icon: Icons.history_rounded, onPressed: () {}),
+          const SizedBox(width: 12),
+        ],
+      ),
+      body: _ResidentScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'My Accounts',
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+            ),
+            const SizedBox(height: 14),
+            const _BillAccountCard(
+              icon: Icons.smartphone_rounded,
+              title: 'Jio - 98765 43210',
+              subtitle: 'Mobile Postpaid',
+              badgeText: 'Due in 2 days',
+              badgeColor: Color(0xFFFFE1DE),
+              badgeTextColor: Color(0xFFD33B2C),
+              metaLabel: 'AMOUNT DUE',
+              amount: '₹719',
+              amountColor: Color(0xFFD33B2C),
+              buttonLabel: 'Pay Now',
+            ),
+            const SizedBox(height: 12),
+            const _BillAccountCard(
+              icon: Icons.bolt_rounded,
+              title: 'BSES Yamuna',
+              subtitle: 'Electricity',
+              badgeText: 'Paid on 02 Jun',
+              badgeColor: Color(0xFFE5F6E9),
+              badgeTextColor: Color(0xFF2E9A53),
+              metaLabel: 'LAST PAID',
+              amount: '₹1,280',
+            ),
+            const SizedBox(height: 12),
+            const _BillAccountCard(
+              icon: Icons.tv_rounded,
+              title: 'Tata Play',
+              subtitle: 'DTH',
+              badgeText: 'Expiring today',
+              badgeColor: Color(0xFFFFF1CF),
+              badgeTextColor: Color(0xFF8B6500),
+              metaLabel: 'AMOUNT DUE',
+              amount: '₹450',
+              amountColor: Color(0xFF8B6500),
+              buttonLabel: 'Recharge',
+            ),
+            const SizedBox(height: 12),
+            const _BillAccountCard(
+              icon: Icons.water_drop_rounded,
+              title: 'DJB',
+              subtitle: 'Water',
+              badgeText: 'Paid on 20 May',
+              badgeColor: Color(0xFFE5F6E9),
+              badgeTextColor: Color(0xFF2E9A53),
+              metaLabel: 'LAST PAID',
+              amount: '₹650',
+            ),
+            const SizedBox(height: 14),
+            AvenueCard(
+              radius: 0,
+              padding: const EdgeInsets.symmetric(vertical: 26),
+              border: Border.all(
+                color: AvenueColors.outlineVariant.withValues(alpha: 0.65),
+                width: 1,
+                style: BorderStyle.solid,
+              ),
+              color: Colors.transparent,
+              child: Column(
+                children: [
+                  Container(
+                    width: 46,
+                    height: 46,
+                    decoration: const BoxDecoration(
+                      color: AvenueColors.surfaceLow,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.add_rounded,
+                      color: AvenueColors.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Add New Bill',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Link a new utility account',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 18),
+            Text(
+              'Quick Pay',
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+            ),
+            const SizedBox(height: 14),
+            const Row(
+              children: [
+                Expanded(
+                  child: _QuickPayCard(
+                    dark: true,
+                    title: 'HDFC BANK',
+                    subtitle: '**** 4589',
+                    trailing: Icons.credit_card_rounded,
+                    note: 'Expires 12/26',
+                  ),
+                ),
+                SizedBox(width: 12),
+                Expanded(
+                  child: _QuickPayCard(
+                    title: 'SBI UPI',
+                    subtitle: 'user@sbi',
+                    trailing: Icons.account_balance_rounded,
+                    note: 'Verified',
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            AvenueSectionHeader(
+              title: 'Recent Activity',
+              actionLabel: 'View All',
+            ),
+            const SizedBox(height: 12),
+            const _PaymentActivityTile(
+              icon: Icons.bolt_rounded,
+              title: 'BSES Yamuna',
+              date: '02 Jun 2023, 10:45 AM',
+              amount: '-₹1,280',
+              status: 'PAID',
+            ),
+            const SizedBox(height: 10),
+            const _PaymentActivityTile(
+              icon: Icons.wifi_tethering_rounded,
+              title: 'Airtel Broadband',
+              date: '28 May 2023, 03:15 PM',
+              amount: '-₹999',
+              status: 'PAID',
+            ),
+            const SizedBox(height: 10),
+            const _PaymentActivityTile(
+              icon: Icons.water_drop_rounded,
+              title: 'DJB',
+              date: '20 May 2023, 02:30 PM',
+              amount: '-₹650',
+              status: 'PAID',
+            ),
+          ],
+        ),
+      ),
+      bottomNavigation: AvenueBottomNavigationBar(
+        items: _billingNavItems,
+        currentPage: AppPage.bills,
+      ),
+    );
+  }
+}
+
+class ComplaintsScreen extends StatefulWidget {
+  const ComplaintsScreen({super.key});
+
+  @override
+  State<ComplaintsScreen> createState() => _ComplaintsScreenState();
+}
+
+class _ComplaintsScreenState extends State<ComplaintsScreen> {
+  bool _showActive = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueScaffold(
+      topBar: AvenueTopBar(
+        title: 'My Complaints',
+        leading: AvenueIconButton(
+          icon: Icons.arrow_back_ios_new_rounded,
+          onPressed: () => goBackOrHome(context),
+          size: 40,
+        ),
+        actions: const [
+          Padding(
+            padding: EdgeInsets.only(right: 18),
+            child: AvenueNetworkAvatar(
+              imageUrl: _residentAvatarUrl,
+              size: 34,
+              fallbackLabel: 'A',
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: AvenueColors.primary,
+        onPressed: () {},
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: const Icon(Icons.add_rounded, color: Colors.white, size: 32),
+      ),
+      body: _ResidentScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: AvenueColors.surfaceLow,
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _TabToggle(
+                      label: 'Active',
+                      count: '2',
+                      selected: _showActive,
+                      onTap: () => setState(() => _showActive = true),
+                    ),
+                  ),
+                  Expanded(
+                    child: _TabToggle(
+                      label: 'History',
+                      count: '5',
+                      selected: !_showActive,
+                      onTap: () => setState(() => _showActive = false),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 18),
+            if (_showActive) ...[
+              const _ComplaintCard(
+                accentColor: Color(0xFFFFB018),
+                complaintId: '#CMP-8902',
+                timestamp: 'Today, 09:30 AM',
+                status: 'In Progress',
+                statusColor: Color(0xFFE29B00),
+                title: 'Master Bathroom Leak',
+                description:
+                    'Continuous water dripping from the ceiling above the shower area. It started yesterday and seems to be getting worse.',
+                icon: Icons.water_drop_rounded,
+                metaLabel: 'ASSIGNED TO',
+                metaValue: 'Mike (Plumbing)',
+                metaIcon: Icons.engineering_outlined,
+              ),
+              const SizedBox(height: 14),
+              const _ComplaintCard(
+                accentColor: Color(0xFFE2E3E8),
+                complaintId: '#CMP-8895',
+                timestamp: 'Oct 24, 14:15 PM',
+                status: 'Pending',
+                statusColor: AvenueColors.onSurfaceVariant,
+                title: 'Hallway Light Flickering',
+                description:
+                    'The main light fixture in the entryway hallway is flickering constantly when turned on. Needs bulb replacement or wiring check.',
+                icon: Icons.electrical_services_rounded,
+                metaLabel: 'STATUS',
+                metaValue: 'Awaiting Assignment',
+                metaIcon: Icons.hourglass_empty_rounded,
+              ),
+            ] else ...[
+              const _ComplaintCard(
+                accentColor: Color(0xFFE2E3E8),
+                complaintId: '#CMP-8801',
+                timestamp: 'Oct 22, 12:05 PM',
+                status: 'Resolved',
+                statusColor: Color(0xFF2E9A53),
+                title: 'Kitchen Sink Blockage',
+                description:
+                    'Drain line was cleaned and water flow has been restored. Please monitor the sink for the next 24 hours.',
+                icon: Icons.plumbing_rounded,
+                metaLabel: 'CLOSED BY',
+                metaValue: 'Raj (Maintenance)',
+                metaIcon: Icons.verified_rounded,
+              ),
+            ],
+          ],
+        ),
+      ),
+      bottomNavigation: AvenueBottomNavigationBar(
+        items: _residentNavItems,
+        currentPage: AppPage.complaints,
+      ),
+    );
+  }
+}
+
+class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueScaffold(
+      topBar: AvenueTopBar(
+        title: 'My Profile',
+        leading: AvenueIconButton(
+          icon: Icons.arrow_back_ios_new_rounded,
+          onPressed: () => goBackOrHome(context),
+          size: 40,
+        ),
+      ),
+      body: _ResidentScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AvenueCard(
+              radius: 24,
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
+              color: const Color(0xFFEAF0FF),
+              child: Center(
+                child: Column(
+                  children: [
+                    Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [
+                        const AvenueNetworkAvatar(
+                          imageUrl: _profileAvatarUrl,
+                          size: 96,
+                          borderWidth: 4,
+                          fallbackLabel: 'AS',
+                        ),
+                        Container(
+                          width: 28,
+                          height: 28,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: AvenueColors.primaryGradient,
+                          ),
+                          child: const Icon(
+                            Icons.camera_alt_rounded,
+                            size: 16,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    Text(
+                      'Aditya Sharma',
+                      style: Theme.of(context).textTheme.headlineMedium
+                          ?.copyWith(fontWeight: FontWeight.w800),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Unit B-204',
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: AvenueColors.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 18),
+            AvenueCard(
+              radius: 24,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Personal Info',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  const _ProfileFieldRow(
+                    label: 'FULL NAME',
+                    value: 'Aditya Sharma',
+                  ),
+                  const SizedBox(height: 18),
+                  const _ProfileFieldRow(
+                    label: 'EMAIL ADDRESS',
+                    value: 'aditya.sharma@example.com',
+                  ),
+                  const SizedBox(height: 18),
+                  const _ProfileFieldRow(
+                    label: 'PHONE NUMBER',
+                    value: '+91 98765 43210',
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 18),
+            AvenueCard(
+              radius: 24,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Family Members',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      const Expanded(
+                        child: _FamilyMemberChip(
+                          imageUrl: _priyaAvatarUrl,
+                          name: 'Priya',
+                          relation: 'Spouse',
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      const Expanded(
+                        child: _FamilyMemberChip(
+                          imageUrl: _arjunAvatarUrl,
+                          name: 'Arjun',
+                          relation: 'Son',
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Container(
+                          height: 62,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(18),
+                            border: Border.all(
+                              color: AvenueColors.outlineVariant,
+                              style: BorderStyle.solid,
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              '+  Add Member',
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(
+                                    color: AvenueColors.primary,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 18),
+            AvenueCard(
+              radius: 24,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        'Vehicles',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const Spacer(),
+                      const Icon(
+                        Icons.add_rounded,
+                        color: AvenueColors.primary,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: AvenueColors.surfaceLow,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 42,
+                          height: 42,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
+                          child: const Icon(
+                            Icons.directions_car_filled_outlined,
+                            color: AvenueColors.primary,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'KA 01 MG 1234',
+                                style: Theme.of(context).textTheme.titleMedium
+                                    ?.copyWith(fontWeight: FontWeight.w800),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                'White SUV',
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(
+                                      color: AvenueColors.onSurfaceVariant,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Icon(
+                          Icons.copy_outlined,
+                          color: AvenueColors.outline,
+                          size: 18,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 22),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () =>
+                    goToPage(context, AppPage.login, replace: true),
+                icon: const Icon(Icons.logout_rounded),
+                label: const Text('Logout'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: const Color(0xFFEB4B3D),
+                  side: const BorderSide(color: Color(0xFFEB4B3D)),
+                  shape: const StadiumBorder(),
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigation: AvenueBottomNavigationBar(
+        items: _residentNavItems,
+        currentPage: null,
+      ),
+    );
+  }
+}
+
+class NotificationsScreen extends StatelessWidget {
+  const NotificationsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueScaffold(
+      topBar: AvenueTopBar(
+        title: 'Notifications',
+        leading: AvenueIconButton(
+          icon: Icons.arrow_back_ios_new_rounded,
+          onPressed: () => goBackOrHome(context),
+          size: 40,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {},
+            child: Text(
+              'Mark all as read',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: AvenueColors.primary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+        ],
+      ),
+      body: _ResidentScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'NEW',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                fontSize: 12,
+                color: AvenueColors.onSurfaceVariant,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 14),
+            const _NotificationDetailCard(
+              icon: Icons.receipt_long_rounded,
+              iconBackground: Color(0xFFFFE7E5),
+              iconColor: Color(0xFFC7483D),
+              title: 'Maintenance due in 3 days',
+              body: 'Your quarterly maintenance fee of \$450 is due soon.',
+              time: '10 mins ago',
+              unread: true,
+              actionLabel: 'PAY NOW',
+            ),
+            const SizedBox(height: 14),
+            const _NotificationDetailCard(
+              icon: Icons.elevator_rounded,
+              iconBackground: Color(0xFFFFD36B),
+              iconColor: Color(0xFF7A5300),
+              title: 'Elevator maintenance scheduled for Block B tomorrow',
+              body: null,
+              time: '2 hours ago',
+              unread: true,
+              label: 'URGENT',
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'EARLIER',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                fontSize: 12,
+                color: AvenueColors.onSurfaceVariant,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 14),
+            const _ReadNotificationCard(
+              title: 'Guest Arrived: John Doe at Main Gate',
+              time: 'Yesterday, 4:30 PM',
+              avatarUrl: _guestAvatarUrl,
+            ),
+            const SizedBox(height: 14),
+            const _ReadNotificationCard(
+              title: 'Join us for the Annual Rooftop Soirée this Friday!',
+              time: '2 days ago',
+              icon: Icons.celebration_rounded,
+              thumbnailUrl: _noticesThumbImageUrl,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class VisitorScreen extends StatelessWidget {
+  const VisitorScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueScaffold(
+      topBar: AvenueTopBar(
+        title: 'VisitorAccess',
+        leading: AvenueIconButton(
+          icon: Icons.arrow_back_ios_new_rounded,
+          onPressed: () => goBackOrHome(context),
+          size: 40,
+        ),
+      ),
+      body: _ResidentScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Pre-Approve a Visitor',
+              style: Theme.of(
+                context,
+              ).textTheme.displayMedium?.copyWith(fontSize: 22),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Generate a temporary access pass for your guests to ensure a smooth entry at the security gate.',
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: AvenueColors.onSurfaceVariant,
+                height: 1.5,
+              ),
+            ),
+            const SizedBox(height: 18),
+            AvenueCard(
+              color: const Color(0xFFF4F7FF),
+              radius: 18,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.qr_code_scanner_rounded,
+                      color: AvenueColors.primary,
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Seamless Gate Access',
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w800),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'Once generated, your visitor will receive an SMS with a unique QR code and numeric PIN. They simply present this at the gate for instant, verified entry.',
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: AvenueColors.onSurfaceVariant,
+                                height: 1.5,
+                              ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            AvenueCard(
+              radius: 28,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Visitor Details',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  const AvenueInputField(
+                    label: 'Visitor Full Name',
+                    hintText: 'e.g., Jane Doe',
+                    icon: Icons.person_rounded,
+                  ),
+                  const SizedBox(height: 16),
+                  const AvenueInputField(
+                    label: 'Phone Number',
+                    hintText: '+1 (555) 000-0000',
+                    icon: Icons.call_rounded,
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'The access pass will be sent to this number.',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  const SizedBox(height: 16),
+                  const AvenueInputField(
+                    label: 'Expected Arrival',
+                    hintText: 'mm/dd/yyyy, --:-- --',
+                    icon: Icons.calendar_today_rounded,
+                    trailing: Icon(
+                      Icons.calendar_today_rounded,
+                      size: 18,
+                      color: AvenueColors.outline,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  const AvenueInputField(
+                    label: 'Visitor Type',
+                    hintText: 'Guest',
+                    icon: Icons.category_rounded,
+                    trailing: Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: AvenueColors.outline,
+                    ),
+                  ),
+                  const SizedBox(height: 22),
+                  AvenuePrimaryButton(
+                    label: 'Generate Access Pass',
+                    icon: Icons.send_rounded,
+                    onPressed: () {},
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigation: AvenueBottomNavigationBar(
+        items: _visitorNavItems,
+        currentPage: AppPage.visitor,
+      ),
+    );
+  }
+}
+
+class _ResidentScrollView extends StatelessWidget {
+  const _ResidentScrollView({
+    required this.child,
+    this.padding = const EdgeInsets.fromLTRB(14, 18, 14, 24),
+  });
+
+  final Widget child;
+  final EdgeInsetsGeometry padding;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      top: false,
+      child: SingleChildScrollView(
+        padding: padding,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 460),
+            child: child,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DrawerItem extends StatelessWidget {
+  const _DrawerItem({
+    required this.label,
+    required this.icon,
+    this.selected = false,
+    this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final bool selected;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(20),
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: selected ? AvenueColors.primary : Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              color: selected ? Colors.white : AvenueColors.onSurfaceVariant,
+              size: 22,
+            ),
+            const SizedBox(width: 14),
+            Text(
+              label,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: selected ? Colors.white : AvenueColors.onSurfaceVariant,
+                fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MaintenanceCard extends StatelessWidget {
+  const _MaintenanceCard({required this.onPayTap});
+
+  final VoidCallback onPayTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        gradient: AvenueColors.primaryGradient,
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'MAINTENANCE DUE',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Colors.white.withValues(alpha: 0.76),
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '₹2,200',
+                      style: Theme.of(context).textTheme.displayMedium
+                          ?.copyWith(color: Colors.white, fontSize: 22),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.receipt_long_rounded,
+                color: Colors.white.withValues(alpha: 0.72),
+                size: 28,
+              ),
+            ],
+          ),
+          const SizedBox(height: 18),
+          Row(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Due Date',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Colors.white.withValues(alpha: 0.78),
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '15 Jun 2025',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+              const Spacer(),
+              SizedBox(
+                width: 126,
+                child: ElevatedButton(
+                  onPressed: onPayTap,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: AvenueColors.primary,
+                    elevation: 0,
+                    shape: const StadiumBorder(),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    textStyle: Theme.of(context).textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w800),
+                  ),
+                  child: const Text('Pay Now'),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _QuickBillsRow extends StatelessWidget {
+  const _QuickBillsRow();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Row(
+      children: [
+        Expanded(
+          child: _CircleShortcut(
+            icon: Icons.smartphone_rounded,
+            label: 'Mobile',
+          ),
+        ),
+        SizedBox(width: 10),
+        Expanded(
+          child: _CircleShortcut(
+            icon: Icons.bolt_rounded,
+            label: 'Electricity',
+            iconColor: Color(0xFFDB7A00),
+          ),
+        ),
+        SizedBox(width: 10),
+        Expanded(
+          child: _CircleShortcut(
+            icon: Icons.chat_bubble_rounded,
+            label: 'DTH',
+            iconColor: Color(0xFFFFB018),
+          ),
+        ),
+        SizedBox(width: 10),
+        Expanded(
+          child: _CircleShortcut(
+            icon: Icons.play_arrow_rounded,
+            label: 'Google Play',
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CircleShortcut extends StatelessWidget {
+  const _CircleShortcut({
+    required this.icon,
+    required this.label,
+    this.iconColor = AvenueColors.primary,
+  });
+
+  final IconData icon;
+  final String label;
+  final Color iconColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          width: 48,
+          height: 48,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Color(0x10000000),
+                blurRadius: 18,
+                offset: Offset(0, 8),
+              ),
+            ],
+          ),
+          child: Icon(icon, color: iconColor, size: 22),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          label,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: AvenueColors.onSurfaceVariant,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _FeatureActionCard extends StatelessWidget {
+  const _FeatureActionCard({
+    required this.icon,
+    required this.iconBackground,
+    required this.iconColor,
+    required this.title,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final Color iconBackground;
+  final Color iconColor;
+  final String title;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueCard(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+      radius: 18,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18),
+        child: Column(
+          children: [
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: iconBackground,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: iconColor, size: 24),
+            ),
+            const SizedBox(height: 14),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NotificationPreviewTile extends StatelessWidget {
+  const _NotificationPreviewTile({
+    required this.icon,
+    required this.iconColor,
+    required this.iconBackground,
+    required this.title,
+    required this.subtitle,
+    required this.timeLabel,
+  });
+
+  final IconData icon;
+  final Color iconColor;
+  final Color iconBackground;
+  final String title;
+  final String subtitle;
+  final String timeLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueCard(
+      radius: 18,
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              color: iconBackground,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: iconColor, size: 20),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w800),
+                      ),
+                    ),
+                    Text(
+                      timeLabel,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  subtitle,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AvenueColors.onSurfaceVariant,
+                    height: 1.45,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CategoryBubble extends StatelessWidget {
+  const _CategoryBubble({
+    required this.icon,
+    required this.label,
+    required this.backgroundColor,
+  });
+
+  final IconData icon;
+  final String label;
+  final Color backgroundColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueCard(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
+      radius: 18,
+      child: Column(
+        children: [
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: AvenueColors.onSurfaceVariant, size: 20),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              fontWeight: FontWeight.w700,
+              color: AvenueColors.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AmenityCard extends StatelessWidget {
+  const _AmenityCard({
+    required this.imageUrl,
+    required this.status,
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.primaryActionLabel,
+    required this.onTap,
+    this.statusBackground = const Color(0x22000000),
+    this.statusForeground = Colors.white,
+    this.outlinedButton = false,
+  });
+
+  final String imageUrl;
+  final String status;
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final String primaryActionLabel;
+  final VoidCallback onTap;
+  final Color statusBackground;
+  final Color statusForeground;
+  final bool outlinedButton;
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueCard(
+      radius: 18,
+      padding: EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _HeroImageCard(
+            imageUrl: imageUrl,
+            height: 156,
+            borderRadius: 18,
+            child: Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: AvenuePill(
+                  label: status,
+                  backgroundColor: statusBackground,
+                  foregroundColor: statusForeground,
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(fontWeight: FontWeight.w800),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            subtitle,
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: AvenueColors.onSurfaceVariant,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: 30,
+                      height: 30,
+                      decoration: const BoxDecoration(
+                        color: AvenueColors.surfaceLow,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(icon, size: 16, color: AvenueColors.primary),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                if (outlinedButton)
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton(
+                      onPressed: onTap,
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AvenueColors.primary,
+                        shape: const StadiumBorder(),
+                        side: BorderSide(
+                          color: AvenueColors.outlineVariant.withValues(
+                            alpha: 0.5,
+                          ),
+                        ),
+                      ),
+                      child: Text(primaryActionLabel),
+                    ),
+                  )
+                else
+                  AvenuePrimaryButton(
+                    label: primaryActionLabel,
+                    onPressed: onTap,
+                    height: 42,
+                    fontSize: 14,
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HeroImageCard extends StatelessWidget {
+  const _HeroImageCard({
+    required this.imageUrl,
+    required this.height,
+    required this.child,
+    this.borderRadius = 28,
+  });
+
+  final String imageUrl;
+  final double height;
+  final Widget child;
+  final double borderRadius;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(borderRadius),
+      child: SizedBox(
+        height: height,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.network(imageUrl, fit: BoxFit.cover),
+            const DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xA6000000), Color(0x1A000000)],
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                ),
+              ),
+            ),
+            child,
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DateChip extends StatelessWidget {
+  const _DateChip({
+    required this.dayLabel,
+    required this.dateLabel,
+    this.selected = false,
+  });
+
+  final String dayLabel;
+  final String dateLabel;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        color: selected ? AvenueColors.primaryFixed : Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: selected ? AvenueColors.primary : AvenueColors.outlineVariant,
+        ),
+      ),
+      child: Column(
+        children: [
+          Text(
+            dayLabel,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              fontWeight: FontWeight.w800,
+              color: selected ? AvenueColors.primary : AvenueColors.outline,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            dateLabel,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w800,
+              color: selected ? AvenueColors.primary : AvenueColors.onSurface,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TimeChip extends StatelessWidget {
+  const _TimeChip({required this.label, this.selected = false});
+
+  final String label;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: selected ? AvenueColors.primary : Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: selected ? AvenueColors.primary : AvenueColors.outlineVariant,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.wb_sunny_outlined,
+            size: 15,
+            color: selected ? Colors.white : AvenueColors.onSurfaceVariant,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            label,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: selected ? Colors.white : AvenueColors.onSurface,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CounterButton extends StatelessWidget {
+  const _CounterButton({required this.icon, this.filled = false});
+
+  final IconData icon;
+  final bool filled;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 34,
+      height: 34,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: filled ? AvenueColors.primary : Colors.white,
+        border: Border.all(color: AvenueColors.outlineVariant),
+      ),
+      child: Icon(
+        icon,
+        size: 18,
+        color: filled ? Colors.white : AvenueColors.onSurfaceVariant,
+      ),
+    );
+  }
+}
+
+class _BulletLine extends StatelessWidget {
+  const _BulletLine({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 6,
+          height: 6,
+          margin: const EdgeInsets.only(top: 7),
+          decoration: const BoxDecoration(
+            color: AvenueColors.primary,
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            text,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: AvenueColors.onSurfaceVariant,
+              height: 1.45,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _BookingSummaryRow extends StatelessWidget {
+  const _BookingSummaryRow({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text(
+          label,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: AvenueColors.onSurfaceVariant,
+          ),
+        ),
+        const Spacer(),
+        Text(
+          value,
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
+        ),
+      ],
+    );
+  }
+}
+
+class _InfoMiniCard extends StatelessWidget {
+  const _InfoMiniCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AvenueColors.surfaceLow,
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: AvenueColors.primary, size: 18),
+          const SizedBox(height: 10),
+          Text(
+            title,
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            subtitle,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: AvenueColors.onSurfaceVariant,
+              height: 1.4,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _EquipmentChip extends StatelessWidget {
+  const _EquipmentChip({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 52,
+          height: 52,
+          decoration: const BoxDecoration(
+            color: Color(0xFFE8EEFF),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: AvenueColors.primary, size: 22),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          label,
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w800),
+        ),
+      ],
+    );
+  }
+}
+
+class _FilterChip extends StatelessWidget {
+  const _FilterChip({required this.label, this.selected = false});
+
+  final String label;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      decoration: BoxDecoration(
+        color: selected ? AvenueColors.primary : AvenueColors.surfaceLow,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        label,
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+          color: selected ? Colors.white : AvenueColors.onSurfaceVariant,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+}
+
+class _UrgentNoticeCard extends StatelessWidget {
+  const _UrgentNoticeCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueCard(
+      radius: 18,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const AvenuePill(
+                label: 'URGENT',
+                backgroundColor: Color(0xFFFFE2E0),
+                foregroundColor: Color(0xFFD33B2C),
+              ),
+              const Spacer(),
+              Text('2m ago', style: Theme.of(context).textTheme.bodySmall),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Text(
+            'Elevator Maintenance: Block B',
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            'Emergency repairs are being conducted on the primary elevator in Block B. Expected downtime is approximately 4 hours. Please use the service elevator or stairs.',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: AvenueColors.onSurfaceVariant,
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 14),
+          Text(
+            'TAKE ACTION →',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: const Color(0xFFD33B2C),
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _EventNoticeCard extends StatelessWidget {
+  const _EventNoticeCard({required this.imageUrl, required this.onTap});
+
+  final String imageUrl;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueCard(
+      radius: 18,
+      padding: EdgeInsets.zero,
+      child: Column(
+        children: [
+          _HeroImageCard(
+            imageUrl: imageUrl,
+            height: 188,
+            borderRadius: 18,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Container(
+                      width: 50,
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.92),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            'OCT',
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(fontWeight: FontWeight.w800),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            '24',
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(fontWeight: FontWeight.w800),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const AvenuePill(
+                          label: 'EVENT',
+                          backgroundColor: Color(0x22000000),
+                          foregroundColor: Colors.white,
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          'Annual Rooftop Soirée',
+                          style: Theme.of(context).textTheme.displayMedium
+                              ?.copyWith(color: Colors.white, fontSize: 18),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+            child: Row(
+              children: [
+                const Expanded(child: _EventAttendees()),
+                const SizedBox(width: 12),
+                SizedBox(
+                  width: 94,
+                  child: AvenuePrimaryButton(
+                    label: 'RSVP',
+                    onPressed: onTap,
+                    height: 40,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _EventAttendees extends StatelessWidget {
+  const _EventAttendees();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 28,
+          height: 28,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.white, width: 2),
+            shape: BoxShape.circle,
+            image: const DecorationImage(
+              image: NetworkImage(_priyaAvatarUrl),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        Transform.translate(
+          offset: const Offset(-8, 0),
+          child: Container(
+            width: 28,
+            height: 28,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.white, width: 2),
+              shape: BoxShape.circle,
+              image: const DecorationImage(
+                image: NetworkImage(_arjunAvatarUrl),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ),
+        Transform.translate(
+          offset: const Offset(-16, 0),
+          child: Container(
+            width: 28,
+            height: 28,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: AvenueColors.surfaceHigh,
+              border: Border.all(color: Colors.white, width: 2),
+              shape: BoxShape.circle,
+            ),
+            child: Text(
+              '+42',
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w800),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _StandardNoticeCard extends StatelessWidget {
+  const _StandardNoticeCard({
+    required this.title,
+    required this.category,
+    required this.dateText,
+    required this.body,
+    required this.icon,
+    required this.iconColor,
+    this.cta,
+  });
+
+  final String title;
+  final String category;
+  final String dateText;
+  final String body;
+  final IconData icon;
+  final Color iconColor;
+  final String? cta;
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueCard(
+      radius: 18,
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 46,
+            height: 46,
+            decoration: const BoxDecoration(
+              color: AvenueColors.surfaceLow,
+              borderRadius: BorderRadius.all(Radius.circular(14)),
+            ),
+            child: Icon(icon, color: iconColor, size: 24),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    AvenuePill(
+                      label: category,
+                      backgroundColor: AvenueColors.surfaceHigh,
+                      foregroundColor: AvenueColors.onSurfaceVariant,
+                    ),
+                    const Spacer(),
+                    Text(
+                      dateText,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  title,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  body,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AvenueColors.onSurfaceVariant,
+                    height: 1.45,
+                  ),
+                ),
+                if (cta != null) ...[
+                  const SizedBox(height: 14),
+                  Text(
+                    cta!,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AvenueColors.primary,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BillAccountCard extends StatelessWidget {
+  const _BillAccountCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.badgeText,
+    required this.badgeColor,
+    required this.badgeTextColor,
+    required this.metaLabel,
+    required this.amount,
+    this.buttonLabel,
+    this.amountColor = AvenueColors.onSurface,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final String badgeText;
+  final Color badgeColor;
+  final Color badgeTextColor;
+  final String metaLabel;
+  final String amount;
+  final String? buttonLabel;
+  final Color amountColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueCard(
+      radius: 20,
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: const BoxDecoration(
+                  color: AvenueColors.surfaceLow,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: AvenueColors.primary),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 18),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
+                decoration: BoxDecoration(
+                  color: badgeColor,
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: Text(
+                  badgeText,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: badgeTextColor,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+              const Spacer(),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    metaLabel,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    amount,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: amountColor,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          if (buttonLabel != null) ...[
+            const SizedBox(height: 16),
+            AvenuePrimaryButton(
+              label: buttonLabel!,
+              onPressed: () {},
+              height: 42,
+              fontSize: 14,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _QuickPayCard extends StatelessWidget {
+  const _QuickPayCard({
+    required this.title,
+    required this.subtitle,
+    required this.trailing,
+    required this.note,
+    this.dark = false,
+  });
+
+  final String title;
+  final String subtitle;
+  final IconData trailing;
+  final String note;
+  final bool dark;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: dark ? const Color(0xFF22272B) : Colors.white,
+        border: dark
+            ? null
+            : Border.all(
+                color: AvenueColors.outlineVariant.withValues(alpha: 0.3),
+              ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                title,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: dark
+                      ? Colors.white.withValues(alpha: 0.8)
+                      : AvenueColors.onSurface,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const Spacer(),
+              Icon(
+                trailing,
+                color: dark ? Colors.white : AvenueColors.primary,
+                size: 18,
+              ),
+            ],
+          ),
+          const SizedBox(height: 18),
+          Text(
+            subtitle,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: dark ? Colors.white : AvenueColors.onSurface,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            note,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: dark
+                  ? Colors.white.withValues(alpha: 0.7)
+                  : AvenueColors.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PaymentActivityTile extends StatelessWidget {
+  const _PaymentActivityTile({
+    required this.icon,
+    required this.title,
+    required this.date,
+    required this.amount,
+    required this.status,
+  });
+
+  final IconData icon;
+  final String title;
+  final String date;
+  final String amount;
+  final String status;
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueCard(
+      radius: 18,
+      padding: const EdgeInsets.all(14),
+      child: Row(
+        children: [
+          Container(
+            width: 38,
+            height: 38,
+            decoration: const BoxDecoration(
+              color: AvenueColors.surfaceLow,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: AvenueColors.primary, size: 18),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(date, style: Theme.of(context).textTheme.bodySmall),
+              ],
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                amount,
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                status,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: const Color(0xFF2E9A53),
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TabToggle extends StatelessWidget {
+  const _TabToggle({
+    required this.label,
+    required this.count,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final String count;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(20),
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOut,
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: selected ? Colors.white : Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: selected
+              ? const [
+                  BoxShadow(
+                    color: Color(0x10000000),
+                    blurRadius: 12,
+                    offset: Offset(0, 4),
+                  ),
+                ]
+              : null,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              label,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: selected
+                    ? AvenueColors.primary
+                    : AvenueColors.onSurfaceVariant,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: selected
+                    ? AvenueColors.primary
+                    : AvenueColors.surfaceHigh,
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: Text(
+                count,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: selected
+                      ? Colors.white
+                      : AvenueColors.onSurfaceVariant,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ComplaintCard extends StatelessWidget {
+  const _ComplaintCard({
+    required this.accentColor,
+    required this.complaintId,
+    required this.timestamp,
+    required this.status,
+    required this.statusColor,
+    required this.title,
+    required this.description,
+    required this.icon,
+    required this.metaLabel,
+    required this.metaValue,
+    required this.metaIcon,
+  });
+
+  final Color accentColor;
+  final String complaintId;
+  final String timestamp;
+  final String status;
+  final Color statusColor;
+  final String title;
+  final String description;
+  final IconData icon;
+  final String metaLabel;
+  final String metaValue;
+  final IconData metaIcon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        AvenueCard(
+          radius: 18,
+          padding: const EdgeInsets.all(18),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      '$complaintId  •  $timestamp',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  AvenuePill(
+                    label: status,
+                    backgroundColor: statusColor.withValues(alpha: 0.1),
+                    foregroundColor: statusColor,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(icon, color: AvenueColors.onSurfaceVariant, size: 22),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Text(
+                description,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: AvenueColors.onSurfaceVariant,
+                  height: 1.45,
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Divider(height: 1),
+              const SizedBox(height: 14),
+              Row(
+                children: [
+                  Container(
+                    width: 34,
+                    height: 34,
+                    decoration: const BoxDecoration(
+                      color: AvenueColors.surfaceLow,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      metaIcon,
+                      size: 18,
+                      color: AvenueColors.outline,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          metaLabel,
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(fontWeight: FontWeight.w800),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          metaValue,
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w700),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Text(
+                    'View Details',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AvenueColors.primary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          top: 0,
+          bottom: 0,
+          left: 0,
+          child: Container(
+            width: 4,
+            decoration: BoxDecoration(
+              color: accentColor,
+              borderRadius: BorderRadius.circular(999),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ProfileFieldRow extends StatelessWidget {
+  const _ProfileFieldRow({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w800),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                value,
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
+        ),
+        const Icon(Icons.edit_rounded, color: AvenueColors.outline, size: 18),
+      ],
+    );
+  }
+}
+
+class _FamilyMemberChip extends StatelessWidget {
+  const _FamilyMemberChip({
+    required this.imageUrl,
+    required this.name,
+    required this.relation,
+  });
+
+  final String imageUrl;
+  final String name;
+  final String relation;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 62,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        color: AvenueColors.surfaceLow,
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Row(
+        children: [
+          AvenueNetworkAvatar(
+            imageUrl: imageUrl,
+            size: 34,
+            fallbackLabel: name[0],
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: 2),
+                Text(relation, style: Theme.of(context).textTheme.bodySmall),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _NotificationDetailCard extends StatelessWidget {
+  const _NotificationDetailCard({
+    required this.icon,
+    required this.iconBackground,
+    required this.iconColor,
+    required this.title,
+    required this.time,
+    this.body,
+    this.unread = false,
+    this.actionLabel,
+    this.label,
+  });
+
+  final IconData icon;
+  final Color iconBackground;
+  final Color iconColor;
+  final String title;
+  final String? body;
+  final String time;
+  final bool unread;
+  final String? actionLabel;
+  final String? label;
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueCard(
+      radius: 0,
+      padding: const EdgeInsets.all(18),
+      child: Stack(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 46,
+                height: 46,
+                decoration: BoxDecoration(
+                  color: iconBackground,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: iconColor),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (label != null) ...[
+                      AvenuePill(
+                        label: label!,
+                        backgroundColor: const Color(0xFFFFE2E0),
+                        foregroundColor: const Color(0xFFD33B2C),
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                    Text(
+                      title,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    if (body != null) ...[
+                      const SizedBox(height: 8),
+                      Text(
+                        body!,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: AvenueColors.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 10),
+                    Text(time, style: Theme.of(context).textTheme.bodySmall),
+                    if (actionLabel != null) ...[
+                      const SizedBox(height: 14),
+                      SizedBox(
+                        width: 120,
+                        child: AvenuePrimaryButton(
+                          label: actionLabel!,
+                          onPressed: () {},
+                          height: 38,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ],
+          ),
+          if (unread)
+            const Positioned(
+              top: 2,
+              right: 2,
+              child: CircleAvatar(
+                radius: 4,
+                backgroundColor: AvenueColors.primary,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ReadNotificationCard extends StatelessWidget {
+  const _ReadNotificationCard({
+    required this.title,
+    required this.time,
+    this.avatarUrl,
+    this.icon,
+    this.thumbnailUrl,
+  });
+
+  final String title;
+  final String time;
+  final String? avatarUrl;
+  final IconData? icon;
+  final String? thumbnailUrl;
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueCard(
+      radius: 0,
+      padding: const EdgeInsets.all(18),
+      child: Opacity(
+        opacity: 0.84,
+        child: Row(
+          children: [
+            if (avatarUrl != null)
+              AvenueNetworkAvatar(
+                imageUrl: avatarUrl!,
+                size: 46,
+                fallbackLabel: 'J',
+              )
+            else
+              Container(
+                width: 46,
+                height: 46,
+                decoration: const BoxDecoration(
+                  color: Color(0xFFF5E8DE),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: const Color(0xFFC37F4E)),
+              ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(time, style: Theme.of(context).textTheme.bodySmall),
+                ],
+              ),
+            ),
+            if (thumbnailUrl != null)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(18),
+                child: Image.network(
+                  thumbnailUrl!,
+                  width: 62,
+                  height: 62,
+                  fit: BoxFit.cover,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "background": "#f8f9fa",
+                    "on-primary-fixed-variant": "#004493",
+                    "on-primary-fixed": "#001a41",
+                    "primary-fixed": "#d8e2ff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-container": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed": "#281800",
+                    "secondary": "#805600",
+                    "tertiary-container": "#c55500",
+                    "surface-dim": "#d9dadb",
+                    "on-secondary-fixed-variant": "#614000",
+                    "tertiary-fixed-dim": "#ffb691",
+                    "inverse-surface": "#2e3132",
+                    "on-primary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "on-tertiary-container": "#0e0200",
+                    "error": "#ba1a1a",
+                    "tertiary": "#9e4300",
+                    "on-surface": "#191c1d",
+                    "surface-container-highest": "#e1e3e4",
+                    "primary": "#005bbf",
+                    "inverse-on-surface": "#f0f1f2",
+                    "surface": "#f8f9fa",
+                    "surface-bright": "#f8f9fa",
+                    "surface-container-low": "#f3f4f5",
+                    "on-secondary-container": "#694600",
+                    "surface-container-high": "#e7e8e9",
+                    "on-background": "#191c1d",
+                    "outline-variant": "#c1c6d6",
+                    "on-tertiary-fixed-variant": "#783100",
+                    "on-error": "#ffffff",
+                    "secondary-fixed-dim": "#ffba43",
+                    "primary-container": "#1a73e8",
+                    "surface-variant": "#e1e3e4",
+                    "surface-container": "#edeeef",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed": "#ffddaf",
+                    "on-surface-variant": "#414754",
+                    "primary-fixed-dim": "#adc7ff",
+                    "tertiary-fixed": "#ffdbcb",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-fixed": "#341100",
+                    "inverse-primary": "#adc7ff",
+                    "surface-tint": "#005bc0",
+                    "secondary-container": "#fdaf0b",
+                    "outline": "#727785"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-header { backdrop-filter: blur(24px); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface">
+<!-- TopAppBar -->
+<header class="bg-slate-50/80 dark:bg-slate-900/80 backdrop-blur-xl docked full-width top-0 sticky z-50 flex justify-between items-center w-full px-6 py-4 shadow-[0_12px_32px_rgba(25,28,29,0.06)]">
+<div class="flex items-center gap-4">
+<button class="p-2 text-blue-700 dark:text-blue-300 hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-colors rounded-full">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="text-lg font-bold text-slate-900 dark:text-slate-50 font-['Plus_Jakarta_Sans'] font-semibold tracking-tight">Resident Directory</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-blue-700 dark:text-blue-300 hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-colors rounded-full">
+<span class="material-symbols-outlined">person_add</span>
+</button>
+</div>
+</header>
+<main class="max-w-5xl mx-auto px-6 py-8 pb-32">
+<!-- Search & Filter Bar -->
+<div class="mb-8 flex flex-col md:flex-row gap-4 items-center justify-between">
+<div class="relative w-full md:w-96 group">
+<div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="w-full h-12 pl-12 pr-4 bg-surface-container-high border-none rounded-lg focus:ring-0 focus:border-primary transition-all" placeholder="Search by name or unit..." type="text"/>
+<div class="absolute bottom-0 left-0 h-[2px] w-0 bg-primary group-focus-within:w-full transition-all duration-300"></div>
+</div>
+<div class="flex gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
+<button class="px-6 py-2 bg-primary-container text-white rounded-full text-sm font-medium whitespace-nowrap shadow-lg transition-transform active:scale-95">All Residents</button>
+<button class="px-6 py-2 bg-surface-container-high text-on-surface-variant rounded-full text-sm font-medium whitespace-nowrap hover:bg-surface-container-highest transition-colors">Owners</button>
+<button class="px-6 py-2 bg-surface-container-high text-on-surface-variant rounded-full text-sm font-medium whitespace-nowrap hover:bg-surface-container-highest transition-colors">Tenants</button>
+</div>
+</div>
+<!-- Section: Owners -->
+<div class="mb-12">
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-sm font-bold tracking-[0.05em] uppercase text-on-surface-variant flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+                    Property Owners
+                </h2>
+<span class="text-xs font-medium text-outline">248 Total</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Resident Card -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_12px_32px_rgba(25,28,29,0.06)] flex flex-col gap-4 border border-outline-variant/15 hover:translate-y-[-4px] transition-transform duration-300">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-3">
+<img class="w-12 h-12 rounded-full object-cover" data-alt="professional portrait of a middle-aged man in a charcoal suit, confident expression, soft office lighting background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC32Kqzc8hRfEl30abJX8cYdzhotEi9MmUJpFNRfh95XicxdQKc65kyv7gtwjGRV_qoCzJkMDLsJ0n5yaDEJJFOZRIigb8ghLEmzdzV-TH7b-ih7qkJHPsk2Pc58vSBg3RsNIBENYD9_NvrLjRTu1xKz7Hz7o8-3NWuVhBBooJKrKEOrJ22auh1kWg2Irl4Bhuhc2UOPTTkB3ifRkGCJgeC4BlKG4Zf-uMWwRWzW2z-9ZM5fqUtHkCWxbjqUek-xK5--3hWARc-kvE"/>
+<div>
+<h3 class="font-semibold text-on-surface">Alexander Sterling</h3>
+<p class="text-xs text-outline font-medium tracking-wide uppercase">Unit 1402 • Tower A</p>
+</div>
+</div>
+<span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Active</span>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 bg-surface-container-low text-primary py-2 rounded-lg text-xs font-bold hover:bg-primary-fixed transition-colors">View Profile</button>
+<button class="p-2 bg-surface-container-low text-primary rounded-lg hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-[18px]">mail</span>
+</button>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_12px_32px_rgba(25,28,29,0.06)] flex flex-col gap-4 border border-outline-variant/15 hover:translate-y-[-4px] transition-transform duration-300">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-3">
+<img class="w-12 h-12 rounded-full object-cover" data-alt="professional woman in corporate attire smiling, brightly lit modern interior background with soft focus" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA22ac2iJWFcfipaGs-c_Rh30BWOTzg9N9cBDeQU0pwEq3wCxZQKBhpwz08kbzesBHABsDFYdg1zKvI4HKwUTEDpqcude1pLlyppDQbZqqzRH6nf4BzMC9lnqgFSYnl1cFtX3bNyLVw66iNU5pf0wtiqs80ZL8CsrcAVZetJ39TAoWGzoXl4neGMTh-TRgidTL0F-WabmXN7alGEWcmTcx_5LECQWI3EWdJo7MalI76xHTM_R9s78y_Z6OMAaz3GTbg0hCk9gdl8H0"/>
+<div>
+<h3 class="font-semibold text-on-surface">Elena Rodriguez</h3>
+<p class="text-xs text-outline font-medium tracking-wide uppercase">Unit 0805 • Tower B</p>
+</div>
+</div>
+<span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Pending</span>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 bg-surface-container-low text-primary py-2 rounded-lg text-xs font-bold hover:bg-primary-fixed transition-colors">View Profile</button>
+<button class="p-2 bg-surface-container-low text-primary rounded-lg hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-[18px]">priority_high</span>
+</button>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_12px_32px_rgba(25,28,29,0.06)] flex flex-col gap-4 border border-outline-variant/15 hover:translate-y-[-4px] transition-transform duration-300">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold">MW</div>
+<div>
+<h3 class="font-semibold text-on-surface">Marcus Wainwright</h3>
+<p class="text-xs text-outline font-medium tracking-wide uppercase">Unit 2201 • PH</p>
+</div>
+</div>
+<span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Active</span>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 bg-surface-container-low text-primary py-2 rounded-lg text-xs font-bold hover:bg-primary-fixed transition-colors">View Profile</button>
+<button class="p-2 bg-surface-container-low text-primary rounded-lg hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Section: Tenants -->
+<div>
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-sm font-bold tracking-[0.05em] uppercase text-on-surface-variant flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+                    Registered Tenants
+                </h2>
+<span class="text-xs font-medium text-outline">112 Total</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Tenant Card -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_12px_32px_rgba(25,28,29,0.06)] flex flex-col gap-4 border border-outline-variant/15 hover:translate-y-[-4px] transition-transform duration-300">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-3">
+<img class="w-12 h-12 rounded-full object-cover" data-alt="candid portrait of a young man with a slight smile, outdoors in soft evening sunlight, urban aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhQGZkrWHLcYz22-wvqHsQysY6YWsLEvmsTYrZ-g0tXR5xLwRHapYKISw-LJEhUuvaSlvK658_qUXUkbuwp7_UAHiqssa_JZtCVzkaL1BTvqWcyRW2Jiafwtw-ttIlgFiEuGUqOCR1nQ33EDJTWI3khAPanZtT2Py-pHw6sJrdMQpA1DhotH37AbP9lrgbcV3lfMnfMFmxexpJ_DpWHDGJ5Dor2zaGPFyRUJfK10xrgpIG1opaunVb39f2BWv6ypDJ5QF8NSzUdxI"/>
+<div>
+<h3 class="font-semibold text-on-surface">Jameson Chen</h3>
+<p class="text-xs text-outline font-medium tracking-wide uppercase">Unit 0411 • Tower A</p>
+</div>
+</div>
+<span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Active</span>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 bg-surface-container-low text-primary py-2 rounded-lg text-xs font-bold hover:bg-primary-fixed transition-colors">View Lease</button>
+<button class="p-2 bg-surface-container-low text-primary rounded-lg hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-[18px]">description</span>
+</button>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_12px_32px_rgba(25,28,29,0.06)] flex flex-col gap-4 border border-outline-variant/15 hover:translate-y-[-4px] transition-transform duration-300">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-3">
+<img class="w-12 h-12 rounded-full object-cover" data-alt="portrait of a young woman with warm expression, natural lighting, soft blurred park background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAa9Fcyhcd6jceLaLL5PsHjvHDigIiKR46attnbZW4Cx7tpYziXKIJUmrePKwm0eVqUW4n7wgUl28pwTIDKrwH9usdM4C_FUAGnwmVcb4T7f0XO5fg0FsB7Sa2hBElLEYyt1CrZ4YBP6pfKRrCEOfbb_clPt5S2VvSD5MwTNs7Fb2ksNkXUi6I_tc1JXlQxULaY6tPmruzpP_oswQ0M6gAMJAUmHIg9alhUcskNQgPNhmFFa6jIXoqXKKWW47nT7JM-W0tQbjtIpvE"/>
+<div>
+<h3 class="font-semibold text-on-surface">Sarah Jenkins</h3>
+<p class="text-xs text-outline font-medium tracking-wide uppercase">Unit 1109 • Tower C</p>
+</div>
+</div>
+<span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Expired</span>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 bg-error-container text-error py-2 rounded-lg text-xs font-bold hover:opacity-80 transition-colors">Renew Notice</button>
+<button class="p-2 bg-error-container text-error rounded-lg hover:opacity-80 transition-colors">
+<span class="material-symbols-outlined text-[18px]">warning</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-28 right-8 z-[60] w-14 h-14 bg-gradient-to-br from-primary to-primary-container text-white rounded-full shadow-[0_12px_32px_rgba(0,91,191,0.3)] flex items-center justify-center transition-all hover:scale-110 active:scale-95 group">
+<span class="material-symbols-outlined text-[28px]">add</span>
+<span class="absolute right-full mr-4 bg-on-surface text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">Add Resident</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-end pb-6 px-4 bg-slate-50/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-t-[32px] tonal-shift shadow-[0_-8px_24px_rgba(0,0,0,0.04)]">
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 p-2 hover:text-blue-500 dark:hover:text-blue-300 transition-transform active:scale-90">
+<span class="material-symbols-outlined">home</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide uppercase mt-1">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-gradient-to-br from-blue-600 to-blue-500 text-white rounded-full p-3 mb-2 scale-110 shadow-lg transition-transform active:scale-90">
+<span class="material-symbols-outlined">group</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide uppercase mt-1">Directory</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 p-2 hover:text-blue-500 dark:hover:text-blue-300 transition-transform active:scale-90">
+<span class="material-symbols-outlined">apartment</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide uppercase mt-1">Amenities</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 p-2 hover:text-blue-500 dark:hover:text-blue-300 transition-transform active:scale-90">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide uppercase mt-1">Profile</span>
+</div>
+</nav>
+</body></html>
