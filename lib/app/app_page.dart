@@ -1,6 +1,7 @@
 enum AppPage {
   login(slug: 'login'),
   home(slug: 'home'),
+  guardHome(slug: 'guard-home'),
   amenities(slug: 'amenities'),
   amenityBooking(slug: 'amenity-booking'),
   amenityDetailsGym(slug: 'amenity-details-gym'),

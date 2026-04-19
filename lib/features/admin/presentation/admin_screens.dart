@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/app_page.dart';
+import '../../../core/session/app_session.dart';
+import '../../../core/supabase/avenue_repository.dart';
 import '../../../theme/avenue_theme.dart';
 import '../../common/presentation/avenue_ui.dart';
 
@@ -42,136 +44,260 @@ final _adminNavItems = [
   ),
 ];
 
+String _initialsFromName(String name) {
+  final parts = name
+      .trim()
+      .split(RegExp(r'\s+'))
+      .where((part) => part.isNotEmpty)
+      .toList();
+  if (parts.isEmpty) {
+    return 'R';
+  }
+
+  if (parts.length == 1) {
+    return parts.first.substring(0, 1).toUpperCase();
+  }
+
+  return '${parts.first.substring(0, 1)}${parts.last.substring(0, 1)}'
+      .toUpperCase();
+}
+
+String? _directoryImageForName(String name) {
+  switch (name) {
+    case 'Alexander Sterling':
+      return _directoryAlexanderUrl;
+    case 'Elena Rodriguez':
+      return _directoryElenaUrl;
+    case 'Jameson Chen':
+      return _directoryJamesonUrl;
+    case 'Sarah Jenkins':
+      return _directorySarahUrl;
+    default:
+      return null;
+  }
+}
+
+Color _statusColor(String? status) {
+  switch (status) {
+    case 'active':
+      return const Color(0xFF2E9A53);
+    case 'pending':
+      return const Color(0xFF8B6500);
+    case 'expired':
+      return const Color(0xFFD6453A);
+    default:
+      return AvenueColors.onSurfaceVariant;
+  }
+}
+
+class _AdminDashboardData {
+  const _AdminDashboardData({
+    required this.metrics,
+    required this.transactions,
+  });
+
+  final Map<String, dynamic>? metrics;
+  final List<Map<String, dynamic>> transactions;
+
+  static Future<_AdminDashboardData> load(AvenueRepository repository) async {
+    final results = await Future.wait([
+      repository.fetchAdminMetrics(),
+      repository.fetchAdminTransactions(),
+    ]);
+
+    return _AdminDashboardData(
+      metrics: results[0] as Map<String, dynamic>?,
+      transactions: results[1] as List<Map<String, dynamic>>,
+    );
+  }
+}
+
 class AdminDashboardScreen extends StatelessWidget {
   const AdminDashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = AppSession.instance.currentUser;
+    final repository = AvenueRepository();
+
     return AvenueScaffold(
       topBar: AvenueTopBar(
         title: 'Avenue360',
         leading: AvenueIconButton(icon: Icons.menu_rounded, onPressed: () {}),
-        actions: const [
+        actions: [
           Padding(
             padding: EdgeInsets.only(right: 18),
             child: AvenueNetworkAvatar(
-              imageUrl: _adminAvatarUrl,
+              imageUrl: currentUser?.avatarUrl ?? _adminAvatarUrl,
               size: 36,
-              fallbackLabel: 'M',
+              fallbackLabel: currentUser?.initials ?? 'M',
             ),
           ),
         ],
       ),
-      body: _AdminScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Portfolio Overview',
-              style: Theme.of(
-                context,
-              ).textTheme.displayMedium?.copyWith(fontSize: 22),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Welcome back, Marcus. Here is what is happening across Avenue360 today.',
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: AvenueColors.onSurfaceVariant,
-                height: 1.5,
-              ),
-            ),
-            const SizedBox(height: 20),
-            AvenueSecondaryButton(
-              label: 'Generate Report',
-              onPressed: () => goToPage(context, AppPage.generateReports),
-            ),
-            const SizedBox(height: 14),
-            AvenuePrimaryButton(
-              label: 'New Announcement',
-              onPressed: () =>
-                  goToPage(context, AppPage.announcementsManagement),
-            ),
-            const SizedBox(height: 18),
-            _DashboardFeatureCard(
-              imageUrl: _adminPoolImageUrl,
-              title: 'The Sky Pool',
-              status: 'OPEN',
-              onTap: () {},
-            ),
-            const SizedBox(height: 14),
-            _DashboardFeatureCard(
-              imageUrl: _adminGymImageUrl,
-              title: 'Zenith Gym',
-              status: 'ACTIVE',
-              onTap: () {},
-            ),
-            const SizedBox(height: 14),
-            AvenueCard(
-              radius: 22,
-              color: const Color(0xFFF2F3F5),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(22),
-                onTap: () {},
-                child: Column(
+      body: FutureBuilder<_AdminDashboardData>(
+        future: _AdminDashboardData.load(repository),
+        builder: (context, snapshot) {
+          final metrics = snapshot.data?.metrics;
+          final transactions =
+              snapshot.data?.transactions ?? const <Map<String, dynamic>>[];
+
+          return _AdminScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Portfolio Overview',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.displayMedium?.copyWith(fontSize: 22),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Welcome back, ${currentUser?.fullName.split(' ').first ?? 'Admin'}. Here is what is happening across Avenue360 today.',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: AvenueColors.onSurfaceVariant,
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 18),
+                Row(
                   children: [
-                    Container(
-                      width: 44,
-                      height: 44,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color(0xFFE0E2E8),
-                      ),
-                      child: const Icon(
-                        Icons.add_rounded,
-                        color: AvenueColors.onSurfaceVariant,
+                    Expanded(
+                      child: _AdminStatCard(
+                        label: 'Residents',
+                        value:
+                            metrics?['active_residents']?.toString() ??
+                            (snapshot.connectionState != ConnectionState.done
+                                ? '...'
+                                : '0'),
                       ),
                     ),
-                    const SizedBox(height: 14),
-                    Text(
-                      'Manage Amenities',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w800,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _AdminStatCard(
+                        label: 'Visitors',
+                        value:
+                            metrics?['active_visitor_passes']?.toString() ??
+                            (snapshot.connectionState != ConnectionState.done
+                                ? '...'
+                                : '0'),
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Update schedules & bookings',
-                      style: Theme.of(context).textTheme.bodySmall,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _AdminStatCard(
+                        label: 'Open Complaints',
+                        value:
+                            metrics?['open_complaints']?.toString() ??
+                            (snapshot.connectionState != ConnectionState.done
+                                ? '...'
+                                : '0'),
+                      ),
                     ),
                   ],
                 ),
-              ),
+                const SizedBox(height: 20),
+                AvenueSecondaryButton(
+                  label: 'Generate Report',
+                  onPressed: () => goToPage(context, AppPage.generateReports),
+                ),
+                const SizedBox(height: 14),
+                AvenuePrimaryButton(
+                  label: 'New Announcement',
+                  onPressed: () =>
+                      goToPage(context, AppPage.announcementsManagement),
+                ),
+                const SizedBox(height: 18),
+                _DashboardFeatureCard(
+                  imageUrl: _adminPoolImageUrl,
+                  title: 'The Sky Pool',
+                  status: 'OPEN',
+                  onTap: () {},
+                ),
+                const SizedBox(height: 14),
+                _DashboardFeatureCard(
+                  imageUrl: _adminGymImageUrl,
+                  title: 'Zenith Gym',
+                  status: 'ACTIVE',
+                  onTap: () {},
+                ),
+                const SizedBox(height: 14),
+                AvenueCard(
+                  radius: 22,
+                  color: const Color(0xFFF2F3F5),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(22),
+                    onTap: () {},
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 44,
+                          height: 44,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Color(0xFFE0E2E8),
+                          ),
+                          child: const Icon(
+                            Icons.add_rounded,
+                            color: AvenueColors.onSurfaceVariant,
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        Text(
+                          'Manage Amenities',
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(fontWeight: FontWeight.w800),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Update schedules & bookings',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 22),
+                AvenueSectionHeader(
+                  title: 'Recent Transactions',
+                  actionLabel: 'View All',
+                  onActionTap: () {},
+                ),
+                const SizedBox(height: 14),
+                if (transactions.isEmpty &&
+                    snapshot.connectionState != ConnectionState.done)
+                  const _AdminDataPlaceholder(label: 'Loading transactions...')
+                else
+                  ...transactions
+                      .take(4)
+                      .map(
+                        (row) => Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: _TransactionTile(
+                            icon: row['icon_name'] == 'flash_on'
+                                ? Icons.flash_on_rounded
+                                : Icons.receipt_long_rounded,
+                            iconBackground: row['icon_bg_hex'] == '#E8F0FF'
+                                ? const Color(0xFFE7F0FF)
+                                : const Color(0xFFFFE9C2),
+                            iconColor: row['icon_name'] == 'flash_on'
+                                ? AvenueColors.primary
+                                : const Color(0xFF8F6500),
+                            title: row['title'] as String? ?? 'Transaction',
+                            subtitle: row['subtitle'] as String? ?? '',
+                            amount: row['amount']?.toString() ?? '0',
+                            status: row['status'] as String? ?? '',
+                            statusColor: (row['status'] == 'SUCCESS')
+                                ? const Color(0xFF2E9A53)
+                                : AvenueColors.onSurfaceVariant,
+                          ),
+                        ),
+                      ),
+              ],
             ),
-            const SizedBox(height: 22),
-            AvenueSectionHeader(
-              title: 'Recent Transactions',
-              actionLabel: 'View All',
-              onActionTap: () {},
-            ),
-            const SizedBox(height: 14),
-            const _TransactionTile(
-              icon: Icons.receipt_long_rounded,
-              iconBackground: Color(0xFFFFE9C2),
-              iconColor: Color(0xFF8F6500),
-              title: 'Maintenance -\nUnit 402',
-              subtitle: 'Today, 10:45 AM',
-              amount: '+\$450.00',
-              status: 'SUCCESS',
-              statusColor: Color(0xFF2E9A53),
-            ),
-            const SizedBox(height: 12),
-            const _TransactionTile(
-              icon: Icons.flash_on_rounded,
-              iconBackground: Color(0xFFE7F0FF),
-              iconColor: AvenueColors.primary,
-              title: 'Utility -\nCommon Area',
-              subtitle: 'Yesterday',
-              amount: '-\$2,120.50',
-              status: 'AUTO-PAID',
-              statusColor: AvenueColors.onSurfaceVariant,
-            ),
-          ],
-        ),
+          );
+        },
       ),
       bottomNavigation: AvenueBottomNavigationBar(
         items: _adminNavItems,
@@ -735,6 +861,8 @@ class ResidentDirectoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final repository = AvenueRepository();
+
     return AvenueScaffold(
       topBar: AvenueTopBar(
         title: 'ResidentDirectory',
@@ -753,94 +881,113 @@ class ResidentDirectoryScreen extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: const Icon(Icons.add_rounded, color: Colors.white, size: 32),
       ),
-      body: _AdminScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const AvenueSearchField(hintText: 'Search by name or unit...'),
-            const SizedBox(height: 16),
-            const SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  _DirectoryFilterChip(label: 'All Residents', selected: true),
-                  SizedBox(width: 10),
-                  _DirectoryFilterChip(label: 'Owners'),
-                  SizedBox(width: 10),
-                  _DirectoryFilterChip(label: 'Tenants'),
-                ],
-              ),
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: repository.fetchResidentDirectory(),
+        builder: (context, snapshot) {
+          final rows = snapshot.data ?? const <Map<String, dynamic>>[];
+          final owners = rows
+              .where((row) => row['resident_kind'] == 'owner')
+              .toList();
+          final tenants = rows
+              .where((row) => row['resident_kind'] == 'tenant')
+              .toList();
+
+          return _AdminScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const AvenueSearchField(hintText: 'Search by name or unit...'),
+                const SizedBox(height: 16),
+                const SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      _DirectoryFilterChip(
+                        label: 'All Residents',
+                        selected: true,
+                      ),
+                      SizedBox(width: 10),
+                      _DirectoryFilterChip(label: 'Owners'),
+                      SizedBox(width: 10),
+                      _DirectoryFilterChip(label: 'Tenants'),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+                _DirectorySectionHeader(
+                  title: 'PROPERTY OWNERS',
+                  count: '${owners.length} Total',
+                  accent: AvenueColors.primary,
+                ),
+                const SizedBox(height: 14),
+                if (rows.isEmpty &&
+                    snapshot.connectionState != ConnectionState.done)
+                  const _AdminDataPlaceholder(label: 'Loading residents...')
+                else
+                  ...owners.map(
+                    (row) => Padding(
+                      padding: const EdgeInsets.only(bottom: 14),
+                      child: _ResidentDirectoryCard(
+                        imageUrl:
+                            row['avatar_url'] as String? ??
+                            _directoryImageForName(
+                              row['full_name'] as String? ?? '',
+                            ),
+                        fallbackLabel: _initialsFromName(
+                          row['full_name'] as String? ?? '',
+                        ),
+                        name: row['full_name'] as String? ?? 'Resident',
+                        unit:
+                            'UNIT ${row['unit_number'] ?? '-'} • ${row['tower'] ?? '-'}',
+                        status: (row['status'] as String? ?? '').toUpperCase(),
+                        statusColor: _statusColor(row['status'] as String?),
+                        actionLabel: 'View Profile',
+                        actionIcon: Icons.mail_rounded,
+                        initialBubble: row['avatar_url'] == null,
+                      ),
+                    ),
+                  ),
+                const SizedBox(height: 24),
+                _DirectorySectionHeader(
+                  title: 'REGISTERED TENANTS',
+                  count: '${tenants.length} Total',
+                  accent: const Color(0xFF8B6500),
+                ),
+                const SizedBox(height: 14),
+                ...tenants.map(
+                  (row) => Padding(
+                    padding: const EdgeInsets.only(bottom: 14),
+                    child: _ResidentDirectoryCard(
+                      imageUrl:
+                          row['avatar_url'] as String? ??
+                          _directoryImageForName(
+                            row['full_name'] as String? ?? '',
+                          ),
+                      fallbackLabel: _initialsFromName(
+                        row['full_name'] as String? ?? '',
+                      ),
+                      name: row['full_name'] as String? ?? 'Resident',
+                      unit:
+                          'UNIT ${row['unit_number'] ?? '-'} • ${row['tower'] ?? '-'}',
+                      status: (row['status'] as String? ?? '').toUpperCase(),
+                      statusColor: _statusColor(row['status'] as String?),
+                      actionLabel: row['status'] == 'expired'
+                          ? 'Renew Notice'
+                          : 'View Lease',
+                      actionIcon: row['status'] == 'expired'
+                          ? Icons.priority_high_rounded
+                          : Icons.description_outlined,
+                      actionColor: row['status'] == 'expired'
+                          ? const Color(0xFFFF7C74)
+                          : AvenueColors.primary,
+                      initialBubble: row['avatar_url'] == null,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 24),
-            const _DirectorySectionHeader(
-              title: 'PROPERTY OWNERS',
-              count: '248 Total',
-              accent: AvenueColors.primary,
-            ),
-            const SizedBox(height: 14),
-            const _ResidentDirectoryCard(
-              imageUrl: _directoryAlexanderUrl,
-              fallbackLabel: 'AS',
-              name: 'Alexander Sterling',
-              unit: 'UNIT 1402 • TOWER A',
-              status: 'ACTIVE',
-              statusColor: Color(0xFF2E9A53),
-              actionLabel: 'View Profile',
-              actionIcon: Icons.mail_rounded,
-            ),
-            const SizedBox(height: 14),
-            const _ResidentDirectoryCard(
-              imageUrl: _directoryElenaUrl,
-              fallbackLabel: 'ER',
-              name: 'Elena Rodriguez',
-              unit: 'UNIT 0805 • TOWER B',
-              status: 'PENDING',
-              statusColor: Color(0xFFE29B00),
-              actionLabel: 'View Profile',
-              actionIcon: Icons.priority_high_rounded,
-            ),
-            const SizedBox(height: 14),
-            const _ResidentDirectoryCard(
-              fallbackLabel: 'MW',
-              name: 'Marcus Wainwright',
-              unit: 'UNIT 2201 • PH',
-              status: 'ACTIVE',
-              statusColor: Color(0xFF2E9A53),
-              actionLabel: 'View Profile',
-              actionIcon: Icons.verified_rounded,
-              initialBubble: true,
-            ),
-            const SizedBox(height: 24),
-            const _DirectorySectionHeader(
-              title: 'REGISTERED TENANTS',
-              count: '112 Total',
-              accent: Color(0xFF8B6500),
-            ),
-            const SizedBox(height: 14),
-            const _ResidentDirectoryCard(
-              imageUrl: _directoryJamesonUrl,
-              fallbackLabel: 'JC',
-              name: 'Jameson Chen',
-              unit: 'UNIT 0411 • TOWER A',
-              status: 'ACTIVE',
-              statusColor: Color(0xFF2E9A53),
-              actionLabel: 'View Lease',
-              actionIcon: Icons.description_outlined,
-            ),
-            const SizedBox(height: 14),
-            const _ResidentDirectoryCard(
-              imageUrl: _directorySarahUrl,
-              fallbackLabel: 'SJ',
-              name: 'Sarah Jenkins',
-              unit: 'UNIT 1109 • TOWER C',
-              status: 'EXPIRED',
-              statusColor: Color(0xFFFF7C74),
-              actionLabel: 'Renew Notice',
-              actionIcon: Icons.priority_high_rounded,
-              actionColor: Color(0xFFFF7C74),
-            ),
-          ],
-        ),
+          );
+        },
       ),
       bottomNavigation: AvenueBottomNavigationBar(
         items: _adminNavItems,
@@ -871,6 +1018,40 @@ class _AdminScrollView extends StatelessWidget {
             child: child,
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _AdminStatCard extends StatelessWidget {
+  const _AdminStatCard({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueCard(
+      radius: 22,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            value,
+            style: Theme.of(
+              context,
+            ).textTheme.displayMedium?.copyWith(fontSize: 24),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: AvenueColors.onSurfaceVariant,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -1406,6 +1587,26 @@ class _DirectorySectionHeader extends StatelessWidget {
         ),
         Text(count, style: Theme.of(context).textTheme.bodySmall),
       ],
+    );
+  }
+}
+
+class _AdminDataPlaceholder extends StatelessWidget {
+  const _AdminDataPlaceholder({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueCard(
+      radius: 22,
+      color: const Color(0xFFF5F6F8),
+      child: Text(
+        label,
+        style: Theme.of(
+          context,
+        ).textTheme.bodyMedium?.copyWith(color: AvenueColors.onSurfaceVariant),
+      ),
     );
   }
 }

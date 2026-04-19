@@ -3,17 +3,10 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import '../../../app/app_page.dart';
+import '../../../core/models/app_user.dart';
+import '../../../core/session/app_session.dart';
+import '../../../core/supabase/avenue_repository.dart';
 import '../../../theme/avenue_theme.dart';
-
-enum _LoginRole {
-  resident('Resident'),
-  guard('Guard'),
-  admin('Admin');
-
-  const _LoginRole(this.label);
-
-  final String label;
-}
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -23,8 +16,14 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  _LoginRole _selectedRole = _LoginRole.resident;
+  final AvenueRepository _repository = AvenueRepository();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  AppRole _selectedRole = AppRole.resident;
   bool _obscurePassword = true;
+  bool _isSubmitting = false;
+  String? _errorMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         icon: Icons.alternate_email_rounded,
                         hintText: 'Email or Phone Number',
                         keyboardType: TextInputType.emailAddress,
+                        controller: _emailController,
                       ),
                       const SizedBox(height: 16),
                       _InputGroup(
@@ -70,6 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         icon: Icons.lock_outline_rounded,
                         hintText: 'Enter Password',
                         obscureText: _obscurePassword,
+                        controller: _passwordController,
                         trailing: IconButton(
                           onPressed: () {
                             setState(() {
@@ -85,6 +86,19 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ),
+                      if (_errorMessage != null) ...[
+                        const SizedBox(height: 14),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Text(
+                            _errorMessage!,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: const Color(0xFFD6453A),
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ],
                       const SizedBox(height: 16),
                       Align(
                         alignment: Alignment.centerRight,
@@ -101,8 +115,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 12),
                       _PrimaryActionButton(
-                        label: 'Login',
-                        onPressed: _handleLogin,
+                        label: _isSubmitting ? 'Signing In...' : 'Login',
+                        onPressed: _isSubmitting ? null : _handleLogin,
                       ),
                       const SizedBox(height: 28),
                       Center(
@@ -175,13 +189,75 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _handleLogin() {
-    final target = switch (_selectedRole) {
-      _LoginRole.admin => AppPage.adminDrawer,
-      _LoginRole.resident || _LoginRole.guard => AppPage.home,
-    };
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
-    Navigator.of(context).pushReplacementNamed(target.routeName);
+  Future<void> _handleLogin() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      setState(() {
+        _errorMessage = 'Enter both email and password to continue.';
+      });
+      return;
+    }
+
+    setState(() {
+      _isSubmitting = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final user = await _repository.authenticate(
+        email: email,
+        password: password,
+        role: _selectedRole,
+      );
+
+      if (!mounted) {
+        return;
+      }
+
+      if (user == null) {
+        setState(() {
+          _errorMessage = 'Login failed. Check your role, email, and password.';
+          _isSubmitting = false;
+        });
+        return;
+      }
+
+      AppSession.instance.setCurrentUser(user);
+
+      final target = switch (user.role) {
+        AppRole.admin => AppPage.adminDrawer,
+        AppRole.guard => AppPage.guardHome,
+        AppRole.resident => AppPage.home,
+      };
+
+      Navigator.of(context).pushReplacementNamed(target.routeName);
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _errorMessage =
+            'Unable to connect to Supabase right now. Please try again.';
+        _isSubmitting = false;
+      });
+      return;
+    }
+
+    if (mounted) {
+      setState(() {
+        _isSubmitting = false;
+      });
+    }
   }
 }
 
@@ -237,8 +313,8 @@ class _RoleSelector extends StatelessWidget {
     required this.onRoleSelected,
   });
 
-  final _LoginRole selectedRole;
-  final ValueChanged<_LoginRole> onRoleSelected;
+  final AppRole selectedRole;
+  final ValueChanged<AppRole> onRoleSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -249,7 +325,7 @@ class _RoleSelector extends StatelessWidget {
         borderRadius: BorderRadius.circular(999),
       ),
       child: Row(
-        children: _LoginRole.values.map((role) {
+        children: AppRole.values.map((role) {
           final isSelected = role == selectedRole;
           return Expanded(
             child: GestureDetector(
@@ -297,6 +373,7 @@ class _InputGroup extends StatelessWidget {
     required this.label,
     required this.icon,
     required this.hintText,
+    required this.controller,
     this.keyboardType,
     this.obscureText = false,
     this.trailing,
@@ -305,6 +382,7 @@ class _InputGroup extends StatelessWidget {
   final String label;
   final IconData icon;
   final String hintText;
+  final TextEditingController controller;
   final TextInputType? keyboardType;
   final bool obscureText;
   final Widget? trailing;
@@ -340,6 +418,7 @@ class _InputGroup extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: TextField(
+                  controller: controller,
                   keyboardType: keyboardType,
                   obscureText: obscureText,
                   style: theme.textTheme.bodyLarge,
@@ -364,7 +443,7 @@ class _PrimaryActionButton extends StatelessWidget {
   const _PrimaryActionButton({required this.label, required this.onPressed});
 
   final String label;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {

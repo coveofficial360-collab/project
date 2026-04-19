@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 
+import '../core/supabase/supabase_bootstrap.dart';
 import '../features/admin/presentation/admin_screens.dart';
-import '../features/resident/presentation/resident_screens.dart';
+import '../features/guard/presentation/guard_screen.dart';
 import '../features/login/presentation/login_screen.dart';
+import '../features/resident/presentation/resident_screens.dart';
+import '../features/system/presentation/supabase_setup_screen.dart';
 import '../theme/avenue_theme.dart';
 import 'app_page.dart';
 
 class AvenueApp extends StatelessWidget {
-  const AvenueApp({super.key});
+  const AvenueApp({required this.supabaseBootstrap, super.key});
+
+  final SupabaseBootstrapResult supabaseBootstrap;
 
   @override
   Widget build(BuildContext context) {
@@ -15,8 +20,20 @@ class AvenueApp extends StatelessWidget {
       title: 'Avenue360',
       debugShowCheckedModeBanner: false,
       theme: AvenueTheme.light(),
-      initialRoute: AppPage.login.routeName,
+      initialRoute: supabaseBootstrap.isReady
+          ? AppPage.login.routeName
+          : SupabaseSetupScreen.routeName,
       onGenerateRoute: (settings) {
+        if (settings.name == SupabaseSetupScreen.routeName) {
+          return PageRouteBuilder<void>(
+            settings: settings,
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+            pageBuilder: (_, _, _) =>
+                SupabaseSetupScreen(bootstrapResult: supabaseBootstrap),
+          );
+        }
+
         final page = AppPage.fromRoute(settings.name) ?? AppPage.login;
 
         return PageRouteBuilder<void>(
@@ -29,6 +46,8 @@ class AvenueApp extends StatelessWidget {
                 return const LoginScreen();
               case AppPage.home:
                 return const HomeScreen();
+              case AppPage.guardHome:
+                return const GuardHomeScreen();
               case AppPage.amenities:
                 return const AmenitiesScreen();
               case AppPage.amenityBooking:

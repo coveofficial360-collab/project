@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/app_page.dart';
+import '../../../core/session/app_session.dart';
+import '../../../core/supabase/avenue_repository.dart';
 import '../../../theme/avenue_theme.dart';
 import '../../common/presentation/avenue_ui.dart';
 
@@ -99,6 +101,116 @@ final _billingNavItems = [
     page: AppPage.profile,
   ),
 ];
+
+String _relativeTimeLabel(dynamic value) {
+  if (value == null) {
+    return 'Now';
+  }
+
+  final parsed = DateTime.tryParse(value.toString());
+  if (parsed == null) {
+    return value.toString();
+  }
+
+  final difference = DateTime.now().difference(parsed.toLocal());
+  if (difference.inMinutes < 60) {
+    return '${difference.inMinutes.clamp(1, 59)} mins ago';
+  }
+  if (difference.inHours < 24) {
+    return '${difference.inHours} hrs ago';
+  }
+  if (difference.inDays == 1) {
+    return 'Yesterday';
+  }
+
+  return '${difference.inDays} days ago';
+}
+
+String _calendarDateLabel(dynamic value) {
+  if (value == null) {
+    return '15 Jun 2025';
+  }
+
+  final parsed = DateTime.tryParse(value.toString());
+  if (parsed == null) {
+    return value.toString();
+  }
+
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+
+  return '${parsed.day.toString().padLeft(2, '0')} ${months[parsed.month - 1]} ${parsed.year}';
+}
+
+class _ResidentHomeData {
+  const _ResidentHomeData({required this.bills, required this.notices});
+
+  final List<Map<String, dynamic>> bills;
+  final List<Map<String, dynamic>> notices;
+
+  static Future<_ResidentHomeData> load(AvenueRepository repository) async {
+    final results = await Future.wait([
+      repository.fetchCurrentUserBills(),
+      repository.fetchNotices(limit: 2),
+    ]);
+
+    return _ResidentHomeData(
+      bills: List<Map<String, dynamic>>.from(results[0] as List),
+      notices: List<Map<String, dynamic>>.from(results[1] as List),
+    );
+  }
+}
+
+class _ResidentProfileData {
+  const _ResidentProfileData({
+    required this.profile,
+    required this.familyMembers,
+    required this.vehicles,
+  });
+
+  final dynamic profile;
+  final List<Map<String, dynamic>> familyMembers;
+  final List<Map<String, dynamic>> vehicles;
+
+  static Future<_ResidentProfileData> load(AvenueRepository repository) async {
+    final results = await Future.wait([
+      repository.fetchCurrentUserProfile(),
+      repository.fetchHouseholdMembers(),
+      repository.fetchVehicles(),
+    ]);
+
+    return _ResidentProfileData(
+      profile: results[0],
+      familyMembers: List<Map<String, dynamic>>.from(results[1] as List),
+      vehicles: List<Map<String, dynamic>>.from(results[2] as List),
+    );
+  }
+}
+
+class _ResidentNotificationsData {
+  const _ResidentNotificationsData(this.rows);
+
+  final List<Map<String, dynamic>> rows;
+
+  static Future<_ResidentNotificationsData> load(
+    AvenueRepository repository,
+  ) async {
+    final rows = await repository.fetchCurrentUserNotifications();
+    return _ResidentNotificationsData(rows);
+  }
+}
 
 class ResidentDrawerScreen extends StatelessWidget {
   const ResidentDrawerScreen({super.key});
@@ -221,6 +333,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = AppSession.instance.currentUser;
+    final repository = AvenueRepository();
+
     return AvenueScaffold(
       topBar: AvenueTopBar(
         title: 'Avenue360',
@@ -254,80 +369,108 @@ class HomeScreen extends StatelessWidget {
             padding: const EdgeInsets.only(right: 18, left: 6),
             child: GestureDetector(
               onTap: () => goToPage(context, AppPage.profile),
-              child: const AvenueNetworkAvatar(
-                imageUrl: _residentAvatarUrl,
+              child: AvenueNetworkAvatar(
+                imageUrl: currentUser?.avatarUrl ?? _residentAvatarUrl,
                 size: 36,
-                fallbackLabel: 'A',
+                fallbackLabel: currentUser?.initials ?? 'A',
               ),
             ),
           ),
         ],
       ),
-      body: _ResidentScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _MaintenanceCard(onPayTap: () => goToPage(context, AppPage.bills)),
-            const SizedBox(height: 20),
-            AvenueSectionHeader(
-              title: 'Bills & recharges',
-              actionLabel: 'Manage',
-              onActionTap: () => goToPage(context, AppPage.bills),
-            ),
-            const SizedBox(height: 16),
-            const _QuickBillsRow(),
-            const SizedBox(height: 20),
-            Row(
+      body: FutureBuilder<_ResidentHomeData>(
+        future: _ResidentHomeData.load(repository),
+        builder: (context, snapshot) {
+          final data = snapshot.data;
+          final bills = data?.bills ?? const <Map<String, dynamic>>[];
+          final notices = data?.notices ?? const <Map<String, dynamic>>[];
+          final maintenanceBill = bills
+              .cast<Map<String, dynamic>?>()
+              .firstWhere(
+                (bill) =>
+                    bill?['category'] == 'maintenance' ||
+                    bill?['title'] == 'Quarterly Maintenance',
+                orElse: () => bills.isNotEmpty ? bills.first : null,
+              );
+
+          return _ResidentScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: _FeatureActionCard(
-                    icon: Icons.group_add_rounded,
-                    iconBackground: const Color(0xFFE8EFFF),
-                    iconColor: AvenueColors.primary,
-                    title: 'Pre-Approve\nVisitor',
-                    onTap: () => goToPage(context, AppPage.visitor),
-                  ),
+                _MaintenanceCard(
+                  onPayTap: () => goToPage(context, AppPage.bills),
+                  amount: maintenanceBill?['amount_due']?.toString() ?? '2200',
+                  dueDate: maintenanceBill?['due_date']?.toString(),
                 ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: _FeatureActionCard(
-                    icon: Icons.campaign_rounded,
-                    iconBackground: const Color(0xFFFFE8E6),
-                    iconColor: const Color(0xFFE04A3F),
-                    title: 'Raise\nComplaint',
-                    onTap: () => goToPage(context, AppPage.complaints),
-                  ),
+                const SizedBox(height: 20),
+                AvenueSectionHeader(
+                  title: 'Bills & recharges',
+                  actionLabel: 'Manage',
+                  onActionTap: () => goToPage(context, AppPage.bills),
                 ),
+                const SizedBox(height: 16),
+                const _QuickBillsRow(),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _FeatureActionCard(
+                        icon: Icons.group_add_rounded,
+                        iconBackground: const Color(0xFFE8EFFF),
+                        iconColor: AvenueColors.primary,
+                        title: 'Pre-Approve\nVisitor',
+                        onTap: () => goToPage(context, AppPage.visitor),
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: _FeatureActionCard(
+                        icon: Icons.campaign_rounded,
+                        iconBackground: const Color(0xFFFFE8E6),
+                        iconColor: const Color(0xFFE04A3F),
+                        title: 'Raise\nComplaint',
+                        onTap: () => goToPage(context, AppPage.complaints),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 26),
+                AvenueSectionHeader(
+                  title: 'Essential Notifications',
+                  actionLabel: 'View All',
+                  onActionTap: () => goToPage(context, AppPage.notifications),
+                ),
+                const SizedBox(height: 14),
+                if (snapshot.connectionState != ConnectionState.done)
+                  const _DataPlaceholderCard(label: 'Loading home data...')
+                else if (notices.isEmpty)
+                  const _DataPlaceholderCard(
+                    label: 'No notifications available right now.',
+                  )
+                else
+                  ...notices.map(
+                    (notice) => Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: _NotificationPreviewTile(
+                        icon: (notice['kind'] == 'urgent')
+                            ? Icons.receipt_long_rounded
+                            : Icons.water_drop_rounded,
+                        iconColor: (notice['kind'] == 'urgent')
+                            ? const Color(0xFFC7483D)
+                            : AvenueColors.onSurface,
+                        iconBackground: (notice['kind'] == 'urgent')
+                            ? const Color(0xFFFFE7E5)
+                            : const Color(0xFFE9EEFF),
+                        title: notice['title'] as String? ?? 'Notice',
+                        subtitle: notice['body'] as String? ?? '',
+                        timeLabel: _relativeTimeLabel(notice['posted_at']),
+                      ),
+                    ),
+                  ),
               ],
             ),
-            const SizedBox(height: 26),
-            AvenueSectionHeader(
-              title: 'Essential Notifications',
-              actionLabel: 'View All',
-              onActionTap: () => goToPage(context, AppPage.notifications),
-            ),
-            const SizedBox(height: 14),
-            const _NotificationPreviewTile(
-              icon: Icons.receipt_long_rounded,
-              iconColor: Color(0xFFC7483D),
-              iconBackground: Color(0xFFFFE7E5),
-              title: 'Elevator Maintenance',
-              subtitle:
-                  'Tower B lifts will be under routine maintenance from 2 PM to 4 PM today.',
-              timeLabel: '2 hrs ago',
-            ),
-            const SizedBox(height: 12),
-            const _NotificationPreviewTile(
-              icon: Icons.water_drop_rounded,
-              iconColor: AvenueColors.onSurface,
-              iconBackground: Color(0xFFE9EEFF),
-              title: 'Water Supply Update',
-              subtitle:
-                  'Scheduled water supply interruption for tank cleaning on Sunday morning.',
-              timeLabel: 'Yesterday',
-            ),
-          ],
-        ),
+          );
+        },
       ),
       bottomNavigation: AvenueBottomNavigationBar(
         items: _residentNavItems,
@@ -1279,6 +1422,8 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final repository = AvenueRepository();
+
     return AvenueScaffold(
       topBar: AvenueTopBar(
         title: 'My Profile',
@@ -1288,241 +1433,289 @@ class ProfileScreen extends StatelessWidget {
           size: 40,
         ),
       ),
-      body: _ResidentScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AvenueCard(
-              radius: 24,
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
-              color: const Color(0xFFEAF0FF),
-              child: Center(
-                child: Column(
-                  children: [
-                    Stack(
-                      alignment: Alignment.bottomRight,
+      body: FutureBuilder<_ResidentProfileData>(
+        future: _ResidentProfileData.load(repository),
+        builder: (context, snapshot) {
+          final data = snapshot.data;
+          final profile = data?.profile;
+          final family = data?.familyMembers ?? const <Map<String, dynamic>>[];
+          final vehicles = data?.vehicles ?? const <Map<String, dynamic>>[];
+
+          return _ResidentScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AvenueCard(
+                  radius: 24,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 26,
+                  ),
+                  color: const Color(0xFFEAF0FF),
+                  child: Center(
+                    child: Column(
                       children: [
-                        const AvenueNetworkAvatar(
-                          imageUrl: _profileAvatarUrl,
-                          size: 96,
-                          borderWidth: 4,
-                          fallbackLabel: 'AS',
+                        Stack(
+                          alignment: Alignment.bottomRight,
+                          children: [
+                            AvenueNetworkAvatar(
+                              imageUrl:
+                                  profile?.avatarUrl ??
+                                  AppSession.instance.currentUser?.avatarUrl ??
+                                  _profileAvatarUrl,
+                              size: 96,
+                              borderWidth: 4,
+                              fallbackLabel:
+                                  profile?.initials ??
+                                  AppSession.instance.currentUser?.initials ??
+                                  'AS',
+                            ),
+                            Container(
+                              width: 28,
+                              height: 28,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: AvenueColors.primaryGradient,
+                              ),
+                              child: const Icon(
+                                Icons.camera_alt_rounded,
+                                size: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
                         ),
-                        Container(
-                          width: 28,
-                          height: 28,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: AvenueColors.primaryGradient,
-                          ),
-                          child: const Icon(
-                            Icons.camera_alt_rounded,
-                            size: 16,
-                            color: Colors.white,
-                          ),
+                        const SizedBox(height: 14),
+                        Text(
+                          profile?.fullName ??
+                              AppSession.instance.currentUser?.fullName ??
+                              'Resident',
+                          style: Theme.of(context).textTheme.headlineMedium
+                              ?.copyWith(fontWeight: FontWeight.w800),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          profile?.subtitle ??
+                              AppSession.instance.currentUser?.subtitle ??
+                              '-',
+                          style: Theme.of(context).textTheme.bodyLarge
+                              ?.copyWith(color: AvenueColors.onSurfaceVariant),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 14),
-                    Text(
-                      'Aditya Sharma',
-                      style: Theme.of(context).textTheme.headlineMedium
-                          ?.copyWith(fontWeight: FontWeight.w800),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Unit B-204',
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: AvenueColors.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 18),
-            AvenueCard(
-              radius: 24,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Personal Info',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(height: 18),
-                  const _ProfileFieldRow(
-                    label: 'FULL NAME',
-                    value: 'Aditya Sharma',
-                  ),
-                  const SizedBox(height: 18),
-                  const _ProfileFieldRow(
-                    label: 'EMAIL ADDRESS',
-                    value: 'aditya.sharma@example.com',
-                  ),
-                  const SizedBox(height: 18),
-                  const _ProfileFieldRow(
-                    label: 'PHONE NUMBER',
-                    value: '+91 98765 43210',
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 18),
-            AvenueCard(
-              radius: 24,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Family Members',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      const Expanded(
-                        child: _FamilyMemberChip(
-                          imageUrl: _priyaAvatarUrl,
-                          name: 'Priya',
-                          relation: 'Spouse',
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      const Expanded(
-                        child: _FamilyMemberChip(
-                          imageUrl: _arjunAvatarUrl,
-                          name: 'Arjun',
-                          relation: 'Son',
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Container(
-                          height: 62,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(18),
-                            border: Border.all(
-                              color: AvenueColors.outlineVariant,
-                              style: BorderStyle.solid,
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              '+  Add Member',
-                              style: Theme.of(context).textTheme.bodyMedium
-                                  ?.copyWith(
-                                    color: AvenueColors.primary,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 18),
-            AvenueCard(
-              radius: 24,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+                const SizedBox(height: 18),
+                AvenueCard(
+                  radius: 24,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Vehicles',
+                        'Personal Info',
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.w800,
                         ),
                       ),
-                      const Spacer(),
-                      const Icon(
-                        Icons.add_rounded,
-                        color: AvenueColors.primary,
+                      const SizedBox(height: 18),
+                      _ProfileFieldRow(
+                        label: 'FULL NAME',
+                        value: profile?.fullName ?? 'Not available',
+                      ),
+                      const SizedBox(height: 18),
+                      _ProfileFieldRow(
+                        label: 'EMAIL ADDRESS',
+                        value: profile?.email ?? 'Not available',
+                      ),
+                      const SizedBox(height: 18),
+                      _ProfileFieldRow(
+                        label: 'PHONE NUMBER',
+                        value: profile?.phone ?? 'Not available',
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
-                  Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: AvenueColors.surfaceLow,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 42,
-                          height: 42,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                          child: const Icon(
-                            Icons.directions_car_filled_outlined,
-                            color: AvenueColors.primary,
-                          ),
+                ),
+                const SizedBox(height: 18),
+                AvenueCard(
+                  radius: 24,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Family Members',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w800,
                         ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'KA 01 MG 1234',
-                                style: Theme.of(context).textTheme.titleMedium
-                                    ?.copyWith(fontWeight: FontWeight.w800),
+                      ),
+                      const SizedBox(height: 16),
+                      if (snapshot.connectionState != ConnectionState.done &&
+                          family.isEmpty)
+                        const _DataPlaceholderCard(label: 'Loading family...')
+                      else
+                        Wrap(
+                          spacing: 10,
+                          runSpacing: 10,
+                          children: [
+                            ...family.map(
+                              (member) => SizedBox(
+                                width: 132,
+                                child: _FamilyMemberChip(
+                                  imageUrl:
+                                      member['avatar_url'] as String? ??
+                                      _priyaAvatarUrl,
+                                  name:
+                                      member['full_name'] as String? ??
+                                      'Member',
+                                  relation: member['relation'] as String? ?? '',
+                                ),
                               ),
-                              const SizedBox(height: 2),
-                              Text(
-                                'White SUV',
-                                style: Theme.of(context).textTheme.bodyMedium
-                                    ?.copyWith(
-                                      color: AvenueColors.onSurfaceVariant,
-                                    ),
+                            ),
+                            Container(
+                              width: 132,
+                              height: 62,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(18),
+                                border: Border.all(
+                                  color: AvenueColors.outlineVariant,
+                                ),
                               ),
-                            ],
-                          ),
+                              child: Center(
+                                child: Text(
+                                  '+  Add Member',
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(
+                                        color: AvenueColors.primary,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        const Icon(
-                          Icons.copy_outlined,
-                          color: AvenueColors.outline,
-                          size: 18,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 22),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: () =>
-                    goToPage(context, AppPage.login, replace: true),
-                icon: const Icon(Icons.logout_rounded),
-                label: const Text('Logout'),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: const Color(0xFFEB4B3D),
-                  side: const BorderSide(color: Color(0xFFEB4B3D)),
-                  shape: const StadiumBorder(),
-                  padding: const EdgeInsets.symmetric(vertical: 18),
-                  textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
+                    ],
                   ),
                 ),
-              ),
+                const SizedBox(height: 18),
+                AvenueCard(
+                  radius: 24,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            'Vehicles',
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(fontWeight: FontWeight.w800),
+                          ),
+                          const Spacer(),
+                          const Icon(
+                            Icons.add_rounded,
+                            color: AvenueColors.primary,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      if (snapshot.connectionState != ConnectionState.done &&
+                          vehicles.isEmpty)
+                        const _DataPlaceholderCard(label: 'Loading vehicle...')
+                      else if (vehicles.isEmpty)
+                        const _DataPlaceholderCard(
+                          label: 'No vehicles added yet.',
+                        )
+                      else
+                        ...vehicles.map(
+                          (vehicle) => Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Container(
+                              padding: const EdgeInsets.all(14),
+                              decoration: BoxDecoration(
+                                color: AvenueColors.surfaceLow,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 42,
+                                    height: 42,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white,
+                                    ),
+                                    child: const Icon(
+                                      Icons.directions_car_filled_outlined,
+                                      color: AvenueColors.primary,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          vehicle['registration_number']
+                                                  as String? ??
+                                              '-',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleMedium
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.w800,
+                                              ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          vehicle['vehicle_name'] as String? ??
+                                              '',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(
+                                                color: AvenueColors
+                                                    .onSurfaceVariant,
+                                              ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const Icon(
+                                    Icons.copy_outlined,
+                                    color: AvenueColors.outline,
+                                    size: 18,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 22),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      AppSession.instance.clear();
+                      goToPage(context, AppPage.login, replace: true);
+                    },
+                    icon: const Icon(Icons.logout_rounded),
+                    label: const Text('Logout'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: const Color(0xFFEB4B3D),
+                      side: const BorderSide(color: Color(0xFFEB4B3D)),
+                      shape: const StadiumBorder(),
+                      padding: const EdgeInsets.symmetric(vertical: 18),
+                      textStyle: Theme.of(context).textTheme.titleMedium
+                          ?.copyWith(fontWeight: FontWeight.w800),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
       bottomNavigation: AvenueBottomNavigationBar(
         items: _residentNavItems,
@@ -1537,6 +1730,8 @@ class NotificationsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final repository = AvenueRepository();
+
     return AvenueScaffold(
       topBar: AvenueTopBar(
         title: 'Notifications',
@@ -1559,64 +1754,92 @@ class NotificationsScreen extends StatelessWidget {
           const SizedBox(width: 8),
         ],
       ),
-      body: _ResidentScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'NEW',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                fontSize: 12,
-                color: AvenueColors.onSurfaceVariant,
-                fontWeight: FontWeight.w800,
-              ),
+      body: FutureBuilder<_ResidentNotificationsData>(
+        future: _ResidentNotificationsData.load(repository),
+        builder: (context, snapshot) {
+          final rows = snapshot.data?.rows ?? const <Map<String, dynamic>>[];
+          final unread = rows.where((row) => row['is_unread'] == true).toList();
+          final earlier = rows
+              .where((row) => row['is_unread'] != true)
+              .toList();
+
+          return _ResidentScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'NEW',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    fontSize: 12,
+                    color: AvenueColors.onSurfaceVariant,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                if (snapshot.connectionState != ConnectionState.done &&
+                    rows.isEmpty)
+                  const _DataPlaceholderCard(label: 'Loading notifications...')
+                else if (unread.isEmpty)
+                  const _DataPlaceholderCard(label: 'No unread notifications.')
+                else
+                  ...unread.map(
+                    (row) => Padding(
+                      padding: const EdgeInsets.only(bottom: 14),
+                      child: _NotificationDetailCard(
+                        icon: (row['kind'] == 'payment')
+                            ? Icons.receipt_long_rounded
+                            : Icons.notifications_active_rounded,
+                        iconBackground: (row['kind'] == 'payment')
+                            ? const Color(0xFFFFE7E5)
+                            : const Color(0xFFFFF0CB),
+                        iconColor: (row['kind'] == 'payment')
+                            ? const Color(0xFFC7483D)
+                            : const Color(0xFF7A5300),
+                        title: row['title'] as String? ?? 'Notification',
+                        body: row['body'] as String?,
+                        time: _relativeTimeLabel(row['created_at']),
+                        unread: true,
+                        actionLabel: row['action_label'] as String?,
+                        label: row['badge_label'] as String?,
+                      ),
+                    ),
+                  ),
+                const SizedBox(height: 24),
+                Text(
+                  'EARLIER',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    fontSize: 12,
+                    color: AvenueColors.onSurfaceVariant,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                if (earlier.isEmpty)
+                  const _DataPlaceholderCard(label: 'No older notifications.')
+                else
+                  ...earlier.map(
+                    (row) => Padding(
+                      padding: const EdgeInsets.only(bottom: 14),
+                      child: _ReadNotificationCard(
+                        title: row['title'] as String? ?? 'Notification',
+                        time: _relativeTimeLabel(row['created_at']),
+                        avatarUrl: row['kind'] == 'visitor'
+                            ? row['image_url'] as String? ?? _guestAvatarUrl
+                            : null,
+                        icon: row['kind'] == 'event'
+                            ? Icons.celebration_rounded
+                            : Icons.notifications_none_rounded,
+                        thumbnailUrl: row['kind'] == 'event'
+                            ? row['image_url'] as String? ??
+                                  _noticesThumbImageUrl
+                            : null,
+                      ),
+                    ),
+                  ),
+              ],
             ),
-            const SizedBox(height: 14),
-            const _NotificationDetailCard(
-              icon: Icons.receipt_long_rounded,
-              iconBackground: Color(0xFFFFE7E5),
-              iconColor: Color(0xFFC7483D),
-              title: 'Maintenance due in 3 days',
-              body: 'Your quarterly maintenance fee of \$450 is due soon.',
-              time: '10 mins ago',
-              unread: true,
-              actionLabel: 'PAY NOW',
-            ),
-            const SizedBox(height: 14),
-            const _NotificationDetailCard(
-              icon: Icons.elevator_rounded,
-              iconBackground: Color(0xFFFFD36B),
-              iconColor: Color(0xFF7A5300),
-              title: 'Elevator maintenance scheduled for Block B tomorrow',
-              body: null,
-              time: '2 hours ago',
-              unread: true,
-              label: 'URGENT',
-            ),
-            const SizedBox(height: 24),
-            Text(
-              'EARLIER',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                fontSize: 12,
-                color: AvenueColors.onSurfaceVariant,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const SizedBox(height: 14),
-            const _ReadNotificationCard(
-              title: 'Guest Arrived: John Doe at Main Gate',
-              time: 'Yesterday, 4:30 PM',
-              avatarUrl: _guestAvatarUrl,
-            ),
-            const SizedBox(height: 14),
-            const _ReadNotificationCard(
-              title: 'Join us for the Annual Rooftop Soirée this Friday!',
-              time: '2 days ago',
-              icon: Icons.celebration_rounded,
-              thumbnailUrl: _noticesThumbImageUrl,
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -1841,12 +2064,20 @@ class _DrawerItem extends StatelessWidget {
 }
 
 class _MaintenanceCard extends StatelessWidget {
-  const _MaintenanceCard({required this.onPayTap});
+  const _MaintenanceCard({
+    required this.onPayTap,
+    this.amount = '2200',
+    this.dueDate,
+  });
 
   final VoidCallback onPayTap;
+  final String amount;
+  final String? dueDate;
 
   @override
   Widget build(BuildContext context) {
+    final displayAmount = amount.startsWith('₹') ? amount : '₹$amount';
+
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
@@ -1873,7 +2104,7 @@ class _MaintenanceCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      '₹2,200',
+                      displayAmount,
                       style: Theme.of(context).textTheme.displayMedium
                           ?.copyWith(color: Colors.white, fontSize: 22),
                     ),
@@ -1901,7 +2132,7 @@ class _MaintenanceCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    '15 Jun 2025',
+                    _calendarDateLabel(dueDate),
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
@@ -1929,6 +2160,25 @@ class _MaintenanceCard extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _DataPlaceholderCard extends StatelessWidget {
+  const _DataPlaceholderCard({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueCard(
+      radius: 18,
+      child: Text(
+        label,
+        style: Theme.of(
+          context,
+        ).textTheme.bodyMedium?.copyWith(color: AvenueColors.onSurfaceVariant),
       ),
     );
   }
