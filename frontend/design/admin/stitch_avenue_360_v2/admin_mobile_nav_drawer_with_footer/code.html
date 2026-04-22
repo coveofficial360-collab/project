@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Avenue360 Admin Portal</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+          tailwind.config = {
+            darkMode: "class",
+            theme: {
+              extend: {
+                "colors": {
+                        "surface-container-low": "#f3f4f5",
+                        "primary-container": "#1a73e8",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#adc7ff",
+                        "primary-fixed-dim": "#adc7ff",
+                        "surface": "#f8f9fa",
+                        "secondary-fixed-dim": "#ffba43",
+                        "on-background": "#191c1d",
+                        "inverse-surface": "#2e3132",
+                        "tertiary-fixed-dim": "#ffb691",
+                        "tertiary": "#9e4300",
+                        "on-primary-container": "#ffffff",
+                        "surface-tint": "#005bc0",
+                        "surface-dim": "#d9dadb",
+                        "on-primary-fixed-variant": "#004493",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#d8e2ff",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#191c1d",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-container": "#0e0200",
+                        "on-secondary-container": "#694600",
+                        "tertiary-fixed": "#ffdbcb",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-primary-fixed": "#001a41",
+                        "outline": "#727785",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "on-surface-variant": "#414754",
+                        "on-error": "#ffffff",
+                        "secondary-fixed": "#ffddaf",
+                        "primary": "#005bbf",
+                        "on-tertiary-fixed": "#341100",
+                        "secondary-container": "#fdaf0b",
+                        "error": "#ba1a1a",
+                        "surface-container": "#edeeef",
+                        "surface-bright": "#f8f9fa",
+                        "on-secondary-fixed-variant": "#614000",
+                        "surface-container-high": "#e7e8e9",
+                        "tertiary-container": "#c55500",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-variant": "#e1e3e4",
+                        "secondary": "#805600",
+                        "error-container": "#ffdad6",
+                        "outline-variant": "#c1c6d6",
+                        "on-secondary-fixed": "#281800",
+                        "background": "#f8f9fa"
+                },
+                "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                },
+                "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                }
+              },
+            },
+          }
+        </script>
+<style>
+            .material-symbols-outlined {
+                font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            }
+            body { font-family: 'Inter', sans-serif; }
+            h1, h2, h3, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+            
+            /* Mobile Drawer Toggle State */
+            #mobile-drawer {
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            #mobile-drawer.closed {
+                transform: translateX(-100%);
+            }
+            #mobile-overlay.hidden {
+                display: none;
+            }
+        </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- START Mobile Overlay -->
+<div class="fixed inset-0 bg-black/40 z-40 hidden lg:hidden" id="mobile-overlay" onclick="toggleDrawer()"></div>
+<!-- END Mobile Overlay -->
+<div class="flex min-h-[884px]" data-stitch-vh="min-h-[884px]===min-h-screen">
+<!-- START NavigationDrawer Shell -->
+<aside class="fixed inset-y-0 left-0 z-50 flex flex-col w-80 max-w-[85vw] bg-white dark:bg-slate-900 border-r border-outline-variant lg:relative lg:translate-x-0 lg:w-72 lg:max-w-none closed" id="mobile-drawer">
+<!-- Brand Logo Area -->
+<div class="px-6 py-8 flex items-center justify-between">
+<span class="text-xl font-bold tracking-tight text-primary dark:text-blue-400 font-headline">Avenue360</span>
+<button class="lg:hidden p-2 -mr-2 text-on-surface-variant hover:bg-surface-container rounded-full" onclick="toggleDrawer()">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Profile Header - Mobile Optimized -->
+<div class="px-4 mb-6">
+<div class="flex items-center gap-4 p-4 rounded-2xl bg-surface-container-low border border-outline-variant/30">
+<img alt="Estate Manager Profile Picture" class="w-14 h-14 rounded-full object-cover shadow-sm ring-2 ring-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZdFL4zMKpNZY3_fSbha5C3gXuInFJaXecNCbr8iBFFz3_w2bT1u7sKXRKA_mGeEYUQRsvR6eYozhpVULtvbYT9UoajJMm5eOURoEbprw28WXIA5zbhb5Ox0YHGWo9VHVwLVgRHuFVLggQJLb9hR6m_XYNdwFDr9tpKVicHa-zB3dRt8pemssN2VpGkDJUE_Wkh91T9sEPQPUAyMjsHT_EyPel3i6My0wSuuSYWr8hb2rsuudulKvCjbBKLoNIPvgf9YXQ-CcHEEQ"/>
+<div class="flex flex-col min-w-0">
+<span class="font-headline font-bold tracking-tight text-on-surface truncate">Marcus Sterling</span>
+<span class="text-xs font-medium text-on-surface-variant truncate">Estate Manager</span>
+<div class="mt-1.5">
+<span class="inline-flex items-center px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary rounded-full">Admin Access</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="flex-1 space-y-1 px-4 overflow-y-auto">
+<!-- Dashboard (Active) -->
+<a class="flex items-center gap-4 px-4 py-4 bg-primary text-white rounded-xl font-bold shadow-md shadow-primary/20 active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-headline font-semibold tracking-tight">Dashboard</span>
+</a>
+<!-- Residents -->
+<a class="flex items-center gap-4 px-4 py-4 text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-xl transition-all active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-headline font-medium tracking-tight">Residents</span>
+</a>
+<!-- Finance -->
+<a class="flex items-center gap-4 px-4 py-4 text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-xl transition-all active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-headline font-medium tracking-tight">Finance</span>
+</a>
+<!-- Amenities -->
+<a class="flex items-center gap-4 px-4 py-4 text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-xl transition-all active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="apartment">apartment</span>
+<span class="font-headline font-medium tracking-tight">Amenities</span>
+</a>
+<!-- Settings -->
+<a class="flex items-center gap-4 px-4 py-4 text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-xl transition-all active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-headline font-medium tracking-tight">Settings</span>
+</a>
+</nav>
+<!-- Bottom Section -->
+<div class="p-4 mt-auto mb-20 lg:mb-0">
+<div class="bg-gradient-to-br from-primary to-primary-container rounded-2xl p-5 text-white overflow-hidden relative group cursor-pointer shadow-lg shadow-primary/10">
+<div class="relative z-10">
+<p class="text-[10px] font-bold uppercase tracking-[0.15em] opacity-80 mb-1">Support</p>
+<p class="font-headline font-bold leading-tight text-sm">Need help with the portal?</p>
+<button class="mt-4 w-full py-2.5 text-xs font-bold bg-white text-primary rounded-xl shadow-md active:scale-95 transition-transform">Contact Support</button>
+</div>
+<!-- Decorative Circle -->
+<div class="absolute -bottom-4 -right-4 w-20 h-20 bg-white/10 rounded-full blur-2xl"></div>
+</div>
+</div>
+</aside>
+<!-- END NavigationDrawer Shell -->
+<!-- Main Content Canvas -->
+<main class="flex-1 min-h-[884px] bg-surface pb-24 lg:pb-0" data-stitch-vh="min-h-[884px]===min-h-screen">
+<!-- Mobile Sticky Header -->
+<header class="sticky top-0 z-30 lg:hidden flex items-center justify-between bg-surface/80 backdrop-blur-md px-4 py-3 border-b border-outline-variant">
+<button class="p-2 text-on-surface hover:bg-surface-container rounded-full" onclick="toggleDrawer()">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<span class="text-lg font-bold font-headline text-primary">Avenue360</span>
+<div class="w-10 h-10 rounded-full overflow-hidden">
+<img alt="Marcus" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZdFL4zMKpNZY3_fSbha5C3gXuInFJaXecNCbr8iBFFz3_w2bT1u7sKXRKA_mGeEYUQRsvR6eYozhpVULtvbYT9UoajJMm5eOURoEbprw28WXIA5zbhb5Ox0YHGWo9VHVwLVgRHuFVLggQJLb9hR6m_XYNdwFDr9tpKVicHa-zB3dRt8pemssN2VpGkDJUE_Wkh91T9sEPQPUAyMjsHT_EyPel3i6My0wSuuSYWr8hb2rsuudulKvCjbBKLoNIPvgf9YXQ-CcHEEQ"/>
+</div>
+</header>
+<div class="p-6 lg:p-10 max-w-7xl mx-auto">
+<!-- Header Section -->
+<header class="mb-8 flex flex-col gap-4">
+<div>
+<h1 class="text-4xl font-headline font-extrabold tracking-tight text-on-surface mb-2">Portfolio Overview</h1>
+<p class="text-on-surface-variant max-w-lg">Welcome back, Marcus. Here is what is happening across Avenue360 today.</p>
+</div>
+<div class="flex flex-col gap-4">
+<button class="w-full px-6 py-4 rounded-full border border-primary font-bold text-primary hover:bg-surface-container-low transition-colors text-center text-lg">Generate Report</button>
+<button class="w-full px-6 py-4 rounded-full bg-primary text-white font-bold shadow-lg shadow-primary/20 active:scale-95 transition-transform text-center text-lg">New Announcement</button>
+</div>
+</header>
+<!-- Featured Cards Section -->
+<div class="flex flex-col gap-4 mb-8">
+<!-- Sky Pool Card -->
+<div class="h-64 rounded-3xl relative overflow-hidden group cursor-pointer shadow-md">
+<img alt="Luxury Pool" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHlXE471JI_rxZOvC-VmnlfysBPnbXMlcwpL3qlC33A7y6t2-Z17iCgzu9XS4e_ButnElRXH_7ymGivr_qrHoAX-jEo5VQXwUoEFYcKDrZZGHcXQ5jGz0E2MolSAyKmb53nkJGrgXDpWicN698nKfOrplGHwdmknl-lcJ8S-NPwY8x7ETFqRSu7knUjqeZr5uiil_8mJ_A_egnSnGrK0wy3fLo8lyNxZFuNKNgnNQwpIqNjIIgEU4roRdghHGvhbCF33VUIBoTM0U"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute bottom-6 left-6">
+<span class="px-3 py-1 bg-emerald-400 text-on-surface text-[11px] font-bold rounded-full mb-2 inline-block uppercase">Open</span>
+<h4 class="text-white font-headline font-bold text-2xl">The Sky Pool</h4>
+</div>
+</div>
+<!-- Zenith Gym Card -->
+<div class="h-64 rounded-3xl relative overflow-hidden group cursor-pointer shadow-md">
+<img alt="Fitness Center" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPGVX3nOn0x2e0r2yIycLDNQbb5onHNIbrf5aIn0G0Gl_HeczTENjKauCTB5z5IjvHgPwpVzBB99LxOu1FUNBn_XhTXMmemtWX5tCh5m_Zfj0IAyjlKImoHMqn5qCxwmjUEyHbLEakkQ1SEKAVbTM7RH9ESMTnR7ykayoGJGGPmWmgiGFXyAZkgmsPiygzZYih661UnuQbFYgA9WbTz-UNVIopAyMucFDLZ0KPQKDCkwf-Jh_iVVzCjFrcwqGcmKgS1fkJApO-a4Q"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute bottom-6 left-6">
+<span class="px-3 py-1 bg-emerald-400 text-on-surface text-[11px] font-bold rounded-full mb-2 inline-block uppercase">Active</span>
+<h4 class="text-white font-headline font-bold text-2xl">Zenith Gym</h4>
+</div>
+</div>
+<!-- Manage Amenities Card -->
+<div class="h-56 bg-surface-container rounded-3xl p-6 flex flex-col justify-center items-center text-center border border-outline-variant/30">
+<div class="w-12 h-12 rounded-full bg-on-surface/10 flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-2xl text-on-surface font-bold">add</span>
+</div>
+<p class="font-headline font-bold text-xl text-on-surface mb-1">Manage Amenities</p>
+<p class="text-sm text-on-surface-variant">Update schedules &amp; bookings</p>
+</div>
+</div>
+<!-- Recent Transactions -->
+<section class="mt-8">
+<div class="flex justify-between items-end mb-6">
+<h3 class="text-3xl font-headline font-bold">Recent Transactions</h3>
+<a class="text-lg font-bold text-primary" href="#">View All</a>
+</div>
+<div class="space-y-4">
+<!-- Transaction 1 -->
+<div class="flex items-center justify-between p-6 bg-white border border-outline-variant/30 rounded-3xl">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 bg-secondary-fixed/30 rounded-full flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-3xl">receipt_long</span>
+</div>
+<div>
+<p class="text-xl font-bold text-on-surface">Maintenance - Unit 402</p>
+<p class="text-sm text-on-surface-variant">Today, 10:45 AM</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xl font-bold text-on-surface">+$450.00</p>
+<p class="text-[11px] font-bold uppercase text-emerald-600 tracking-wider">Success</p>
+</div>
+</div>
+<!-- Transaction 2 -->
+<div class="flex items-center justify-between p-6 bg-white border border-outline-variant/30 rounded-3xl">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">electric_bolt</span>
+</div>
+<div>
+<p class="text-xl font-bold text-on-surface">Utility - Common Area</p>
+<p class="text-sm text-on-surface-variant">Yesterday</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xl font-bold text-on-surface">-$2,120.50</p>
+<p class="text-[11px] font-bold uppercase text-on-surface-variant tracking-wider">Auto-Paid</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
+<!-- START Bottom Navigation Bar -->
+<nav class="lg:hidden fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg rounded-t-3xl shadow-[0_-8px_30px_rgb(0,0,0,0.04)] border-t border-outline-variant/20">
+<!-- Home (Active) -->
+<a class="flex flex-col items-center justify-center bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full px-5 py-2 transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined text-2xl">home</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide uppercase mt-0.5">Home</span>
+</a>
+<!-- Notify -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:text-blue-500 transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined text-2xl">campaign</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide uppercase mt-0.5">Notify</span>
+</a>
+<!-- Residents -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:text-blue-500 transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined text-2xl">group</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide uppercase mt-0.5">Residents</span>
+</a>
+<!-- Finance -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:text-blue-500 transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined text-2xl">payments</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide uppercase mt-0.5">Finance</span>
+</a>
+</nav>
+<!-- END Bottom Navigation Bar -->
+<script>
+        function toggleDrawer() {
+            const drawer = document.getElementById('mobile-drawer');
+            const overlay = document.getElementById('mobile-overlay');
+            
+            if (drawer.classList.contains('closed')) {
+                drawer.classList.remove('closed');
+                overlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            } else {
+                drawer.classList.add('closed');
+                overlay.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
+    </script>
+</body></html>

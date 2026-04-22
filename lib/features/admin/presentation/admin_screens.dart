@@ -90,6 +90,60 @@ Color _statusColor(String? status) {
   }
 }
 
+Color _announcementKindColor(String? kind) {
+  switch (kind) {
+    case 'urgent':
+      return AvenueColors.primary;
+    case 'event':
+      return const Color(0xFFAA7A00);
+    default:
+      return AvenueColors.onSurfaceVariant;
+  }
+}
+
+String _announcementTimestampLabel(dynamic value) {
+  if (value == null) {
+    return '-';
+  }
+
+  final parsed = DateTime.tryParse(value.toString());
+  if (parsed == null) {
+    return value.toString();
+  }
+
+  final difference = DateTime.now().difference(parsed.toLocal());
+  if (difference.inMinutes < 60) {
+    return '${difference.inMinutes.clamp(1, 59)} minutes ago';
+  }
+  if (difference.inHours < 24) {
+    return '${difference.inHours} hours ago';
+  }
+  if (difference.inDays == 1) {
+    return 'Yesterday';
+  }
+
+  return '${difference.inDays} days ago';
+}
+
+InputDecoration _adminSheetInputDecoration(
+  BuildContext context, {
+  required String hintText,
+}) {
+  return InputDecoration(
+    filled: true,
+    fillColor: AvenueColors.surfaceHigh,
+    hintText: hintText,
+    hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+      color: AvenueColors.outline.withValues(alpha: 0.72),
+    ),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(16),
+      borderSide: BorderSide.none,
+    ),
+    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+  );
+}
+
 class _AdminDashboardData {
   const _AdminDashboardData({
     required this.metrics,
@@ -112,6 +166,135 @@ class _AdminDashboardData {
   }
 }
 
+class _AnnouncementsData {
+  const _AnnouncementsData(this.rows);
+
+  final List<Map<String, dynamic>> rows;
+
+  static Future<_AnnouncementsData> load(AvenueRepository repository) async {
+    final rows = await repository.fetchAnnouncements();
+    return _AnnouncementsData(rows);
+  }
+}
+
+class AdminDrawerScreen extends StatelessWidget {
+  const AdminDrawerScreen({super.key, this.currentPage = AppPage.adminDrawer});
+
+  final AppPage currentPage;
+
+  @override
+  Widget build(BuildContext context) {
+    final currentUser = AppSession.instance.currentUser;
+
+    return AvenueScaffold(
+      backgroundColor: const Color(0xFFB8B8B8),
+      body: SafeArea(
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Container(
+            width: 310,
+            height: double.infinity,
+            padding: const EdgeInsets.fromLTRB(20, 28, 20, 24),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(34),
+                bottomRight: Radius.circular(34),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AvenueNetworkAvatar(
+                  imageUrl: currentUser?.avatarUrl ?? _adminAvatarUrl,
+                  size: 64,
+                  fallbackLabel: currentUser?.initials ?? 'M',
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  currentUser?.fullName ?? 'Marcus Sterling',
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  currentUser?.subtitle ?? 'Estate Manager',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: AvenueColors.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const AvenuePill(
+                  label: 'ADMIN ACCESS',
+                  backgroundColor: Color(0x1A155EEF),
+                  foregroundColor: AvenueColors.primary,
+                ),
+                const SizedBox(height: 28),
+                _AdminDrawerItem(
+                  label: 'Dashboard',
+                  icon: Icons.dashboard_customize_rounded,
+                  selected: currentPage == AppPage.adminDrawer,
+                  onTap: () =>
+                      goToPage(context, AppPage.adminDrawer, replace: true),
+                ),
+                const SizedBox(height: 8),
+                _AdminDrawerItem(
+                  label: 'Announcements',
+                  icon: Icons.campaign_outlined,
+                  selected: currentPage == AppPage.announcementsManagement,
+                  onTap: () => goToPage(
+                    context,
+                    AppPage.announcementsManagement,
+                    replace: true,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                _AdminDrawerItem(
+                  label: 'Residents',
+                  icon: Icons.group_outlined,
+                  selected: currentPage == AppPage.residentDirectory,
+                  onTap: () => goToPage(
+                    context,
+                    AppPage.residentDirectory,
+                    replace: true,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                _AdminDrawerItem(
+                  label: 'Reports',
+                  icon: Icons.analytics_outlined,
+                  selected: currentPage == AppPage.generateReports,
+                  onTap: () =>
+                      goToPage(context, AppPage.generateReports, replace: true),
+                ),
+                const Spacer(),
+                TextButton.icon(
+                  onPressed: () {
+                    AppSession.instance.clear();
+                    goToPage(context, AppPage.login, replace: true);
+                  },
+                  icon: const Icon(
+                    Icons.logout_rounded,
+                    color: Color(0xFFD32F2F),
+                  ),
+                  label: Text(
+                    'Logout',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: const Color(0xFFD32F2F),
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class AdminDashboardScreen extends StatelessWidget {
   const AdminDashboardScreen({super.key});
 
@@ -123,7 +306,13 @@ class AdminDashboardScreen extends StatelessWidget {
     return AvenueScaffold(
       topBar: AvenueTopBar(
         title: 'Avenue360',
-        leading: AvenueIconButton(icon: Icons.menu_rounded, onPressed: () {}),
+        leading: AvenueIconButton(
+          icon: Icons.menu_rounded,
+          onPressed: () => Navigator.of(context).pushNamed(
+            AppPage.adminMenu.routeName,
+            arguments: AppPage.adminDrawer,
+          ),
+        ),
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 18),
@@ -506,17 +695,47 @@ class GenerateReportsScreen extends StatelessWidget {
   }
 }
 
-class AnnouncementsManagementScreen extends StatelessWidget {
+class AnnouncementsManagementScreen extends StatefulWidget {
   const AnnouncementsManagementScreen({super.key});
+
+  @override
+  State<AnnouncementsManagementScreen> createState() =>
+      _AnnouncementsManagementScreenState();
+}
+
+class _AnnouncementsManagementScreenState
+    extends State<AnnouncementsManagementScreen> {
+  final AvenueRepository _repository = AvenueRepository();
+  late Future<_AnnouncementsData> _announcementsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _announcementsFuture = _AnnouncementsData.load(_repository);
+  }
 
   @override
   Widget build(BuildContext context) {
     return AvenueScaffold(
       topBar: AvenueTopBar(
         title: 'Announcements',
-        leading: AvenueIconButton(icon: Icons.menu_rounded, onPressed: () {}),
-        actions: const [
-          Padding(
+        leading: AvenueIconButton(
+          icon: Icons.menu_rounded,
+          onPressed: () => Navigator.of(context).pushNamed(
+            AppPage.adminMenu.routeName,
+            arguments: AppPage.announcementsManagement,
+          ),
+        ),
+        actions: [
+          AvenueIconButton(
+            icon: Icons.refresh_rounded,
+            onPressed: () {
+              setState(() {
+                _announcementsFuture = _AnnouncementsData.load(_repository);
+              });
+            },
+          ),
+          const Padding(
             padding: EdgeInsets.only(right: 18),
             child: AvenueNetworkAvatar(
               imageUrl: _adminAvatarUrl,
@@ -527,96 +746,99 @@ class AnnouncementsManagementScreen extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: _showCreateAnnouncementSheet,
         backgroundColor: AvenueColors.primary,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: const Icon(Icons.add_rounded, color: Colors.white, size: 32),
       ),
-      body: _AdminScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Row(
+      body: FutureBuilder<_AnnouncementsData>(
+        future: _announcementsFuture,
+        builder: (context, snapshot) {
+          final announcements =
+              snapshot.data?.rows ?? const <Map<String, dynamic>>[];
+
+          return _AdminScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: _AnnouncementTab(
-                    label: 'Sent Notices',
-                    selected: true,
+                const Row(
+                  children: [
+                    Expanded(
+                      child: _AnnouncementTab(
+                        label: 'Sent Notices',
+                        selected: true,
+                      ),
+                    ),
+                    Expanded(child: _AnnouncementTab(label: 'Scheduled')),
+                    Expanded(child: _AnnouncementTab(label: 'Drafts')),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Text(
+                      'RECENT HISTORY',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const Spacer(),
+                    Text(
+                      'Showing last 30 days',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                if (snapshot.connectionState != ConnectionState.done &&
+                    announcements.isEmpty)
+                  const _AdminDataPlaceholder(
+                    label: 'Loading announcement history...',
+                  )
+                else
+                  ...announcements.map(
+                    (row) => Padding(
+                      padding: const EdgeInsets.only(bottom: 14),
+                      child: _AnnouncementHistoryCard(
+                        category: (row['kind'] as String? ?? 'general')
+                            .toUpperCase(),
+                        categoryColor: _announcementKindColor(
+                          row['kind'] as String?,
+                        ),
+                        timestamp: _announcementTimestampLabel(
+                          row['created_at'],
+                        ),
+                        title: row['title'] as String? ?? 'Announcement',
+                        body: row['body'] as String? ?? '',
+                        metaOne:
+                            '${row['reads_count']?.toString() ?? '0'} Reads',
+                        metaTwo:
+                            row['target_audience'] as String? ?? 'Residents',
+                      ),
+                    ),
+                  ),
+                const SizedBox(height: 22),
+                Center(
+                  child: TextButton.icon(
+                    onPressed: () {},
+                    icon: Text(
+                      'Load More History',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AvenueColors.primary,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    label: const Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: AvenueColors.primary,
+                    ),
                   ),
                 ),
-                Expanded(child: _AnnouncementTab(label: 'Scheduled')),
-                Expanded(child: _AnnouncementTab(label: 'Drafts')),
               ],
             ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Text(
-                  'RECENT HISTORY',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const Spacer(),
-                Text(
-                  'Showing last 30 days',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              ],
-            ),
-            const SizedBox(height: 14),
-            const _AnnouncementHistoryCard(
-              category: 'URGENT',
-              categoryColor: AvenueColors.primary,
-              timestamp: '2 hours ago',
-              title: 'Water Supply Interruption - Block B',
-              body:
-                  'Emergency repairs are being carried out on the main line. Water supply will be unavailable from 2:00 PM to 5:00 PM today...',
-              metaOne: '412 Reads',
-              metaTwo: 'Residents, Owners',
-            ),
-            const SizedBox(height: 14),
-            const _AnnouncementHistoryCard(
-              category: 'GENERAL',
-              categoryColor: AvenueColors.onSurfaceVariant,
-              timestamp: 'Yesterday, 10:15 AM',
-              title: 'New Waste Disposal Guidelines',
-              body:
-                  'To improve our community recycling efforts, we have updated the disposal schedule for different types of household waste...',
-              metaOne: '385 Reads',
-              metaTwo: 'All Residents',
-            ),
-            const SizedBox(height: 14),
-            const _AnnouncementHistoryCard(
-              category: 'EVENT',
-              categoryColor: Color(0xFFAA7A00),
-              timestamp: 'Oct 24, 2024',
-              title: 'Annual Garden Tea Party',
-              body:
-                  'Join us for an afternoon of community bonding at the North Pavilion. Refreshments will be served and kids\' activities planned...',
-              metaOne: '290 Reads',
-              metaTwo: 'All Residents',
-            ),
-            const SizedBox(height: 22),
-            Center(
-              child: TextButton.icon(
-                onPressed: () {},
-                icon: Text(
-                  'Load More History',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AvenueColors.primary,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                label: const Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  color: AvenueColors.primary,
-                ),
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
       bottomNavigation: AvenueBottomNavigationBar(
         items: _adminNavItems,
@@ -624,10 +846,232 @@ class AnnouncementsManagementScreen extends StatelessWidget {
       ),
     );
   }
+
+  Future<void> _showCreateAnnouncementSheet() async {
+    final titleController = TextEditingController();
+    final bodyController = TextEditingController();
+    final audienceController = TextEditingController(text: 'All Residents');
+    String selectedKind = 'general';
+    bool isSubmitting = false;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 32,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+              ),
+              child: AvenueCard(
+                radius: 28,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'New Announcement',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: titleController,
+                      decoration: _adminSheetInputDecoration(
+                        context,
+                        hintText: 'Announcement title',
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: bodyController,
+                      maxLines: 4,
+                      decoration: _adminSheetInputDecoration(
+                        context,
+                        hintText: 'Announcement body',
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: audienceController,
+                      decoration: _adminSheetInputDecoration(
+                        context,
+                        hintText: 'Target audience',
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        _AdminKindChip(
+                          label: 'General',
+                          selected: selectedKind == 'general',
+                          onTap: () {
+                            setModalState(() {
+                              selectedKind = 'general';
+                            });
+                          },
+                        ),
+                        _AdminKindChip(
+                          label: 'Urgent',
+                          selected: selectedKind == 'urgent',
+                          onTap: () {
+                            setModalState(() {
+                              selectedKind = 'urgent';
+                            });
+                          },
+                        ),
+                        _AdminKindChip(
+                          label: 'Event',
+                          selected: selectedKind == 'event',
+                          onTap: () {
+                            setModalState(() {
+                              selectedKind = 'event';
+                            });
+                          },
+                        ),
+                        _AdminKindChip(
+                          label: 'Facility',
+                          selected: selectedKind == 'facility',
+                          onTap: () {
+                            setModalState(() {
+                              selectedKind = 'facility';
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 18),
+                    AvenuePrimaryButton(
+                      label: isSubmitting ? 'Publishing...' : 'Publish',
+                      onPressed: () async {
+                        if (isSubmitting) {
+                          return;
+                        }
+
+                        final title = titleController.text.trim();
+                        final body = bodyController.text.trim();
+                        final audience = audienceController.text.trim();
+                        if (title.isEmpty || body.isEmpty || audience.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Enter title, body, and target audience.',
+                              ),
+                            ),
+                          );
+                          return;
+                        }
+
+                        setModalState(() {
+                          isSubmitting = true;
+                        });
+
+                        final messenger = ScaffoldMessenger.of(this.context);
+                        Map<String, dynamic>? result;
+                        String? errorMessage;
+                        try {
+                          result = await _repository.createAnnouncement(
+                            kind: selectedKind,
+                            title: title,
+                            body: body,
+                            targetAudience: audience,
+                          );
+                        } catch (error) {
+                          result = null;
+                          errorMessage = error.toString();
+                        }
+
+                        if (!mounted || !sheetContext.mounted) {
+                          return;
+                        }
+
+                        Navigator.of(sheetContext).pop();
+                        if (result != null) {
+                          final announcementId = result['announcement_id']
+                              ?.toString();
+                          var successMessage = 'Announcement published.';
+
+                          if (announcementId != null &&
+                              announcementId.isNotEmpty) {
+                            try {
+                              await _repository.sendAnnouncementPush(
+                                announcementId: announcementId,
+                              );
+                            } catch (_) {
+                              successMessage =
+                                  'Announcement published. Push delivery is not configured yet.';
+                            }
+                          }
+
+                          setState(() {
+                            _announcementsFuture = _AnnouncementsData.load(
+                              _repository,
+                            );
+                          });
+                          messenger.showSnackBar(
+                            SnackBar(content: Text(successMessage)),
+                          );
+                        } else {
+                          messenger.showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                errorMessage ??
+                                    'Could not publish announcement.',
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 }
 
-class AddResidentScreen extends StatelessWidget {
+class AddResidentScreen extends StatefulWidget {
   const AddResidentScreen({super.key});
+
+  @override
+  State<AddResidentScreen> createState() => _AddResidentScreenState();
+}
+
+class _AddResidentScreenState extends State<AddResidentScreen> {
+  static const String _temporaryPassword = 'welcome123';
+
+  final AvenueRepository _repository = AvenueRepository();
+  final TextEditingController _fullNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _unitController = TextEditingController();
+  final TextEditingController _moveInDateController = TextEditingController();
+
+  String _residentKind = 'owner';
+  DateTime? _moveInDate;
+  bool _isSubmitting = false;
+
+  @override
+  void dispose() {
+    _fullNameController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _unitController.dispose();
+    _moveInDateController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -687,22 +1131,27 @@ class AddResidentScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 14),
-                  const AvenueInputField(
+                  AvenueInputField(
                     label: 'FULL NAME',
                     hintText: 'e.g. Jonathan Doe',
                     icon: Icons.person_rounded,
+                    controller: _fullNameController,
                   ),
                   const SizedBox(height: 14),
-                  const AvenueInputField(
+                  AvenueInputField(
                     label: 'EMAIL ADDRESS',
                     hintText: 'j.doe@example.com',
                     icon: Icons.mail_outline_rounded,
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
                   ),
                   const SizedBox(height: 14),
-                  const AvenueInputField(
+                  AvenueInputField(
                     label: 'PHONE NUMBER',
                     hintText: '+1 (555) 000-0000',
                     icon: Icons.call_rounded,
+                    controller: _phoneController,
+                    keyboardType: TextInputType.phone,
                   ),
                   const SizedBox(height: 18),
                   Text(
@@ -712,10 +1161,11 @@ class AddResidentScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 14),
-                  const AvenueInputField(
+                  AvenueInputField(
                     label: 'UNIT NUMBER',
                     hintText: 'e.g. B-204',
                     icon: Icons.apartment_rounded,
+                    controller: _unitController,
                   ),
                   const SizedBox(height: 14),
                   Text(
@@ -731,24 +1181,43 @@ class AddResidentScreen extends StatelessWidget {
                       color: AvenueColors.surfaceHigh,
                       borderRadius: BorderRadius.circular(18),
                     ),
-                    child: const Row(
+                    child: Row(
                       children: [
                         Expanded(
                           child: _ResidentTypeChip(
                             label: 'Owner',
-                            selected: true,
+                            selected: _residentKind == 'owner',
+                            onTap: () =>
+                                setState(() => _residentKind = 'owner'),
                           ),
                         ),
-                        Expanded(child: _ResidentTypeChip(label: 'Tenant')),
-                        Expanded(child: _ResidentTypeChip(label: 'Family')),
+                        Expanded(
+                          child: _ResidentTypeChip(
+                            label: 'Tenant',
+                            selected: _residentKind == 'tenant',
+                            onTap: () =>
+                                setState(() => _residentKind = 'tenant'),
+                          ),
+                        ),
+                        Expanded(
+                          child: _ResidentTypeChip(
+                            label: 'Family',
+                            selected: _residentKind == 'family',
+                            onTap: () =>
+                                setState(() => _residentKind = 'family'),
+                          ),
+                        ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 14),
-                  const AvenueInputField(
+                  AvenueInputField(
                     label: 'MOVE-IN DATE',
                     hintText: 'Select Date',
                     icon: Icons.calendar_today_rounded,
+                    controller: _moveInDateController,
+                    readOnly: true,
+                    onTap: _pickMoveInDate,
                   ),
                   const SizedBox(height: 18),
                   Text(
@@ -812,8 +1281,10 @@ class AddResidentScreen extends StatelessWidget {
                       Expanded(
                         flex: 2,
                         child: AvenuePrimaryButton(
-                          label: 'Add Resident',
-                          onPressed: () {},
+                          label: _isSubmitting
+                              ? 'Adding Resident...'
+                              : 'Add Resident',
+                          onPressed: _createResident,
                         ),
                       ),
                     ],
@@ -854,6 +1325,104 @@ class AddResidentScreen extends StatelessWidget {
       ),
     );
   }
+
+  Future<void> _pickMoveInDate() async {
+    final now = DateTime.now();
+    final pickedDate = await showDatePicker(
+      context: context,
+      initialDate: _moveInDate ?? now,
+      firstDate: now.subtract(const Duration(days: 365)),
+      lastDate: now.add(const Duration(days: 365)),
+    );
+
+    if (pickedDate == null) {
+      return;
+    }
+
+    setState(() {
+      _moveInDate = pickedDate;
+      _moveInDateController.text =
+          '${pickedDate.day.toString().padLeft(2, '0')}/${pickedDate.month.toString().padLeft(2, '0')}/${pickedDate.year}';
+    });
+  }
+
+  Future<void> _createResident() async {
+    final fullName = _fullNameController.text.trim();
+    final email = _emailController.text.trim();
+    final phone = _phoneController.text.trim();
+    final unitNumber = _unitController.text.trim();
+
+    if (fullName.isEmpty ||
+        email.isEmpty ||
+        phone.isEmpty ||
+        unitNumber.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Enter name, email, phone, and unit number.'),
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    Map<String, dynamic>? result;
+    try {
+      result = await _repository.createResident(
+        email: email,
+        fullName: fullName,
+        phone: phone,
+        unitNumber: unitNumber,
+        residentKind: _residentKind,
+        tempPassword: _temporaryPassword,
+      );
+    } catch (_) {
+      result = null;
+    }
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _isSubmitting = false;
+    });
+
+    if (result == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Could not add resident.')));
+      return;
+    }
+
+    final createdEmail = result['email'] as String? ?? email;
+
+    await showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Resident Added'),
+          content: Text(
+            'Temporary password for $createdEmail: $_temporaryPassword',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Continue'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (!mounted) {
+      return;
+    }
+
+    goToPage(context, AppPage.residentDirectory, replace: true);
+  }
 }
 
 class ResidentDirectoryScreen extends StatelessWidget {
@@ -866,7 +1435,13 @@ class ResidentDirectoryScreen extends StatelessWidget {
     return AvenueScaffold(
       topBar: AvenueTopBar(
         title: 'ResidentDirectory',
-        leading: AvenueIconButton(icon: Icons.menu_rounded, onPressed: () {}),
+        leading: AvenueIconButton(
+          icon: Icons.menu_rounded,
+          onPressed: () => Navigator.of(context).pushNamed(
+            AppPage.adminMenu.routeName,
+            arguments: AppPage.residentDirectory,
+          ),
+        ),
         actions: [
           AvenueIconButton(
             icon: Icons.person_add_alt_1_rounded,
@@ -1459,27 +2034,115 @@ class _AnnouncementHistoryCard extends StatelessWidget {
 }
 
 class _ResidentTypeChip extends StatelessWidget {
-  const _ResidentTypeChip({required this.label, this.selected = false});
+  const _ResidentTypeChip({
+    required this.label,
+    this.selected = false,
+    this.onTap,
+  });
 
   final String label;
   final bool selected;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      decoration: BoxDecoration(
-        color: selected ? Colors.white : Colors.transparent,
-        borderRadius: BorderRadius.circular(16),
+    return InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          color: selected ? Colors.white : Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          label,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: selected
+                ? AvenueColors.primary
+                : AvenueColors.onSurfaceVariant,
+            fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+          ),
+        ),
       ),
-      alignment: Alignment.center,
-      child: Text(
-        label,
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: selected
-              ? AvenueColors.primary
-              : AvenueColors.onSurfaceVariant,
-          fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+    );
+  }
+}
+
+class _AdminKindChip extends StatelessWidget {
+  const _AdminKindChip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(999),
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        decoration: BoxDecoration(
+          color: selected ? AvenueColors.primary : AvenueColors.surfaceHigh,
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Text(
+          label,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: selected ? Colors.white : AvenueColors.onSurfaceVariant,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AdminDrawerItem extends StatelessWidget {
+  const _AdminDrawerItem({
+    required this.icon,
+    required this.label,
+    this.selected = false,
+    this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final bool selected;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(999),
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        decoration: BoxDecoration(
+          color: selected ? AvenueColors.primary : AvenueColors.surfaceHigh,
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              color: selected ? Colors.white : AvenueColors.onSurfaceVariant,
+            ),
+            const SizedBox(width: 12),
+            Text(
+              label,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: selected ? Colors.white : AvenueColors.onSurfaceVariant,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
         ),
       ),
     );

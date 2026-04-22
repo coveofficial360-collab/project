@@ -68,6 +68,12 @@ class AvenueApp extends StatelessWidget {
                 return const VisitorScreen();
               case AppPage.drawer:
                 return const ResidentDrawerScreen();
+              case AppPage.adminMenu:
+                return AdminDrawerScreen(
+                  currentPage: settings.arguments is AppPage
+                      ? settings.arguments! as AppPage
+                      : AppPage.adminDrawer,
+                );
               case AppPage.adminDrawer:
                 return const AdminDashboardScreen();
               case AppPage.generateReports:

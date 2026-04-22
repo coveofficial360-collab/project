@@ -12,6 +12,7 @@ enum AppPage {
   notifications(slug: 'notifications'),
   visitor(slug: 'visitor'),
   drawer(slug: 'drawer'),
+  adminMenu(slug: 'admin-menu'),
   adminDrawer(slug: 'admin-drawer'),
   generateReports(slug: 'generate-reports'),
   announcementsManagement(slug: 'announcements-management'),

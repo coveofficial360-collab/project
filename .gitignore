@@ -46,3 +46,9 @@ app.*.map.json
 
 # Local environment config
 env.json
+
+# Firebase local config / secrets
+google-services.json
+google-services*.json
+GoogleService-Info.plist
+*firebase-adminsdk*.json

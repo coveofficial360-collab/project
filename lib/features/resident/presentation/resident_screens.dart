@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/app_page.dart';
+import '../../../core/notifications/resident_notifications_controller.dart';
 import '../../../core/session/app_session.dart';
 import '../../../core/supabase/avenue_repository.dart';
 import '../../../theme/avenue_theme.dart';
@@ -154,6 +155,307 @@ String _calendarDateLabel(dynamic value) {
   return '${parsed.day.toString().padLeft(2, '0')} ${months[parsed.month - 1]} ${parsed.year}';
 }
 
+String _monthLabel(dynamic value) {
+  final parsed = DateTime.tryParse(value?.toString() ?? '');
+  if (parsed == null) {
+    return 'OCT';
+  }
+
+  const months = [
+    'JAN',
+    'FEB',
+    'MAR',
+    'APR',
+    'MAY',
+    'JUN',
+    'JUL',
+    'AUG',
+    'SEP',
+    'OCT',
+    'NOV',
+    'DEC',
+  ];
+
+  return months[parsed.month - 1];
+}
+
+String _dayOfMonthLabel(dynamic value) {
+  final parsed = DateTime.tryParse(value?.toString() ?? '');
+  if (parsed == null) {
+    return '24';
+  }
+
+  return parsed.day.toString().padLeft(2, '0');
+}
+
+String _dateTimeLabel(dynamic value) {
+  if (value == null) {
+    return '-';
+  }
+
+  final parsed = DateTime.tryParse(value.toString());
+  if (parsed == null) {
+    return value.toString();
+  }
+
+  final local = parsed.toLocal();
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+
+  final hour = local.hour % 12 == 0 ? 12 : local.hour % 12;
+  final minute = local.minute.toString().padLeft(2, '0');
+  final meridiem = local.hour >= 12 ? 'PM' : 'AM';
+  return '${local.day.toString().padLeft(2, '0')} ${months[local.month - 1]} ${local.year}, $hour:$minute $meridiem';
+}
+
+String _currencyLabel(dynamic amount, {bool signed = false}) {
+  if (amount == null) {
+    return signed ? '₹0' : '₹0';
+  }
+
+  final number = amount is num
+      ? amount.toDouble()
+      : double.tryParse(amount.toString()) ?? 0;
+  final absolute = number.abs();
+  final isWhole = absolute == absolute.roundToDouble();
+  final value = isWhole
+      ? absolute.toStringAsFixed(0)
+      : absolute.toStringAsFixed(2);
+  final prefix = signed && number < 0 ? '-₹' : '₹';
+  return '$prefix$value';
+}
+
+IconData _amenityIconForCategory(String? category) {
+  switch (category?.toLowerCase()) {
+    case 'wellness':
+      return Icons.fitness_center_rounded;
+    case 'entertainment':
+      return Icons.deck_rounded;
+    default:
+      return Icons.pool_rounded;
+  }
+}
+
+Color _amenityStatusBackground(String? status) {
+  switch (status?.toUpperCase()) {
+    case 'BUSY':
+      return const Color(0xFFFFC43B);
+    case 'BOOKING REQUIRED':
+      return const Color(0x22000000);
+    default:
+      return const Color(0x22000000);
+  }
+}
+
+Color _amenityStatusForeground(String? status) {
+  switch (status?.toUpperCase()) {
+    case 'BUSY':
+      return const Color(0xFF6B4B00);
+    default:
+      return Colors.white;
+  }
+}
+
+AppPage _amenityTargetPage(String? code) {
+  switch (code) {
+    case 'modern-gym':
+      return AppPage.amenityDetailsGym;
+    default:
+      return AppPage.amenityBooking;
+  }
+}
+
+IconData _noticeIconForKind(String? kind) {
+  switch (kind) {
+    case 'urgent':
+      return Icons.warning_amber_rounded;
+    case 'facility':
+      return Icons.eco_rounded;
+    case 'event':
+      return Icons.celebration_rounded;
+    default:
+      return Icons.campaign_rounded;
+  }
+}
+
+Color _noticeIconColor(String? kind) {
+  switch (kind) {
+    case 'urgent':
+      return const Color(0xFFD33B2C);
+    case 'facility':
+      return const Color(0xFF846000);
+    default:
+      return AvenueColors.primary;
+  }
+}
+
+IconData _billIconForCategory(String? category) {
+  switch (category) {
+    case 'mobile':
+      return Icons.smartphone_rounded;
+    case 'electricity':
+      return Icons.bolt_rounded;
+    case 'dth':
+      return Icons.tv_rounded;
+    case 'water':
+      return Icons.water_drop_rounded;
+    default:
+      return Icons.receipt_long_rounded;
+  }
+}
+
+Color _billBadgeColor(String? state) {
+  switch (state) {
+    case 'paid':
+      return const Color(0xFFE5F6E9);
+    case 'expiring':
+      return const Color(0xFFFFF1CF);
+    default:
+      return const Color(0xFFFFE1DE);
+  }
+}
+
+Color _billBadgeTextColor(String? state) {
+  switch (state) {
+    case 'paid':
+      return const Color(0xFF2E9A53);
+    case 'expiring':
+      return const Color(0xFF8B6500);
+    default:
+      return const Color(0xFFD33B2C);
+  }
+}
+
+Color _billAmountColor(String? state) {
+  switch (state) {
+    case 'paid':
+      return AvenueColors.onSurface;
+    case 'expiring':
+      return const Color(0xFF8B6500);
+    default:
+      return const Color(0xFFD33B2C);
+  }
+}
+
+String _billMetaLabel(String? state) {
+  return state == 'paid' ? 'LAST PAID' : 'AMOUNT DUE';
+}
+
+IconData _activityIconForCategory(String? category) {
+  switch (category?.toLowerCase()) {
+    case 'electricity':
+      return Icons.bolt_rounded;
+    case 'internet':
+      return Icons.wifi_tethering_rounded;
+    case 'water':
+      return Icons.water_drop_rounded;
+    default:
+      return Icons.receipt_long_rounded;
+  }
+}
+
+String _complaintStatusLabel(String? state) {
+  switch (state) {
+    case 'in_progress':
+      return 'In Progress';
+    case 'resolved':
+      return 'Resolved';
+    default:
+      return 'Pending';
+  }
+}
+
+Color _complaintStatusColor(String? state) {
+  switch (state) {
+    case 'in_progress':
+      return const Color(0xFFE29B00);
+    case 'resolved':
+      return const Color(0xFF2E9A53);
+    default:
+      return AvenueColors.onSurfaceVariant;
+  }
+}
+
+IconData _complaintIcon(String? iconName) {
+  switch (iconName) {
+    case 'water_drop':
+      return Icons.water_drop_rounded;
+    case 'electrical_services':
+      return Icons.electrical_services_rounded;
+    case 'plumbing':
+      return Icons.plumbing_rounded;
+    default:
+      return Icons.build_circle_outlined;
+  }
+}
+
+IconData _complaintMetaIcon(String? state) {
+  switch (state) {
+    case 'in_progress':
+      return Icons.engineering_outlined;
+    case 'resolved':
+      return Icons.verified_rounded;
+    default:
+      return Icons.hourglass_empty_rounded;
+  }
+}
+
+String _visitorKindLabel(String? kind) {
+  switch (kind) {
+    case 'delivery':
+      return 'Delivery';
+    case 'service':
+      return 'Service';
+    default:
+      return 'Guest';
+  }
+}
+
+String _visitorKindValue(String label) {
+  switch (label.toLowerCase()) {
+    case 'delivery':
+      return 'delivery';
+    case 'service':
+      return 'service';
+    default:
+      return 'guest';
+  }
+}
+
+String _complaintTypeIcon(String label) {
+  switch (label) {
+    case 'Water Leak':
+      return 'water_drop';
+    case 'Plumbing':
+      return 'plumbing';
+    default:
+      return 'electrical_services';
+  }
+}
+
+String _complaintTypeAccent(String label) {
+  switch (label) {
+    case 'Water Leak':
+      return '#FFB018';
+    case 'Plumbing':
+      return '#D8E2FF';
+    default:
+      return '#E2E3E8';
+  }
+}
+
 class _ResidentHomeData {
   const _ResidentHomeData({required this.bills, required this.notices});
 
@@ -199,17 +501,101 @@ class _ResidentProfileData {
   }
 }
 
-class _ResidentNotificationsData {
-  const _ResidentNotificationsData(this.rows);
+class _AmenitiesData {
+  const _AmenitiesData({
+    required this.amenities,
+    required this.bookings,
+    required this.poolAmenity,
+    required this.gymAmenity,
+  });
+
+  final List<Map<String, dynamic>> amenities;
+  final List<Map<String, dynamic>> bookings;
+  final Map<String, dynamic>? poolAmenity;
+  final Map<String, dynamic>? gymAmenity;
+
+  static Future<_AmenitiesData> load(AvenueRepository repository) async {
+    final results = await Future.wait([
+      repository.fetchAmenities(),
+      repository.fetchCurrentUserAmenityBookings(),
+      repository.fetchAmenityByCode('infinity-pool'),
+      repository.fetchAmenityByCode('modern-gym'),
+    ]);
+
+    return _AmenitiesData(
+      amenities: List<Map<String, dynamic>>.from(results[0] as List),
+      bookings: List<Map<String, dynamic>>.from(results[1] as List),
+      poolAmenity: results[2] as Map<String, dynamic>?,
+      gymAmenity: results[3] as Map<String, dynamic>?,
+    );
+  }
+}
+
+class _BillsData {
+  const _BillsData({
+    required this.bills,
+    required this.paymentMethods,
+    required this.paymentActivity,
+  });
+
+  final List<Map<String, dynamic>> bills;
+  final List<Map<String, dynamic>> paymentMethods;
+  final List<Map<String, dynamic>> paymentActivity;
+
+  static Future<_BillsData> load(AvenueRepository repository) async {
+    final results = await Future.wait([
+      repository.fetchCurrentUserBills(),
+      repository.fetchCurrentUserPaymentMethods(),
+      repository.fetchCurrentUserPaymentActivity(),
+    ]);
+
+    return _BillsData(
+      bills: List<Map<String, dynamic>>.from(results[0] as List),
+      paymentMethods: List<Map<String, dynamic>>.from(results[1] as List),
+      paymentActivity: List<Map<String, dynamic>>.from(results[2] as List),
+    );
+  }
+}
+
+class _ComplaintsData {
+  const _ComplaintsData(this.rows);
 
   final List<Map<String, dynamic>> rows;
 
-  static Future<_ResidentNotificationsData> load(
-    AvenueRepository repository,
-  ) async {
-    final rows = await repository.fetchCurrentUserNotifications();
-    return _ResidentNotificationsData(rows);
+  static Future<_ComplaintsData> load(AvenueRepository repository) async {
+    final rows = await repository.fetchCurrentUserComplaints();
+    return _ComplaintsData(rows);
   }
+}
+
+class _VisitorData {
+  const _VisitorData(this.rows);
+
+  final List<Map<String, dynamic>> rows;
+
+  static Future<_VisitorData> load(AvenueRepository repository) async {
+    final rows = await repository.fetchCurrentUserVisitorPasses();
+    return _VisitorData(rows);
+  }
+}
+
+InputDecoration _sheetInputDecoration(
+  BuildContext context, {
+  required String hintText,
+}) {
+  return InputDecoration(
+    filled: true,
+    fillColor: AvenueColors.surfaceHigh,
+    hintText: hintText,
+    hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+      color: AvenueColors.outline.withValues(alpha: 0.72),
+    ),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(16),
+      borderSide: BorderSide.none,
+    ),
+    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+  );
 }
 
 class ResidentDrawerScreen extends StatelessWidget {
@@ -361,10 +747,7 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
         actions: [
-          AvenueIconButton(
-            icon: Icons.notifications_none_rounded,
-            onPressed: () => goToPage(context, AppPage.notifications),
-          ),
+          const _ResidentNotificationBellButton(),
           Padding(
             padding: const EdgeInsets.only(right: 18, left: 6),
             child: GestureDetector(
@@ -480,11 +863,69 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
+class _ResidentNotificationBellButton extends StatelessWidget {
+  const _ResidentNotificationBellButton();
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = ResidentNotificationsController.instance;
+
+    return ValueListenableBuilder<int>(
+      valueListenable: controller.unreadCountNotifier,
+      builder: (context, unreadCount, _) {
+        final badgeLabel = unreadCount > 9 ? '9+' : unreadCount.toString();
+
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            AvenueIconButton(
+              icon: Icons.notifications_none_rounded,
+              onPressed: () => goToPage(context, AppPage.notifications),
+            ),
+            if (unreadCount > 0)
+              Positioned(
+                top: 7,
+                right: 4,
+                child: IgnorePointer(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 5,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFD6453A),
+                      borderRadius: BorderRadius.circular(999),
+                      border: Border.all(color: Colors.white, width: 1.5),
+                    ),
+                    constraints: const BoxConstraints(
+                      minWidth: 20,
+                      minHeight: 20,
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      badgeLabel,
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+}
+
 class AmenitiesScreen extends StatelessWidget {
   const AmenitiesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final repository = AvenueRepository();
+
     return AvenueScaffold(
       topBar: AvenueTopBar(
         title: 'Avenue360',
@@ -494,103 +935,120 @@ class AmenitiesScreen extends StatelessWidget {
           size: 40,
         ),
       ),
-      body: _ResidentScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Amenities',
-              style: Theme.of(
-                context,
-              ).textTheme.displayMedium?.copyWith(fontSize: 22),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'Discover and book resident facilities',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AvenueColors.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 16),
-            const AvenueSearchField(
-              hintText: 'Search for pools, gyms, lounges...',
-            ),
-            const SizedBox(height: 22),
-            Text(
-              'Categories',
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
-            ),
-            const SizedBox(height: 12),
-            const Row(
+      body: FutureBuilder<_AmenitiesData>(
+        future: _AmenitiesData.load(repository),
+        builder: (context, snapshot) {
+          final amenities =
+              snapshot.data?.amenities ?? const <Map<String, dynamic>>[];
+
+          return _ResidentScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: _CategoryBubble(
-                    icon: Icons.star_rounded,
-                    label: 'Popular',
-                    backgroundColor: Color(0xFFE8EEFF),
+                Text(
+                  'Amenities',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.displayMedium?.copyWith(fontSize: 22),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Discover and book resident facilities',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AvenueColors.onSurfaceVariant,
                   ),
                 ),
-                SizedBox(width: 12),
-                Expanded(
-                  child: _CategoryBubble(
-                    icon: Icons.spa_outlined,
-                    label: 'Wellness',
-                    backgroundColor: Color(0xFFFFF0E7),
+                const SizedBox(height: 16),
+                const AvenueSearchField(
+                  hintText: 'Search for pools, gyms, lounges...',
+                ),
+                const SizedBox(height: 22),
+                Text(
+                  'Categories',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
-                SizedBox(width: 12),
-                Expanded(
-                  child: _CategoryBubble(
-                    icon: Icons.sports_esports_rounded,
-                    label: 'Entertainment',
-                    backgroundColor: Color(0xFFFFF2DB),
-                  ),
+                const SizedBox(height: 12),
+                const Row(
+                  children: [
+                    Expanded(
+                      child: _CategoryBubble(
+                        icon: Icons.star_rounded,
+                        label: 'Popular',
+                        backgroundColor: Color(0xFFE8EEFF),
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: _CategoryBubble(
+                        icon: Icons.spa_outlined,
+                        label: 'Wellness',
+                        backgroundColor: Color(0xFFFFF0E7),
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: _CategoryBubble(
+                        icon: Icons.sports_esports_rounded,
+                        label: 'Entertainment',
+                        backgroundColor: Color(0xFFFFF2DB),
+                      ),
+                    ),
+                  ],
                 ),
+                const SizedBox(height: 24),
+                AvenueSectionHeader(
+                  title: 'Featured Spaces',
+                  actionLabel: 'View All',
+                  onActionTap: () {},
+                ),
+                const SizedBox(height: 14),
+                if (snapshot.connectionState != ConnectionState.done &&
+                    amenities.isEmpty)
+                  const _DataPlaceholderCard(label: 'Loading amenities...')
+                else
+                  ...amenities.map(
+                    (amenity) => Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: _AmenityCard(
+                        imageUrl:
+                            amenity['image_url'] as String? ??
+                            (amenity['code'] == 'modern-gym'
+                                ? _gymImageUrl
+                                : amenity['code'] == 'rooftop-lounge'
+                                ? _loungeImageUrl
+                                : _poolImageUrl),
+                        status:
+                            amenity['status_label'] as String? ?? 'AVAILABLE',
+                        statusBackground: _amenityStatusBackground(
+                          amenity['status_label'] as String?,
+                        ),
+                        statusForeground: _amenityStatusForeground(
+                          amenity['status_label'] as String?,
+                        ),
+                        title: amenity['name'] as String? ?? 'Amenity',
+                        subtitle:
+                            amenity['occupancy_note'] as String? ??
+                            amenity['availability_text'] as String? ??
+                            '',
+                        icon: _amenityIconForCategory(
+                          amenity['category'] as String?,
+                        ),
+                        primaryActionLabel:
+                            amenity['cta_label'] as String? ?? 'View Details',
+                        outlinedButton: amenity['cta_label'] == 'View Details',
+                        onTap: () => goToPage(
+                          context,
+                          _amenityTargetPage(amenity['code'] as String?),
+                        ),
+                      ),
+                    ),
+                  ),
               ],
             ),
-            const SizedBox(height: 24),
-            AvenueSectionHeader(
-              title: 'Featured Spaces',
-              actionLabel: 'View All',
-              onActionTap: () {},
-            ),
-            const SizedBox(height: 14),
-            _AmenityCard(
-              imageUrl: _poolImageUrl,
-              status: 'OPEN',
-              title: 'Infinity Pool',
-              subtitle: 'Available till 9 PM',
-              icon: Icons.pool_rounded,
-              primaryActionLabel: 'Book Now',
-              onTap: () => goToPage(context, AppPage.amenityBooking),
-            ),
-            const SizedBox(height: 16),
-            _AmenityCard(
-              imageUrl: _gymImageUrl,
-              status: 'BUSY',
-              statusBackground: const Color(0xFFFFC43B),
-              statusForeground: const Color(0xFF6B4B00),
-              title: 'Modern Gym',
-              subtitle: '4 people there',
-              icon: Icons.fitness_center_rounded,
-              primaryActionLabel: 'View Details',
-              outlinedButton: true,
-              onTap: () => goToPage(context, AppPage.amenityDetailsGym),
-            ),
-            const SizedBox(height: 16),
-            _AmenityCard(
-              imageUrl: _loungeImageUrl,
-              status: 'BOOKING REQUIRED',
-              title: 'Rooftop Lounge',
-              subtitle: 'Private events & gatherings',
-              icon: Icons.deck_rounded,
-              primaryActionLabel: 'Book Now',
-              onTap: () => goToPage(context, AppPage.amenityBooking),
-            ),
-          ],
-        ),
+          );
+        },
       ),
       bottomNavigation: AvenueBottomNavigationBar(
         items: _residentNavItems,
@@ -605,6 +1063,8 @@ class AmenityBookingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final repository = AvenueRepository();
+
     return AvenueScaffold(
       topBar: AvenueTopBar(
         title: 'AmenityBooking',
@@ -625,227 +1085,254 @@ class AmenityBookingScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: _ResidentScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _HeroImageCard(
-              imageUrl: _bookingPoolImageUrl,
-              height: 206,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(18, 16, 18, 18),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const AvenuePill(
-                      label: 'EXCLUSIVE ACCESS',
-                      backgroundColor: Color(0x22000000),
-                      foregroundColor: Colors.white,
-                    ),
-                    const Spacer(),
-                    Text(
-                      'Infinity Pool at Avenue360',
-                      style: Theme.of(context).textTheme.displayMedium
-                          ?.copyWith(color: Colors.white, fontSize: 20),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      'Rooftop Terrace, North Tower',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.white.withValues(alpha: 0.88),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 18),
-            Row(
+      body: FutureBuilder<_AmenitiesData>(
+        future: _AmenitiesData.load(repository),
+        builder: (context, snapshot) {
+          final amenity = snapshot.data?.poolAmenity;
+          final booking = snapshot.data?.bookings.isNotEmpty == true
+              ? snapshot.data!.bookings.first
+              : null;
+          final bookingFee = booking?['booking_fee'];
+          final guestCount = booking?['guest_count']?.toString() ?? '02';
+
+          return _ResidentScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Select Date',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const Spacer(),
-                Text(
-                  'May 2024',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AvenueColors.primary,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            const Row(
-              children: [
-                Expanded(
-                  child: _DateChip(
-                    dayLabel: 'MON',
-                    dateLabel: '20',
-                    selected: true,
-                  ),
-                ),
-                SizedBox(width: 8),
-                Expanded(
-                  child: _DateChip(dayLabel: 'TUE', dateLabel: '21'),
-                ),
-                SizedBox(width: 8),
-                Expanded(
-                  child: _DateChip(dayLabel: 'WED', dateLabel: '22'),
-                ),
-                SizedBox(width: 8),
-                Expanded(
-                  child: _DateChip(dayLabel: 'THU', dateLabel: '23'),
-                ),
-                SizedBox(width: 8),
-                Expanded(
-                  child: _DateChip(dayLabel: 'FRI', dateLabel: '24'),
-                ),
-              ],
-            ),
-            const SizedBox(height: 22),
-            Text(
-              'Select Time Slot',
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
-            ),
-            const SizedBox(height: 12),
-            const Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              children: [
-                _TimeChip(label: '06:00 - 08:00'),
-                _TimeChip(label: '10:00 - 12:00', selected: true),
-                _TimeChip(label: '14:00 - 16:00'),
-                _TimeChip(label: '16:00 - 18:00'),
-                _TimeChip(label: '20:00 - 22:00'),
-              ],
-            ),
-            const SizedBox(height: 18),
-            AvenueCard(
-              padding: const EdgeInsets.all(18),
-              radius: 26,
-              child: Row(
-                children: [
-                  Expanded(
+                _HeroImageCard(
+                  imageUrl:
+                      amenity?['image_url'] as String? ?? _bookingPoolImageUrl,
+                  height: 206,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(18, 16, 18, 18),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        const AvenuePill(
+                          label: 'EXCLUSIVE ACCESS',
+                          backgroundColor: Color(0x22000000),
+                          foregroundColor: Colors.white,
+                        ),
+                        const Spacer(),
                         Text(
-                          'Number of\nGuests',
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(fontWeight: FontWeight.w800),
+                          '${amenity?['name'] as String? ?? 'Infinity Pool'} at Avenue360',
+                          style: Theme.of(context).textTheme.displayMedium
+                              ?.copyWith(color: Colors.white, fontSize: 20),
                         ),
                         const SizedBox(height: 6),
                         Text(
-                          'Max 4 guests per residence',
-                          style: Theme.of(context).textTheme.bodySmall,
+                          amenity?['location_label'] as String? ??
+                              'Rooftop Terrace, North Tower',
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: Colors.white.withValues(alpha: 0.88),
+                              ),
                         ),
                       ],
                     ),
                   ),
-                  const _CounterButton(icon: Icons.remove_rounded),
-                  Container(
-                    width: 54,
-                    alignment: Alignment.center,
-                    child: Text(
-                      '02',
-                      style: Theme.of(context).textTheme.headlineMedium
-                          ?.copyWith(fontWeight: FontWeight.w800),
-                    ),
-                  ),
-                  const _CounterButton(icon: Icons.add_rounded, filled: true),
-                ],
-              ),
-            ),
-            const SizedBox(height: 18),
-            AvenueCard(
-              padding: const EdgeInsets.all(18),
-              radius: 26,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.info_rounded,
-                        color: AvenueColors.primary,
-                        size: 18,
+                ),
+                const SizedBox(height: 18),
+                Row(
+                  children: [
+                    Text(
+                      'Select Date',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
                       ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Booking Guidelines',
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(fontWeight: FontWeight.w800),
+                    ),
+                    const Spacer(),
+                    Text(
+                      _calendarDateLabel(booking?['booking_date']),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AvenueColors.primary,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _DateChip(
+                        dayLabel: 'BOOK',
+                        dateLabel: _dayOfMonthLabel(booking?['booking_date']),
+                        selected: true,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                      child: _DateChip(dayLabel: 'TUE', dateLabel: '21'),
+                    ),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                      child: _DateChip(dayLabel: 'WED', dateLabel: '22'),
+                    ),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                      child: _DateChip(dayLabel: 'THU', dateLabel: '23'),
+                    ),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                      child: _DateChip(dayLabel: 'FRI', dateLabel: '24'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 22),
+                Text(
+                  'Select Time Slot',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: [
+                    const _TimeChip(label: '06:00 - 08:00'),
+                    _TimeChip(
+                      label:
+                          booking?['time_slot'] as String? ?? '10:00 - 12:00',
+                      selected: true,
+                    ),
+                    const _TimeChip(label: '14:00 - 16:00'),
+                    const _TimeChip(label: '16:00 - 18:00'),
+                    const _TimeChip(label: '20:00 - 22:00'),
+                  ],
+                ),
+                const SizedBox(height: 18),
+                AvenueCard(
+                  padding: const EdgeInsets.all(18),
+                  radius: 26,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Number of\nGuests',
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.w800),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              'Max 4 guests per residence',
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const _CounterButton(icon: Icons.remove_rounded),
+                      Container(
+                        width: 54,
+                        alignment: Alignment.center,
+                        child: Text(
+                          guestCount.padLeft(2, '0'),
+                          style: Theme.of(context).textTheme.headlineMedium
+                              ?.copyWith(fontWeight: FontWeight.w800),
+                        ),
+                      ),
+                      const _CounterButton(
+                        icon: Icons.add_rounded,
+                        filled: true,
                       ),
                     ],
                   ),
-                  const SizedBox(height: 14),
-                  const _BulletLine(
-                    text:
-                        'Residents must carry their digital ID for verification at the entrance.',
+                ),
+                const SizedBox(height: 18),
+                AvenueCard(
+                  padding: const EdgeInsets.all(18),
+                  radius: 26,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.info_rounded,
+                            color: AvenueColors.primary,
+                            size: 18,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Booking Guidelines',
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.w800),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 14),
+                      const _BulletLine(
+                        text:
+                            'Residents must carry their digital ID for verification at the entrance.',
+                      ),
+                      const SizedBox(height: 10),
+                      const _BulletLine(
+                        text:
+                            'No glassware or breakable containers allowed in the pool area.',
+                      ),
+                      const SizedBox(height: 10),
+                      const _BulletLine(
+                        text:
+                            'Personal towels are mandatory; pool-side service is currently unavailable.',
+                      ),
+                      const SizedBox(height: 10),
+                      const _BulletLine(
+                        text:
+                            'Shower is mandatory before entering the pool water.',
+                      ),
+                      const SizedBox(height: 10),
+                      const _BulletLine(
+                        text:
+                            'Cancellations must be made at least 2 hours in advance.',
+                      ),
+                      const SizedBox(height: 18),
+                      const Divider(height: 1),
+                      const SizedBox(height: 14),
+                      _BookingSummaryRow(
+                        label: 'Booking Fee',
+                        value: bookingFee == null
+                            ? 'Complimentary'
+                            : _currencyLabel(bookingFee),
+                      ),
+                      const SizedBox(height: 6),
+                      _BookingSummaryRow(
+                        label: 'Guest Charges',
+                        value: _currencyLabel(0),
+                      ),
+                      const SizedBox(height: 14),
+                      Text(
+                        'TOTAL ESTIMATE',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        bookingFee == null
+                            ? _currencyLabel(0)
+                            : _currencyLabel(bookingFee),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.displayMedium?.copyWith(fontSize: 26),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 10),
-                  const _BulletLine(
-                    text:
-                        'No glassware or breakable containers allowed in the pool area.',
-                  ),
-                  const SizedBox(height: 10),
-                  const _BulletLine(
-                    text:
-                        'Personal towels are mandatory; pool-side service is currently unavailable.',
-                  ),
-                  const SizedBox(height: 10),
-                  const _BulletLine(
-                    text: 'Shower is mandatory before entering the pool water.',
-                  ),
-                  const SizedBox(height: 10),
-                  const _BulletLine(
-                    text:
-                        'Cancellations must be made at least 2 hours in advance.',
-                  ),
-                  const SizedBox(height: 18),
-                  const Divider(height: 1),
-                  const SizedBox(height: 14),
-                  const _BookingSummaryRow(
-                    label: 'Booking Fee',
-                    value: 'Complimentary',
-                  ),
-                  const SizedBox(height: 6),
-                  const _BookingSummaryRow(
-                    label: 'Guest Charges',
-                    value: '\$0.00',
-                  ),
-                  const SizedBox(height: 14),
-                  Text(
-                    'TOTAL ESTIMATE',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '\$0.00',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.displayMedium?.copyWith(fontSize: 26),
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 24),
+                AvenuePrimaryButton(
+                  label: 'Confirm Booking',
+                  icon: Icons.check_circle_rounded,
+                  onPressed: () {},
+                ),
+              ],
             ),
-            const SizedBox(height: 24),
-            AvenuePrimaryButton(
-              label: 'Confirm Booking',
-              icon: Icons.check_circle_rounded,
-              onPressed: () {},
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -856,6 +1343,8 @@ class AmenityDetailsGymScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final repository = AvenueRepository();
+
     return AvenueScaffold(
       topBar: AvenueTopBar(
         title: 'AmenityDetails',
@@ -869,177 +1358,203 @@ class AmenityDetailsGymScreen extends StatelessWidget {
           const SizedBox(width: 12),
         ],
       ),
-      body: _ResidentScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-        child: Column(
-          children: [
-            _HeroImageCard(
-              imageUrl: _gymDetailImageUrl,
-              height: 260,
-              borderRadius: 32,
-              child: Padding(
-                padding: const EdgeInsets.all(18),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: const [
-                        AvenuePill(
-                          label: 'BUSY',
-                          backgroundColor: Color(0xFFFFC43B),
-                          foregroundColor: Color(0xFF6B4B00),
-                        ),
-                        SizedBox(width: 8),
-                        AvenuePill(
-                          label: 'LVL 4',
-                          backgroundColor: Color(0x33000000),
-                          foregroundColor: Colors.white,
-                        ),
-                      ],
-                    ),
-                    const Spacer(),
-                    Text(
-                      'Modern Gym',
-                      style: Theme.of(context).textTheme.displayMedium
-                          ?.copyWith(color: Colors.white, fontSize: 22),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Transform.translate(
-              offset: const Offset(0, -22),
-              child: AvenueCard(
-                radius: 32,
-                padding: const EdgeInsets.fromLTRB(20, 22, 20, 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Elevate your wellness journey in our state-of-the-art fitness center. Designed with an editorial eye, the gym combines panoramic city views with premium Matrix equipment and a dedicated sanctuary for mindful movement.',
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: AvenueColors.onSurfaceVariant,
-                        height: 1.55,
-                      ),
-                    ),
-                    const SizedBox(height: 18),
-                    Row(
+      body: FutureBuilder<_AmenitiesData>(
+        future: _AmenitiesData.load(repository),
+        builder: (context, snapshot) {
+          final gym = snapshot.data?.gymAmenity;
+
+          return _ResidentScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+            child: Column(
+              children: [
+                _HeroImageCard(
+                  imageUrl: gym?['image_url'] as String? ?? _gymDetailImageUrl,
+                  height: 260,
+                  borderRadius: 32,
+                  child: Padding(
+                    padding: const EdgeInsets.all(18),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Live Occupancy',
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(fontWeight: FontWeight.w800),
+                        Row(
+                          children: [
+                            AvenuePill(
+                              label: gym?['status_label'] as String? ?? 'BUSY',
+                              backgroundColor: _amenityStatusBackground(
+                                gym?['status_label'] as String?,
+                              ),
+                              foregroundColor: _amenityStatusForeground(
+                                gym?['status_label'] as String?,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            const AvenuePill(
+                              label: 'LVL 4',
+                              backgroundColor: Color(0x33000000),
+                              foregroundColor: Colors.white,
+                            ),
+                          ],
                         ),
                         const Spacer(),
                         Text(
-                          '80% Full',
-                          style: Theme.of(context).textTheme.titleMedium
+                          gym?['name'] as String? ?? 'Modern Gym',
+                          style: Theme.of(context).textTheme.displayMedium
+                              ?.copyWith(color: Colors.white, fontSize: 22),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Transform.translate(
+                  offset: const Offset(0, -22),
+                  child: AvenueCard(
+                    radius: 32,
+                    padding: const EdgeInsets.fromLTRB(20, 22, 20, 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          gym?['description'] as String? ??
+                              'Elevate your wellness journey in our state-of-the-art fitness center.',
+                          style: Theme.of(context).textTheme.bodyLarge
                               ?.copyWith(
-                                color: AvenueColors.primary,
-                                fontWeight: FontWeight.w800,
+                                color: AvenueColors.onSurfaceVariant,
+                                height: 1.55,
                               ),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(999),
-                      child: LinearProgressIndicator(
-                        value: 0.8,
-                        minHeight: 8,
-                        backgroundColor: AvenueColors.surfaceHigh,
-                        valueColor: const AlwaysStoppedAnimation(
-                          AvenueColors.primary,
+                        const SizedBox(height: 18),
+                        Row(
+                          children: [
+                            Text(
+                              'Live Occupancy',
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.w800),
+                            ),
+                            const Spacer(),
+                            Text(
+                              gym?['occupancy_note'] as String? ?? '80% Full',
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(
+                                    color: AvenueColors.primary,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Peak hours expected until 8:00 PM',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    const SizedBox(height: 18),
-                    const Row(
-                      children: [
-                        Expanded(
-                          child: _InfoMiniCard(
-                            icon: Icons.schedule_rounded,
-                            title: 'Operating\nHours',
-                            subtitle: 'Daily\n6:00 AM - 10:00 PM',
+                        const SizedBox(height: 10),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(999),
+                          child: LinearProgressIndicator(
+                            value: 0.8,
+                            minHeight: 8,
+                            backgroundColor: AvenueColors.surfaceHigh,
+                            valueColor: const AlwaysStoppedAnimation(
+                              AvenueColors.primary,
+                            ),
                           ),
                         ),
-                        SizedBox(width: 12),
-                        Expanded(
-                          child: _InfoMiniCard(
-                            icon: Icons.flash_on_rounded,
-                            title: 'Peak Time',
-                            subtitle: 'Evenings\n5:00 PM - 8:00 PM',
-                          ),
+                        const SizedBox(height: 8),
+                        Text(
+                          gym?['availability_text'] as String? ??
+                              'Peak hours expected until 8:00 PM',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                        const SizedBox(height: 18),
+                        const Row(
+                          children: [
+                            Expanded(
+                              child: _InfoMiniCard(
+                                icon: Icons.schedule_rounded,
+                                title: 'Operating\nHours',
+                                subtitle: 'Daily\n6:00 AM - 10:00 PM',
+                              ),
+                            ),
+                            SizedBox(width: 12),
+                            Expanded(
+                              child: _InfoMiniCard(
+                                icon: Icons.flash_on_rounded,
+                                title: 'Peak Time',
+                                subtitle: 'Evenings\n5:00 PM - 8:00 PM',
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 18),
+                        Text(
+                          'Amenities & Equipment',
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w800),
+                        ),
+                        const SizedBox(height: 14),
+                        const Wrap(
+                          spacing: 12,
+                          runSpacing: 12,
+                          children: [
+                            _EquipmentChip(
+                              icon: Icons.directions_run_rounded,
+                              label: 'CARDIO',
+                            ),
+                            _EquipmentChip(
+                              icon: Icons.fitness_center_rounded,
+                              label: 'WEIGHTS',
+                            ),
+                            _EquipmentChip(
+                              icon: Icons.self_improvement_rounded,
+                              label: 'YOGA AREA',
+                            ),
+                            _EquipmentChip(
+                              icon: Icons.lock_outline_rounded,
+                              label: 'LOCKERS',
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                        Text(
+                          'Book a Slot',
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(fontWeight: FontWeight.w800),
+                        ),
+                        const SizedBox(height: 8),
+                        const AvenuePill(
+                          label: 'AVAILABLE NOW',
+                          backgroundColor: Color(0x1A8FA8FF),
+                          foregroundColor: Color(0xFF6E82FF),
+                        ),
+                        const SizedBox(height: 14),
+                        AvenuePrimaryButton(
+                          label: 'Reserve 60 Minute Session',
+                          onPressed: () =>
+                              goToPage(context, AppPage.amenityBooking),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 18),
-                    Text(
-                      'Amenities & Equipment',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    const Wrap(
-                      spacing: 12,
-                      runSpacing: 12,
-                      children: [
-                        _EquipmentChip(
-                          icon: Icons.directions_run_rounded,
-                          label: 'CARDIO',
-                        ),
-                        _EquipmentChip(
-                          icon: Icons.fitness_center_rounded,
-                          label: 'WEIGHTS',
-                        ),
-                        _EquipmentChip(
-                          icon: Icons.self_improvement_rounded,
-                          label: 'YOGA AREA',
-                        ),
-                        _EquipmentChip(
-                          icon: Icons.lock_outline_rounded,
-                          label: 'LOCKERS',
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      'Book a Slot',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    const AvenuePill(
-                      label: 'AVAILABLE NOW',
-                      backgroundColor: Color(0x1A8FA8FF),
-                      foregroundColor: Color(0xFF6E82FF),
-                    ),
-                    const SizedBox(height: 14),
-                    AvenuePrimaryButton(
-                      label: 'Reserve 60 Minute Session',
-                      onPressed: () =>
-                          goToPage(context, AppPage.amenityBooking),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 }
 
-class NoticesScreen extends StatelessWidget {
+class NoticesScreen extends StatefulWidget {
   const NoticesScreen({super.key});
+
+  @override
+  State<NoticesScreen> createState() => _NoticesScreenState();
+}
+
+class _NoticesScreenState extends State<NoticesScreen> {
+  final AvenueRepository _repository = AvenueRepository();
+  late Future<List<Map<String, dynamic>>> _noticesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _noticesFuture = _repository.fetchNotices();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1051,52 +1566,104 @@ class NoticesScreen extends StatelessWidget {
           onPressed: () => goBackOrHome(context),
           size: 40,
         ),
+        actions: [
+          AvenueIconButton(
+            icon: Icons.refresh_rounded,
+            onPressed: () {
+              setState(() {
+                _noticesFuture = _repository.fetchNotices();
+              });
+            },
+          ),
+          const SizedBox(width: 12),
+        ],
       ),
-      body: _ResidentScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  _FilterChip(label: 'All', selected: true),
-                  SizedBox(width: 10),
-                  _FilterChip(label: 'Urgent'),
-                  SizedBox(width: 10),
-                  _FilterChip(label: 'General'),
-                  SizedBox(width: 10),
-                  _FilterChip(label: 'Events'),
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: _noticesFuture,
+        builder: (context, snapshot) {
+          final notices = snapshot.data ?? const <Map<String, dynamic>>[];
+          final urgent = notices
+              .where((row) => row['kind'] == 'urgent')
+              .toList();
+          final events = notices
+              .where((row) => row['kind'] == 'event')
+              .toList();
+          final standard = notices
+              .where((row) => row['kind'] != 'urgent' && row['kind'] != 'event')
+              .toList();
+
+          return _ResidentScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      _FilterChip(label: 'All', selected: true),
+                      SizedBox(width: 10),
+                      _FilterChip(label: 'Urgent'),
+                      SizedBox(width: 10),
+                      _FilterChip(label: 'General'),
+                      SizedBox(width: 10),
+                      _FilterChip(label: 'Events'),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 18),
+                if (snapshot.connectionState != ConnectionState.done &&
+                    notices.isEmpty)
+                  const _DataPlaceholderCard(label: 'Loading notices...')
+                else ...[
+                  if (urgent.isNotEmpty) ...[
+                    _UrgentNoticeCard(
+                      title:
+                          urgent.first['title'] as String? ?? 'Urgent notice',
+                      dateText: _relativeTimeLabel(urgent.first['posted_at']),
+                      body: urgent.first['body'] as String? ?? '',
+                      actionLabel:
+                          urgent.first['action_label'] as String? ??
+                          'TAKE ACTION',
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                  ...events.map(
+                    (row) => Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: _EventNoticeCard(
+                        imageUrl:
+                            row['image_url'] as String? ??
+                            _noticesEventImageUrl,
+                        title: row['title'] as String? ?? 'Event',
+                        monthLabel: _monthLabel(row['event_date']),
+                        dayLabel: _dayOfMonthLabel(row['event_date']),
+                        category: (row['kind'] as String? ?? 'event')
+                            .toUpperCase(),
+                        buttonLabel: row['action_label'] as String? ?? 'RSVP',
+                        onTap: () {},
+                      ),
+                    ),
+                  ),
+                  ...standard.map(
+                    (row) => Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: _StandardNoticeCard(
+                        title: row['title'] as String? ?? 'Notice',
+                        category: (row['kind'] as String? ?? 'general')
+                            .toUpperCase(),
+                        dateText: _relativeTimeLabel(row['posted_at']),
+                        body: row['body'] as String? ?? '',
+                        icon: _noticeIconForKind(row['kind'] as String?),
+                        iconColor: _noticeIconColor(row['kind'] as String?),
+                        cta: row['action_label'] as String?,
+                      ),
+                    ),
+                  ),
                 ],
-              ),
+              ],
             ),
-            const SizedBox(height: 18),
-            const _UrgentNoticeCard(),
-            const SizedBox(height: 16),
-            _EventNoticeCard(imageUrl: _noticesEventImageUrl, onTap: () {}),
-            const SizedBox(height: 16),
-            const _StandardNoticeCard(
-              title: 'Water Tank Cleaning Schedule',
-              category: 'GENERAL',
-              dateText: 'Yesterday',
-              body:
-                  'Routine cleaning of the main water tanks is scheduled for this weekend. There may be minor pressure fluctuations between 10 AM and 2 PM.',
-              icon: Icons.campaign_rounded,
-              iconColor: AvenueColors.primary,
-              cta: 'READ MORE',
-            ),
-            const SizedBox(height: 16),
-            const _StandardNoticeCard(
-              title: 'New Electric Charging Stations',
-              category: 'FACILITY',
-              dateText: 'Oct 20',
-              body:
-                  'Four new Level 2 EV charging stations have been installed in the lower basement parking. They are now operational and available for resident use.',
-              icon: Icons.eco_rounded,
-              iconColor: Color(0xFF846000),
-            ),
-          ],
-        ),
+          );
+        },
       ),
       bottomNavigation: AvenueBottomNavigationBar(
         items: _residentNavItems,
@@ -1111,6 +1678,8 @@ class BillsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final repository = AvenueRepository();
+
     return AvenueScaffold(
       topBar: AvenueTopBar(
         title: 'Manage Bills',
@@ -1124,164 +1693,152 @@ class BillsScreen extends StatelessWidget {
           const SizedBox(width: 12),
         ],
       ),
-      body: _ResidentScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'My Accounts',
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
-            ),
-            const SizedBox(height: 14),
-            const _BillAccountCard(
-              icon: Icons.smartphone_rounded,
-              title: 'Jio - 98765 43210',
-              subtitle: 'Mobile Postpaid',
-              badgeText: 'Due in 2 days',
-              badgeColor: Color(0xFFFFE1DE),
-              badgeTextColor: Color(0xFFD33B2C),
-              metaLabel: 'AMOUNT DUE',
-              amount: '₹719',
-              amountColor: Color(0xFFD33B2C),
-              buttonLabel: 'Pay Now',
-            ),
-            const SizedBox(height: 12),
-            const _BillAccountCard(
-              icon: Icons.bolt_rounded,
-              title: 'BSES Yamuna',
-              subtitle: 'Electricity',
-              badgeText: 'Paid on 02 Jun',
-              badgeColor: Color(0xFFE5F6E9),
-              badgeTextColor: Color(0xFF2E9A53),
-              metaLabel: 'LAST PAID',
-              amount: '₹1,280',
-            ),
-            const SizedBox(height: 12),
-            const _BillAccountCard(
-              icon: Icons.tv_rounded,
-              title: 'Tata Play',
-              subtitle: 'DTH',
-              badgeText: 'Expiring today',
-              badgeColor: Color(0xFFFFF1CF),
-              badgeTextColor: Color(0xFF8B6500),
-              metaLabel: 'AMOUNT DUE',
-              amount: '₹450',
-              amountColor: Color(0xFF8B6500),
-              buttonLabel: 'Recharge',
-            ),
-            const SizedBox(height: 12),
-            const _BillAccountCard(
-              icon: Icons.water_drop_rounded,
-              title: 'DJB',
-              subtitle: 'Water',
-              badgeText: 'Paid on 20 May',
-              badgeColor: Color(0xFFE5F6E9),
-              badgeTextColor: Color(0xFF2E9A53),
-              metaLabel: 'LAST PAID',
-              amount: '₹650',
-            ),
-            const SizedBox(height: 14),
-            AvenueCard(
-              radius: 0,
-              padding: const EdgeInsets.symmetric(vertical: 26),
-              border: Border.all(
-                color: AvenueColors.outlineVariant.withValues(alpha: 0.65),
-                width: 1,
-                style: BorderStyle.solid,
-              ),
-              color: Colors.transparent,
-              child: Column(
-                children: [
-                  Container(
-                    width: 46,
-                    height: 46,
-                    decoration: const BoxDecoration(
-                      color: AvenueColors.surfaceLow,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.add_rounded,
-                      color: AvenueColors.onSurfaceVariant,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Add New Bill',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Link a new utility account',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 18),
-            Text(
-              'Quick Pay',
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
-            ),
-            const SizedBox(height: 14),
-            const Row(
+      body: FutureBuilder<_BillsData>(
+        future: _BillsData.load(repository),
+        builder: (context, snapshot) {
+          final bills = snapshot.data?.bills ?? const <Map<String, dynamic>>[];
+          final methods =
+              snapshot.data?.paymentMethods ?? const <Map<String, dynamic>>[];
+          final activity =
+              snapshot.data?.paymentActivity ?? const <Map<String, dynamic>>[];
+
+          return _ResidentScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: _QuickPayCard(
-                    dark: true,
-                    title: 'HDFC BANK',
-                    subtitle: '**** 4589',
-                    trailing: Icons.credit_card_rounded,
-                    note: 'Expires 12/26',
+                Text(
+                  'My Accounts',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 14),
+                if (snapshot.connectionState != ConnectionState.done &&
+                    bills.isEmpty)
+                  const _DataPlaceholderCard(label: 'Loading bills...')
+                else
+                  ...bills.map(
+                    (bill) => Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: _BillAccountCard(
+                        icon: _billIconForCategory(bill['category'] as String?),
+                        title: bill['title'] as String? ?? 'Bill',
+                        subtitle: bill['provider'] as String? ?? '',
+                        badgeText: bill['badge_text'] as String? ?? '',
+                        badgeColor: _billBadgeColor(bill['state'] as String?),
+                        badgeTextColor: _billBadgeTextColor(
+                          bill['state'] as String?,
+                        ),
+                        metaLabel: _billMetaLabel(bill['state'] as String?),
+                        amount: _currencyLabel(
+                          bill['amount_due'] ?? bill['amount_paid'],
+                        ),
+                        amountColor: _billAmountColor(bill['state'] as String?),
+                        buttonLabel: bill['action_label'] as String?,
+                      ),
+                    ),
+                  ),
+                const SizedBox(height: 14),
+                AvenueCard(
+                  radius: 0,
+                  padding: const EdgeInsets.symmetric(vertical: 26),
+                  border: Border.all(
+                    color: AvenueColors.outlineVariant.withValues(alpha: 0.65),
+                    width: 1,
+                    style: BorderStyle.solid,
+                  ),
+                  color: Colors.transparent,
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 46,
+                        height: 46,
+                        decoration: const BoxDecoration(
+                          color: AvenueColors.surfaceLow,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.add_rounded,
+                          color: AvenueColors.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        'Add New Bill',
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w800),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Link a new utility account',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
                   ),
                 ),
-                SizedBox(width: 12),
-                Expanded(
-                  child: _QuickPayCard(
-                    title: 'SBI UPI',
-                    subtitle: 'user@sbi',
-                    trailing: Icons.account_balance_rounded,
-                    note: 'Verified',
-                  ),
+                const SizedBox(height: 18),
+                Text(
+                  'Quick Pay',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
                 ),
+                const SizedBox(height: 14),
+                if (methods.isEmpty)
+                  const _DataPlaceholderCard(label: 'No saved payment methods.')
+                else
+                  Row(
+                    children: methods.take(2).map((method) {
+                      final isPrimary = method['is_primary'] == true;
+                      final icon = method['method_type'] == 'card'
+                          ? Icons.credit_card_rounded
+                          : Icons.account_balance_rounded;
+                      return Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            right: method == methods.first && methods.length > 1
+                                ? 12
+                                : 0,
+                          ),
+                          child: _QuickPayCard(
+                            dark: isPrimary,
+                            title: method['method_name'] as String? ?? 'Method',
+                            subtitle:
+                                method['masked_value'] as String? ?? 'Saved',
+                            trailing: icon,
+                            note: method['note'] as String? ?? '',
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                const SizedBox(height: 20),
+                const AvenueSectionHeader(
+                  title: 'Recent Activity',
+                  actionLabel: 'View All',
+                ),
+                const SizedBox(height: 12),
+                if (activity.isEmpty)
+                  const _DataPlaceholderCard(label: 'No payment activity yet.')
+                else
+                  ...activity.map(
+                    (row) => Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: _PaymentActivityTile(
+                        icon: _activityIconForCategory(
+                          row['activity_category'] as String?,
+                        ),
+                        title: row['activity_title'] as String? ?? 'Activity',
+                        date: _dateTimeLabel(row['activity_at']),
+                        amount: _currencyLabel(row['amount'], signed: true),
+                        status: row['status'] as String? ?? '',
+                      ),
+                    ),
+                  ),
               ],
             ),
-            const SizedBox(height: 20),
-            AvenueSectionHeader(
-              title: 'Recent Activity',
-              actionLabel: 'View All',
-            ),
-            const SizedBox(height: 12),
-            const _PaymentActivityTile(
-              icon: Icons.bolt_rounded,
-              title: 'BSES Yamuna',
-              date: '02 Jun 2023, 10:45 AM',
-              amount: '-₹1,280',
-              status: 'PAID',
-            ),
-            const SizedBox(height: 10),
-            const _PaymentActivityTile(
-              icon: Icons.wifi_tethering_rounded,
-              title: 'Airtel Broadband',
-              date: '28 May 2023, 03:15 PM',
-              amount: '-₹999',
-              status: 'PAID',
-            ),
-            const SizedBox(height: 10),
-            const _PaymentActivityTile(
-              icon: Icons.water_drop_rounded,
-              title: 'DJB',
-              date: '20 May 2023, 02:30 PM',
-              amount: '-₹650',
-              status: 'PAID',
-            ),
-          ],
-        ),
+          );
+        },
       ),
       bottomNavigation: AvenueBottomNavigationBar(
         items: _billingNavItems,
@@ -1299,7 +1856,15 @@ class ComplaintsScreen extends StatefulWidget {
 }
 
 class _ComplaintsScreenState extends State<ComplaintsScreen> {
+  final AvenueRepository _repository = AvenueRepository();
   bool _showActive = true;
+  late Future<_ComplaintsData> _complaintsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _complaintsFuture = _ComplaintsData.load(_repository);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1324,95 +1889,241 @@ class _ComplaintsScreenState extends State<ComplaintsScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AvenueColors.primary,
-        onPressed: () {},
+        onPressed: _showCreateComplaintSheet,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: const Icon(Icons.add_rounded, color: Colors.white, size: 32),
       ),
-      body: _ResidentScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: AvenueColors.surfaceLow,
-                borderRadius: BorderRadius.circular(24),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _TabToggle(
-                      label: 'Active',
-                      count: '2',
-                      selected: _showActive,
-                      onTap: () => setState(() => _showActive = true),
+      body: FutureBuilder<_ComplaintsData>(
+        future: _complaintsFuture,
+        builder: (context, snapshot) {
+          final complaints =
+              snapshot.data?.rows ?? const <Map<String, dynamic>>[];
+          final active = complaints
+              .where((row) => row['state'] != 'resolved')
+              .toList();
+          final history = complaints
+              .where((row) => row['state'] == 'resolved')
+              .toList();
+          final visible = _showActive ? active : history;
+
+          return _ResidentScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: AvenueColors.surfaceLow,
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: _TabToggle(
+                          label: 'Active',
+                          count: '${active.length}',
+                          selected: _showActive,
+                          onTap: () => setState(() => _showActive = true),
+                        ),
+                      ),
+                      Expanded(
+                        child: _TabToggle(
+                          label: 'History',
+                          count: '${history.length}',
+                          selected: !_showActive,
+                          onTap: () => setState(() => _showActive = false),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 18),
+                if (snapshot.connectionState != ConnectionState.done &&
+                    complaints.isEmpty)
+                  const _DataPlaceholderCard(label: 'Loading complaints...')
+                else if (visible.isEmpty)
+                  const _DataPlaceholderCard(
+                    label: 'No complaints in this tab.',
+                  )
+                else
+                  ...visible.map(
+                    (row) => Padding(
+                      padding: const EdgeInsets.only(bottom: 14),
+                      child: _ComplaintCard(
+                        accentColor: Color(
+                          int.parse(
+                            (row['accent_hex'] as String? ?? '#E2E3E8')
+                                .replaceFirst('#', '0xFF'),
+                          ),
+                        ),
+                        complaintId: '#${row['code'] as String? ?? ''}',
+                        timestamp: _relativeTimeLabel(
+                          row['resolved_at'] ?? row['created_at'],
+                        ),
+                        status: _complaintStatusLabel(row['state'] as String?),
+                        statusColor: _complaintStatusColor(
+                          row['state'] as String?,
+                        ),
+                        title: row['title'] as String? ?? 'Complaint',
+                        description: row['description'] as String? ?? '',
+                        icon: _complaintIcon(row['icon_name'] as String?),
+                        metaLabel: row['meta_label'] as String? ?? 'STATUS',
+                        metaValue: row['meta_value'] as String? ?? '-',
+                        metaIcon: _complaintMetaIcon(row['state'] as String?),
+                      ),
                     ),
                   ),
-                  Expanded(
-                    child: _TabToggle(
-                      label: 'History',
-                      count: '5',
-                      selected: !_showActive,
-                      onTap: () => setState(() => _showActive = false),
-                    ),
-                  ),
-                ],
-              ),
+              ],
             ),
-            const SizedBox(height: 18),
-            if (_showActive) ...[
-              const _ComplaintCard(
-                accentColor: Color(0xFFFFB018),
-                complaintId: '#CMP-8902',
-                timestamp: 'Today, 09:30 AM',
-                status: 'In Progress',
-                statusColor: Color(0xFFE29B00),
-                title: 'Master Bathroom Leak',
-                description:
-                    'Continuous water dripping from the ceiling above the shower area. It started yesterday and seems to be getting worse.',
-                icon: Icons.water_drop_rounded,
-                metaLabel: 'ASSIGNED TO',
-                metaValue: 'Mike (Plumbing)',
-                metaIcon: Icons.engineering_outlined,
-              ),
-              const SizedBox(height: 14),
-              const _ComplaintCard(
-                accentColor: Color(0xFFE2E3E8),
-                complaintId: '#CMP-8895',
-                timestamp: 'Oct 24, 14:15 PM',
-                status: 'Pending',
-                statusColor: AvenueColors.onSurfaceVariant,
-                title: 'Hallway Light Flickering',
-                description:
-                    'The main light fixture in the entryway hallway is flickering constantly when turned on. Needs bulb replacement or wiring check.',
-                icon: Icons.electrical_services_rounded,
-                metaLabel: 'STATUS',
-                metaValue: 'Awaiting Assignment',
-                metaIcon: Icons.hourglass_empty_rounded,
-              ),
-            ] else ...[
-              const _ComplaintCard(
-                accentColor: Color(0xFFE2E3E8),
-                complaintId: '#CMP-8801',
-                timestamp: 'Oct 22, 12:05 PM',
-                status: 'Resolved',
-                statusColor: Color(0xFF2E9A53),
-                title: 'Kitchen Sink Blockage',
-                description:
-                    'Drain line was cleaned and water flow has been restored. Please monitor the sink for the next 24 hours.',
-                icon: Icons.plumbing_rounded,
-                metaLabel: 'CLOSED BY',
-                metaValue: 'Raj (Maintenance)',
-                metaIcon: Icons.verified_rounded,
-              ),
-            ],
-          ],
-        ),
+          );
+        },
       ),
       bottomNavigation: AvenueBottomNavigationBar(
         items: _residentNavItems,
         currentPage: AppPage.complaints,
       ),
+    );
+  }
+
+  Future<void> _showCreateComplaintSheet() async {
+    final titleController = TextEditingController();
+    final descriptionController = TextEditingController();
+    String selectedType = 'Electrical';
+    bool isSubmitting = false;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 32,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+              ),
+              child: AvenueCard(
+                radius: 28,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Raise Complaint',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: titleController,
+                      decoration: _sheetInputDecoration(
+                        context,
+                        hintText: 'Complaint title',
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: descriptionController,
+                      maxLines: 4,
+                      decoration: _sheetInputDecoration(
+                        context,
+                        hintText: 'Describe the issue',
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: ['Electrical', 'Water Leak', 'Plumbing']
+                          .map(
+                            (type) => ChoiceChip(
+                              label: Text(type),
+                              selected: selectedType == type,
+                              onSelected: (_) {
+                                setModalState(() {
+                                  selectedType = type;
+                                });
+                              },
+                            ),
+                          )
+                          .toList(),
+                    ),
+                    const SizedBox(height: 18),
+                    AvenuePrimaryButton(
+                      label: isSubmitting ? 'Submitting...' : 'Submit',
+                      onPressed: () async {
+                        if (isSubmitting) {
+                          return;
+                        }
+
+                        final title = titleController.text.trim();
+                        final description = descriptionController.text.trim();
+                        if (title.isEmpty || description.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Enter both title and description.',
+                              ),
+                            ),
+                          );
+                          return;
+                        }
+
+                        setModalState(() {
+                          isSubmitting = true;
+                        });
+
+                        Map<String, dynamic>? result;
+                        try {
+                          result = await _repository.createComplaint(
+                            title: title,
+                            description: description,
+                            iconName: _complaintTypeIcon(selectedType),
+                            accentHex: _complaintTypeAccent(selectedType),
+                          );
+                        } catch (_) {
+                          result = null;
+                        }
+
+                        if (!mounted || !sheetContext.mounted) {
+                          return;
+                        }
+
+                        Navigator.of(sheetContext).pop();
+                        if (result != null) {
+                          setState(() {
+                            _showActive = true;
+                            _complaintsFuture = _ComplaintsData.load(
+                              _repository,
+                            );
+                          });
+                          ScaffoldMessenger.of(this.context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Complaint ${result['code']} created.',
+                              ),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(this.context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Could not create complaint.'),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
@@ -1730,7 +2441,7 @@ class NotificationsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final repository = AvenueRepository();
+    final controller = ResidentNotificationsController.instance;
 
     return AvenueScaffold(
       topBar: AvenueTopBar(
@@ -1741,23 +2452,36 @@ class NotificationsScreen extends StatelessWidget {
           size: 40,
         ),
         actions: [
-          TextButton(
-            onPressed: () {},
-            child: Text(
-              'Mark all as read',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AvenueColors.primary,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
+          ValueListenableBuilder<int>(
+            valueListenable: controller.unreadCountNotifier,
+            builder: (context, unreadCount, _) {
+              return TextButton(
+                onPressed: unreadCount == 0
+                    ? null
+                    : () => controller.markAllAsRead(),
+                child: Text(
+                  'Mark all as read',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: unreadCount == 0
+                        ? AvenueColors.outline
+                        : AvenueColors.primary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              );
+            },
           ),
           const SizedBox(width: 8),
         ],
       ),
-      body: FutureBuilder<_ResidentNotificationsData>(
-        future: _ResidentNotificationsData.load(repository),
-        builder: (context, snapshot) {
-          final rows = snapshot.data?.rows ?? const <Map<String, dynamic>>[];
+      body: AnimatedBuilder(
+        animation: Listenable.merge([
+          controller.rowsNotifier,
+          controller.isLoadingNotifier,
+        ]),
+        builder: (context, _) {
+          final rows = controller.rowsNotifier.value;
+          final isLoading = controller.isLoadingNotifier.value;
           final unread = rows.where((row) => row['is_unread'] == true).toList();
           final earlier = rows
               .where((row) => row['is_unread'] != true)
@@ -1776,8 +2500,7 @@ class NotificationsScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 14),
-                if (snapshot.connectionState != ConnectionState.done &&
-                    rows.isEmpty)
+                if (isLoading && rows.isEmpty)
                   const _DataPlaceholderCard(label: 'Loading notifications...')
                 else if (unread.isEmpty)
                   const _DataPlaceholderCard(label: 'No unread notifications.')
@@ -1845,8 +2568,42 @@ class NotificationsScreen extends StatelessWidget {
   }
 }
 
-class VisitorScreen extends StatelessWidget {
+class VisitorScreen extends StatefulWidget {
   const VisitorScreen({super.key});
+
+  @override
+  State<VisitorScreen> createState() => _VisitorScreenState();
+}
+
+class _VisitorScreenState extends State<VisitorScreen> {
+  final AvenueRepository _repository = AvenueRepository();
+  final TextEditingController _visitorNameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _arrivalController = TextEditingController();
+  final TextEditingController _visitorTypeController = TextEditingController(
+    text: 'Guest',
+  );
+
+  late Future<_VisitorData> _visitorFuture;
+  DateTime? _expectedArrival;
+  bool _isSubmitting = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _expectedArrival = DateTime.now().add(const Duration(hours: 1));
+    _arrivalController.text = _dateTimeLabel(_expectedArrival);
+    _visitorFuture = _VisitorData.load(_repository);
+  }
+
+  @override
+  void dispose() {
+    _visitorNameController.dispose();
+    _phoneController.dispose();
+    _arrivalController.dispose();
+    _visitorTypeController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1859,134 +2616,337 @@ class VisitorScreen extends StatelessWidget {
           size: 40,
         ),
       ),
-      body: _ResidentScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Pre-Approve a Visitor',
-              style: Theme.of(
-                context,
-              ).textTheme.displayMedium?.copyWith(fontSize: 22),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              'Generate a temporary access pass for your guests to ensure a smooth entry at the security gate.',
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: AvenueColors.onSurfaceVariant,
-                height: 1.5,
-              ),
-            ),
-            const SizedBox(height: 18),
-            AvenueCard(
-              color: const Color(0xFFF4F7FF),
-              radius: 18,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 48,
-                    height: 48,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.qr_code_scanner_rounded,
-                      color: AvenueColors.primary,
-                    ),
+      body: FutureBuilder<_VisitorData>(
+        future: _visitorFuture,
+        builder: (context, snapshot) {
+          final passes = snapshot.data?.rows ?? const <Map<String, dynamic>>[];
+          final upcoming = passes.isNotEmpty ? passes.first : null;
+
+          return _ResidentScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Pre-Approve a Visitor',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.displayMedium?.copyWith(fontSize: 22),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Generate a temporary access pass for your guests to ensure a smooth entry at the security gate.',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: AvenueColors.onSurfaceVariant,
+                    height: 1.5,
                   ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Seamless Gate Access',
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 18),
+                AvenueCard(
+                  color: const Color(0xFFF4F7FF),
+                  radius: 18,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 48,
+                        height: 48,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
                         ),
-                        const SizedBox(height: 6),
-                        Text(
-                          'Once generated, your visitor will receive an SMS with a unique QR code and numeric PIN. They simply present this at the gate for instant, verified entry.',
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(
-                                color: AvenueColors.onSurfaceVariant,
-                                height: 1.5,
-                              ),
+                        child: const Icon(
+                          Icons.qr_code_scanner_rounded,
+                          color: AvenueColors.primary,
                         ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Seamless Gate Access',
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.w800),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              upcoming == null
+                                  ? 'Once generated, your visitor will receive an SMS with a unique QR code and numeric PIN. They simply present this at the gate for instant, verified entry.'
+                                  : '${upcoming['visitor_name']} is already approved with PIN ${upcoming['pin_code']}. Expected arrival is ${_dateTimeLabel(upcoming['expected_arrival'])}.',
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(
+                                    color: AvenueColors.onSurfaceVariant,
+                                    height: 1.5,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-            AvenueCard(
-              radius: 28,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                ),
+                const SizedBox(height: 20),
+                if (passes.isNotEmpty) ...[
                   Text(
-                    'Visitor Details',
+                    'Active Passes',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w800,
                     ),
                   ),
-                  const SizedBox(height: 18),
-                  const AvenueInputField(
-                    label: 'Visitor Full Name',
-                    hintText: 'e.g., Jane Doe',
-                    icon: Icons.person_rounded,
-                  ),
-                  const SizedBox(height: 16),
-                  const AvenueInputField(
-                    label: 'Phone Number',
-                    hintText: '+1 (555) 000-0000',
-                    icon: Icons.call_rounded,
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'The access pass will be sent to this number.',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                  const SizedBox(height: 16),
-                  const AvenueInputField(
-                    label: 'Expected Arrival',
-                    hintText: 'mm/dd/yyyy, --:-- --',
-                    icon: Icons.calendar_today_rounded,
-                    trailing: Icon(
-                      Icons.calendar_today_rounded,
-                      size: 18,
-                      color: AvenueColors.outline,
+                  const SizedBox(height: 14),
+                  ...passes.map(
+                    (row) => Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: AvenueCard(
+                        radius: 18,
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 44,
+                              height: 44,
+                              decoration: const BoxDecoration(
+                                color: AvenueColors.surfaceLow,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.group_outlined,
+                                color: AvenueColors.primary,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    row['visitor_name'] as String? ?? 'Visitor',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(fontWeight: FontWeight.w800),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    '${_visitorKindLabel(row['visitor_kind'] as String?)} • ${_relativeTimeLabel(row['expected_arrival'])}',
+                                    style: Theme.of(context).textTheme.bodySmall
+                                        ?.copyWith(
+                                          color: AvenueColors.onSurfaceVariant,
+                                        ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            AvenuePill(
+                              label: (row['status'] as String? ?? '')
+                                  .toUpperCase(),
+                              backgroundColor: const Color(0xFFE8EEFF),
+                              foregroundColor: AvenueColors.primary,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  const AvenueInputField(
-                    label: 'Visitor Type',
-                    hintText: 'Guest',
-                    icon: Icons.category_rounded,
-                    trailing: Icon(
-                      Icons.keyboard_arrow_down_rounded,
-                      color: AvenueColors.outline,
-                    ),
-                  ),
-                  const SizedBox(height: 22),
-                  AvenuePrimaryButton(
-                    label: 'Generate Access Pass',
-                    icon: Icons.send_rounded,
-                    onPressed: () {},
-                  ),
+                  const SizedBox(height: 8),
                 ],
-              ),
+                AvenueCard(
+                  radius: 28,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Visitor Details',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const SizedBox(height: 18),
+                      AvenueInputField(
+                        label: 'Visitor Full Name',
+                        hintText: 'e.g., Jane Doe',
+                        icon: Icons.person_rounded,
+                        controller: _visitorNameController,
+                      ),
+                      const SizedBox(height: 16),
+                      AvenueInputField(
+                        label: 'Phone Number',
+                        hintText: '+1 (555) 000-0000',
+                        icon: Icons.call_rounded,
+                        controller: _phoneController,
+                        keyboardType: TextInputType.phone,
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'The access pass will be sent to this number.',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      const SizedBox(height: 16),
+                      AvenueInputField(
+                        label: 'Expected Arrival',
+                        hintText: 'mm/dd/yyyy, --:-- --',
+                        icon: Icons.calendar_today_rounded,
+                        controller: _arrivalController,
+                        readOnly: true,
+                        onTap: _pickExpectedArrival,
+                        trailing: const Icon(
+                          Icons.calendar_today_rounded,
+                          size: 18,
+                          color: AvenueColors.outline,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      AvenueInputField(
+                        label: 'Visitor Type',
+                        hintText: 'Guest',
+                        icon: Icons.category_rounded,
+                        controller: _visitorTypeController,
+                        readOnly: true,
+                        onTap: _pickVisitorType,
+                        trailing: const Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: AvenueColors.outline,
+                        ),
+                      ),
+                      const SizedBox(height: 22),
+                      AvenuePrimaryButton(
+                        label: _isSubmitting
+                            ? 'Generating...'
+                            : 'Generate Access Pass',
+                        icon: Icons.send_rounded,
+                        onPressed: _createVisitorPass,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
       bottomNavigation: AvenueBottomNavigationBar(
         items: _visitorNavItems,
         currentPage: AppPage.visitor,
       ),
+    );
+  }
+
+  Future<void> _pickExpectedArrival() async {
+    final now = DateTime.now();
+    final pickedDate = await showDatePicker(
+      context: context,
+      initialDate: _expectedArrival ?? now,
+      firstDate: now,
+      lastDate: now.add(const Duration(days: 365)),
+    );
+    if (pickedDate == null || !mounted) {
+      return;
+    }
+
+    final pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(_expectedArrival ?? now),
+    );
+    if (pickedTime == null) {
+      return;
+    }
+
+    final value = DateTime(
+      pickedDate.year,
+      pickedDate.month,
+      pickedDate.day,
+      pickedTime.hour,
+      pickedTime.minute,
+    );
+
+    setState(() {
+      _expectedArrival = value;
+      _arrivalController.text = _dateTimeLabel(value);
+    });
+  }
+
+  Future<void> _pickVisitorType() async {
+    final selected = await showModalBottomSheet<String>(
+      context: context,
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: ['Guest', 'Delivery', 'Service']
+                .map(
+                  (label) => ListTile(
+                    title: Text(label),
+                    onTap: () => Navigator.of(context).pop(label),
+                  ),
+                )
+                .toList(),
+          ),
+        );
+      },
+    );
+
+    if (selected == null) {
+      return;
+    }
+
+    setState(() {
+      _visitorTypeController.text = selected;
+    });
+  }
+
+  Future<void> _createVisitorPass() async {
+    final visitorName = _visitorNameController.text.trim();
+    final phone = _phoneController.text.trim();
+
+    if (visitorName.isEmpty || phone.isEmpty || _expectedArrival == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Enter name, phone, and expected arrival.'),
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    Map<String, dynamic>? result;
+    try {
+      result = await _repository.createVisitorPass(
+        visitorName: visitorName,
+        phone: phone,
+        visitorKind: _visitorKindValue(_visitorTypeController.text),
+        expectedArrival: _expectedArrival!,
+      );
+    } catch (_) {
+      result = null;
+    }
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _isSubmitting = false;
+      _visitorFuture = _VisitorData.load(_repository);
+    });
+
+    if (result == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not generate visitor pass.')),
+      );
+      return;
+    }
+
+    _visitorNameController.clear();
+    _phoneController.clear();
+    _expectedArrival = DateTime.now().add(const Duration(hours: 1));
+    _arrivalController.text = _dateTimeLabel(_expectedArrival);
+    _visitorTypeController.text = 'Guest';
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Pass created. PIN: ${result['pin_code']}')),
     );
   }
 }
@@ -2867,7 +3827,17 @@ class _FilterChip extends StatelessWidget {
 }
 
 class _UrgentNoticeCard extends StatelessWidget {
-  const _UrgentNoticeCard();
+  const _UrgentNoticeCard({
+    required this.title,
+    required this.dateText,
+    required this.body,
+    required this.actionLabel,
+  });
+
+  final String title;
+  final String dateText;
+  final String body;
+  final String actionLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -2885,19 +3855,19 @@ class _UrgentNoticeCard extends StatelessWidget {
                 foregroundColor: Color(0xFFD33B2C),
               ),
               const Spacer(),
-              Text('2m ago', style: Theme.of(context).textTheme.bodySmall),
+              Text(dateText, style: Theme.of(context).textTheme.bodySmall),
             ],
           ),
           const SizedBox(height: 14),
           Text(
-            'Elevator Maintenance: Block B',
+            title,
             style: Theme.of(
               context,
             ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 10),
           Text(
-            'Emergency repairs are being conducted on the primary elevator in Block B. Expected downtime is approximately 4 hours. Please use the service elevator or stairs.',
+            body,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: AvenueColors.onSurfaceVariant,
               height: 1.5,
@@ -2905,7 +3875,7 @@ class _UrgentNoticeCard extends StatelessWidget {
           ),
           const SizedBox(height: 14),
           Text(
-            'TAKE ACTION →',
+            '$actionLabel →',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: const Color(0xFFD33B2C),
               fontWeight: FontWeight.w800,
@@ -2918,9 +3888,22 @@ class _UrgentNoticeCard extends StatelessWidget {
 }
 
 class _EventNoticeCard extends StatelessWidget {
-  const _EventNoticeCard({required this.imageUrl, required this.onTap});
+  const _EventNoticeCard({
+    required this.imageUrl,
+    required this.title,
+    required this.monthLabel,
+    required this.dayLabel,
+    required this.category,
+    required this.buttonLabel,
+    required this.onTap,
+  });
 
   final String imageUrl;
+  final String title;
+  final String monthLabel;
+  final String dayLabel;
+  final String category;
+  final String buttonLabel;
   final VoidCallback onTap;
 
   @override
@@ -2950,13 +3933,13 @@ class _EventNoticeCard extends StatelessWidget {
                       child: Column(
                         children: [
                           Text(
-                            'OCT',
+                            monthLabel,
                             style: Theme.of(context).textTheme.bodySmall
                                 ?.copyWith(fontWeight: FontWeight.w800),
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            '24',
+                            dayLabel,
                             style: Theme.of(context).textTheme.titleLarge
                                 ?.copyWith(fontWeight: FontWeight.w800),
                           ),
@@ -2970,14 +3953,14 @@ class _EventNoticeCard extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const AvenuePill(
-                          label: 'EVENT',
+                        AvenuePill(
+                          label: category,
                           backgroundColor: Color(0x22000000),
                           foregroundColor: Colors.white,
                         ),
                         const SizedBox(height: 10),
                         Text(
-                          'Annual Rooftop Soirée',
+                          title,
                           style: Theme.of(context).textTheme.displayMedium
                               ?.copyWith(color: Colors.white, fontSize: 18),
                         ),
@@ -2997,7 +3980,7 @@ class _EventNoticeCard extends StatelessWidget {
                 SizedBox(
                   width: 94,
                   child: AvenuePrimaryButton(
-                    label: 'RSVP',
+                    label: buttonLabel,
                     onPressed: onTap,
                     height: 40,
                     fontSize: 14,

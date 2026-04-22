@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Announcements Management | Avenue360 Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-container": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "surface-container-low": "#f3f4f5",
+                    "secondary-container": "#fdaf0b",
+                    "surface-variant": "#e1e3e4",
+                    "on-secondary": "#ffffff",
+                    "tertiary-container": "#c55500",
+                    "on-tertiary-fixed": "#341100",
+                    "surface-tint": "#005bc0",
+                    "surface-bright": "#f8f9fa",
+                    "on-error-container": "#93000a",
+                    "surface": "#f8f9fa",
+                    "inverse-surface": "#2e3132",
+                    "background": "#f8f9fa",
+                    "surface-dim": "#d9dadb",
+                    "primary-container": "#1a73e8",
+                    "error-container": "#ffdad6",
+                    "on-secondary-container": "#694600",
+                    "on-error": "#ffffff",
+                    "secondary-fixed": "#ffddaf",
+                    "outline": "#727785",
+                    "secondary-fixed-dim": "#ffba43",
+                    "secondary": "#805600",
+                    "primary": "#1A73E8",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed-dim": "#adc7ff",
+                    "on-primary-fixed": "#001a41",
+                    "tertiary-fixed-dim": "#ffb691",
+                    "inverse-on-surface": "#f0f1f2",
+                    "inverse-primary": "#adc7ff",
+                    "on-secondary-fixed-variant": "#614000",
+                    "on-tertiary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "on-background": "#191c1d",
+                    "on-tertiary-container": "#0e0200",
+                    "on-surface-variant": "#414754",
+                    "surface-container": "#edeeef",
+                    "tertiary": "#9e4300",
+                    "outline-variant": "#c1c6d6",
+                    "surface-container-high": "#e7e8e9",
+                    "primary-fixed": "#d8e2ff",
+                    "on-secondary-fixed": "#281800",
+                    "on-primary-fixed-variant": "#004493",
+                    "tertiary-fixed": "#ffdbcb",
+                    "surface-container-highest": "#e1e3e4",
+                    "on-tertiary-fixed-variant": "#783100",
+                    "on-surface": "#191c1d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .headline-font { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-header {
+            backdrop-filter: blur(24px);
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e1e3e4; border-radius: 10px; }
+        
+        /* Modal Animation Styles */
+        #creation-modal {
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+        #creation-modal.hidden {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        #creation-modal.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen">
+<!-- Navigation Drawer (Desktop Only) -->
+<aside class="fixed left-0 top-0 h-full w-80 z-[60] flex flex-col p-4 bg-surface-container-low transition-all duration-300 hidden md:flex">
+<div class="px-6 py-8 flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined" data-icon="apartment">apartment</span>
+</div>
+<div>
+<h2 class="font-bold text-primary headline-font text-lg leading-tight">Avenue360 Admin</h2>
+<p class="text-[11px] text-on-surface-variant/60 font-label uppercase tracking-widest">Residential Excellence</p>
+</div>
+</div>
+<nav class="flex-1 mt-6 space-y-1">
+<a class="flex items-center gap-4 px-6 py-4 text-on-surface/70 hover:bg-white/50 transition-all mx-2" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="font-headline text-base">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-4 bg-surface-container-lowest text-primary font-semibold rounded-xl mx-2 shadow-sm transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="campaign" style="font-variation-settings: 'FILL' 1;">campaign</span>
+<span class="font-headline text-base">Announcements</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-4 text-on-surface/70 hover:bg-white/50 transition-all mx-2" href="#">
+<span class="material-symbols-outlined" data-icon="build">build</span>
+<span class="font-headline text-base">Maintenance</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-4 text-on-surface/70 hover:bg-white/50 transition-all mx-2" href="#">
+<span class="material-symbols-outlined" data-icon="pool">pool</span>
+<span class="font-headline text-base">Amenities</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-4 text-on-surface/70 hover:bg-white/50 transition-all mx-2" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-headline text-base">Billing</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-4 text-on-surface/70 hover:bg-white/50 transition-all mx-2" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-headline text-base">Settings</span>
+</a>
+</nav>
+<div class="mt-auto p-4 bg-surface-container rounded-2xl mx-2 flex items-center gap-3">
+<img alt="Admin Profile" class="w-10 h-10 rounded-full bg-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcjyqmtLKN5lVSrOzcWQAyGcGx3IfPyA4eDwcQx-fAKh0xEbv9EPLF1YGNl4DO9yU8kd8_zmgKCLolWWvpqF_2lcrZaUBXYkwfwopSo8OYyzRM3QabaNNMS3Qif0-Ity-1E00vH0KJtRdYxzpS09RAFH48x00kgBLD_IGZJyiV_hMKIcvcQ3oG7Ebu00fz7mo1GpzNfIrWRVt18D2b5GWO3LnCFwdOxjqIJn7N10Kqdy0IESJXXmZGt7-aiJzHKHnPHLVzwP8y12g"/>
+<div class="overflow-hidden">
+<p class="font-semibold text-sm truncate">Admin Profile</p>
+<p class="text-xs text-on-surface-variant">Property Manager</p>
+</div>
+</div>
+</aside>
+<!-- Top App Bar -->
+<header class="sticky top-0 z-50 flex justify-between items-center px-6 py-4 w-full bg-[#f8f9fa]/80 backdrop-blur-xl md:pl-[340px]">
+<div class="flex items-center gap-4">
+<button class="md:hidden p-2 rounded-full hover:bg-blue-50 transition-colors">
+<span class="material-symbols-outlined text-primary" data-icon="menu">menu</span>
+</button>
+<h1 class="text-xl font-bold text-on-background headline-font tracking-tight">Announcements</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="hidden sm:flex items-center gap-2 text-sm font-medium text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="search">search</span>
+                Search
+            </button>
+<div class="w-10 h-10 rounded-full border-2 border-primary/20 p-0.5">
+<img alt="Admin" class="w-full h-full rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCS2UTMJLqbmOVUPa6kp6MS9nhMykvFiRnHwuVfyhzNCjVpBZ6uR5k05a56xIUp9dy_Ri1nuZoAfBiSqTmPB27PYmnm8seyyddk3aJz4f8hQnn2vZNvgYOhLaED16pJ-ojv0L-blYzZjvqtcKPEsKiJBOhFGR_Lfnf1qzYEwT6dCC3Spg-18rqBcHYIJTfbQd50Lcn6cFSEsitTMIQvX61LvycACPhg3P5p3EM9WvajJmWxwuTI--JjR5TmD211Sq5QMqSzymHrzkk"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="md:ml-80 p-6 lg:p-10 max-w-5xl mx-auto mb-24 md:mb-10">
+<!-- Tab Navigation -->
+<div class="flex gap-8 mb-8 border-b border-surface-container-high overflow-x-auto">
+<button class="pb-4 px-2 border-b-2 border-primary text-primary font-bold text-sm whitespace-nowrap">Sent Notices</button>
+<button class="pb-4 px-2 border-b-2 border-transparent text-on-surface-variant font-medium text-sm whitespace-nowrap hover:text-on-surface">Scheduled</button>
+<button class="pb-4 px-2 border-b-2 border-transparent text-on-surface-variant font-medium text-sm whitespace-nowrap hover:text-on-surface">Drafts</button>
+</div>
+<!-- Previous Announcements List Section -->
+<section class="space-y-4">
+<div class="flex items-center justify-between mb-2 px-2">
+<h2 class="text-sm font-label uppercase tracking-widest text-on-surface-variant">Recent History</h2>
+<span class="text-xs text-on-surface-variant">Showing last 30 days</span>
+</div>
+<div class="space-y-3">
+<!-- List Item 1: Urgent -->
+<div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-transparent hover:border-primary/10 hover:shadow-md transition-all group cursor-pointer">
+<div class="flex items-start justify-between gap-4">
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-2">
+<span class="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider">Urgent</span>
+<span class="text-[11px] text-on-surface-variant font-medium">• 2 hours ago</span>
+</div>
+<h3 class="font-headline font-bold text-base text-on-surface group-hover:text-primary transition-colors">Water Supply Interruption - Block B</h3>
+<p class="text-sm text-on-surface-variant mt-1 line-clamp-2 leading-relaxed">Emergency repairs are being carried out on the main line. Water supply will be unavailable from 2:00 PM to 5:00 PM today...</p>
+</div>
+<div class="hidden sm:flex items-center gap-1 text-on-surface-variant/40">
+<span class="material-symbols-outlined text-[20px]" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-surface-container flex items-center gap-4 text-[11px] text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="visibility">visibility</span> 412 Reads</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="send">send</span> Residents, Owners</span>
+</div>
+</div>
+<!-- List Item 2: General -->
+<div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-transparent hover:border-primary/10 hover:shadow-md transition-all group cursor-pointer">
+<div class="flex items-start justify-between gap-4">
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-2">
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant text-[10px] font-bold uppercase tracking-wider">General</span>
+<span class="text-[11px] text-on-surface-variant font-medium">• Yesterday, 10:15 AM</span>
+</div>
+<h3 class="font-headline font-bold text-base text-on-surface group-hover:text-primary transition-colors">New Waste Disposal Guidelines</h3>
+<p class="text-sm text-on-surface-variant mt-1 line-clamp-2 leading-relaxed">To improve our community recycling efforts, we have updated the disposal schedule for different types of household waste...</p>
+</div>
+<div class="hidden sm:flex items-center gap-1 text-on-surface-variant/40">
+<span class="material-symbols-outlined text-[20px]" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-surface-container flex items-center gap-4 text-[11px] text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="visibility">visibility</span> 385 Reads</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="send">send</span> All Residents</span>
+</div>
+</div>
+<!-- List Item 3: Event -->
+<div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-transparent hover:border-primary/10 hover:shadow-md transition-all group cursor-pointer">
+<div class="flex items-start justify-between gap-4">
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-2">
+<span class="px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant text-[10px] font-bold uppercase tracking-wider">Event</span>
+<span class="text-[11px] text-on-surface-variant font-medium">• Oct 24, 2024</span>
+</div>
+<h3 class="font-headline font-bold text-base text-on-surface group-hover:text-primary transition-colors">Annual Garden Tea Party</h3>
+<p class="text-sm text-on-surface-variant mt-1 line-clamp-2 leading-relaxed">Join us for an afternoon of community bonding at the North Pavilion. Refreshments will be served and kids' activities planned...</p>
+</div>
+<div class="hidden sm:flex items-center gap-1 text-on-surface-variant/40">
+<span class="material-symbols-outlined text-[20px]" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-surface-container flex items-center gap-4 text-[11px] text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="visibility">visibility</span> 290 Reads</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="send">send</span> All Residents</span>
+</div>
+</div>
+</div>
+<!-- More Pagination/Scroll indicator -->
+<div class="flex justify-center pt-6">
+<button class="text-primary font-bold text-xs flex items-center gap-2 hover:bg-primary/5 px-4 py-2 rounded-full transition-all">
+                    Load More History
+                    <span class="material-symbols-outlined text-[16px]" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</button>
+</div>
+</section>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-24 right-6 md:bottom-10 md:right-10 w-16 h-16 bg-primary text-white rounded-full shadow-[0_8px_32px_rgba(26,115,232,0.4)] hover:scale-110 active:scale-95 transition-all z-[70] flex items-center justify-center group" id="fab-create">
+<span class="material-symbols-outlined text-3xl transition-transform group-hover:rotate-90" data-icon="add">add</span>
+<span class="absolute right-full mr-4 bg-inverse-surface text-inverse-on-surface px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg">New Announcement</span>
+</button>
+<!-- Overlay/Form Modal (Initial state Hidden) -->
+<div class="fixed inset-0 z-[80] hidden overflow-y-auto bg-black/30 backdrop-blur-sm" id="creation-modal">
+<div class="min-h-screen flex items-end sm:items-center justify-center p-0 sm:p-6">
+<div class="w-full max-w-2xl bg-surface rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden">
+<!-- Modal Header -->
+<div class="px-8 py-5 bg-surface-container-lowest border-b border-surface-container flex items-center justify-between">
+<h2 class="text-lg font-bold headline-font">Create Announcement</h2>
+<button class="p-2 rounded-full hover:bg-surface-container transition-colors" id="close-modal">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<div class="p-6 sm:p-8 max-h-[80vh] overflow-y-auto">
+<div class="space-y-8">
+<!-- Core Content -->
+<div class="space-y-6">
+<div class="relative">
+<label class="block text-[10px] font-bold text-primary mb-2 px-1 uppercase tracking-wider">Announcement Title</label>
+<input class="w-full bg-surface-container-high border-none rounded-2xl p-4 text-on-surface placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-primary/20 transition-all" placeholder="e.g., Annual General Meeting 2024" type="text"/>
+</div>
+<div>
+<label class="block text-[10px] font-bold text-on-surface-variant mb-4 px-1 uppercase tracking-wider">Category</label>
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 rounded-full bg-primary text-white text-xs font-bold flex items-center gap-2 shadow-md">
+<span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+                                        Urgent
+                                    </button>
+<button class="px-4 py-2 rounded-full bg-surface-container-high text-on-surface-variant text-xs font-bold hover:bg-surface-container-highest transition-colors">General</button>
+<button class="px-4 py-2 rounded-full bg-surface-container-high text-on-surface-variant text-xs font-bold hover:bg-surface-container-highest transition-colors">Facility</button>
+<button class="px-4 py-2 rounded-full bg-surface-container-high text-on-surface-variant text-xs font-bold hover:bg-surface-container-highest transition-colors">Event</button>
+</div>
+</div>
+<div class="relative">
+<label class="block text-[10px] font-bold text-on-surface-variant mb-2 px-1 uppercase tracking-wider">Message Content</label>
+<textarea class="w-full bg-surface-container-high border-none rounded-2xl p-4 text-on-surface placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-primary/20 resize-none leading-relaxed text-sm" placeholder="Type your announcement details here..." rows="6"></textarea>
+</div>
+</div>
+<!-- Visuals -->
+<div class="relative group cursor-pointer">
+<div class="w-full h-32 rounded-2xl border-2 border-dashed border-outline-variant bg-surface-container-low flex flex-col items-center justify-center transition-all group-hover:bg-primary/5 group-hover:border-primary">
+<span class="material-symbols-outlined text-primary mb-1" data-icon="add_a_photo">add_a_photo</span>
+<p class="text-[11px] font-bold text-on-surface">Add Image or Banner</p>
+<p class="text-[9px] text-on-surface-variant mt-0.5">JPG, PNG (max. 10MB)</p>
+</div>
+<input class="absolute inset-0 opacity-0 cursor-pointer" type="file"/>
+</div>
+<!-- Config -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div>
+<label class="block text-[10px] font-bold text-on-surface-variant mb-2 uppercase tracking-wider">Target Audience</label>
+<div class="relative">
+<select class="w-full bg-surface-container-high border-none rounded-2xl p-3 text-xs appearance-none focus:ring-2 focus:ring-primary/20">
+<option>All Residents</option>
+<option>Owners Only</option>
+<option>Tenants Only</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-sm" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<div>
+<label class="block text-[10px] font-bold text-on-surface-variant mb-2 uppercase tracking-wider">Publish Mode</label>
+<div class="flex items-center gap-2 p-1.5 rounded-2xl bg-surface-container-high">
+<button class="flex-1 py-2 text-[10px] font-bold rounded-xl bg-primary text-white shadow-sm">Instant</button>
+<button class="flex-1 py-2 text-[10px] font-bold rounded-xl text-on-surface-variant">Schedule</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal Footer Actions -->
+<div class="p-6 bg-surface-container-lowest border-t border-surface-container flex items-center gap-3">
+<button class="flex-1 py-4 text-sm font-bold text-on-surface-variant hover:bg-surface-container rounded-2xl transition-all" onclick="toggleModal()">Cancel</button>
+<button class="flex-[2] bg-primary text-white py-4 rounded-2xl font-bold text-sm shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="send">send</span>
+                        Publish Now
+                    </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 bg-[#f8f9fa] flex justify-around items-center px-4 pb-6 pt-3 shadow-[0_-8px_24px_rgba(25,28,29,0.04)] rounded-t-3xl">
+<a class="flex flex-col items-center text-[#191c1d]/50 px-5 py-2" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-['Inter'] text-[11px] uppercase tracking-[0.05em] font-medium mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center text-primary px-5 py-2" href="#">
+<span class="material-symbols-outlined" data-icon="campaign" style="font-variation-settings: 'FILL' 1;">campaign</span>
+<span class="font-['Inter'] text-[11px] uppercase tracking-[0.05em] font-medium mt-1">Notify</span>
+</a>
+<a class="flex flex-col items-center text-[#191c1d]/50 px-5 py-2" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-['Inter'] text-[11px] uppercase tracking-[0.05em] font-medium mt-1">Residents</span>
+</a>
+<a class="flex flex-col items-center text-[#191c1d]/50 px-5 py-2" href="#">
+<span class="material-symbols-outlined" data-icon="person_pin">person_pin</span>
+<span class="font-['Inter'] text-[11px] uppercase tracking-[0.05em] font-medium mt-1">Profile</span>
+</a>
+</nav>
+<script>
+        const fab = document.getElementById('fab-create');
+        const modal = document.getElementById('creation-modal');
+        const closeBtn = document.getElementById('close-modal');
+
+        function toggleModal() {
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                setTimeout(() => modal.classList.add('active'), 10);
+                document.body.style.overflow = 'hidden';
+            } else {
+                modal.classList.remove('active');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    document.body.style.overflow = '';
+                }, 300);
+            }
+        }
+
+        fab.addEventListener('click', toggleModal);
+        closeBtn.addEventListener('click', toggleModal);
+        
+        // Close on clicking outside the modal content
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) toggleModal();
+        });
+    </script>
+</body></html>

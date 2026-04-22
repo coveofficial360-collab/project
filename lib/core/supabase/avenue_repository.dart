@@ -66,12 +66,96 @@ class AvenueRepository {
     return _castRows(rows);
   }
 
+  Future<List<Map<String, dynamic>>> fetchAmenities() async {
+    final rows = await _client
+        .from('amenities')
+        .select()
+        .order('created_at', ascending: true);
+
+    return _castRows(rows);
+  }
+
+  Future<Map<String, dynamic>?> fetchAmenityByCode(String code) async {
+    final rows = await _client
+        .from('amenities')
+        .select()
+        .eq('code', code)
+        .limit(1);
+    final records = _castRows(rows);
+    if (records.isEmpty) {
+      return null;
+    }
+
+    return records.first;
+  }
+
+  Future<List<Map<String, dynamic>>> fetchCurrentUserAmenityBookings() async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return const [];
+    }
+
+    final rows = await _client
+        .from('amenity_bookings')
+        .select('*, amenities(name, code, location_label, image_url)')
+        .eq('user_id', currentUser.id)
+        .order('booking_date', ascending: true);
+
+    return _castRows(rows);
+  }
+
   Future<List<Map<String, dynamic>>> fetchNotices({int limit = 10}) async {
     final rows = await _client
         .from('notices')
         .select()
         .order('posted_at', ascending: false)
         .limit(limit);
+
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchCurrentUserPaymentMethods() async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return const [];
+    }
+
+    final rows = await _client
+        .from('payment_methods')
+        .select()
+        .eq('user_id', currentUser.id)
+        .order('is_primary', ascending: false)
+        .order('created_at', ascending: true);
+
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchCurrentUserPaymentActivity() async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return const [];
+    }
+
+    final rows = await _client
+        .from('payment_activity')
+        .select()
+        .eq('user_id', currentUser.id)
+        .order('activity_at', ascending: false);
+
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchCurrentUserComplaints() async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return const [];
+    }
+
+    final rows = await _client
+        .from('complaints')
+        .select()
+        .eq('user_id', currentUser.id)
+        .order('created_at', ascending: false);
 
     return _castRows(rows);
   }
@@ -87,6 +171,55 @@ class AvenueRepository {
         .select()
         .eq('user_id', currentUser.id)
         .order('created_at', ascending: false);
+
+    return _castRows(rows);
+  }
+
+  Future<void> markAllCurrentUserNotificationsRead() async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return;
+    }
+
+    await _client
+        .from('notifications')
+        .update({'is_unread': false})
+        .eq('user_id', currentUser.id)
+        .eq('is_unread', true);
+  }
+
+  Future<void> registerDevicePushToken({
+    required String token,
+    required String platform,
+    String? deviceLabel,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return;
+    }
+
+    await _client.rpc(
+      'register_device_push_token',
+      params: {
+        'p_user_id': currentUser.id,
+        'p_fcm_token': token,
+        'p_platform': platform,
+        'p_device_label': deviceLabel,
+      },
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> fetchCurrentUserVisitorPasses() async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return const [];
+    }
+
+    final rows = await _client
+        .from('visitor_passes')
+        .select()
+        .eq('resident_user_id', currentUser.id)
+        .order('expected_arrival', ascending: true);
 
     return _castRows(rows);
   }
@@ -141,6 +274,152 @@ class AvenueRepository {
         .order('created_at', ascending: false);
 
     return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchAnnouncements() async {
+    final rows = await _client
+        .from('announcements')
+        .select()
+        .order('created_at', ascending: false);
+
+    return _castRows(rows);
+  }
+
+  Future<Map<String, dynamic>?> createResident({
+    required String email,
+    required String fullName,
+    required String phone,
+    required String unitNumber,
+    required String residentKind,
+    String tempPassword = 'welcome123',
+  }) async {
+    final response = await _client.rpc(
+      'create_resident_app_user',
+      params: {
+        'p_email': email.trim().toLowerCase(),
+        'p_full_name': fullName.trim(),
+        'p_phone': phone.trim(),
+        'p_unit_number': unitNumber.trim(),
+        'p_resident_kind': residentKind,
+        'p_temp_password': tempPassword,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> createVisitorPass({
+    required String visitorName,
+    required String phone,
+    required String visitorKind,
+    required DateTime expectedArrival,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'create_visitor_pass',
+      params: {
+        'p_resident_user_id': currentUser.id,
+        'p_visitor_name': visitorName.trim(),
+        'p_phone': phone.trim(),
+        'p_visitor_kind': visitorKind,
+        'p_expected_arrival': expectedArrival.toIso8601String(),
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> createComplaint({
+    required String title,
+    required String description,
+    required String iconName,
+    required String accentHex,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'create_resident_complaint',
+      params: {
+        'p_user_id': currentUser.id,
+        'p_title': title.trim(),
+        'p_description': description.trim(),
+        'p_icon_name': iconName,
+        'p_accent_hex': accentHex,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> createAnnouncement({
+    required String kind,
+    required String title,
+    required String body,
+    required String targetAudience,
+    String state = 'sent',
+    DateTime? scheduledFor,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'create_announcement',
+      params: {
+        'p_created_by': currentUser.id,
+        'p_kind': kind,
+        'p_title': title.trim(),
+        'p_body': body.trim(),
+        'p_target_audience': targetAudience.trim(),
+        'p_state': state,
+        'p_scheduled_for': scheduledFor?.toIso8601String(),
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> sendAnnouncementPush({
+    required String announcementId,
+  }) async {
+    final response = await _client.functions.invoke(
+      'send-announcement-push',
+      body: {'announcement_id': announcementId},
+    );
+
+    final data = response.data;
+    if (data is Map<String, dynamic>) {
+      return data;
+    }
+    if (data is Map) {
+      return Map<String, dynamic>.from(data);
+    }
+
+    return null;
   }
 
   Future<List<Map<String, dynamic>>> fetchResidentDirectory() async {

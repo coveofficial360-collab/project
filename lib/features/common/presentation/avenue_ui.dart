@@ -480,12 +480,20 @@ class AvenueInputField extends StatelessWidget {
     required this.hintText,
     required this.icon,
     super.key,
+    this.controller,
+    this.keyboardType,
+    this.readOnly = false,
+    this.onTap,
     this.trailing,
   });
 
   final String label;
   final String hintText;
   final IconData icon;
+  final TextEditingController? controller;
+  final TextInputType? keyboardType;
+  final bool readOnly;
+  final VoidCallback? onTap;
   final Widget? trailing;
 
   @override
@@ -494,18 +502,46 @@ class AvenueInputField extends StatelessWidget {
       Icon(icon, color: AvenueColors.outline, size: 20),
       const SizedBox(width: 12),
       Expanded(
-        child: Text(
-          hintText,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: AvenueColors.outline.withValues(alpha: 0.72),
-          ),
-        ),
+        child: controller == null
+            ? Text(
+                hintText,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: AvenueColors.outline.withValues(alpha: 0.72),
+                ),
+              )
+            : TextField(
+                controller: controller,
+                keyboardType: keyboardType,
+                readOnly: readOnly,
+                onTap: onTap,
+                decoration: InputDecoration(
+                  isCollapsed: true,
+                  border: InputBorder.none,
+                  hintText: hintText,
+                  hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AvenueColors.outline.withValues(alpha: 0.72),
+                  ),
+                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: AvenueColors.onSurface),
+              ),
       ),
     ];
 
     if (trailing != null) {
       rowChildren.add(trailing!);
     }
+
+    final field = Container(
+      height: 52,
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      decoration: BoxDecoration(
+        color: AvenueColors.surfaceHigh,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(children: rowChildren),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -519,15 +555,17 @@ class AvenueInputField extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 10),
-        Container(
-          height: 52,
-          padding: const EdgeInsets.symmetric(horizontal: 14),
-          decoration: BoxDecoration(
-            color: AvenueColors.surfaceHigh,
-            borderRadius: BorderRadius.circular(16),
+        if (controller == null && onTap == null)
+          field
+        else
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: controller == null ? onTap : null,
+              borderRadius: BorderRadius.circular(16),
+              child: IgnorePointer(ignoring: controller == null, child: field),
+            ),
           ),
-          child: Row(children: rowChildren),
-        ),
       ],
     );
   }
