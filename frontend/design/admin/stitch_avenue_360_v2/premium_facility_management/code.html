@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .luminous-glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+        .glow-blue {
+            box-shadow: 0 0 20px rgba(0, 94, 163, 0.15);
+        }
+        .glow-green {
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.15);
+        }
+        .circular-progress {
+            background: radial-gradient(closest-side, white 79%, transparent 80% 100%),
+                        conic-gradient(var(--progress-color) var(--progress-value), #e2e8f0 0);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#c0e8ff",
+                        "surface-container-highest": "#dce3e8",
+                        "on-surface": "#151d20",
+                        "tertiary": "#00457f",
+                        "on-primary-fixed-variant": "#004880",
+                        "on-error-container": "#93000a",
+                        "surface-container-low": "#eef5fa",
+                        "on-surface-variant": "#414751",
+                        "surface-bright": "#f4faff",
+                        "outline": "#717782",
+                        "on-secondary-fixed": "#001e2b",
+                        "error": "#ba1a1a",
+                        "surface-container": "#e8eff4",
+                        "on-tertiary-container": "#bcd6ff",
+                        "primary-fixed": "#d2e4ff",
+                        "surface-container-high": "#e2e9ee",
+                        "primary": "#00467c",
+                        "background": "#f4faff",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#c1c7d2",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed": "#001c39",
+                        "inverse-surface": "#2a3135",
+                        "primary-fixed-dim": "#a1c9ff",
+                        "on-tertiary": "#ffffff",
+                        "surface-tint": "#0861a6",
+                        "surface-dim": "#d4dbe0",
+                        "secondary-container": "#93dbff",
+                        "primary-container": "#005ea3",
+                        "on-secondary-container": "#006180",
+                        "surface-variant": "#dce3e8",
+                        "on-background": "#151d20",
+                        "tertiary-fixed": "#d4e3ff",
+                        "inverse-primary": "#a1c9ff",
+                        "on-primary-container": "#bad7ff",
+                        "tertiary-container": "#075da6",
+                        "secondary": "#006686",
+                        "surface": "#f4faff",
+                        "tertiary-fixed-dim": "#a4c9ff",
+                        "on-tertiary-fixed-variant": "#004883",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#ebf2f7",
+                        "secondary-fixed-dim": "#87d0f4",
+                        "on-secondary-fixed-variant": "#004d66",
+                        "on-primary-fixed": "#001c37"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1.5rem",
+                        "3xl": "2.5rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "display": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-bold": ["Inter"],
+                        "stats-number": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+            background: radial-gradient(circle at top right, #f4faff, #eef5fa);
+        }
+    </style>
+<style>
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom, 16px);
+        }
+        .fill-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style></head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-32">
+<!-- TopAppBar -->
+<nav class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 h-20 bg-white/60 backdrop-blur-2xl border-b border-white/40 shadow-sm">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-2xl bg-primary-container flex items-center justify-center overflow-hidden shadow-inner border border-white/50">
+<img alt="Admin" class="w-full h-full object-cover" data-alt="professional portrait of a facility manager" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxDFAJI4AC_-dItAU2dTidIJnXu5Funp5PX8FrPT16ETklqi8mjT54UZbvIQ1XWI0X2HbIQGlgjtp7XlGMBKbgcaT7n6PKXJk9_Qln876j-WD_HFUmPABw4_uILVv-NWambH8x891ECULBukUS0bMEFgvx-XSnCDmRR2V8aysIhGK6FE_2Wc86FTHRPdBP6_KvWxMtnXN50ck5lPFExKS68Ki3MA8MMlucspvyWM7QZ3CoLgapqZ11PjqdzZ2iEz5u1wOUzBmOeBo"/>
+</div>
+<div>
+<span class="block text-xs font-bold text-primary/60 uppercase tracking-tighter">COVE Management</span>
+<span class="text-xl font-bold text-blue-900 tracking-tight font-display">Facilities Portal</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-blue-50 shadow-sm hover:bg-blue-50 transition-all">
+<span class="material-symbols-outlined text-blue-700 text-[20px]">notifications</span>
+</button>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="max-w-7xl mx-auto pt-28 px-4 md:px-8">
+<!-- Dashboard Header Section -->
+<header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<h1 class="font-display font-extrabold text-4xl text-primary tracking-tight mb-3">Amenities Hub</h1>
+<p class="text-on-surface-variant max-w-xl text-lg leading-relaxed">Intelligence dashboard for real-time occupancy and operational oversight of the COVE residential experience.</p>
+</div>
+<div class="flex gap-2">
+<button class="px-6 py-3 bg-white border border-outline-variant/30 rounded-2xl text-sm font-bold text-primary shadow-sm hover:shadow-md transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">filter_list</span> Filters
+                </button>
+<button class="px-6 py-3 bg-primary text-on-primary rounded-2xl text-sm font-bold shadow-lg shadow-primary/20 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">add</span> New Request
+                </button>
+</div>
+</header>
+<!-- Amenity Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+<!-- Infinity Pool Card -->
+<div class="group relative luminous-glass rounded-3xl overflow-hidden flex flex-col h-[34rem] transition-all hover:-translate-y-2 hover:shadow-2xl">
+<div class="h-[45%] overflow-hidden relative">
+<img alt="Infinity Pool" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="professional rooftop infinity pool photography dusk blue" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfK2QRw_-mKX9L2nhRgAi5PYHvXOtKvY7bzPZ-tH6LXI39zV_3sE8i4tk7MlUItAnnxdekAdzB2SIGwdKhuy0QbPKPewi6R1e6J3AkqFK5b0NHFRBESz4N6yM6C_dkgyZwCEA6sYGinkj-x0U7tqXgqRnqkMU_flXKkEBMEU4y2IwhBA_Zey_jsTVYBRh5nSAoMocr_zz-sL0gW0yjZSO7r2bkR3QawTFn4thI80wZjRpDsTo16TrOy9Vmw7spXjqNmMN_QiPmCuQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+<div class="absolute top-4 left-4 bg-white/90 backdrop-blur-md text-primary px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/50">
+                        Level 42
+                    </div>
+<div class="absolute top-4 right-4 bg-green-500/90 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-lg shadow-green-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                        Active
+                    </div>
+</div>
+<div class="p-8 flex-1 flex flex-col justify-between">
+<div>
+<h3 class="text-2xl font-display font-bold text-primary mb-6">Infinity Pool</h3>
+<div class="flex items-center gap-6">
+<div class="w-20 h-20 rounded-full circular-progress flex items-center justify-center relative shadow-sm border border-white/50" style="--progress-value: 65%; --progress-color: #00467c;">
+<span class="text-lg font-black text-primary">65<span class="text-[10px]">%</span></span>
+</div>
+<div class="flex-1">
+<span class="block text-[10px] font-black text-on-surface-variant uppercase tracking-[0.2em] mb-1">Occupancy Level</span>
+<p class="text-sm text-on-surface-variant font-medium leading-tight">Optimal utilization. 12 guests currently on deck.</p>
+</div>
+</div>
+</div>
+<div class="pt-6 border-t border-outline-variant/20 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">build_circle</span>
+<span class="text-sm font-bold text-primary">Maintenance Mode</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-12 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-6 peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary shadow-inner"></div>
+</label>
+</div>
+</div>
+</div>
+<!-- Zenith Gym Card -->
+<div class="group relative luminous-glass rounded-3xl overflow-hidden flex flex-col h-[34rem] transition-all hover:-translate-y-2 hover:shadow-2xl">
+<div class="h-[45%] overflow-hidden relative">
+<img alt="Zenith Gym" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="ultra luxury minimalist gym photography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZsofZyAgCyxwRMo91Bs2Mo2OVCF_sb1bkTHK3FxnyNiNMGac63NEYH7-94E4_DPJO7ajqYcBu1pZxsu0boabgdW1gk4iIj69itsEQU3P3kuwqOBfAVCc6dZFsnwAsL5MxAzfQ8D-Cb2IzHr9RNqjk7vU1cqtmEMTLMrpe_jjsGC3hPWkaYpocoAYo27dElEWK7-WBj0Osllhr4nCfLVAOH1oC3C2uI4lb4c1Ib8OgJaYql8F5rxf-SYRyjtitV_e0gZzH_t2U1SU"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+<div class="absolute top-4 left-4 bg-white/90 backdrop-blur-md text-primary px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/50">
+                        Level 3
+                    </div>
+<div class="absolute top-4 right-4 bg-orange-500/90 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-lg shadow-orange-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+                        High Traffic
+                    </div>
+</div>
+<div class="p-8 flex-1 flex flex-col justify-between">
+<div>
+<h3 class="text-2xl font-display font-bold text-primary mb-6">Zenith Gym</h3>
+<div class="flex items-center gap-6">
+<div class="w-20 h-20 rounded-full circular-progress flex items-center justify-center relative shadow-sm border border-white/50" style="--progress-value: 88%; --progress-color: #f97316;">
+<span class="text-lg font-black text-orange-600">88<span class="text-[10px]">%</span></span>
+</div>
+<div class="flex-1">
+<span class="block text-[10px] font-black text-on-surface-variant uppercase tracking-[0.2em] mb-1">Occupancy Level</span>
+<p class="text-sm text-on-surface-variant font-medium leading-tight">Peak hour detected. 34 active sessions logged.</p>
+</div>
+</div>
+</div>
+<button class="w-full py-4 px-6 bg-white border-2 border-primary/10 text-primary rounded-2xl font-bold tracking-tight hover:bg-primary hover:text-white hover:shadow-xl hover:shadow-primary/20 transition-all flex items-center justify-center gap-2">
+                        System Analytics
+                        <span class="material-symbols-outlined text-sm">query_stats</span>
+</button>
+</div>
+</div>
+<!-- Rooftop Lounge Card -->
+<div class="group relative luminous-glass rounded-3xl overflow-hidden flex flex-col h-[34rem] transition-all hover:-translate-y-2 hover:shadow-2xl">
+<div class="h-[45%] overflow-hidden relative">
+<img alt="Rooftop Lounge" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-60 grayscale-[0.3]" data-alt="luxury rooftop lounge night atmospheric" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOKLi7d6n7d-fR3R2pO6Gk33VuSK6-B30EeRFmpEHY2ss45JvMX-8IAFMma11KyUfCSGzjbA7RqD_ePlaSkS04v7riHSkdn_It7b9T8_M2ok4e7nK-BxufGxbw7c5vDrm1XnKvlhhTBmJ8c7TRTM5HdKZtYCMhyDDcBe6XgVR9nO83GVotlO_2Hp0-dVnNyONHbm4OR5yCAeDPTfojlU3XiQ9dNauSz2rNNAusVBMfct3IAw4kTwYz_rTLjF0PNkEOPpbKKxYMbnU"/>
+<div class="absolute inset-0 bg-slate-900/40"></div>
+<div class="absolute top-4 left-4 bg-white/20 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/10">
+                        Rooftop
+                    </div>
+<div class="absolute top-4 right-4 bg-red-500/90 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-lg shadow-red-500/20">
+                        Offline
+                    </div>
+</div>
+<div class="p-8 flex-1 flex flex-col justify-between">
+<div>
+<h3 class="text-2xl font-display font-bold text-slate-500 mb-6">Rooftop Lounge</h3>
+<div class="flex items-center gap-6 opacity-60">
+<div class="w-20 h-20 rounded-full circular-progress flex items-center justify-center relative shadow-sm border border-white/50" style="--progress-value: 0%; --progress-color: #cbd5e1;">
+<span class="text-lg font-black text-slate-400">0<span class="text-[10px]">%</span></span>
+</div>
+<div class="flex-1">
+<span class="block text-[10px] font-black text-on-surface-variant uppercase tracking-[0.2em] mb-1">Status Report</span>
+<p class="text-sm text-on-surface-variant font-medium leading-tight">Fire pit sanitation in progress. Expected uptime: 2h.</p>
+</div>
+</div>
+</div>
+<button class="w-full py-4 px-6 bg-gradient-to-r from-primary to-primary-container text-white rounded-2xl font-bold tracking-tight shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[20px]">verified</span>
+                        Reactivate Facility
+                    </button>
+</div>
+</div>
+</div>
+<!-- System Intelligence Bar -->
+<section class="mt-16 mb-12 luminous-glass p-10 rounded-[3rem] border border-white flex flex-wrap justify-between items-center gap-10">
+<div class="flex items-center gap-5">
+<div class="w-14 h-14 rounded-2xl bg-green-50 flex items-center justify-center glow-green border border-green-100">
+<span class="material-symbols-outlined text-green-600 text-3xl" style="font-variation-settings: 'FILL' 1;">health_and_safety</span>
+</div>
+<div>
+<span class="block text-[10px] font-black text-on-surface-variant uppercase tracking-[0.2em] mb-1">Infrastructure</span>
+<div class="flex items-center gap-2">
+<span class="text-2xl font-display font-extrabold text-primary">99.8%</span>
+<span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-lg border border-green-100">OPTIMAL</span>
+</div>
+</div>
+</div>
+<div class="h-12 w-px bg-outline-variant/20 hidden lg:block"></div>
+<div class="flex items-center gap-5">
+<div class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center glow-blue border border-blue-100">
+<span class="material-symbols-outlined text-blue-600 text-3xl">task_alt</span>
+</div>
+<div>
+<span class="block text-[10px] font-black text-on-surface-variant uppercase tracking-[0.2em] mb-1">Open Tickets</span>
+<div class="flex items-center gap-2">
+<span class="text-2xl font-display font-extrabold text-primary">12</span>
+<span class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-lg border border-blue-100">-2 Today</span>
+</div>
+</div>
+</div>
+<div class="h-12 w-px bg-outline-variant/20 hidden lg:block"></div>
+<div class="flex items-center gap-5">
+<div class="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center border border-indigo-100" style="box-shadow: 0 0 20px rgba(79, 70, 229, 0.1);">
+<span class="material-symbols-outlined text-indigo-600 text-3xl">engineering</span>
+</div>
+<div>
+<span class="block text-[10px] font-black text-on-surface-variant uppercase tracking-[0.2em] mb-1">On-Site Teams</span>
+<div class="flex items-center gap-2">
+<span class="text-2xl font-display font-extrabold text-primary">08</span>
+<span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-lg border border-indigo-100">STATIONED</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 bg-white/80 backdrop-blur-xl border-t border-blue-100/20 shadow-[0_-8px_24px_rgba(0,94,163,0.08)] px-4 pb-safe">
+<a class="flex flex-col items-center justify-center text-slate-400 opacity-70 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-inter text-[10px] font-bold uppercase tracking-widest">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 opacity-70 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-inter text-[10px] font-bold uppercase tracking-widest">Residents</span>
+</a>
+<a class="flex flex-col items-center justify-center text-blue-700 scale-110" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-inter text-[10px] font-bold uppercase tracking-widest">Issues</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 opacity-70 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined">business</span>
+<span class="font-inter text-[10px] font-bold uppercase tracking-widest">Facilities</span>
+</a>
+</nav>
+</body></html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Complaints &amp; Issues | COVE Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-container": "#bad7ff",
+                    "inverse-surface": "#2a3135",
+                    "surface-bright": "#f4faff",
+                    "tertiary-container": "#075da6",
+                    "surface-tint": "#0861a6",
+                    "inverse-primary": "#a1c9ff",
+                    "outline-variant": "#c1c7d2",
+                    "tertiary": "#00457f",
+                    "secondary-fixed-dim": "#87d0f4",
+                    "on-error": "#ffffff",
+                    "error": "#ba1a1a",
+                    "secondary": "#006686",
+                    "on-primary-fixed": "#001c37",
+                    "surface-container-high": "#e2e9ee",
+                    "secondary-container": "#93dbff",
+                    "primary-fixed": "#d2e4ff",
+                    "on-secondary-container": "#006180",
+                    "surface-container": "#e8eff4",
+                    "outline": "#717782",
+                    "on-tertiary-fixed-variant": "#004883",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "on-tertiary-fixed": "#001c39",
+                    "surface-container-highest": "#dce3e8",
+                    "surface": "#f4faff",
+                    "inverse-on-surface": "#ebf2f7",
+                    "on-primary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "primary-container": "#005ea3",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed": "#001e2b",
+                    "on-background": "#151d20",
+                    "on-tertiary-container": "#bcd6ff",
+                    "primary-fixed-dim": "#a1c9ff",
+                    "tertiary-fixed-dim": "#a4c9ff",
+                    "surface-variant": "#dce3e8",
+                    "on-primary-fixed-variant": "#004880",
+                    "surface-dim": "#d4dbe0",
+                    "secondary-fixed": "#c0e8ff",
+                    "on-secondary-fixed-variant": "#004d66",
+                    "primary": "#00467c",
+                    "on-tertiary": "#ffffff",
+                    "on-surface-variant": "#414751",
+                    "surface-container-low": "#eef5fa",
+                    "on-surface": "#151d20",
+                    "tertiary-fixed": "#d4e3ff",
+                    "background": "#f4faff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "card-padding": "1.5rem",
+                    "container-padding": "2rem",
+                    "sidebar-width": "18rem",
+                    "element-gap": "1rem",
+                    "section-gap": "2rem"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "label-bold": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "display": ["Inter"],
+                    "stats-number": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["1rem", {"lineHeight": "1.5rem", "fontWeight": "400"}],
+                    "headline-md": ["1.375rem", {"lineHeight": "1.75rem", "fontWeight": "700"}],
+                    "label-bold": ["0.75rem", {"lineHeight": "1rem", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "headline-lg": ["1.875rem", {"lineHeight": "2.25rem", "letterSpacing": "-0.025em", "fontWeight": "700"}],
+                    "display": ["2.75rem", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "stats-number": ["1.875rem", {"lineHeight": "1", "fontWeight": "700"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface overflow-x-hidden">
+<!-- Navigation Drawer (Desktop) -->
+<aside class="fixed left-0 top-0 h-full w-72 bg-white/80 backdrop-blur-2xl border-r border-blue-100/20 shadow-2xl shadow-blue-900/5 hidden lg:flex flex-col h-full p-4 z-50">
+<div class="px-4 py-8">
+<h1 class="text-2xl font-black tracking-tighter text-blue-800">COVE</h1>
+</div>
+<div class="flex items-center gap-3 px-4 py-4 mb-8 bg-blue-50/50 rounded-xl">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold">
+<img class="w-full h-full rounded-full object-cover" data-alt="professional estate administrator profile portrait in a suit with a confident smile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMP7S5ujQFV0GcqjRNHTy1z8-fCjBSUOr23PP8RtLXXC97OAfyKmXuU8AxMxA4Ig_1Z58gfAvcx5ejaSlCkPcHDSLsf7G6DDpComGUYXzEOMAcaN75L4Hdr8uegAW5ZK5sQydGVTS63eLH0Wgy-vJxpWCJJkcr19IduMk2PyJ7Ehtnelk2MjJBWWu6Rt-QxTmPF-i8vD64x0qcUNO3LkF01qJQizI-8C6JCt398kmIMxL0PgwC6Li3nJYKbXNwcBJlORU2W-4GF3s"/>
+</div>
+<div>
+<p class="font-inter text-sm font-bold text-blue-800">Estate Admin</p>
+<p class="text-[10px] uppercase tracking-wider text-slate-500">Premium Management</p>
+</div>
+</div>
+<nav class="space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-blue-50/50 hover:text-blue-600 rounded-lg transition-all duration-300" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-inter text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-blue-50/50 hover:text-blue-600 rounded-lg transition-all duration-300" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-inter text-sm font-medium">Residents</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-blue-50/80 text-blue-700 border-r-4 border-blue-600 rounded-r-lg font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined">report_problem</span>
+<span class="font-inter text-sm font-medium">Complaints</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-blue-50/50 hover:text-blue-600 rounded-lg transition-all duration-300" href="#">
+<span class="material-symbols-outlined">verified_user</span>
+<span class="font-inter text-sm font-medium">Security</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-blue-50/50 hover:text-blue-600 rounded-lg transition-all duration-300" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-inter text-sm font-medium">Settings</span>
+</a>
+</nav>
+</aside>
+<!-- Top AppBar -->
+<header class="fixed top-0 w-full z-40 flex justify-between items-center px-6 h-16 bg-white/70 backdrop-blur-xl border-b border-blue-500/10 shadow-sm lg:pl-[20rem]">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-blue-700 lg:hidden">menu</span>
+<h2 class="font-inter text-lg font-semibold tracking-tight text-blue-700">Complaints</h2>
+</div>
+<div class="flex items-center gap-3">
+<button class="p-2 rounded-full hover:bg-blue-50/50 transition-colors text-slate-500">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="p-2 rounded-full hover:bg-blue-50/50 transition-colors text-slate-500">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-24 pb-24 px-4 lg:pl-[20rem] lg:pr-8 max-w-7xl mx-auto min-h-screen">
+<!-- Search and Filter Bar -->
+<div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="relative flex-1 max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+<input class="w-full pl-10 pr-4 py-3 rounded-xl border border-blue-100 bg-white/50 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none" placeholder="Search by issue or unit..." type="text"/>
+</div>
+<div class="flex p-1 bg-surface-container-high rounded-xl w-fit">
+<button class="px-6 py-2 rounded-lg text-sm font-bold bg-white text-primary shadow-sm transition-all">All</button>
+<button class="px-6 py-2 rounded-lg text-sm font-bold text-slate-500 hover:text-primary transition-all">Active</button>
+<button class="px-6 py-2 rounded-lg text-sm font-bold text-slate-500 hover:text-primary transition-all">Resolved</button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+<!-- Issue Card 1: Critical -->
+<div class="glass-card p-6 rounded-3xl border border-blue-100/20 shadow-[0px_12px_32px_rgba(0,94,163,0.06)] group hover:shadow-[0px_12px_32px_rgba(0,94,163,0.12)] transition-all duration-500 relative overflow-hidden h-[24rem] flex flex-col">
+<div class="absolute top-0 right-0 w-32 h-32 bg-error/5 rounded-full -mr-16 -mt-16 blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+<div class="flex justify-between items-start mb-4">
+<span class="bg-error/10 text-error text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-error animate-pulse"></span>
+                        High Priority
+                    </span>
+<span class="text-slate-400 text-[10px] font-medium">2 hours ago</span>
+</div>
+<h3 class="font-headline-md text-blue-900 mb-2">Elevator Maintenance Required</h3>
+<p class="text-slate-600 text-sm flex-grow">Elevator B in the North Wing is making grinding noises and stopping abruptly between floor 4 and 5. Urgent inspection required.</p>
+<div class="mt-auto space-y-4">
+<div class="flex items-center gap-3 p-3 bg-blue-50/30 rounded-2xl border border-blue-50">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="close-up of a middle-aged resident man with glasses in a casual polo shirt" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBk-WZGX8qsWgmOz6P3MqmIqgiLGvL3HQdWkWFs67NBNNLtp-a3kkbfyXo47cdXLQ4vczG-BgxTgJJCCjpAC-DWOQBQmbCr1gmydwyemgYeAbMFwpS-9xp9BFSmR_UGWdsfg7diHC7x0SeiddLyy7bt-LL5XXuIgnXMi8a_gdRxi3EOG2_7-wY3JJfKU8fHAPorLX2vwjfINMTxLOz0FRQUMTck3rwdhnBP_FNlm-K8fQYTGJCL-KDQuGZQi5G2rGjYZaXRl238LlU"/>
+<div>
+<p class="text-sm font-bold text-blue-800">Jonathan Miller</p>
+<p class="text-xs text-slate-500">Unit 402 • North Tower</p>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-3 py-1.5 rounded-lg border border-primary/10 uppercase tracking-wider">Pending</span>
+<button class="bg-primary text-white text-xs font-bold px-4 py-2 rounded-xl shadow-lg shadow-primary/20 hover:scale-105 transition-transform active:scale-95">Take Action</button>
+</div>
+</div>
+</div>
+<!-- Issue Card 2: Medium -->
+<div class="glass-card p-6 rounded-3xl border border-blue-100/20 shadow-[0px_12px_32px_rgba(0,94,163,0.06)] group hover:shadow-[0px_12px_32px_rgba(0,94,163,0.12)] transition-all duration-500 relative overflow-hidden h-[24rem] flex flex-col">
+<div class="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-full -mr-16 -mt-16 blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+<div class="flex justify-between items-start mb-4">
+<span class="bg-secondary/10 text-secondary text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">
+                        Medium Priority
+                    </span>
+<span class="text-slate-400 text-[10px] font-medium">5 hours ago</span>
+</div>
+<h3 class="font-headline-md text-blue-900 mb-2">Plumbing Leak</h3>
+<p class="text-slate-600 text-sm flex-grow">Small leak detected in the master bathroom ceiling. Water is dripping slowly but causing stain on the drywall.</p>
+<div class="mt-auto space-y-4">
+<div class="flex items-center gap-3 p-3 bg-blue-50/30 rounded-2xl border border-blue-50">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="professional headshot of a female resident with a friendly expression and stylish hair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1qd3B53Ib9BpX8eyRlZfprQTiUw-MknKuSEsIWMztHBj1SXFu4Hf7n3DJ7CmPaM9jc-EpiyMvBBdKRWRaw88d704hBxNrIINlKkAjhY-AYkr9CnE2DSuNBkNeaRcNvYq_aV8vFG4CJP04KYyz2SbE_ekYJq1bu3qPRnINUMmdhA6-yFJouHxkvXnIEbS2h5qR5QtPZmCQUH1Ho-T9wK7tl5Z53H9f4Rly4Qzq-3Mzz-iv5GYVHgBgg3sn1EJ9kHehFjQXCFjlMms"/>
+<div>
+<p class="text-sm font-bold text-blue-800">Sarah Chen</p>
+<p class="text-xs text-slate-500">Unit 12B • Garden View</p>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<span class="bg-tertiary-container/20 text-tertiary-container text-[10px] font-bold px-3 py-1.5 rounded-lg border border-tertiary-container/10 uppercase tracking-wider">In Progress</span>
+<button class="bg-white border border-blue-100 text-primary text-xs font-bold px-4 py-2 rounded-xl hover:bg-blue-50 transition-colors">View Details</button>
+</div>
+</div>
+</div>
+<!-- Issue Card 3: Resolved -->
+<div class="glass-card p-6 rounded-3xl border border-blue-100/20 shadow-[0px_12px_32px_rgba(0,94,163,0.06)] group hover:shadow-[0px_12px_32px_rgba(0,94,163,0.12)] transition-all duration-500 relative overflow-hidden h-[24rem] flex flex-col opacity-80 hover:opacity-100">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+<div class="flex justify-between items-start mb-4">
+<span class="bg-slate-100 text-slate-500 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">
+                        Low Priority
+                    </span>
+<span class="text-slate-400 text-[10px] font-medium">Yesterday</span>
+</div>
+<h3 class="font-headline-md text-slate-400 mb-2 line-through">Power Outage (Balcony Light)</h3>
+<p class="text-slate-400 text-sm flex-grow">Light fixture on the balcony isn't turning on. Probably a bulb replacement needed.</p>
+<div class="mt-auto space-y-4">
+<div class="flex items-center gap-3 p-3 bg-slate-50/50 rounded-2xl border border-slate-100">
+<img class="w-10 h-10 rounded-full object-cover grayscale" data-alt="headshot of a smiling young male resident in a casual denim shirt" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUOgyzulG4UA5kBCgI-_xyeFcM0_FwtHbJtdcppNoNvxlD1yQpWHPMOlwDOSU-bOVBiIB9qdwmO4YhvngHPM2NEJux0Gr2BdAeokv_B1VVBVNQWQ_w6cKEdDwu7cpDw9rnn_MfvpAzAqajyuUuJZj04l-hrF9pc2rm2p4yQjqNNehJDBsgNLnKxPVyBbJox3o68H80a4InkRH1xRWl60FDfvwN78ntDWN8CE19RLMm8W23uF2FzFG3-HhrMx5C6KX1BDWcKYjXWL0"/>
+<div>
+<p class="text-sm font-bold text-slate-400">Marcus Wright</p>
+<p class="text-xs text-slate-400">Unit 804 • South Penthouse</p>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<span class="bg-green-100 text-green-700 text-[10px] font-bold px-3 py-1.5 rounded-lg border border-green-200 uppercase tracking-wider">Resolved</span>
+<span class="text-slate-400 text-xs italic">Closed by Maintenance</span>
+</div>
+</div>
+</div>
+<!-- Issue Card 4: High -->
+<div class="glass-card p-6 rounded-3xl border border-blue-100/20 shadow-[0px_12px_32px_rgba(0,94,163,0.06)] group hover:shadow-[0px_12px_32px_rgba(0,94,163,0.12)] transition-all duration-500 relative overflow-hidden h-[24rem] flex flex-col">
+<div class="absolute top-0 right-0 w-32 h-32 bg-error/5 rounded-full -mr-16 -mt-16 blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+<div class="flex justify-between items-start mb-4">
+<span class="bg-error/10 text-error text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">
+                        High Priority
+                    </span>
+<span class="text-slate-400 text-[10px] font-medium">10 mins ago</span>
+</div>
+<h3 class="font-headline-md text-blue-900 mb-2">Gate Access System Failure</h3>
+<p class="text-slate-600 text-sm flex-grow">Resident RFID tags not being recognized at the main vehicle entrance. Security currently manually overriding.</p>
+<div class="mt-auto space-y-4">
+<div class="flex items-center gap-3 p-3 bg-blue-50/30 rounded-2xl border border-blue-50">
+<div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+<span class="material-symbols-outlined">security</span>
+</div>
+<div>
+<p class="text-sm font-bold text-blue-800">Security Team</p>
+<p class="text-xs text-slate-500">Main Entrance • Lobby</p>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-3 py-1.5 rounded-lg border border-primary/10 uppercase tracking-wider">Pending</span>
+<button class="bg-primary text-white text-xs font-bold px-4 py-2 rounded-xl shadow-lg shadow-primary/20 hover:scale-105 transition-transform">Deploy Team</button>
+</div>
+</div>
+</div>
+<!-- Empty State / Add New Placeholder (Subtle Branding) -->
+<div class="rounded-3xl border-2 border-dashed border-blue-200/50 flex flex-col items-center justify-center text-center p-8 h-[24rem] hover:bg-blue-50/20 transition-all cursor-pointer">
+<div class="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-primary text-3xl">add_circle</span>
+</div>
+<h4 class="font-inter text-lg font-bold text-blue-800">New Internal Issue</h4>
+<p class="text-slate-400 text-sm max-w-[200px]">Manually log an operational issue or maintenance task.</p>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation (Mobile) -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 bg-white/80 backdrop-blur-xl border-t border-blue-100/20 shadow-[0_-8px_24px_rgba(0,94,163,0.08)] px-4 pb-safe">
+<a class="flex flex-col items-center justify-center text-slate-400 opacity-70 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-inter text-[10px] font-bold uppercase tracking-widest">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 opacity-70 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-inter text-[10px] font-bold uppercase tracking-widest">Residents</span>
+</a>
+<a class="flex flex-col items-center justify-center text-blue-700 scale-110" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-inter text-[10px] font-bold uppercase tracking-widest">Issues</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 opacity-70 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined">business</span>
+<span class="font-inter text-[10px] font-bold uppercase tracking-widest">Facilities</span>
+</a>
+</nav>
+<!-- Floating Action Button (Only on Issues screen as per logic) -->
+<button class="fixed bottom-20 right-6 lg:bottom-10 lg:right-10 w-14 h-14 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-40">
+<span class="material-symbols-outlined">add</span>
+</button>
+</body></html>
