@@ -79,7 +79,14 @@ class AvenueApp extends StatelessWidget {
               case AppPage.generateReports:
                 return const GenerateReportsScreen();
               case AppPage.announcementsManagement:
-                return const AnnouncementsManagementScreen();
+                final arguments =
+                    settings.arguments is Map<String, dynamic>
+                    ? settings.arguments! as Map<String, dynamic>
+                    : const <String, dynamic>{};
+                return AnnouncementsManagementScreen(
+                  openComposerOnStart:
+                      arguments['openComposer'] == true,
+                );
               case AppPage.addResident:
                 return const AddResidentScreen();
               case AppPage.residentDirectory:
