@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Guard Attendance - COVE</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#c0e8ff",
+                        "secondary": "#006686",
+                        "secondary-container": "#93dbff",
+                        "inverse-primary": "#a1c9ff",
+                        "on-tertiary-fixed-variant": "#004883",
+                        "on-error-container": "#93000a",
+                        "on-background": "#151d20",
+                        "surface-bright": "#f4faff",
+                        "on-primary-container": "#bad7ff",
+                        "tertiary-fixed-dim": "#a4c9ff",
+                        "on-surface-variant": "#414751",
+                        "secondary-fixed-dim": "#87d0f4",
+                        "surface-container-lowest": "#ffffff",
+                        "outline-variant": "#c1c7d2",
+                        "on-primary-fixed": "#001c37",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#eef5fa",
+                        "outline": "#717782",
+                        "on-tertiary": "#ffffff",
+                        "surface-dim": "#d4dbe0",
+                        "on-secondary-fixed-variant": "#004d66",
+                        "on-error": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#001c39",
+                        "on-secondary-container": "#006180",
+                        "surface-container-high": "#e2e9ee",
+                        "primary-fixed-dim": "#a1c9ff",
+                        "on-tertiary-container": "#bcd6ff",
+                        "surface-tint": "#0861a6",
+                        "on-primary-fixed-variant": "#004880",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed": "#001e2b",
+                        "surface-container": "#e8eff4",
+                        "surface": "#f4faff",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#d2e4ff",
+                        "tertiary-fixed": "#d4e3ff",
+                        "primary-container": "#005ea3",
+                        "surface-container-highest": "#dce3e8",
+                        "on-surface": "#151d20",
+                        "primary": "#00467c",
+                        "inverse-on-surface": "#ebf2f7",
+                        "surface-variant": "#dce3e8",
+                        "tertiary-container": "#075da6",
+                        "tertiary": "#00457f",
+                        "background": "#f4faff",
+                        "inverse-surface": "#2a3135"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-gap": "2rem",
+                        "container-padding": "2rem",
+                        "sidebar-width": "18rem",
+                        "card-padding": "1.5rem",
+                        "element-gap": "1rem"
+                    },
+                    "fontFamily": {
+                        "stats-number": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-bold": ["Inter"],
+                        "display": ["Inter"]
+                    },
+                    "fontSize": {
+                        "stats-number": ["1.875rem", { "lineHeight": "1", "fontWeight": "700" }],
+                        "body-md": ["1rem", { "lineHeight": "1.5rem", "fontWeight": "400" }],
+                        "headline-md": ["1.375rem", { "lineHeight": "1.75rem", "fontWeight": "700" }],
+                        "headline-lg": ["1.875rem", { "lineHeight": "2.25rem", "letterSpacing": "-0.025em", "fontWeight": "700" }],
+                        "label-bold": ["0.75rem", { "lineHeight": "1rem", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "display": ["2.75rem", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="antialiased min-h-screen pb-24 lg:pb-0 lg:pl-[18rem]">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-4 h-16 bg-[#f3faff]/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-[#005ea3]/10 dark:border-white/10 shadow-sm md:hidden lg:flex lg:w-[calc(100%-18rem)] lg:left-[18rem]">
+<button class="flex items-center justify-center p-2 text-[#005ea3] dark:text-blue-400 hover:bg-[#005ea3]/5 dark:hover:bg-white/5 transition-colors rounded-full active:opacity-80 active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-['Inter'] text-sm font-semibold tracking-wide uppercase text-[#005ea3] dark:text-blue-400">Attendance Log</h1>
+<div class="flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:bg-[#005ea3]/5 dark:hover:bg-white/5 transition-colors p-1 rounded-full cursor-pointer">
+<img alt="Guard Profile" class="w-8 h-8 rounded-full border border-[#005ea3]/10" data-alt="professional headshot of a male security guard in uniform with clear lighting and neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYkqERUvjJ_nymfNvFF8RsSaAeijP9NFtfiknHvbbyKh7DZwGSCfsqRmSbGX5UFgT517-i4QOqSBAPTBfW0OA5WXqBk8Zclgajt9pv7hLp_VGsSJ1OZEWGSkqQeINs5HTjs4ZjezssE0ZBFJ_-LGc8DRUYvvYQ8sSgwJ6QpRKvQOvpyPJuFEIYtagqFbmbNFYzDD3ZyvOEvl5n2olRVkkMjoX4W1a-IZYfior0xRMu2Ty4-N0vYhfTEDoOPAYZrVbhKj8glwoFqEA"/>
+</div>
+</header>
+<!-- Navigation Drawer (Desktop) -->
+<nav class="hidden lg:flex flex-col p-6 h-screen fixed left-0 top-0 w-[288px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-r border-[#005ea3]/10 dark:border-white/10 shadow-2xl z-50">
+<div class="mb-8 flex items-center gap-3">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-primary-container">
+<img alt="Guard User" class="w-full h-full object-cover" data-alt="professional headshot of a male security guard in uniform with clear lighting and neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsvqrPn0aCMBv-MSJhp8nDDlHVtyz2g2ZjhUoINgESFgaf_s5jZf1UvhrAAJ861AoO56mjuO2qz8lolsIQa3OH_TMSeuO4Gw897thSKQudrdemAclkAwj1G6Tr-tGn0yIBvn0lC9B2kz_E9bVhvtSGIsPUkOCKHlxof1ZacAlcXTJHKMCZu6wb3MkhPBsObAZjMXtXblexQs1al7E7OlfhK9Z1UkQ8thwcsJU3KcnVH03pM3U18iituPrjNBxZhaDZ-C8mEuvdH8k"/>
+</div>
+<div>
+<h2 class="font-['Inter'] text-sm font-medium text-[#005ea3] dark:text-blue-400">Sgt. Thompson</h2>
+<p class="text-xs text-slate-500">Sector 7 Security</p>
+</div>
+</div>
+<div class="flex flex-col gap-2 flex-grow">
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:pl-2 transition-all duration-300 font-['Inter'] text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl bg-gradient-to-r from-[#005ea3]/10 to-transparent text-[#005ea3] dark:text-blue-400 border-r-4 border-[#005ea3] hover:pl-2 transition-all duration-300 font-['Inter'] text-sm font-medium focus:ring-2 focus:ring-[#005ea3]/20" href="#">
+<span class="material-symbols-outlined" data-icon="history_edu">history_edu</span>
+                Attendance
+            </a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:pl-2 transition-all duration-300 font-['Inter'] text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="admin_panel_settings">admin_panel_settings</span>
+                Incident Reports
+            </a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:pl-2 transition-all duration-300 font-['Inter'] text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+                Resident Directory
+            </a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="pt-20 px-4 md:px-8 max-w-7xl mx-auto flex flex-col gap-6">
+<!-- Hero: Camera Preview -->
+<section class="flex flex-col items-center gap-4">
+<div class="relative w-full max-w-sm aspect-[3/4] rounded-3xl overflow-hidden shadow-[0px_12px_32px_rgba(0,94,163,0.15)] bg-surface-container-high border border-outline-variant/30 flex flex-col justify-center items-center">
+<!-- Simulated Camera Feed / Placeholder -->
+<div class="absolute inset-0 bg-gradient-to-b from-surface-variant to-surface-dim opacity-50"></div>
+<span class="material-symbols-outlined text-6xl text-outline mb-4" data-icon="photo_camera" style="font-variation-settings: 'FILL' 0;">photo_camera</span>
+<p class="font-body-md text-body-md text-on-surface-variant text-center px-6">Camera preview will appear here</p>
+<!-- Corner brackets decorative -->
+<div class="absolute top-4 left-4 w-8 h-8 border-t-2 border-l-2 border-primary/50 rounded-tl-lg"></div>
+<div class="absolute top-4 right-4 w-8 h-8 border-t-2 border-r-2 border-primary/50 rounded-tr-lg"></div>
+<div class="absolute bottom-4 left-4 w-8 h-8 border-b-2 border-l-2 border-primary/50 rounded-bl-lg"></div>
+<div class="absolute bottom-4 right-4 w-8 h-8 border-b-2 border-r-2 border-primary/50 rounded-br-lg"></div>
+</div>
+<p class="font-body-md text-body-md text-on-surface text-center font-medium">Take a selfie to enable check-in</p>
+<!-- Action Button -->
+<div class="w-full max-w-sm flex flex-col gap-2 mt-4">
+<button class="w-full py-4 rounded-xl font-label-bold text-label-bold text-on-surface-variant bg-surface-variant/50 cursor-not-allowed border border-outline-variant/50 transition-all flex justify-center items-center gap-2">
+<span class="material-symbols-outlined" data-icon="how_to_reg">how_to_reg</span>
+                    LOG ATTENDANCE
+                </button>
+<p class="text-center text-xs text-outline font-body-md">Selfie required to log</p>
+</div>
+</section>
+<!-- Divider -->
+<div class="w-full h-px bg-outline-variant/30 my-2 max-w-3xl mx-auto"></div>
+<!-- History Section -->
+<section class="max-w-3xl mx-auto w-full">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-4">Previous Attendance History</h3>
+<div class="flex flex-col gap-4">
+<!-- History Card 1 -->
+<div class="bg-surface-container-lowest backdrop-blur-xl border border-outline-variant/15 rounded-2xl p-4 flex items-center justify-between shadow-[0px_12px_32px_rgba(0,94,163,0.06)]">
+<div class="flex items-center gap-4">
+<img alt="Selfie Thumbnail" class="w-16 h-16 rounded-xl object-cover border border-outline-variant/30" data-alt="small thumbnail of a security guard selfie against a plain wall" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHbRI8Q5E0t6al2tEQOWi5btLRifdFAgwHN16tun7Y1L_p3TpdxfOJRme6_hin2hPuNb_CCqyth5cUegH1OAwEUDaIWtQlxFgEX4PJziRwRqDETm-1ikMsF5k0bcW_mIjSyILYTc1wnUx6dGcxUjFm8ChHIp7Ylcl61j762YgY6YdIjy9CxxbZVPAM_-FSRqHqzbVRJRJOa-zmYh3G9_crntKLpxPA3BUgBx5ZV_Z17-2ACyDr7J41ZVMifbX8qVXeMH3uZHf5M2g"/>
+<div class="flex flex-col">
+<h4 class="font-label-bold text-label-bold text-on-surface">Oct 24, Day Shift</h4>
+<p class="font-body-md text-sm text-on-surface-variant mt-1">In: 06:45 AM</p>
+<p class="font-body-md text-sm text-on-surface-variant">Out: 07:15 PM</p>
+</div>
+</div>
+<div class="px-3 py-1 rounded-full bg-secondary-container/20 text-on-secondary-container border border-secondary-container/30">
+<span class="font-label-bold text-[10px] tracking-wider uppercase">Completed</span>
+</div>
+</div>
+<!-- History Card 2 -->
+<div class="bg-surface-container-lowest backdrop-blur-xl border border-outline-variant/15 rounded-2xl p-4 flex items-center justify-between shadow-[0px_12px_32px_rgba(0,94,163,0.06)]">
+<div class="flex items-center gap-4">
+<img alt="Selfie Thumbnail" class="w-16 h-16 rounded-xl object-cover border border-outline-variant/30" data-alt="small thumbnail of a security guard selfie against a plain wall" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7GnVBccbA2FUr50aBDCi9Djmenf4wxDJfm72w_w6h6Xxx-CvwfbTfqvYKn_cM1OxPYrngYhkB9-xIBvbYAJbIXDPP3878VN_j4lV2QVYJJcAnU8Eg-jaF-fWz3ONg1yKk7MOumfbPemtxZwVlwnzL__PApUbQHpIQDaka0_S5skjf-qcGkgstcbiX6s-TFmPWdts1NH-0cvBsQCZBv5wClnTSsUSsf5SSD8svluOu4yoGf0iuRxaXHlJAF1i7oysyaAsxPPz0JhE"/>
+<div class="flex flex-col">
+<h4 class="font-label-bold text-label-bold text-on-surface">Oct 23, Day Shift</h4>
+<p class="font-body-md text-sm text-on-surface-variant mt-1">In: 06:50 AM</p>
+<p class="font-body-md text-sm text-on-surface-variant">Out: 07:05 PM</p>
+</div>
+</div>
+<div class="px-3 py-1 rounded-full bg-secondary-container/20 text-on-secondary-container border border-secondary-container/30">
+<span class="font-label-bold text-[10px] tracking-wider uppercase">Completed</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-3 pb-safe bg-white/90 backdrop-blur-2xl border-t border-slate-200/60 shadow-[0px_-8px_24px_rgba(0,94,163,0.08)] z-50">
+<a class="flex flex-col items-center justify-center text-blue-700 bg-blue-50/50 rounded-xl px-3 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="home" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-inter text-[11px] font-semibold tracking-wide uppercase mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 hover:text-blue-600 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="person_search">person_search</span>
+<span class="font-inter text-[11px] font-semibold tracking-wide uppercase mt-1">Visitors</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 hover:text-blue-600 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="report_problem">report_problem</span>
+<span class="font-inter text-[11px] font-semibold tracking-wide uppercase mt-1">Incidents</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 hover:text-blue-600 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="event_available">event_available</span>
+<span class="font-inter text-[11px] font-semibold tracking-wide uppercase mt-1">Attendance</span>
+</a>
+</nav>
+</body></html>
