@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Manage Suggestion - Cove Glass</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-dim": "#D9DADB",
+                    "secondary-fixed": "#FFDDAF",
+                    "on-tertiary-container": "#0E0200",
+                    "background": "#F8F9FA",
+                    "surface-container-lowest": "#FFFFFF",
+                    "surface-tint": "#005BC0",
+                    "surface": "#F8F9FA",
+                    "on-secondary-fixed": "#281800",
+                    "outline": "#727785",
+                    "inverse-surface": "#2E3132",
+                    "surface-container-low": "#F3F4F5",
+                    "surface-bright": "#F8F9FA",
+                    "surface-container-highest": "#E1E3E4",
+                    "surface-container": "#EDEEEF",
+                    "on-background": "#191C1D",
+                    "primary-fixed": "#D8E2FF",
+                    "secondary-container": "#FDAF0B",
+                    "error-container": "#FFDAD6",
+                    "on-primary-container": "#FFFFFF",
+                    "on-tertiary-fixed": "#341100",
+                    "on-surface-variant": "#414754",
+                    "on-primary-fixed-variant": "#004493",
+                    "secondary-fixed-dim": "#FFBA43",
+                    "surface-variant": "#E1E3E4",
+                    "on-error-container": "#93000A",
+                    "inverse-primary": "#ADC7FF",
+                    "secondary": "#805600",
+                    "tertiary-fixed-dim": "#FFB691",
+                    "tertiary-container": "#C55500",
+                    "error": "#BA1A1A",
+                    "tertiary": "#9E4300",
+                    "surface-container-high": "#E7E8E9",
+                    "primary-container": "#1A73E8",
+                    "on-secondary": "#FFFFFF",
+                    "inverse-on-surface": "#F0F1F2",
+                    "on-tertiary": "#FFFFFF",
+                    "tertiary-fixed": "#FFDBCB",
+                    "on-tertiary-fixed-variant": "#783100",
+                    "on-error": "#FFFFFF",
+                    "primary-fixed-dim": "#ADC7FF",
+                    "outline-variant": "#C1C6D6",
+                    "on-primary-fixed": "#001A41",
+                    "on-secondary-container": "#694600",
+                    "on-surface": "#191C1D",
+                    "on-primary": "#FFFFFF",
+                    "primary": "#005BBF",
+                    "on-secondary-fixed-variant": "#614000"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "display": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased selection:bg-primary-fixed">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl shadow-[0_12px_32px_rgba(25,28,29,0.06)]">
+<div class="flex items-center justify-between px-6 h-16 w-full max-w-screen-xl mx-auto">
+<div class="flex items-center gap-4">
+<button class="active:scale-95 transition-transform hover:bg-slate-100/80 dark:hover:bg-slate-800/80 p-2 rounded-full">
+<span class="material-symbols-outlined text-blue-600 dark:text-blue-400">arrow_back</span>
+</button>
+<h1 class="font-['Plus_Jakarta_Sans'] font-bold tracking-tight text-xl text-on-surface">Manage Suggestion</h1>
+</div>
+<div class="flex items-center">
+<button class="active:scale-95 transition-transform hover:bg-slate-100/80 dark:hover:bg-slate-800/80 p-2 rounded-full">
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400">settings</span>
+</button>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-6 max-w-screen-xl mx-auto">
+<!-- Success Toast -->
+<div class="mb-8 flex animate-in fade-in slide-in-from-top-4 duration-500">
+<div class="w-full bg-primary text-on-primary px-6 py-4 rounded-3xl shadow-xl flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined bg-white/20 p-1 rounded-full" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<p class="font-medium tracking-tight">Suggestion Approved and Published to Feed</p>
+</div>
+<button class="opacity-70 hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Left Column: Suggestion Content -->
+<div class="lg:col-span-2 space-y-6">
+<!-- Main Card -->
+<div class="bg-surface-container-lowest rounded-[2rem] p-8 shadow-sm transition-all hover:shadow-[0_12px_32px_rgba(25,28,29,0.06)] hover:-translate-y-1">
+<div class="flex justify-between items-start mb-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Professional portrait of a middle-aged man in a studio with soft lighting and neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGmEmCFNxbs-zzYGM2CDuqSiaxjG6gThTVhfGFPVf-2_NxlCkjqxn3qmUonXpBBPKm6fa9S5PhDeIfNC67lVanV0GsvESpQZ4VenUHI9vL9VNCz5JMLNsXNO_l46FMXXvwskOaLRJGJCS7JGCw0yWRPhFWOoDr5QeyZ1QWPXs0GqrFN_lmM1Ei0d1PJshhGDHIkQKkfmbKyvDk9eY2rHU_hG8UqPHzTNchmba_drpc-XUzj98kEe4ow3IifTqR5XopD5giymPW3g"/>
+</div>
+<div>
+<h3 class="font-bold text-on-surface">Marcus Thorne</h3>
+<p class="text-xs text-on-surface-variant font-medium tracking-widest uppercase">Resident • Apt 402</p>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-xs font-bold text-slate-400 tracking-widest uppercase">Submitted Oct 24</span>
+<!-- Status Indicator -->
+<div class="mt-2 inline-flex items-center gap-1.5 px-4 py-1.5 bg-blue-50 text-blue-700 rounded-full text-xs font-bold uppercase tracking-wider">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+                                Approved
+                            </div>
+</div>
+</div>
+<h2 class="font-headline text-2xl font-extrabold text-on-surface mb-4 leading-tight">Implement solar-powered pathway lighting in the communal garden</h2>
+<p class="text-on-surface-variant leading-relaxed mb-8">
+                        The current lighting in the North Garden is sparse and often flickers. I suggest we install contemporary solar-powered bollards. Not only would this enhance safety for night-time walks, but it aligns with our building's sustainability goals. I've looked at the 'Lumens G5' series which matches our architectural aesthetic perfectly.
+                    </p>
+<div class="grid grid-cols-2 gap-4">
+<div class="aspect-video rounded-2xl overflow-hidden bg-surface-container-high group">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Modern minimalist landscape lighting in a manicured evening garden with warm glowing orbs" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0fvzpU9Rwcp2-5N4OkRFXWcuiwRBWWpk2rK9rPktEimV1zeMGOxKGGwECHpeQYktv86c38O3cl8Qzp9YH34-yb3ofkGVTFWNm7B6-Ls8M0VafmwIly9OYmLKSl4hLiimEsh7C7p7CYNdyW8yKrkHMDlA8_iXOkYR6mYa-dItXe1KiZBmA6srK8cvo28kJnZ10a-pmPoJSX7fTKo72rurVdLaZzaR4WJH_s76cJ8oK4p528yB1h7FL7kRibQePlFJTeo-5nnkDTA"/>
+</div>
+<div class="aspect-video rounded-2xl overflow-hidden bg-surface-container-high group">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Close up of a sleek architectural solar panel integrated into a modern garden fence at dusk" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGn2qIsyvsSHl94jRd5ZCWUlaTBCbF2snjuxGvvlJRgCsS4T9jCbFEPncAXRZpxgHsz9fgHFKDQhir1o5OF7ZJBOd8LlP7zrhxvju6J4Ua4z43gphBLQHchyt5jqQIlWClTZoibAlh2coUnnYLz292QxmHqHrrNfCDOup73WiowZXZdQvzyTLsr-ks1NeGKiypLaSZy4Ar4qtaXdGWQClPxblkRR1XDPA24canfK8x29DH2RYgrvwm_Zor5YNQ3AneX5y30ST5mw"/>
+</div>
+</div>
+</div>
+<!-- Admin Action Log -->
+<div class="bg-surface-container-low rounded-[2rem] p-8">
+<h4 class="font-headline font-bold text-on-surface mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-blue-600">history</span>
+                        Audit Trail
+                    </h4>
+<div class="space-y-6">
+<div class="flex gap-4 border-l-2 border-primary-fixed pl-6 pb-2 relative">
+<div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-primary ring-4 ring-surface-container-low"></div>
+<div>
+<p class="text-sm font-bold text-on-surface">Published to Feed</p>
+<p class="text-xs text-on-surface-variant">System • Just now</p>
+</div>
+</div>
+<div class="flex gap-4 border-l-2 border-primary-fixed pl-6 pb-2 relative">
+<div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-primary ring-4 ring-surface-container-low"></div>
+<div>
+<p class="text-sm font-bold text-on-surface">Approved by Admin Sarah J.</p>
+<p class="text-xs text-on-surface-variant">Admin • Today, 2:45 PM</p>
+</div>
+</div>
+<div class="flex gap-4 border-l-2 border-surface-container-highest pl-6 relative">
+<div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-surface-container-highest ring-4 ring-surface-container-low"></div>
+<div>
+<p class="text-sm font-medium text-on-surface-variant">Suggestion Received</p>
+<p class="text-xs text-on-surface-variant">Resident • Oct 24, 9:12 AM</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Meta & Actions -->
+<div class="space-y-6">
+<!-- Insights Card -->
+<div class="bg-white rounded-[2rem] p-6 shadow-sm border border-outline-variant/15">
+<h4 class="text-xs font-bold text-slate-400 tracking-widest uppercase mb-4">Community Impact</h4>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-2xl">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<span class="text-sm font-semibold">Energy Savings</span>
+</div>
+<span class="text-primary font-bold">High</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-2xl">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-blue-500" style="font-variation-settings: 'FILL' 1;">payments</span>
+<span class="text-sm font-semibold">Estimated Cost</span>
+</div>
+<span class="text-on-surface font-bold">$1,200</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-2xl">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary-container" style="font-variation-settings: 'FILL' 1;">groups</span>
+<span class="text-sm font-semibold">Voter Interest</span>
+</div>
+<span class="text-on-surface font-bold">14 Residents</span>
+</div>
+</div>
+</div>
+<!-- Next Steps Card -->
+<!-- Secondary Actions -->
+<div class="flex flex-col gap-3">
+<button class="flex items-center justify-center gap-2 text-on-surface-variant font-bold py-3 hover:bg-surface-container-high rounded-full transition-all">
+<span class="material-symbols-outlined">edit</span>
+                        Edit Entry
+                    </button>
+<button class="flex items-center justify-center gap-2 text-error font-bold py-3 hover:bg-error-container/20 rounded-full transition-all">
+<span class="material-symbols-outlined">archive</span>
+                        Archive Suggestion
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-3xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl no-border shadow-[0_-4px_24px_rgba(0,0,0,0.04)]">
+<div class="flex justify-around items-center h-20 w-full px-4 pb-safe">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:text-blue-500 dark:hover:text-blue-300 active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold tracking-widest uppercase mt-1">Directory</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-200 rounded-full px-5 py-2 active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="event" style="font-variation-settings: 'FILL' 1;">event</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold tracking-widest uppercase mt-1">Meetings</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:text-blue-500 dark:hover:text-blue-300 active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold tracking-widest uppercase mt-1">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>
