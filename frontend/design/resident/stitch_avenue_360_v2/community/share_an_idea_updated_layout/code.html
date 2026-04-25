@@ -1,12 +1,11 @@
-<!DOCTYPE html>
+<html class="light" lang="en"><head></head><body class="bg-surface text-on-surface selection:bg-primary/10">```html
 
-<html lang="en"><head>
+
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Submit Suggestion | Community</title>
+<title>Share an Idea - Cove Glass</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
         tailwind.config = {
@@ -14,53 +13,53 @@
             theme: {
                 extend: {
                     "colors": {
-                        "on-error": "#FFFFFF",
-                        "on-primary-fixed-variant": "#004493",
-                        "inverse-primary": "#ADC7FF",
-                        "surface-container-lowest": "#FFFFFF",
-                        "outline": "#727785",
-                        "surface-dim": "#D9DADB",
-                        "on-surface-variant": "#414754",
-                        "error-container": "#FFDAD6",
-                        "tertiary": "#9E4300",
-                        "on-secondary": "#FFFFFF",
-                        "tertiary-container": "#C55500",
                         "surface-tint": "#005BC0",
-                        "on-tertiary-fixed": "#341100",
-                        "secondary-container": "#FDAF0B",
-                        "on-primary-fixed": "#001A41",
-                        "secondary-fixed-dim": "#FFBA43",
-                        "secondary-fixed": "#FFDDAF",
-                        "surface-container-highest": "#E1E3E4",
-                        "tertiary-fixed": "#FFDBCB",
-                        "on-tertiary-fixed-variant": "#783100",
-                        "error": "#BA1A1A",
-                        "surface-bright": "#F8F9FA",
-                        "inverse-on-surface": "#F0F1F2",
-                        "surface-container": "#EDEEEF",
-                        "on-primary-container": "#FFFFFF",
-                        "on-primary": "#FFFFFF",
-                        "surface-variant": "#E1E3E4",
                         "secondary": "#805600",
-                        "primary-container": "#1A73E8",
-                        "surface": "#F8F9FA",
-                        "primary-fixed-dim": "#ADC7FF",
-                        "on-tertiary": "#FFFFFF",
-                        "outline-variant": "#C1C6D6",
-                        "on-secondary-container": "#694600",
-                        "surface-container-low": "#F3F4F5",
-                        "on-background": "#191C1D",
-                        "on-secondary-fixed": "#281800",
-                        "primary": "#005BBF",
-                        "on-error-container": "#93000A",
-                        "inverse-surface": "#2E3132",
-                        "surface-container-high": "#E7E8E9",
-                        "primary-fixed": "#D8E2FF",
-                        "on-surface": "#191C1D",
-                        "on-secondary-fixed-variant": "#614000",
-                        "on-tertiary-container": "#0E0200",
                         "tertiary-fixed-dim": "#FFB691",
-                        "background": "#F8F9FA"
+                        "surface-variant": "#E1E3E4",
+                        "on-error": "#FFFFFF",
+                        "on-secondary-fixed-variant": "#614000",
+                        "on-primary-fixed-variant": "#004493",
+                        "surface": "#F8F9FA",
+                        "surface-container-lowest": "#FFFFFF",
+                        "tertiary": "#9E4300",
+                        "inverse-primary": "#ADC7FF",
+                        "tertiary-container": "#C55500",
+                        "surface-container-low": "#F3F4F5",
+                        "outline-variant": "#C1C6D6",
+                        "surface-bright": "#F8F9FA",
+                        "surface-dim": "#D9DADB",
+                        "on-background": "#191C1D",
+                        "surface-container-highest": "#E1E3E4",
+                        "surface-container-high": "#E7E8E9",
+                        "secondary-fixed-dim": "#FFBA43",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "primary-fixed-dim": "#ADC7FF",
+                        "on-tertiary-fixed": "#341100",
+                        "inverse-surface": "#2E3132",
+                        "secondary-fixed": "#FFDDAF",
+                        "on-tertiary": "#FFFFFF",
+                        "error": "#BA1A1A",
+                        "on-secondary": "#FFFFFF",
+                        "primary": "#005BBF",
+                        "surface-container": "#EDEEEF",
+                        "on-surface-variant": "#414754",
+                        "on-surface": "#191C1D",
+                        "primary-container": "#1A73E8",
+                        "tertiary-fixed": "#FFDBCB",
+                        "secondary-container": "#FDAF0B",
+                        "on-error-container": "#93000A",
+                        "error-container": "#FFDAD6",
+                        "on-primary-fixed": "#001A41",
+                        "on-tertiary-container": "#0E0200",
+                        "primary-fixed": "#D8E2FF",
+                        "outline": "#727785",
+                        "on-secondary-fixed": "#281800",
+                        "on-primary": "#FFFFFF",
+                        "background": "#F8F9FA",
+                        "inverse-on-surface": "#F0F1F2",
+                        "on-primary-container": "#FFFFFF",
+                        "primary-fixed-variant": "#004493"
                     },
                     "borderRadius": {
                         "DEFAULT": "0.25rem",
@@ -70,6 +69,7 @@
                     },
                     "fontFamily": {
                         "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
                         "body": ["Inter"],
                         "label": ["Inter"]
                     }
@@ -80,9 +80,11 @@
 <style>
         body { font-family: 'Inter', sans-serif; }
         h1, h2, h3, .headline { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .glass-header { backdrop-filter: blur(20px); }
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-icon {
+            font-variation-settings: 'FILL' 1;
         }
     </style>
 <style>
@@ -90,10 +92,8 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-</head>
-<body class="bg-surface text-on-surface min-h-screen">
 <!-- TopAppBar -->
-<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-[0_12px_32px_rgba(25,28,29,0.06)] flex items-center justify-between px-6 h-16 w-full">
+<header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl shadow-[0_12px_32px_rgba(25,28,29,0.06)] flex items-center justify-between px-6 h-16 w-full">
 <div class="flex items-center gap-3">
 <button class="active:scale-95 transition-transform">
 <span class="material-symbols-outlined text-on-surface-variant">arrow_back</span>
@@ -102,54 +102,86 @@
 </div>
 <div class="flex items-center gap-4">
 <span class="material-symbols-outlined text-blue-600">notifications</span>
-<div class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden">
-<img alt="Profile" class="w-full h-full object-cover" data-alt="Close up portrait of a friendly professional man in a modern office setting with soft natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCX0BNw230neWcZ0uECRhvb2RsVwESeDwwblLzba2i_KwHk9O83B9RK3hTF7lAa0sMtAs-7_kkaKAqY0Wpzsy3IG8j8ppTXiq3S8tV0owwsPFSDVXmHpVLttDriF0PqkfkZyxyrpEawSgCasbkA2kICPtq1yjik6vV948oIdrWMB9XCuf1qPyhx6BG_iI3eTq1ikRNER61IJVpCXf5T7uJMhp5L04929mEXnu-nLJ-wWEoxvQbEmJa-9y-8St6eqYIkwfTcW8wnPg"/>
+<div class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden border border-white shadow-sm">
+<img alt="User profile photo" class="w-full h-full object-cover" data-alt="Close up portrait of a smiling young professional man with short dark hair in a bright modern office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDl2M9CbLN-jfHPbPvV0Wfw2nNyzSjZ1lOf-9ia48CGSuZN5gKFcDKG4G3UCyxgoANtQZH_S1s-qRkfiMvK7Ne_y-R9CftTG58B-yWCiYY1c2p5yVfO6lvRIVulsHu4ExwW6BycKDe2ChyoKUkRV6AxWC_uqLywIhU2BZoSLUWaxj_udVZFhZVbUra_-YjtqFqvpu1A1J9EBfkygttWPx_QVp_OXIv2MC1vOet7iUsZlfv6nvCmHxHuRFzXynzvCKWaFziHduEEyQ"/>
 </div>
 </div>
 </header>
-<main class="pt-24 px-6 max-w-2xl mx-auto">
-<!-- Hero Instruction Section -->
+<main class="pt-24 pb-12 px-6 max-w-2xl mx-auto min-h-screen">
+<!-- Hero Section -->
 <section class="mb-8">
 <h2 class="text-3xl font-extrabold tracking-tight text-on-surface mb-2">Share an Idea</h2>
 <p class="text-on-surface-variant text-sm leading-relaxed">
-                Have a suggestion for the community? Your voice helps shape our shared space. Submit your thoughts below.
-            </p>
+        Have a suggestion for the community? Your voice helps shape our shared space. Submit your thoughts below.
+    </p>
 </section>
-<!-- Suggestion Form -->
 <form class="space-y-6">
-<!-- Title Input -->
+<!-- Select Audience Section (Preserved) -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<h3 class="font-['Inter'] text-[10px] font-bold tracking-widest uppercase text-slate-500">Select Audience</h3>
+<span class="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold">REQUIRED</span>
+</div>
+<div class="grid grid-cols-2 gap-3 p-1.5 bg-surface-container-low rounded-2xl">
+<button class="flex items-center justify-center gap-2 py-3 rounded-xl transition-all duration-300 font-bold text-sm bg-surface-container-lowest shadow-sm text-primary" type="button">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">public</span>
+            All Residents
+        </button>
+<button class="flex items-center justify-center gap-2 py-3 rounded-xl transition-all duration-300 font-bold text-sm text-on-surface-variant hover:bg-white/50" type="button">
+<span class="material-symbols-outlined text-lg">group</span>
+            Selected Residents
+        </button>
+</div>
+<!-- Residents Selected Card (Preserved) -->
+<div class="p-4 rounded-2xl bg-white border border-outline-variant/20 shadow-sm flex items-center justify-between group cursor-pointer hover:border-primary/30 transition-colors">
+<div class="flex items-center gap-3">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-white bg-slate-200 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Portrait of a woman with curly hair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiPSZwbprDvKZlCKTbXu3qI5XQxS5RVVk2jd_Te9Ji51kyaP-8d0xyu-vN1kVVOs0E7CUpWD-h04gU7vHu5J9h71PGSfX1-HwEfWWt4LHbiKhv9R5SHp5arI0eEnYtuE825AY6zvFIfj1fzerbkvaTEPyYCv0iNNle5P6hfgFaY2Med9EzSWuo9btMadNsrUZ92t2EzNDW3LQFwqezsIOw-tG1ou2hpb_13xx9xdib2j_8F4obcrYB0CMcBVjFH1kBFUt9eqrw"/>
+</div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-slate-200 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Portrait of a smiling man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGyS7LbGt6y7MdcFJuCo4A1PfhTzY-XQMTu6inRG0x73wRD4pst1coo2RAix-SY2xEkqle19VjrQYF0YcVthsfWtAkxqbK8KQ-gJsG98lo8su6LqE8d-39KGIxIIawR6rTulggNI3EPqXXghlkMwOupHnE9QTrNlmdGbEljdTpJTEYOAuENfVo3wLT8l0OZ9g95ntlcd0CsM6UL1ZFgV1WVD4UnqsBGDLcWHGYt9hBsdPj8XPlUpPmLaMJU0E91nOH_ps1ip-C7g"/>
+</div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-primary flex items-center justify-center text-[10px] text-white font-bold">+12</div>
+</div>
+<span class="text-sm font-medium text-on-surface">14 Residents Selected</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">add_circle</span>
+</div>
+</section>
+<!-- Suggestion Title (Styled like SCREEN_53) -->
 <div class="space-y-2">
 <label class="font-['Inter'] text-[10px] font-bold tracking-widest uppercase text-slate-500">Suggestion Title</label>
 <input class="w-full bg-surface-container-lowest border-none shadow-sm rounded-2xl px-5 py-4 focus:ring-2 focus:ring-primary text-on-surface placeholder:text-outline-variant transition-all" placeholder="e.g., Solar panels for rooftop" type="text"/>
 </div>
-<!-- Category Selection -->
+<!-- Category (Styled like SCREEN_53) -->
 <div class="space-y-3">
 <label class="font-['Inter'] text-[10px] font-bold tracking-widest uppercase text-slate-500">Category</label>
 <div class="flex flex-wrap gap-3">
 <button class="px-5 py-2.5 rounded-full bg-primary text-white font-semibold text-sm shadow-md flex items-center gap-2 transition-transform active:scale-95" type="button">
 <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">apartment</span>
-                        Amenities
-                    </button>
+            Amenities
+        </button>
 <button class="px-5 py-2.5 rounded-full bg-white text-on-surface-variant border border-outline-variant/30 font-medium text-sm hover:bg-surface-container transition-all flex items-center gap-2" type="button">
 <span class="material-symbols-outlined text-[18px]">security</span>
-                        Security
-                    </button>
+            Security
+        </button>
 <button class="px-5 py-2.5 rounded-full bg-white text-on-surface-variant border border-outline-variant/30 font-medium text-sm hover:bg-surface-container transition-all flex items-center gap-2" type="button">
 <span class="material-symbols-outlined text-[18px]">groups</span>
-                        Social
-                    </button>
+            Social
+        </button>
 <button class="px-5 py-2.5 rounded-full bg-white text-on-surface-variant border border-outline-variant/30 font-medium text-sm hover:bg-surface-container transition-all flex items-center gap-2" type="button">
 <span class="material-symbols-outlined text-[18px]">eco</span>
-                        Eco
-                    </button>
+            Eco
+        </button>
 </div>
 </div>
-<!-- Description -->
+<!-- Details (Styled like SCREEN_53) -->
 <div class="space-y-2">
 <label class="font-['Inter'] text-[10px] font-bold tracking-widest uppercase text-slate-500">Details</label>
 <textarea class="w-full bg-surface-container-lowest border-none shadow-sm rounded-2xl px-5 py-4 focus:ring-2 focus:ring-primary text-on-surface placeholder:text-outline-variant transition-all" placeholder="Describe your suggestion in detail. Why is this important? How will it benefit the community?" rows="5"></textarea>
 </div>
-<!-- Bento Styled Info Section -->
+<!-- Bento Grid Info & Photo (Styled like SCREEN_53) -->
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 <div class="bg-surface-container-low p-6 rounded-[2rem] flex flex-col justify-between">
 <span class="material-symbols-outlined text-blue-600 mb-4" style="font-size: 32px;">lightbulb</span>
@@ -160,11 +192,11 @@
 <img alt="Rooftop garden" class="w-full h-full object-cover" data-alt="Stunning modern rooftop garden with lush plants and panoramic city view at twilight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZnk2soeimV9hGaKi1hUkBVvCyEQPwTpV2MiMhIdaTv_ztZK4MPsQQdoqrpSDa_i7FSyeHKTlZTZ5fFsSDxfoiGstNeZAqgtrNTOrtdizwUP06Gwwzvo7XuhCcMJkFNpzX8ZcoKkO-LbE0-MpZkalX1BrKn7tIoAeNmornSDYs1NH-KFydamawC4HJyiio6J1wybZOxCvb0n5tYnr8eTB5Vsu4TVU5HZBKpasIWs1WpaXO-X5a_9oP5UmUYuyaEttTvMnfIcJIKw"/>
 </div>
 <button class="relative z-10 w-full py-3 bg-white/20 backdrop-blur-lg border border-white/30 rounded-full text-white text-sm font-bold tracking-wide uppercase hover:bg-white/30 transition-all" type="button">
-                        Add Photo
-                    </button>
+            Add Photo
+        </button>
 </div>
 </div>
-<!-- Community Poll Toggle -->
+<!-- Community Poll Toggle (Styled like SCREEN_53) -->
 <div class="bg-primary-fixed/20 p-6 rounded-[2.5rem] flex items-start gap-5">
 <div class="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center shrink-0">
 <span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">poll</span>
@@ -179,18 +211,21 @@
 </label>
 </div>
 <p class="text-sm text-on-surface-variant leading-relaxed">
-                        Enabling this transforms your suggestion into an active poll. Residents can vote for 7 days to show their support.
-                    </p>
+            Enabling this transforms your suggestion into an active poll. Residents can vote for 7 days to show their support.
+        </p>
 </div>
 </div>
-<!-- Submit Button -->
+<!-- Submit Button (Styled like SCREEN_53) -->
 <div class="pt-6">
 <button class="w-full py-5 bg-primary text-white rounded-full font-bold text-lg shadow-[0_12px_32px_rgba(0,91,191,0.25)] hover:-translate-y-1 transition-all active:scale-95" type="submit">
-                    Post to Community
-                </button>
+        Post to Community
+    </button>
 <p class="text-center text-[10px] text-slate-400 mt-4 tracking-widest uppercase">Submissions are reviewed for guidelines</p>
 </div>
 </form>
 </main>
-<!-- BottomNavBar -->
-</body></html>
+<!-- Visual Element: Floating Gradient Blur -->
+<div class="fixed top-1/2 -right-24 -z-10 w-64 h-64 bg-primary/5 rounded-full blur-[120px]"></div>
+<div class="fixed -bottom-24 -left-24 -z-10 w-96 h-96 bg-secondary/5 rounded-full blur-[120px]"></div>
+
+```</body></html>
