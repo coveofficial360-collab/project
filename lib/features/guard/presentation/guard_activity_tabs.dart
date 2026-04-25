@@ -5,11 +5,18 @@ class _GuardPreApprovedTab extends StatelessWidget {
     required this.isLoading,
     required this.hasError,
     required this.visitors,
+    required this.activePassId,
+    required this.onApproveVisitor,
+    required this.onDenyVisitor,
   });
 
   final bool isLoading;
   final bool hasError;
   final List<Map<String, dynamic>> visitors;
+  final String? activePassId;
+  final Future<void> Function(String passId, String visitorName)
+  onApproveVisitor;
+  final Future<void> Function(String passId, String visitorName) onDenyVisitor;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +57,18 @@ class _GuardPreApprovedTab extends StatelessWidget {
           ...visitors.map(
             (row) => Padding(
               padding: const EdgeInsets.only(bottom: 12),
-              child: _GuardVisitorCard(row),
+              child: _GuardVisitorCard(
+                row,
+                isProcessing: activePassId == row['id']?.toString(),
+                onApprove: () => onApproveVisitor(
+                  row['id'].toString(),
+                  row['visitor_name']?.toString() ?? 'Visitor',
+                ),
+                onDeny: () => onDenyVisitor(
+                  row['id'].toString(),
+                  row['visitor_name']?.toString() ?? 'Visitor',
+                ),
+              ),
             ),
           ),
       ],

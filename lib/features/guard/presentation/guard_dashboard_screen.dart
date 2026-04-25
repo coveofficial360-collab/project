@@ -19,6 +19,8 @@ class _GuardHomeScreenState extends State<GuardHomeScreen> {
 
   String _selectedTab = 'entry';
   String _visitPurpose = 'Delivery / Courier';
+  bool _isSubmittingManualEntry = false;
+  String? _activePassId;
 
   @override
   void initState() {
@@ -149,9 +151,8 @@ class _GuardHomeScreenState extends State<GuardHomeScreen> {
                             },
                             onApprove: _handleApproveEntry,
                             onDeny: _handleDenyEntry,
-                            onScanQr: () => _showInfo(
-                              'QR entry scanning can be connected next.',
-                            ),
+                            isSubmitting: _isSubmittingManualEntry,
+                            onScanQr: _handleScanQr,
                             onOpenCamera: () => _showInfo(
                               'Camera capture UI is ready for native integration.',
                             ),
@@ -167,6 +168,9 @@ class _GuardHomeScreenState extends State<GuardHomeScreen> {
                             isLoading: isLoading,
                             hasError: hasError,
                             visitors: data?.upcomingVisitors ?? const [],
+                            activePassId: _activePassId,
+                            onApproveVisitor: _handleApproveVisitorPass,
+                            onDenyVisitor: _handleDenyVisitorPass,
                           )
                         else
                           _GuardHistoryTab(
@@ -207,22 +211,235 @@ class _GuardHomeScreenState extends State<GuardHomeScreen> {
     await future;
   }
 
-  void _handleApproveEntry() {
+  Future<void> _handleApproveEntry() async {
     final visitorName = _visitorNameController.text.trim();
     final flatNumber = _flatNumberController.text.trim();
+    final phone = _contactNumberController.text.trim();
 
     if (visitorName.isEmpty || flatNumber.isEmpty) {
       _showInfo('Enter visitor name and flat number before approving entry.');
       return;
     }
 
-    _showInfo(
-      'Manual guard entry workflow UI is ready. Backend action can be connected next.',
+    setState(() {
+      _isSubmittingManualEntry = true;
+    });
+
+    try {
+      final result = await _repository.createGuardVisitorEntry(
+        visitorName: visitorName,
+        unitNumber: flatNumber,
+        purpose: _visitPurpose,
+        phone: phone.isEmpty ? null : phone,
+        visitorKind: _visitorKindForPurpose(_visitPurpose),
+        decision: 'approved',
+      );
+
+      if (result == null) {
+        _showInfo('Could not create the visitor entry.');
+        return;
+      }
+
+      _visitorNameController.clear();
+      _flatNumberController.clear();
+      _contactNumberController.clear();
+      await _refreshDashboard();
+      _showInfo(
+        '${result['visitor_name']} checked in for unit ${result['unit_number']}. PIN ${result['pin_code']} created.',
+      );
+    } catch (error) {
+      _showInfo(_friendlyGuardError(error));
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSubmittingManualEntry = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _handleDenyEntry() async {
+    final visitorName = _visitorNameController.text.trim();
+    final flatNumber = _flatNumberController.text.trim();
+    final phone = _contactNumberController.text.trim();
+
+    if (visitorName.isEmpty || flatNumber.isEmpty) {
+      _showInfo('Enter visitor name and flat number before denying entry.');
+      return;
+    }
+
+    setState(() {
+      _isSubmittingManualEntry = true;
+    });
+
+    try {
+      final result = await _repository.createGuardVisitorEntry(
+        visitorName: visitorName,
+        unitNumber: flatNumber,
+        purpose: _visitPurpose,
+        phone: phone.isEmpty ? null : phone,
+        visitorKind: _visitorKindForPurpose(_visitPurpose),
+        decision: 'denied',
+      );
+
+      if (result == null) {
+        _showInfo('Could not record the denied visitor attempt.');
+        return;
+      }
+
+      _visitorNameController.clear();
+      _flatNumberController.clear();
+      _contactNumberController.clear();
+      await _refreshDashboard();
+      _showInfo(
+        '${result['visitor_name']} was denied for unit ${result['unit_number']}.',
+      );
+    } catch (error) {
+      _showInfo(_friendlyGuardError(error));
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSubmittingManualEntry = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _handleApproveVisitorPass(
+    String passId,
+    String visitorName,
+  ) async {
+    await _processVisitorPass(
+      passId: passId,
+      visitorName: visitorName,
+      decision: 'approved',
     );
   }
 
-  void _handleDenyEntry() {
-    _showInfo('Deny entry action can be connected to a guard workflow next.');
+  Future<void> _handleDenyVisitorPass(String passId, String visitorName) async {
+    await _processVisitorPass(
+      passId: passId,
+      visitorName: visitorName,
+      decision: 'denied',
+    );
+  }
+
+  Future<void> _processVisitorPass({
+    required String passId,
+    required String visitorName,
+    required String decision,
+  }) async {
+    setState(() {
+      _activePassId = passId;
+    });
+
+    try {
+      final result = await _repository.processGuardVisitorPass(
+        passId: passId,
+        decision: decision,
+      );
+
+      if (result == null) {
+        _showInfo('Could not update the visitor pass.');
+        return;
+      }
+
+      await _refreshDashboard();
+      _showInfo(
+        decision == 'approved'
+            ? '$visitorName has been checked in.'
+            : '$visitorName has been denied at the gate.',
+      );
+    } catch (error) {
+      _showInfo(_friendlyGuardError(error));
+    } finally {
+      if (mounted) {
+        setState(() {
+          _activePassId = null;
+        });
+      }
+    }
+  }
+
+  Future<void> _handleScanQr() async {
+    final code = await _promptForQrCode();
+    if (!mounted || code == null || code.trim().isEmpty) {
+      return;
+    }
+
+    try {
+      final result = await _repository.processGuardQrEntry(code: code);
+
+      if (result == null) {
+        _showInfo('Could not process that QR or PIN code.');
+        return;
+      }
+
+      await _refreshDashboard();
+      _showInfo('${result['visitor_name']} has been checked in from QR.');
+    } catch (error) {
+      _showInfo(_friendlyGuardError(error));
+    }
+  }
+
+  Future<String?> _promptForQrCode() async {
+    final controller = TextEditingController();
+    try {
+      return await showDialog<String>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Process QR / PIN'),
+            content: TextField(
+              controller: controller,
+              autofocus: true,
+              decoration: const InputDecoration(
+                labelText: 'QR token or PIN code',
+                hintText: 'e.g. QR-DEL-1034 or 4821',
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: () =>
+                    Navigator.of(context).pop(controller.text.trim()),
+                child: const Text('Process'),
+              ),
+            ],
+          );
+        },
+      );
+    } finally {
+      controller.dispose();
+    }
+  }
+
+  String _visitorKindForPurpose(String purpose) {
+    final normalized = purpose.trim().toLowerCase();
+    if (normalized.contains('delivery') || normalized.contains('courier')) {
+      return 'delivery';
+    }
+    if (normalized.contains('service') || normalized.contains('maintenance')) {
+      return 'service';
+    }
+    return 'guest';
+  }
+
+  String _friendlyGuardError(Object error) {
+    final message = error.toString();
+    if (message.contains('No resident was found for unit')) {
+      return 'No resident record was found for that unit number.';
+    }
+    if (message.contains('No visitor pass matched')) {
+      return 'No visitor pass matched that QR or PIN code.';
+    }
+    if (message.contains('Visitor pass is not pending')) {
+      return 'That visitor pass has already been processed.';
+    }
+    return 'Guard action failed. Please try again.';
   }
 
   void _showInfo(String message) {

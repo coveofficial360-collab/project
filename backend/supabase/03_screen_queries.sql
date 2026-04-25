@@ -96,3 +96,22 @@ select title, details, related_visitor_name, related_unit, log_status, logged_at
 from public.guard_duty_logs
 where guard_user_id = (select id from public.app_users where email = 'guard@gmail.com')
 order by logged_at desc;
+
+-- Guard write actions
+select *
+from public.create_guard_visitor_entry(
+  (select id from public.app_users where email = 'guard@gmail.com'),
+  'Walk-in Courier',
+  'B-204',
+  'Package delivery',
+  '+91 99999 11111',
+  'delivery',
+  'approved'
+);
+
+select *
+from public.process_guard_qr_entry(
+  (select id from public.app_users where email = 'guard@gmail.com'),
+  'QR-DEL-1034',
+  'approved'
+);

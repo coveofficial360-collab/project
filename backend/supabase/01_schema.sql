@@ -337,6 +337,7 @@ select
   vp.pin_code
 from public.visitor_passes vp
 join public.app_users resident on resident.id = vp.resident_user_id
+where vp.status in ('approved', 'expected')
 order by vp.expected_arrival asc;
 
 grant usage on schema public to anon, authenticated;

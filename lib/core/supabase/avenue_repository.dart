@@ -455,6 +455,89 @@ class AvenueRepository {
     return _castRows(rows);
   }
 
+  Future<Map<String, dynamic>?> createGuardVisitorEntry({
+    required String visitorName,
+    required String unitNumber,
+    required String purpose,
+    String? phone,
+    String visitorKind = 'guest',
+    String decision = 'approved',
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'create_guard_visitor_entry',
+      params: {
+        'p_guard_user_id': currentUser.id,
+        'p_visitor_name': visitorName.trim(),
+        'p_unit_number': unitNumber.trim(),
+        'p_purpose': purpose.trim(),
+        'p_phone': phone?.trim(),
+        'p_visitor_kind': visitorKind,
+        'p_decision': decision,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> processGuardVisitorPass({
+    required String passId,
+    required String decision,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'process_guard_visitor_pass',
+      params: {
+        'p_guard_user_id': currentUser.id,
+        'p_pass_id': passId,
+        'p_decision': decision,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> processGuardQrEntry({
+    required String code,
+    String decision = 'approved',
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'process_guard_qr_entry',
+      params: {
+        'p_guard_user_id': currentUser.id,
+        'p_code': code.trim(),
+        'p_decision': decision,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
   List<Map<String, dynamic>> _castRows(dynamic rows) {
     if (rows is! List) {
       return const [];

@@ -311,10 +311,332 @@ begin
 end;
 $$;
 
+create or replace function public.create_guard_visitor_entry(
+  p_guard_user_id uuid,
+  p_visitor_name text,
+  p_unit_number text,
+  p_purpose text,
+  p_phone text default null,
+  p_visitor_kind public.visitor_kind default 'guest',
+  p_decision text default 'approved'
+)
+returns table (
+  pass_id uuid,
+  log_id uuid,
+  visitor_name text,
+  unit_number text,
+  status text,
+  pin_code text,
+  qr_token text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_resident_user_id uuid;
+  v_guard_name text;
+  v_pass_id uuid;
+  v_log_id uuid;
+  v_pin_code text := lpad((floor(random() * 10000))::int::text, 4, '0');
+  v_qr_token text := 'QR-' || upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 10));
+  v_decision text := lower(trim(coalesce(p_decision, 'approved')));
+  v_status text;
+  v_log_status text;
+  v_log_title text;
+  v_log_details text;
+  v_clean_unit text := upper(trim(p_unit_number));
+  v_clean_phone text := nullif(trim(coalesce(p_phone, '')), '');
+begin
+  select full_name
+  into v_guard_name
+  from public.app_users
+  where id = p_guard_user_id
+    and role = 'guard'
+  limit 1;
+
+  if v_guard_name is null then
+    raise exception 'Only a guard user can record guard entries.';
+  end if;
+
+  select u.id
+  into v_resident_user_id
+  from public.app_users u
+  where u.role = 'resident'
+    and upper(trim(coalesce(u.unit_number, ''))) = v_clean_unit
+  order by
+    case when u.status = 'active' then 0 else 1 end,
+    u.created_at asc
+  limit 1;
+
+  if v_resident_user_id is null then
+    raise exception 'No resident was found for unit %.', p_unit_number;
+  end if;
+
+  if v_decision in ('approved', 'approve', 'allow', 'allowed') then
+    v_status := 'checked_in';
+    v_log_status := 'completed';
+    v_log_title := 'Walk-in visitor approved';
+    v_log_details :=
+      format(
+        '%s logged a manual visitor entry for %s at unit %s. Purpose: %s.',
+        v_guard_name,
+        trim(p_visitor_name),
+        v_clean_unit,
+        trim(p_purpose)
+      );
+  elsif v_decision in ('denied', 'deny', 'rejected', 'reject') then
+    v_status := 'denied';
+    v_log_status := 'denied';
+    v_log_title := 'Walk-in visitor denied';
+    v_log_details :=
+      format(
+        '%s denied a manual visitor entry for %s at unit %s. Purpose: %s.',
+        v_guard_name,
+        trim(p_visitor_name),
+        v_clean_unit,
+        trim(p_purpose)
+      );
+  else
+    raise exception 'Unsupported guard decision: %', p_decision;
+  end if;
+
+  insert into public.visitor_passes (
+    resident_user_id,
+    visitor_name,
+    phone,
+    visitor_kind,
+    expected_arrival,
+    status,
+    pin_code,
+    qr_token
+  )
+  values (
+    v_resident_user_id,
+    trim(p_visitor_name),
+    coalesce(v_clean_phone, 'N/A'),
+    p_visitor_kind,
+    now(),
+    v_status,
+    v_pin_code,
+    v_qr_token
+  )
+  returning id into v_pass_id;
+
+  insert into public.guard_duty_logs (
+    guard_user_id,
+    title,
+    details,
+    related_visitor_name,
+    related_unit,
+    log_status,
+    logged_at
+  )
+  values (
+    p_guard_user_id,
+    v_log_title,
+    v_log_details,
+    trim(p_visitor_name),
+    v_clean_unit,
+    v_log_status,
+    now()
+  )
+  returning id into v_log_id;
+
+  return query
+  select
+    v_pass_id,
+    v_log_id,
+    trim(p_visitor_name),
+    v_clean_unit,
+    v_status,
+    v_pin_code,
+    v_qr_token;
+end;
+$$;
+
+create or replace function public.process_guard_visitor_pass(
+  p_guard_user_id uuid,
+  p_pass_id uuid,
+  p_decision text default 'approved'
+)
+returns table (
+  pass_id uuid,
+  log_id uuid,
+  visitor_name text,
+  unit_number text,
+  status text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_guard_name text;
+  v_pass record;
+  v_log_id uuid;
+  v_decision text := lower(trim(coalesce(p_decision, 'approved')));
+  v_status text;
+  v_log_status text;
+  v_log_title text;
+  v_log_details text;
+begin
+  select full_name
+  into v_guard_name
+  from public.app_users
+  where id = p_guard_user_id
+    and role = 'guard'
+  limit 1;
+
+  if v_guard_name is null then
+    raise exception 'Only a guard user can process visitor passes.';
+  end if;
+
+  select
+    vp.id,
+    vp.visitor_name,
+    vp.status as current_status,
+    resident.unit_number,
+    resident.full_name as resident_name
+  into v_pass
+  from public.visitor_passes vp
+  join public.app_users resident on resident.id = vp.resident_user_id
+  where vp.id = p_pass_id
+  limit 1;
+
+  if v_pass.id is null then
+    raise exception 'Visitor pass was not found.';
+  end if;
+
+  if lower(coalesce(v_pass.current_status, '')) not in ('approved', 'expected') then
+    raise exception 'Visitor pass is not pending guard action.';
+  end if;
+
+  if v_decision in ('approved', 'approve', 'allow', 'allowed') then
+    v_status := 'checked_in';
+    v_log_status := 'completed';
+    v_log_title := 'Visitor approved at gate';
+    v_log_details :=
+      format(
+        '%s checked in %s for unit %s.',
+        v_guard_name,
+        v_pass.visitor_name,
+        coalesce(v_pass.unit_number, '-')
+      );
+  elsif v_decision in ('denied', 'deny', 'rejected', 'reject') then
+    v_status := 'denied';
+    v_log_status := 'denied';
+    v_log_title := 'Visitor denied at gate';
+    v_log_details :=
+      format(
+        '%s denied entry for %s visiting unit %s.',
+        v_guard_name,
+        v_pass.visitor_name,
+        coalesce(v_pass.unit_number, '-')
+      );
+  else
+    raise exception 'Unsupported guard decision: %', p_decision;
+  end if;
+
+  update public.visitor_passes
+  set status = v_status
+  where id = p_pass_id;
+
+  insert into public.guard_duty_logs (
+    guard_user_id,
+    title,
+    details,
+    related_visitor_name,
+    related_unit,
+    log_status,
+    logged_at
+  )
+  values (
+    p_guard_user_id,
+    v_log_title,
+    v_log_details,
+    v_pass.visitor_name,
+    v_pass.unit_number,
+    v_log_status,
+    now()
+  )
+  returning id into v_log_id;
+
+  return query
+  select
+    v_pass.id,
+    v_log_id,
+    v_pass.visitor_name,
+    v_pass.unit_number,
+    v_status;
+end;
+$$;
+
+create or replace function public.process_guard_qr_entry(
+  p_guard_user_id uuid,
+  p_code text,
+  p_decision text default 'approved'
+)
+returns table (
+  pass_id uuid,
+  log_id uuid,
+  visitor_name text,
+  unit_number text,
+  status text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_pass_id uuid;
+begin
+  select id
+  into v_pass_id
+  from public.visitor_passes
+  where qr_token = trim(p_code)
+     or pin_code = trim(p_code)
+  order by expected_arrival desc
+  limit 1;
+
+  if v_pass_id is null then
+    raise exception 'No visitor pass matched that QR or PIN code.';
+  end if;
+
+  return query
+  select *
+  from public.process_guard_visitor_pass(
+    p_guard_user_id,
+    v_pass_id,
+    p_decision
+  );
+end;
+$$;
+
+create or replace view public.guard_gate_activity_v as
+select
+  vp.id,
+  vp.visitor_name,
+  vp.phone,
+  vp.visitor_kind,
+  vp.expected_arrival,
+  vp.status,
+  resident.full_name as resident_name,
+  resident.unit_number,
+  resident.tower,
+  vp.pin_code
+from public.visitor_passes vp
+join public.app_users resident on resident.id = vp.resident_user_id
+where vp.status in ('approved', 'expected')
+order by vp.expected_arrival asc;
+
 grant execute on function public.create_resident_app_user(text, text, text, text, public.resident_kind, text, text) to anon, authenticated;
 grant execute on function public.create_visitor_pass(uuid, text, text, public.visitor_kind, timestamptz) to anon, authenticated;
 grant execute on function public.create_resident_complaint(uuid, text, text, text, text) to anon, authenticated;
 grant execute on function public.create_announcement(uuid, public.notice_kind, text, text, text, public.announcement_state, timestamptz) to anon, authenticated;
+grant execute on function public.create_guard_visitor_entry(uuid, text, text, text, text, public.visitor_kind, text) to anon, authenticated;
+grant execute on function public.process_guard_visitor_pass(uuid, uuid, text) to anon, authenticated;
+grant execute on function public.process_guard_qr_entry(uuid, text, text) to anon, authenticated;
 
 do $$
 begin

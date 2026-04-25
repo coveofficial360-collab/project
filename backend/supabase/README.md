@@ -16,7 +16,7 @@ This is for app testing only and should be replaced with real Supabase Auth befo
 - `01_schema.sql`: tables, views, and the `authenticate_app_user(...)` function
 - `02_seed.sql`: demo users and screen data
 - `03_screen_queries.sql`: ready-to-run queries for each app area
-- `04_actions.sql`: write RPCs for add resident, create visitor pass, complaint, and announcement
+- `04_actions.sql`: write RPCs for add resident, create visitor pass, complaint, announcement, and guard actions
 - `05_push_notifications.sql`: device token storage for FCM push delivery
 
 ## Apply locally in Supabase SQL editor

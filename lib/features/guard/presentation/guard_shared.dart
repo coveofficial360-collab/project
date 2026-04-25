@@ -187,7 +187,7 @@ class _GuardPrimaryButton extends StatelessWidget {
 
   final String label;
   final IconData icon;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -219,7 +219,7 @@ class _GuardSecondaryDangerButton extends StatelessWidget {
 
   final String label;
   final IconData icon;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -312,9 +312,17 @@ class _GuardOutlinedActionButton extends StatelessWidget {
 }
 
 class _GuardVisitorCard extends StatelessWidget {
-  const _GuardVisitorCard(this.row);
+  const _GuardVisitorCard(
+    this.row, {
+    this.onApprove,
+    this.onDeny,
+    this.isProcessing = false,
+  });
 
   final Map<String, dynamic> row;
+  final VoidCallback? onApprove;
+  final VoidCallback? onDeny;
+  final bool isProcessing;
 
   @override
   Widget build(BuildContext context) {
@@ -380,6 +388,28 @@ class _GuardVisitorCard extends StatelessWidget {
                 _GuardMetaChip(icon: Icons.schedule_rounded, label: arrival),
               ],
             ),
+            if (onApprove != null || onDeny != null) ...[
+              const SizedBox(height: 14),
+              Row(
+                children: [
+                  Expanded(
+                    child: _GuardPrimaryButton(
+                      label: isProcessing ? 'Processing...' : 'Allow Entry',
+                      icon: Icons.check_circle_rounded,
+                      onTap: isProcessing ? null : onApprove,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: _GuardSecondaryDangerButton(
+                      label: 'Deny',
+                      icon: Icons.cancel_rounded,
+                      onTap: isProcessing ? null : onDeny,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),

@@ -9,6 +9,7 @@ class _GuardEntryTab extends StatelessWidget {
     required this.onPurposeChanged,
     required this.onApprove,
     required this.onDeny,
+    required this.isSubmitting,
     required this.onScanQr,
     required this.onOpenCamera,
     required this.onPanicAlert,
@@ -22,6 +23,7 @@ class _GuardEntryTab extends StatelessWidget {
   final ValueChanged<String?> onPurposeChanged;
   final VoidCallback onApprove;
   final VoidCallback onDeny;
+  final bool isSubmitting;
   final VoidCallback onScanQr;
   final VoidCallback onOpenCamera;
   final VoidCallback onPanicAlert;
@@ -58,6 +60,7 @@ class _GuardEntryTab extends StatelessWidget {
                       onPurposeChanged: onPurposeChanged,
                       onApprove: onApprove,
                       onDeny: onDeny,
+                      isSubmitting: isSubmitting,
                     ),
                   ),
                 ],
@@ -78,6 +81,7 @@ class _GuardEntryTab extends StatelessWidget {
                   onPurposeChanged: onPurposeChanged,
                   onApprove: onApprove,
                   onDeny: onDeny,
+                  isSubmitting: isSubmitting,
                 ),
               ],
             );
@@ -261,6 +265,7 @@ class _GuardEntryFormCard extends StatelessWidget {
     required this.onPurposeChanged,
     required this.onApprove,
     required this.onDeny,
+    required this.isSubmitting,
   });
 
   final TextEditingController visitorNameController;
@@ -270,6 +275,7 @@ class _GuardEntryFormCard extends StatelessWidget {
   final ValueChanged<String?> onPurposeChanged;
   final VoidCallback onApprove;
   final VoidCallback onDeny;
+  final bool isSubmitting;
 
   @override
   Widget build(BuildContext context) {
@@ -423,7 +429,7 @@ class _GuardEntryFormCard extends StatelessWidget {
                         child: _GuardPrimaryButton(
                           label: 'Approve Entry',
                           icon: Icons.check_circle_rounded,
-                          onTap: onApprove,
+                          onTap: isSubmitting ? null : onApprove,
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -431,7 +437,7 @@ class _GuardEntryFormCard extends StatelessWidget {
                         child: _GuardSecondaryDangerButton(
                           label: 'Deny Entry',
                           icon: Icons.cancel_rounded,
-                          onTap: onDeny,
+                          onTap: isSubmitting ? null : onDeny,
                         ),
                       ),
                     ],
@@ -443,13 +449,13 @@ class _GuardEntryFormCard extends StatelessWidget {
                     _GuardPrimaryButton(
                       label: 'Approve Entry',
                       icon: Icons.check_circle_rounded,
-                      onTap: onApprove,
+                      onTap: isSubmitting ? null : onApprove,
                     ),
                     const SizedBox(height: 12),
                     _GuardSecondaryDangerButton(
                       label: 'Deny Entry',
                       icon: Icons.cancel_rounded,
-                      onTap: onDeny,
+                      onTap: isSubmitting ? null : onDeny,
                     ),
                   ],
                 );
