@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Community Feed - Cove Glass</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#E7E8E9",
+                        "on-surface-variant": "#414754",
+                        "surface": "#F8F9FA",
+                        "primary": "#005BBF",
+                        "inverse-on-surface": "#F0F1F2",
+                        "on-primary-container": "#FFFFFF",
+                        "on-secondary": "#FFFFFF",
+                        "on-tertiary-container": "#0E0200",
+                        "on-error": "#FFFFFF",
+                        "inverse-surface": "#2E3132",
+                        "on-tertiary-fixed": "#341100",
+                        "surface-container-highest": "#E1E3E4",
+                        "secondary-fixed-dim": "#FFBA43",
+                        "error": "#BA1A1A",
+                        "surface-container": "#EDEEEF",
+                        "primary-container": "#1A73E8",
+                        "surface-tint": "#005BC0",
+                        "secondary": "#805600",
+                        "outline-variant": "#C1C6D6",
+                        "inverse-primary": "#ADC7FF",
+                        "surface-dim": "#D9DADB",
+                        "on-tertiary": "#FFFFFF",
+                        "surface-variant": "#E1E3E4",
+                        "on-primary": "#FFFFFF",
+                        "primary-fixed": "#D8E2FF",
+                        "on-background": "#191D1D",
+                        "outline": "#727785",
+                        "on-secondary-fixed": "#281800",
+                        "on-secondary-container": "#694600",
+                        "on-primary-fixed": "#001A41",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "on-surface": "#191C1D",
+                        "on-secondary-fixed-variant": "#614000",
+                        "surface-container-lowest": "#FFFFFF",
+                        "secondary-container": "#FDAF0B",
+                        "tertiary-fixed-dim": "#FFB691",
+                        "primary-fixed-dim": "#ADC7FF",
+                        "background": "#F8F9FA",
+                        "surface-bright": "#F8F9FA",
+                        "error-container": "#FFDAD6",
+                        "tertiary-fixed": "#FFDBCB",
+                        "tertiary-container": "#C55500",
+                        "surface-container-low": "#F3F4F5",
+                        "secondary-fixed": "#FFDDAF",
+                        "on-primary-fixed-variant": "#004493",
+                        "on-error-container": "#93000A",
+                        "tertiary": "#9E4300"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-effect {
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+        .soft-elevation {
+            box-shadow: 0 12px 32px rgba(25, 28, 29, 0.06);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full flex justify-between items-center px-6 h-16 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl shadow-sm z-50">
+<div class="flex items-center gap-4">
+<button class="p-2 -ml-2 transition-all duration-300 ease-in-out active:scale-95 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-full">
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400">menu</span>
+</button>
+<h1 class="font-['Plus_Jakarta_Sans'] font-bold tracking-tight text-xl text-slate-900 dark:text-white">Community</h1>
+</div>
+<div class="flex items-center">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-surface-container-high transition-all duration-300 active:scale-95">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="Close-up portrait of a modern professional woman with a warm smile in soft natural sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKkgFqR1UpVzfyrUeFOtbURBub74MUCBQOuqWiitpgrCrMAo5AwIxWdfsZ1lMehy8nR4u7Zzh5JXfhgKDki-8VLcQEsSFHSZIL0bd19yFjt58iaPZj155-kSK9tiWtlu2RyqE0E-2KRVIFxkG6HzcTIzha9OknnVmJvgvHGtn65YfCqTwyzHwq8W3lHjpGgpF799ya1duo7UqqHylCgqwH60PJwdsAOAM3ElbjR5B8y3jQ2c_iJwc6KMdoYl9laMVU0vSNespEPg"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-24 pb-32 px-6 max-w-2xl mx-auto min-h-screen">
+<!-- Active Suggestions Title -->
+<div class="flex items-center justify-between mb-8">
+<h2 class="font-headline text-2xl font-bold tracking-tight text-on-surface">Active Suggestions</h2>
+<span class="text-xs font-label font-medium tracking-widest uppercase text-outline px-3 py-1 bg-surface-container-high rounded-full">3 LIVE</span>
+</div>
+<!-- Suggestions Feed -->
+<div class="grid gap-6">
+<!-- Card 1: Community Composting -->
+<article class="group relative overflow-hidden bg-surface-container-lowest rounded-3xl p-6 soft-elevation transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-pointer">
+<div class="flex flex-col gap-4">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center">
+<span class="material-symbols-outlined text-emerald-600">compost</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-lg text-on-surface leading-tight">Community Composting Program</h3>
+<p class="text-xs font-label tracking-wide text-outline uppercase">ENVIRONMENTAL • 12 VOTES NEEDED</p>
+</div>
+</div>
+</div>
+<p class="text-on-surface-variant leading-relaxed text-sm">
+                        Proposal to install three industrial-grade composting bins in the South Garden to reduce building waste by up to 40%.
+                    </p>
+<div class="flex items-center gap-4 pt-2">
+<div class="flex-1 h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-emerald-500 w-3/4 rounded-full"></div>
+</div>
+<span class="text-xs font-bold text-on-surface">75%</span>
+</div>
+<div class="flex items-center justify-between pt-2 border-t border-surface-container-low">
+<div class="flex -space-x-2">
+<img class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="Portrait of a young man with glasses in soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAClEJTsJ4FECqasmlgAXK4DAtW64SUs6VOq9tiP5iw6HnZgJnC5EpZSMjnGOXlcuOM5p5XQAG-s_ecCS6S7LEzZ4fiI7ClhJjDgHotjfYOFqBGBQyq6G1YgvfmMRkM1Wvokk70ui-xBsNPowtTL-tUfezqow7TkJksB_HCImRPX8l8sAMTTwT0rT1kCimmiJWFKDkMC2tCEA_txxvBGAfbVcm5Ysef04cveaiw6HS5yaG1aehRbjkvtye_FEkNUVYTOUqs838Cag"/>
+<img class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="Portrait of a smiling woman with curly hair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDH6544kpITzInt5XeugIu7n6zIsGWppx0JGvqBJ9Xr7JHc3y_BJ4Y2umQyX2S2BUGxciowxkXttG8qURDw_9zQjPP404-pEK24FSbzDoRAUV6dY5-O79Ox8wFY4-Zkqr3czrF8c0mHaaLCW7p15TjTPLYoiYej-nNw3U8vatpxZDKjG0_baaIFg4Lz2H_YYcdJKS4zbYXSM1SR6Q4Iy4ZQhxp9SaLnu-UJzjE1isnxP5i0xRLjEW0tNoDyEG-V7gvBoyBg37vHEA"/>
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-[10px] font-bold border-2 border-white">+34</div>
+</div>
+<button class="bg-primary text-white px-6 py-2 rounded-full font-headline text-sm font-semibold transition-all active:scale-95 hover:opacity-90">Join Discussion</button>
+</div>
+</div>
+</article>
+<!-- Card 2: Extended Gym Hours -->
+<article class="group relative overflow-hidden bg-surface-container-lowest rounded-3xl p-6 soft-elevation transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-pointer">
+<div class="flex flex-col gap-4">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
+<span class="material-symbols-outlined text-blue-600">fitness_center</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-lg text-on-surface leading-tight">Extended Gym Hours</h3>
+<p class="text-xs font-label tracking-wide text-outline uppercase">LIFESTYLE • 22 VOTES NEEDED</p>
+</div>
+</div>
+</div>
+<p class="text-on-surface-variant leading-relaxed text-sm">
+                        Extending access to the rooftop gym from 10 PM to 12 AM daily for residents with flexible work schedules.
+                    </p>
+<div class="flex items-center gap-4 pt-2">
+<div class="flex-1 h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-blue-500 w-1/2 rounded-full"></div>
+</div>
+<span class="text-xs font-bold text-on-surface">50%</span>
+</div>
+<div class="flex items-center justify-between pt-2 border-t border-surface-container-low">
+<div class="flex -space-x-2">
+<img class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="Portrait of a bearded man outdoors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5668C74dtF-wOtOt-LAcj3XlJP0mQwrHkhNmQKjcTz3VaRRbGTwnwwLFOj2q4GeV5vPC3E9baS2VHIxBL8DmEHt8M-R_1u-5-LnxwrZrsOpWzMlUNUCLGf73iDrqoYFDGuTR3jdXjedDkZ_fPioGCUlRQy9hOVhR3DFUEa3HIzSN_FJaglMKx9OIZeXVYB0m4lNLGYL6XAzqFUoFmEj8Kd0MahzGB__fmMy7ZV_vpAHjWu6KvTFGp8lkJxbM_T5HY68BFWU1xNA"/>
+<img class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="Portrait of a woman wearing a blazer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7MBp8VHnjRDG2zbtZ6ACmcRsf1ikc4MKU4XFwn2DZj749YqTVX45Gjak2w6_Bl6P6M5kyvPjXsQ0D-FAuUb8dhy0H4nSjNeXF2j1drjQ64yRzeiGaYn__FcODu9ZECWWRUb7qN8CivC0jZrNgybE_1c9V3PC7O__1fTvPjBlg36w2wMR4pYRvKDOOtY-cSZ8pnrlHFER9CrFCI32KAT9QOy9XJh9-C4mMLNSUTxIhjyRB4GmisCRl_BL4gnHvaCg9QsZjjumhKA"/>
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-[10px] font-bold border-2 border-white">+18</div>
+</div>
+<button class="bg-primary text-white px-6 py-2 rounded-full font-headline text-sm font-semibold transition-all active:scale-95 hover:opacity-90">Join Discussion</button>
+</div>
+</div>
+</article>
+<!-- Card 3: Bicycle Storage Upgrade -->
+<article class="group relative overflow-hidden bg-surface-container-lowest rounded-3xl p-6 soft-elevation transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-pointer">
+<div class="flex flex-col gap-4">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center">
+<span class="material-symbols-outlined text-orange-600">directions_bike</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-lg text-on-surface leading-tight">Bicycle Storage Upgrade</h3>
+<p class="text-xs font-label tracking-wide text-outline uppercase">INFRASTRUCTURE • 5 VOTES NEEDED</p>
+</div>
+</div>
+</div>
+<p class="text-on-surface-variant leading-relaxed text-sm">
+                        Installing secure vertical racks and a repair station in the basement garage to accommodate 20 more bikes.
+                    </p>
+<div class="flex items-center gap-4 pt-2">
+<div class="flex-1 h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-orange-500 w-[90%] rounded-full"></div>
+</div>
+<span class="text-xs font-bold text-on-surface">90%</span>
+</div>
+<div class="flex items-center justify-between pt-2 border-t border-surface-container-low">
+<div class="flex -space-x-2">
+<img class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="Portrait of a creative woman in a bright studio" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzHMHJivfU8YI77ULZ6DNmZfO2ElQIYlHJxrX3zjI_niHBuC1sxd2Nc-kCV6pYU84-jRcYsNJ8PC27rOT7jDOm8uVgNAVZsE5y29XR9NqF84Dy9i8m-8aIKvEgcvpi5kLSRGxRClXJ5jL4cF10-vGHW_5VNCG-pS6Cqxa2ZWLJjQ0jLgdQ4dww6Unc_oWJDn9ykdWLcwrpfe353bUo6HxliV2R0mnKUbyqktCCzhpFPqECQWTFpop0_Hx1mrMbEs84y5aYkHk0pw"/>
+<img class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="Portrait of a young man with a slight smile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmcrpLJxEDll52rzLK0KgPG-CQgfyK-Pq4rpM-QBaROO68trPDKhxpSST1gWADinisSfxiKVurCSF-Ug9GmMM-PSyQ40prlkndDSKkoj7UBWHvipPrDJCzeIxNlNXyZC2a_ZFHgOBFKLQwwI9hbqyTqU6KLM6jzveIQ5man47MNI9ATKjnlRQyQXPvR2EPXGO_iqXZe4NPpsdSDtoEunDXC04ebZbi0Y1bEm6YrReb3C7AfbV1XeJWWs7U0V-V5TRrc1STJVwiWg"/>
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-[10px] font-bold border-2 border-white">+42</div>
+</div>
+<button class="bg-primary text-white px-6 py-2 rounded-full font-headline text-sm font-semibold transition-all active:scale-95 hover:opacity-90">Join Discussion</button>
+</div>
+</div>
+</article>
+</div>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-28 right-6 w-14 h-14 bg-primary text-white rounded-full soft-elevation flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-90 z-40 group">
+<span class="material-symbols-outlined text-2xl group-hover:rotate-90 transition-transform duration-300">add</span>
+</button>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-3 h-20 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl rounded-t-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.05)] border-t border-slate-200/30 dark:border-slate-800/30 z-50">
+<!-- Directory Tab -->
+<button class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 transition-transform duration-200 active:scale-90 hover:text-blue-600 dark:hover:text-blue-300">
+<span class="material-symbols-outlined text-2xl">folder_shared</span>
+<span class="font-['Inter'] text-[10px] font-medium tracking-widest uppercase mt-1">Directory</span>
+</button>
+<!-- Meeting Tab (Active) -->
+<button class="flex flex-col items-center justify-center text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 rounded-full px-4 py-1 transition-transform duration-200 active:scale-90">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">groups</span>
+<span class="font-['Inter'] text-[10px] font-medium tracking-widest uppercase mt-1">Meeting</span>
+</button>
+<!-- Profile Tab -->
+<button class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 transition-transform duration-200 active:scale-90 hover:text-blue-600 dark:hover:text-blue-300">
+<span class="material-symbols-outlined text-2xl">person</span>
+<span class="font-['Inter'] text-[10px] font-medium tracking-widest uppercase mt-1">Profile</span>
+</button>
+</nav>
+</body></html>

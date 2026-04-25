@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#FFB691",
+                        "on-error": "#FFFFFF",
+                        "inverse-on-surface": "#F0F1F2",
+                        "surface": "#F8F9FA",
+                        "on-primary-fixed": "#001A41",
+                        "on-primary-container": "#FFFFFF",
+                        "on-error-container": "#93000A",
+                        "on-secondary-fixed": "#281800",
+                        "on-background": "#191C1D",
+                        "surface-container": "#EDEEEF",
+                        "tertiary-container": "#C55500",
+                        "secondary-fixed-dim": "#FFBA43",
+                        "error": "#BA1A1A",
+                        "tertiary-fixed": "#FFDBCB",
+                        "outline": "#727785",
+                        "inverse-surface": "#2E3132",
+                        "tertiary": "#9E4300",
+                        "background": "#F8F9FA",
+                        "primary-fixed-dim": "#ADC7FF",
+                        "on-secondary": "#FFFFFF",
+                        "outline-variant": "#C1C6D6",
+                        "error-container": "#FFDAD6",
+                        "on-tertiary-fixed": "#341100",
+                        "primary-fixed": "#D8E2FF",
+                        "on-secondary-container": "#694600",
+                        "on-tertiary-container": "#0E0200",
+                        "surface-dim": "#D9DADB",
+                        "secondary": "#805600",
+                        "surface-container-lowest": "#FFFFFF",
+                        "on-tertiary": "#FFFFFF",
+                        "on-secondary-fixed-variant": "#614000",
+                        "surface-container-low": "#F3F4F5",
+                        "on-surface-variant": "#414754",
+                        "surface-container-highest": "#E1E3E4",
+                        "surface-variant": "#E1E3E4",
+                        "secondary-container": "#FDAF0B",
+                        "surface-container-high": "#E7E8E9",
+                        "primary-container": "#1A73E8",
+                        "on-primary-fixed-variant": "#004493",
+                        "on-primary": "#FFFFFF",
+                        "primary": "#005BBF",
+                        "surface-tint": "#005BC0",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "secondary-fixed": "#FFDDAF",
+                        "on-surface": "#191C1D",
+                        "inverse-primary": "#ADC7FF",
+                        "surface-bright": "#F8F9FA"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-icon {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="sticky top-0 w-full z-50 px-6 flex items-center justify-between h-16 bg-slate-100/50 dark:bg-slate-900/50 backdrop-blur-xl shadow-sm">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-blue-700 dark:text-blue-400 active:scale-95 transition-transform">menu</button>
+<h1 class="font-plus-jakarta-sans font-bold tracking-tight text-xl text-blue-700 dark:text-blue-400">Meetings</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-slate-600 dark:text-slate-400 hover:bg-white/20 p-2 rounded-full transition-all">search</button>
+<div class="w-8 h-8 rounded-full bg-primary-fixed overflow-hidden ring-2 ring-white/50">
+<img class="w-full h-full object-cover" data-alt="professional portrait of a young woman with a friendly smile in soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPdTB5i1l319yOw2z1MTHsTFSBnyVUmWi-9mbz5AvK7Y_zPf4qZyHwLxJZJ4TIq-cGW79gEY4z8dz20nEOXLlJGFEqOGctSK1F7oRO9gjn5rZtnErw4r3f6ER7hpVQ3Ivtu6roiDQJirrTgtZWN9rtebnY65wbMSMZaizrO_ybPsvh0IkQkA0H8Pi3wLrhSqQethE5LwR22gewWOZ37eaqaCVxHkg1kCHK67H0OEF0W8FGle3TeRXN_PWP1WWlUK3pivx7gDH-Ag"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="max-w-3xl mx-auto px-6 pt-8 space-y-8">
+<!-- Hero Section / Context -->
+<section class="space-y-2">
+<span class="font-label text-[10px] font-medium tracking-widest uppercase text-tertiary">Community Records</span>
+<h2 class="font-headline text-3xl font-bold tracking-tight text-on-surface">Recent Discussions</h2>
+<p class="text-on-surface-variant leading-relaxed max-w-xl">Stay informed with the latest updates from our community gatherings and strategic planning sessions.</p>
+</section>
+<!-- Bento-inspired Meeting List -->
+<div class="grid grid-cols-1 gap-6">
+<!-- Meeting Card 1 -->
+<article class="group relative bg-surface-container-lowest rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-outline-variant/15 flex flex-col md:flex-row gap-6">
+<div class="md:w-1/3 h-48 md:h-auto rounded-lg overflow-hidden relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="modern meeting room with wooden table and people discussing documents in soft afternoon light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2JRRjKTHfwzLi_ygb0QIgQ1Lj_OCwrL158UHNQsFcrYzbze1gEtLFMDm_SWcgdFyDV0Dwj5vwcIPNhkTDcCJfM3trKSrYe-LMIy-Id7Iw1nlC8Y4PQA3KDuUB1bY0wjh4TqRyXaMip6D1e7sPV7qj5mjl8OzYauX5KUOj2v7NotRZPLdROakljuaGR0qJ5FrNZfCscWRvEP6h191WQq6Ewf_Na-N4ui9bsryIFJ9z7fNuT99yoyU1CHyIAGqvj5TXajpxoe1cTw"/>
+<div class="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase text-primary">Finance</div>
+</div>
+<div class="md:w-2/3 flex flex-col justify-between py-1">
+<div>
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline text-xl font-bold text-on-surface group-hover:text-primary transition-colors">Annual Budget Review</h3>
+<span class="font-label text-xs font-medium text-outline">May 15, 2024</span>
+</div>
+<p class="text-on-surface-variant text-sm leading-relaxed line-clamp-3">
+                            The committee finalized the allocation for the upcoming fiscal year, prioritizing the renovation of the central park area and upgrading the community gym facilities. Key discussions involved adjusting the monthly maintenance fees to accommodate rising utility costs while ensuring a balanced reserve fund for emergency repairs.
+                        </p>
+</div>
+<div class="mt-4 flex items-center gap-4">
+<button class="text-primary text-sm font-semibold flex items-center gap-1 hover:underline">
+                            Read Full Minutes 
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Meeting Card 2 -->
+<article class="group relative bg-surface-container-lowest rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-outline-variant/15 flex flex-col md:flex-row gap-6">
+<div class="md:w-1/3 h-48 md:h-auto rounded-lg overflow-hidden relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="vibrant outdoor social gathering with fairy lights and people laughing in a backyard setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLBoZ5E8e4wWZbBMiTqyY0oGxGplzwUYT1i-Y61gGZCXKb-SwFqeD9HRwyhmtKmYrXde-aldud--sfpaGN6i_xfk9d59LVnAwKzSwBOFKaXMVnx8WyPK7lpx8MXJjMLXX2LmTpZrODTb6dgEiqptct8_vPAe1UZYYULRPqAWyptPYB4mjI_5e685Mya21Y1W5bLoepN11RMyKdRLy--oDzYkxsHrlrA6nAXy8fXkkWwFWNyQU1nMk8r0Pv9v85UXyDRmsSP-oEfA"/>
+<div class="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase text-tertiary">Social</div>
+</div>
+<div class="md:w-2/3 flex flex-col justify-between py-1">
+<div>
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline text-xl font-bold text-on-surface group-hover:text-primary transition-colors">Summer Social Planning</h3>
+<span class="font-label text-xs font-medium text-outline">May 02, 2024</span>
+</div>
+<p class="text-on-surface-variant text-sm leading-relaxed line-clamp-3">
+                            Exciting ideas were proposed for the 2024 Summer Solstice block party. Suggestions included hiring local food trucks, organizing a professional fireworks display, and setting up an outdoor cinema for the kids. A subcommittee was formed to handle catering logistics and neighbor permit approvals.
+                        </p>
+</div>
+<div class="mt-4 flex items-center gap-4">
+<button class="text-primary text-sm font-semibold flex items-center gap-1 hover:underline">
+                            Read Full Minutes 
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Meeting Card 3 -->
+<article class="group relative bg-surface-container-lowest rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-outline-variant/15 flex flex-col md:flex-row gap-6">
+<div class="md:w-1/3 h-48 md:h-auto rounded-lg overflow-hidden relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="close-up of architectural blueprints and building tools on a brightly lit desk" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7oDy3smo6bIUAk6DTACUcQrPXJdA_s_-iHa79_3-CyBnNlW68ekEwHtQrlS0M8IIAQFy9XobR8IjvFSCVRRYv02lhW1wQKIZ-1Fb1S2unoqk8E98IG8nmPL863uZMVD1DfbWeG7UuYfZAQCmj503rmd9gXUmQY8PHl26cWcZYQDn93ahPrl9ftHqiErRVVwa0aisQvzEjD7uaH9wUEpzNI8TNcUuJcLz-kwE9mbA8hRnD5PeIQQfPyJYK93k8l1zCFA7d48XYVw"/>
+<div class="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase text-secondary">Projects</div>
+</div>
+<div class="md:w-2/3 flex flex-col justify-between py-1">
+<div>
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline text-xl font-bold text-on-surface group-hover:text-primary transition-colors">Infrastructure &amp; Safety</h3>
+<span class="font-label text-xs font-medium text-outline">April 18, 2024</span>
+</div>
+<p class="text-on-surface-variant text-sm leading-relaxed line-clamp-3">
+                            The meeting addressed the recent concern regarding street lighting in the West Wing. Plans for installing smart LED lights with motion sensors were reviewed. Additionally, the road resurfacing schedule was shared with residents to minimize commute disruptions over the next month.
+                        </p>
+</div>
+<div class="mt-4 flex items-center gap-4">
+<button class="text-primary text-sm font-semibold flex items-center gap-1 hover:underline">
+                            Read Full Minutes 
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</article>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/90 dark:bg-slate-950/90 backdrop-blur-2xl border-t border-slate-200/30 dark:border-slate-800/30 shadow-[0_-12px_32px_rgba(25,28,29,0.06)] rounded-t-3xl">
+<!-- Directory Tab -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="folder_shared">folder_shared</span>
+<span class="font-inter text-[10px] font-medium tracking-widest uppercase mt-1">Directory</span>
+</a>
+<!-- Meeting Tab (ACTIVE) -->
+<a class="flex flex-col items-center justify-center bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full px-5 py-1.5 transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined active-icon" data-icon="groups">groups</span>
+<span class="font-inter text-[10px] font-medium tracking-widest uppercase mt-1">Meeting</span>
+</a>
+<!-- Profile Tab -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-inter text-[10px] font-medium tracking-widest uppercase mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

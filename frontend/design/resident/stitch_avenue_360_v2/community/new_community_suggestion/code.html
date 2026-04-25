@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Submit Suggestion | Community</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#FFFFFF",
+                        "on-primary-fixed-variant": "#004493",
+                        "inverse-primary": "#ADC7FF",
+                        "surface-container-lowest": "#FFFFFF",
+                        "outline": "#727785",
+                        "surface-dim": "#D9DADB",
+                        "on-surface-variant": "#414754",
+                        "error-container": "#FFDAD6",
+                        "tertiary": "#9E4300",
+                        "on-secondary": "#FFFFFF",
+                        "tertiary-container": "#C55500",
+                        "surface-tint": "#005BC0",
+                        "on-tertiary-fixed": "#341100",
+                        "secondary-container": "#FDAF0B",
+                        "on-primary-fixed": "#001A41",
+                        "secondary-fixed-dim": "#FFBA43",
+                        "secondary-fixed": "#FFDDAF",
+                        "surface-container-highest": "#E1E3E4",
+                        "tertiary-fixed": "#FFDBCB",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "error": "#BA1A1A",
+                        "surface-bright": "#F8F9FA",
+                        "inverse-on-surface": "#F0F1F2",
+                        "surface-container": "#EDEEEF",
+                        "on-primary-container": "#FFFFFF",
+                        "on-primary": "#FFFFFF",
+                        "surface-variant": "#E1E3E4",
+                        "secondary": "#805600",
+                        "primary-container": "#1A73E8",
+                        "surface": "#F8F9FA",
+                        "primary-fixed-dim": "#ADC7FF",
+                        "on-tertiary": "#FFFFFF",
+                        "outline-variant": "#C1C6D6",
+                        "on-secondary-container": "#694600",
+                        "surface-container-low": "#F3F4F5",
+                        "on-background": "#191C1D",
+                        "on-secondary-fixed": "#281800",
+                        "primary": "#005BBF",
+                        "on-error-container": "#93000A",
+                        "inverse-surface": "#2E3132",
+                        "surface-container-high": "#E7E8E9",
+                        "primary-fixed": "#D8E2FF",
+                        "on-surface": "#191C1D",
+                        "on-secondary-fixed-variant": "#614000",
+                        "on-tertiary-container": "#0E0200",
+                        "tertiary-fixed-dim": "#FFB691",
+                        "background": "#F8F9FA"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-header { backdrop-filter: blur(20px); }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-[0_12px_32px_rgba(25,28,29,0.06)] flex items-center justify-between px-6 h-16 w-full">
+<div class="flex items-center gap-3">
+<button class="active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-on-surface-variant">arrow_back</span>
+</button>
+<h1 class="font-['Plus_Jakarta_Sans'] font-bold text-lg tracking-tight text-slate-900">Community</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-blue-600">notifications</span>
+<div class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden">
+<img alt="Profile" class="w-full h-full object-cover" data-alt="Close up portrait of a friendly professional man in a modern office setting with soft natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCX0BNw230neWcZ0uECRhvb2RsVwESeDwwblLzba2i_KwHk9O83B9RK3hTF7lAa0sMtAs-7_kkaKAqY0Wpzsy3IG8j8ppTXiq3S8tV0owwsPFSDVXmHpVLttDriF0PqkfkZyxyrpEawSgCasbkA2kICPtq1yjik6vV948oIdrWMB9XCuf1qPyhx6BG_iI3eTq1ikRNER61IJVpCXf5T7uJMhp5L04929mEXnu-nLJ-wWEoxvQbEmJa-9y-8St6eqYIkwfTcW8wnPg"/>
+</div>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-2xl mx-auto">
+<!-- Hero Instruction Section -->
+<section class="mb-8">
+<h2 class="text-3xl font-extrabold tracking-tight text-on-surface mb-2">Share an Idea</h2>
+<p class="text-on-surface-variant text-sm leading-relaxed">
+                Have a suggestion for the community? Your voice helps shape our shared space. Submit your thoughts below.
+            </p>
+</section>
+<!-- Suggestion Form -->
+<form class="space-y-6">
+<!-- Title Input -->
+<div class="space-y-2">
+<label class="font-['Inter'] text-[10px] font-bold tracking-widest uppercase text-slate-500">Suggestion Title</label>
+<input class="w-full bg-surface-container-lowest border-none shadow-sm rounded-2xl px-5 py-4 focus:ring-2 focus:ring-primary text-on-surface placeholder:text-outline-variant transition-all" placeholder="e.g., Solar panels for rooftop" type="text"/>
+</div>
+<!-- Category Selection -->
+<div class="space-y-3">
+<label class="font-['Inter'] text-[10px] font-bold tracking-widest uppercase text-slate-500">Category</label>
+<div class="flex flex-wrap gap-3">
+<button class="px-5 py-2.5 rounded-full bg-primary text-white font-semibold text-sm shadow-md flex items-center gap-2 transition-transform active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">apartment</span>
+                        Amenities
+                    </button>
+<button class="px-5 py-2.5 rounded-full bg-white text-on-surface-variant border border-outline-variant/30 font-medium text-sm hover:bg-surface-container transition-all flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[18px]">security</span>
+                        Security
+                    </button>
+<button class="px-5 py-2.5 rounded-full bg-white text-on-surface-variant border border-outline-variant/30 font-medium text-sm hover:bg-surface-container transition-all flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[18px]">groups</span>
+                        Social
+                    </button>
+<button class="px-5 py-2.5 rounded-full bg-white text-on-surface-variant border border-outline-variant/30 font-medium text-sm hover:bg-surface-container transition-all flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[18px]">eco</span>
+                        Eco
+                    </button>
+</div>
+</div>
+<!-- Description -->
+<div class="space-y-2">
+<label class="font-['Inter'] text-[10px] font-bold tracking-widest uppercase text-slate-500">Details</label>
+<textarea class="w-full bg-surface-container-lowest border-none shadow-sm rounded-2xl px-5 py-4 focus:ring-2 focus:ring-primary text-on-surface placeholder:text-outline-variant transition-all" placeholder="Describe your suggestion in detail. Why is this important? How will it benefit the community?" rows="5"></textarea>
+</div>
+<!-- Bento Styled Info Section -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="bg-surface-container-low p-6 rounded-[2rem] flex flex-col justify-between">
+<span class="material-symbols-outlined text-blue-600 mb-4" style="font-size: 32px;">lightbulb</span>
+<p class="text-sm font-medium leading-snug">Attach photos to help others visualize your idea more clearly.</p>
+</div>
+<div class="relative bg-slate-900 rounded-[2rem] p-6 overflow-hidden min-h-[140px] flex items-center">
+<div class="absolute inset-0 opacity-40">
+<img alt="Rooftop garden" class="w-full h-full object-cover" data-alt="Stunning modern rooftop garden with lush plants and panoramic city view at twilight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZnk2soeimV9hGaKi1hUkBVvCyEQPwTpV2MiMhIdaTv_ztZK4MPsQQdoqrpSDa_i7FSyeHKTlZTZ5fFsSDxfoiGstNeZAqgtrNTOrtdizwUP06Gwwzvo7XuhCcMJkFNpzX8ZcoKkO-LbE0-MpZkalX1BrKn7tIoAeNmornSDYs1NH-KFydamawC4HJyiio6J1wybZOxCvb0n5tYnr8eTB5Vsu4TVU5HZBKpasIWs1WpaXO-X5a_9oP5UmUYuyaEttTvMnfIcJIKw"/>
+</div>
+<button class="relative z-10 w-full py-3 bg-white/20 backdrop-blur-lg border border-white/30 rounded-full text-white text-sm font-bold tracking-wide uppercase hover:bg-white/30 transition-all" type="button">
+                        Add Photo
+                    </button>
+</div>
+</div>
+<!-- Community Poll Toggle -->
+<div class="bg-primary-fixed/20 p-6 rounded-[2.5rem] flex items-start gap-5">
+<div class="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">poll</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<h4 class="font-headline font-bold text-lg text-primary">Open as Community Poll</h4>
+<!-- Custom Toggle -->
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                        Enabling this transforms your suggestion into an active poll. Residents can vote for 7 days to show their support.
+                    </p>
+</div>
+</div>
+<!-- Submit Button -->
+<div class="pt-6">
+<button class="w-full py-5 bg-primary text-white rounded-full font-bold text-lg shadow-[0_12px_32px_rgba(0,91,191,0.25)] hover:-translate-y-1 transition-all active:scale-95" type="submit">
+                    Post to Community
+                </button>
+<p class="text-center text-[10px] text-slate-400 mt-4 tracking-widest uppercase">Submissions are reviewed for guidelines</p>
+</div>
+</form>
+</main>
+<!-- BottomNavBar -->
+</body></html>
