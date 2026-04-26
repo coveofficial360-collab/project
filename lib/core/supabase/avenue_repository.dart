@@ -254,6 +254,241 @@ class AvenueRepository {
     return _castRows(rows);
   }
 
+  Future<List<Map<String, dynamic>>> fetchCommunitySuggestions() async {
+    final rows = await _client
+        .from('community_suggestion_feed_v')
+        .select()
+        .order('created_at', ascending: false);
+
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchAdminCommunitySuggestions() async {
+    final rows = await _client
+        .from('admin_community_suggestion_feed_v')
+        .select()
+        .order('created_at', ascending: false);
+
+    return _castRows(rows);
+  }
+
+  Future<Map<String, dynamic>?> fetchCommunitySuggestion(
+    String suggestionId,
+  ) async {
+    final rows = await _client
+        .from('community_suggestion_feed_v')
+        .select()
+        .eq('id', suggestionId)
+        .limit(1);
+
+    final records = _castRows(rows);
+    if (records.isEmpty) {
+      return null;
+    }
+
+    return records.first;
+  }
+
+  Future<List<Map<String, dynamic>>> fetchCommunitySuggestionComments(
+    String suggestionId,
+  ) async {
+    final rows = await _client
+        .from('community_suggestion_comments_v')
+        .select()
+        .eq('suggestion_id', suggestionId)
+        .order('created_at', ascending: true);
+
+    return _castRows(rows);
+  }
+
+  Future<bool> isCurrentUserCommunitySuggestionMember(
+    String suggestionId,
+  ) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return false;
+    }
+
+    final rows = await _client
+        .from('community_suggestion_members')
+        .select('suggestion_id')
+        .eq('suggestion_id', suggestionId)
+        .eq('user_id', currentUser.id)
+        .limit(1);
+
+    return _castRows(rows).isNotEmpty;
+  }
+
+  Future<Map<String, dynamic>?> joinCommunitySuggestion({
+    required String suggestionId,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'join_community_suggestion',
+      params: {'p_user_id': currentUser.id, 'p_suggestion_id': suggestionId},
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> createCommunitySuggestion({
+    required String title,
+    required String category,
+    required String summary,
+    required String details,
+    String audienceScope = 'all_residents',
+    bool pollEnabled = true,
+    int targetVotes = 24,
+    String? coverImageUrl,
+    String iconName = 'lightbulb',
+    String accentHex = '#005BBF',
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'create_community_suggestion',
+      params: {
+        'p_user_id': currentUser.id,
+        'p_title': title.trim(),
+        'p_category': category.trim(),
+        'p_summary': summary.trim(),
+        'p_details': details.trim(),
+        'p_audience_scope': audienceScope,
+        'p_poll_enabled': pollEnabled,
+        'p_target_votes': targetVotes,
+        'p_cover_image_url': coverImageUrl?.trim(),
+        'p_icon_name': iconName,
+        'p_accent_hex': accentHex,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> addCommunitySuggestionComment({
+    required String suggestionId,
+    required String body,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'add_community_suggestion_comment',
+      params: {
+        'p_user_id': currentUser.id,
+        'p_suggestion_id': suggestionId,
+        'p_body': body.trim(),
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> reviewCommunitySuggestion({
+    required String suggestionId,
+    required String decision,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'review_community_suggestion',
+      params: {
+        'p_admin_user_id': currentUser.id,
+        'p_suggestion_id': suggestionId,
+        'p_decision': decision,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> voteCommunitySuggestion({
+    required String suggestionId,
+    required String voteKind,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'vote_community_suggestion',
+      params: {
+        'p_user_id': currentUser.id,
+        'p_suggestion_id': suggestionId,
+        'p_vote_kind': voteKind,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchCommunityMeetings() async {
+    final rows = await _client
+        .from('community_meetings')
+        .select()
+        .order('meeting_date', ascending: false);
+
+    return _castRows(rows);
+  }
+
+  Future<Map<String, dynamic>?> fetchCommunityMeeting(String meetingId) async {
+    final rows = await _client
+        .from('community_meetings')
+        .select()
+        .eq('id', meetingId)
+        .limit(1);
+
+    final records = _castRows(rows);
+    if (records.isEmpty) {
+      return null;
+    }
+
+    return records.first;
+  }
+
+  Future<List<Map<String, dynamic>>> fetchCommunitySupportFaqs() async {
+    final rows = await _client
+        .from('community_support_faqs')
+        .select()
+        .order('sort_order', ascending: true)
+        .order('created_at', ascending: true);
+
+    return _castRows(rows);
+  }
+
   Future<Map<String, dynamic>?> fetchAdminMetrics() async {
     final rows = await _client
         .from('admin_dashboard_metrics_v')
@@ -279,6 +514,15 @@ class AvenueRepository {
   Future<List<Map<String, dynamic>>> fetchAnnouncements() async {
     final rows = await _client
         .from('announcements')
+        .select()
+        .order('created_at', ascending: false);
+
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchAdminComplaints() async {
+    final rows = await _client
+        .from('admin_complaints_v')
         .select()
         .order('created_at', ascending: false);
 

@@ -61,3 +61,6 @@ $$;
 
 grant select, insert, update, delete on public.device_push_tokens to anon, authenticated;
 grant execute on function public.register_device_push_token(uuid, text, text, text) to anon, authenticated;
+
+-- Development-only setup: keep push token registration open for the demo app.
+alter table public.device_push_tokens disable row level security;

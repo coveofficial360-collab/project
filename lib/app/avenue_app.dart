@@ -4,6 +4,7 @@ import '../core/supabase/supabase_bootstrap.dart';
 import '../features/admin/presentation/admin_screens.dart';
 import '../features/guard/presentation/guard_screen.dart';
 import '../features/login/presentation/login_screen.dart';
+import '../features/resident/presentation/community_screens.dart';
 import '../features/resident/presentation/resident_screens.dart';
 import '../features/system/presentation/supabase_setup_screen.dart';
 import '../theme/avenue_theme.dart';
@@ -68,6 +69,28 @@ class AvenueApp extends StatelessWidget {
                 return const VisitorScreen();
               case AppPage.drawer:
                 return const ResidentDrawerScreen();
+              case AppPage.communityFeed:
+                return const CommunityFeedScreen();
+              case AppPage.communityShareIdea:
+                return const ShareIdeaScreen();
+              case AppPage.communitySuggestionDetail:
+                final arguments = settings.arguments is Map<String, dynamic>
+                    ? settings.arguments! as Map<String, dynamic>
+                    : const <String, dynamic>{};
+                return SuggestionDiscussionScreen(
+                  suggestionId: arguments['suggestionId'] as String?,
+                );
+              case AppPage.communityMeetings:
+                return const CommunityMeetingsScreen();
+              case AppPage.communityMeetingDetail:
+                final arguments = settings.arguments is Map<String, dynamic>
+                    ? settings.arguments! as Map<String, dynamic>
+                    : const <String, dynamic>{};
+                return MeetingMinutesScreen(
+                  meetingId: arguments['meetingId'] as String?,
+                );
+              case AppPage.communitySupport:
+                return const SupportHelpScreen();
               case AppPage.adminMenu:
                 return AdminDrawerScreen(
                   currentPage: settings.arguments is AppPage
@@ -79,18 +102,20 @@ class AvenueApp extends StatelessWidget {
               case AppPage.generateReports:
                 return const GenerateReportsScreen();
               case AppPage.announcementsManagement:
-                final arguments =
-                    settings.arguments is Map<String, dynamic>
+                final arguments = settings.arguments is Map<String, dynamic>
                     ? settings.arguments! as Map<String, dynamic>
                     : const <String, dynamic>{};
                 return AnnouncementsManagementScreen(
-                  openComposerOnStart:
-                      arguments['openComposer'] == true,
+                  openComposerOnStart: arguments['openComposer'] == true,
                 );
               case AppPage.addResident:
                 return const AddResidentScreen();
               case AppPage.residentDirectory:
                 return const ResidentDirectoryScreen();
+              case AppPage.adminComplaints:
+                return const AdminComplaintsScreen();
+              case AppPage.adminCommunity:
+                return const AdminCommunityScreen();
             }
           },
         );

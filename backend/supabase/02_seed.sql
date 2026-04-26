@@ -228,16 +228,16 @@ values
 
 insert into public.amenity_bookings (user_id, amenity_id, booking_date, time_slot, guest_count, booking_status, booking_fee)
 select
-  u.id,
-  a.id,
+  public.app_users.id,
+  public.amenities.id,
   current_date + 1,
   '10:00 - 12:00',
   2,
   'confirmed',
   0
-from public.app_users u
-join public.amenities a on a.code = 'infinity-pool'
-where u.email = 'user@gmail.com';
+from public.app_users
+join public.amenities on public.amenities.code = 'infinity-pool'
+where public.app_users.email = 'user@gmail.com';
 
 insert into public.bills (
   user_id,
@@ -576,6 +576,250 @@ insert into public.announcements (
 select id, 'sent', 'event', 'Annual Garden Tea Party', 'Join us for an afternoon of community bonding at the North Pavilion. Refreshments will be served and kids'' activities planned...', 'All Residents', 290, null, now() - interval '10 days'
 from public.app_users
 where email = 'admin@gmail.com';
+
+insert into public.community_suggestions (
+  created_by,
+  title,
+  category,
+  summary,
+  details,
+  audience_scope,
+  icon_name,
+  accent_hex,
+  cover_image_url,
+  poll_enabled,
+  target_votes,
+  votes_in_favor,
+  votes_needs_review,
+  status,
+  created_at
+)
+select
+  id,
+  'Community Composting Program',
+  'Environmental',
+  'Proposal to install three industrial-grade composting bins in the South Garden to reduce building waste by up to 40%.',
+  'The suggestion recommends placing clearly labelled composting stations near the South Garden and partnering with a local processing service. Residents would receive simple instructions on household waste segregation, and the finished compost could be used for the tower landscaping beds.',
+  'all_residents',
+  'compost',
+  '#2E8B57',
+  null,
+  true,
+  16,
+  12,
+  0,
+  'published',
+  now() - interval '2 days'
+from public.app_users
+where email = 'user@gmail.com';
+
+insert into public.community_suggestions (
+  created_by,
+  title,
+  category,
+  summary,
+  details,
+  audience_scope,
+  icon_name,
+  accent_hex,
+  cover_image_url,
+  poll_enabled,
+  target_votes,
+  votes_in_favor,
+  votes_needs_review,
+  status,
+  created_at
+)
+select
+  id,
+  'Extended Gym Hours',
+  'Lifestyle',
+  'Extend rooftop gym access from 10 PM to 12 AM for residents with flexible work schedules.',
+  'Several residents have asked for later gym access after work hours. Extending the slot by two hours would better support shift workers and remote professionals, while still allowing housekeeping and security checks to happen before midnight.',
+  'all_residents',
+  'fitness_center',
+  '#1A73E8',
+  null,
+  true,
+  22,
+  11,
+  0,
+  'published',
+  now() - interval '5 days'
+from public.app_users
+where email = 'user@gmail.com';
+
+insert into public.community_suggestions (
+  created_by,
+  title,
+  category,
+  summary,
+  details,
+  audience_scope,
+  icon_name,
+  accent_hex,
+  cover_image_url,
+  poll_enabled,
+  target_votes,
+  votes_in_favor,
+  votes_needs_review,
+  status,
+  created_at
+)
+select
+  id,
+  'Bicycle Storage Upgrade',
+  'Infrastructure',
+  'Install secure vertical racks and a repair station in the basement garage to accommodate 20 more bikes.',
+  'The basement bicycle corner is close to capacity. This proposal adds vertical racks, better lighting, and a compact repair stand for quick maintenance. It would make cycling more practical and reduce clutter near the parking access ramp.',
+  'all_residents',
+  'directions_bike',
+  '#D97706',
+  null,
+  true,
+  10,
+  9,
+  0,
+  'published',
+  now() - interval '7 days'
+from public.app_users
+where email = 'user@gmail.com';
+
+insert into public.community_suggestion_members (
+  suggestion_id,
+  user_id,
+  joined_at
+)
+select
+  s.id,
+  member.id,
+  least(s.created_at + interval '1 hour', now())
+from public.community_suggestions s
+cross join public.app_users member
+where s.status in ('published', 'active')
+  and member.email = 'user@gmail.com'
+on conflict (suggestion_id, user_id) do nothing;
+
+insert into public.community_suggestion_comments (
+  suggestion_id,
+  user_id,
+  body,
+  created_at
+)
+select
+  s.id,
+  commenter.id,
+  'I''m fully supportive. If we do this, we should also publish a simple schedule for maintenance volunteers so the upkeep feels manageable.',
+  now() - interval '3 hours'
+from public.community_suggestions s
+cross join public.app_users commenter
+where s.title = 'Community Composting Program'
+  and commenter.email = 'admin@gmail.com';
+
+insert into public.community_suggestion_comments (
+  suggestion_id,
+  user_id,
+  body,
+  created_at
+)
+select
+  s.id,
+  commenter.id,
+  'Later gym access would really help residents who only return home after 9 PM. I support this if security rounds remain in place.',
+  now() - interval '1 day'
+from public.community_suggestions s
+cross join public.app_users commenter
+where s.title = 'Extended Gym Hours'
+  and commenter.email = 'user@gmail.com';
+
+insert into public.community_suggestion_comments (
+  suggestion_id,
+  user_id,
+  body,
+  created_at
+)
+select
+  s.id,
+  commenter.id,
+  'A repair station would be a great addition. It might also reduce bicycles being parked near the fire exit landing.',
+  now() - interval '2 days'
+from public.community_suggestions s
+cross join public.app_users commenter
+where s.title = 'Bicycle Storage Upgrade'
+  and commenter.email = 'admin@gmail.com';
+
+insert into public.community_meetings (
+  category,
+  title,
+  summary,
+  executive_summary,
+  minutes_body,
+  location,
+  duration_label,
+  attendee_count,
+  quorum_reached,
+  image_url,
+  meeting_date,
+  created_at
+)
+values
+  (
+    'Finance',
+    'Annual Budget Review',
+    'The committee finalized the allocation for the upcoming fiscal year, prioritizing the renovation of the central park area and upgrading the community gym facilities.',
+    'The annual budget review focused on stabilizing long-term finances while progressing essential upgrades. Reserve contributions were increased by 5% to prepare for large maintenance projects and energy-efficiency improvements.',
+    'Agenda: Review FY2023 financial performance, discuss reserve planning, and approve 2024 capital projects. Outcome: reserve fund increase approved, smart-lighting rollout greenlit, and park renovation moved into the next quarter planning window.',
+    'Community Hall',
+    '1h 45m',
+    15,
+    true,
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuAe-ZVyZpLah3RTkNc5kkvqAvBEnSjgd19CGGj6GSW_JD8h70M7KBc-0j2yz-Q9iTYArokGOOxIeNM6j5xykUeMDo-tEwd5LOrboiQH164N8QNGuD5xnj99gXjegVU2QUj_aAMOVStFAcj0mNN99kRV55K8VVeJ6Q_wKqRqtIDX1C9nSoCppGdBDBA1r69gKYJi7maiHYctWfN8SoROv_VUaI-gHwxKRm4rd1GZ_9laBHue0KZvqPt3x0HXONGqUoEYVYukIH5iNw',
+    current_date - 12,
+    now() - interval '12 days'
+  ),
+  (
+    'Social',
+    'Summer Social Planning',
+    'Residents discussed ideas for the Summer Solstice block party, including food trucks, an outdoor cinema, and children''s programming.',
+    'The social committee aligned on the event direction, approved a family-friendly format, and assigned vendor scouting and permit coordination to a subcommittee.',
+    'Agenda: shortlist event concepts, vendor mix, and children''s activities. Outcome: outdoor cinema approved, food truck outreach assigned, and fireworks dropped in favor of a live acoustic performance due to noise guidelines.',
+    'North Pavilion',
+    '1h 10m',
+    11,
+    true,
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuBLBoZ5E8e4wWZbBMiTqyY0oGxGplzwUYT1i-Y61gGZCXKb-SwFqeD9HRwyhmtKmYrXde-aldud--sfpaGN6i_xfk9d59LVnAwKzSwBOFKaXMVnx8WyPK7lpx8MXJjMLXX2LmTpZrODTb6dgEiqptct8_vPAe1UZYYULRPqAWyptPYB4mjI_5e685Mya21Y1W5bLoepN11RMyKdRLy--oDzYkxsHrlrA6nAXy8fXkkWwFWNyQU1nMk8r0Pv9v85UXyDRmsSP-oEfA',
+    current_date - 25,
+    now() - interval '25 days'
+  ),
+  (
+    'Projects',
+    'Infrastructure & Safety',
+    'The meeting addressed new LED street lighting for the West Wing and confirmed the resurfacing schedule for the internal access road.',
+    'The safety review prioritized improved nighttime visibility and smoother traffic movement. Installation sequencing was approved to reduce disruption during weekday commute hours.',
+    'Agenda: lighting proposal, road resurfacing schedule, and temporary traffic diversions. Outcome: motion-sensor LED package approved, resurfacing windows announced, and resident advisory notices scheduled for release two weeks before work begins.',
+    'Tower A Board Room',
+    '58m',
+    9,
+    true,
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuB7oDy3smo6bIUAk6DTACUcQrPXJdA_s_-iHa79_3-CyBnNlW68ekEwHtQrlS0M8IIAQFy9XobR8IjvFSCVRRYv02lhW1wQKIZ-1Fb1S2unoqk8E98IG8nmPL863uZMVD1DfbWeG7UuYfZAQCmj503rmd9gXUmQY8PHl26cWcZYQDn93ahPrl9ftHqiErRVVwa0aisQvzEjD7uaH9wUEpzNI8TNcUuJcLz-kwE9mbA8hRnD5PeIQQfPyJYK93k8l1zCFA7d48XYVw',
+    current_date - 39,
+    now() - interval '39 days'
+  );
+
+insert into public.community_support_faqs (
+  category,
+  question,
+  answer,
+  sort_order,
+  created_at
+)
+values
+  ('Maintenance', 'How do I report a maintenance issue after hours?', 'Use the resident app complaint flow for non-emergencies. For urgent water, power, or lock issues, call security immediately so the on-call technician can be dispatched.', 1, now() - interval '6 days'),
+  ('Billing', 'Where can I find my monthly statement?', 'Open Bills in the resident app to view the current quarter summary, previous payments, and due dates. Detailed payment activity is listed below your saved payment methods.', 2, now() - interval '6 days'),
+  ('Amenities', 'What are the gym operating hours?', 'The rooftop gym is open from 5:30 AM to 10:00 PM every day. Equipment sanitization happens between 2:00 PM and 2:30 PM.', 3, now() - interval '6 days'),
+  ('Security', 'How do I request a new key fob?', 'Submit a support request through the concierge desk or contact security. Replacement key fobs are usually activated within one working day after identity verification.', 4, now() - interval '6 days'),
+  ('Maintenance', 'How do I book the guest suite?', 'Guest suite bookings are handled through amenities once the resident office confirms the requested date is available. Reach out to support if you need approval status.', 5, now() - interval '6 days'),
+  ('Security', 'How do I let a delivery rider in late at night?', 'Create a visitor pass in the visitor module and mark it as delivery. The guard queue will show the rider as expected, and the gate team can verify the PIN or QR code on arrival.', 6, now() - interval '6 days');
 
 insert into public.guard_duty_logs (
   guard_user_id,

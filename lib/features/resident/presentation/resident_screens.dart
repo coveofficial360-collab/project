@@ -680,13 +680,28 @@ class ResidentDrawerScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 _DrawerItem(
+                  label: 'Community',
+                  icon: Icons.groups_rounded,
+                  onTap: () =>
+                      goToPage(context, AppPage.communityFeed, replace: true),
+                ),
+                const SizedBox(height: 8),
+                _DrawerItem(
                   label: 'Amenities',
                   icon: Icons.pool_rounded,
                   onTap: () =>
                       goToPage(context, AppPage.amenities, replace: true),
                 ),
                 const SizedBox(height: 8),
-                const _DrawerItem(label: 'Support', icon: Icons.help_outline),
+                _DrawerItem(
+                  label: 'Support',
+                  icon: Icons.help_outline,
+                  onTap: () => goToPage(
+                    context,
+                    AppPage.communitySupport,
+                    replace: true,
+                  ),
+                ),
                 const SizedBox(height: 8),
                 const _DrawerItem(label: 'Settings', icon: Icons.settings),
                 const Spacer(),
@@ -1549,6 +1564,7 @@ class NoticesScreen extends StatefulWidget {
 class _NoticesScreenState extends State<NoticesScreen> {
   final AvenueRepository _repository = AvenueRepository();
   late Future<List<Map<String, dynamic>>> _noticesFuture;
+  String _selectedNoticeFilter = 'all';
 
   @override
   void initState() {
@@ -1560,7 +1576,7 @@ class _NoticesScreenState extends State<NoticesScreen> {
   Widget build(BuildContext context) {
     return AvenueScaffold(
       topBar: AvenueTopBar(
-        title: 'NoticeBoard',
+        title: 'Notice Board',
         leading: AvenueIconButton(
           icon: Icons.arrow_back_ios_new_rounded,
           onPressed: () => goBackOrHome(context),
@@ -1582,13 +1598,16 @@ class _NoticesScreenState extends State<NoticesScreen> {
         future: _noticesFuture,
         builder: (context, snapshot) {
           final notices = snapshot.data ?? const <Map<String, dynamic>>[];
-          final urgent = notices
+          final filtered = notices
+              .where((row) => _matchesNoticeFilter(row))
+              .toList();
+          final urgent = filtered
               .where((row) => row['kind'] == 'urgent')
               .toList();
-          final events = notices
+          final events = filtered
               .where((row) => row['kind'] == 'event')
               .toList();
-          final standard = notices
+          final standard = filtered
               .where((row) => row['kind'] != 'urgent' && row['kind'] != 'event')
               .toList();
 
@@ -1596,17 +1615,39 @@ class _NoticesScreenState extends State<NoticesScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SingleChildScrollView(
+                SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      _FilterChip(label: 'All', selected: true),
-                      SizedBox(width: 10),
-                      _FilterChip(label: 'Urgent'),
-                      SizedBox(width: 10),
-                      _FilterChip(label: 'General'),
-                      SizedBox(width: 10),
-                      _FilterChip(label: 'Events'),
+                      _FilterChip(
+                        label: 'All',
+                        selected: _selectedNoticeFilter == 'all',
+                        onTap: () => _setNoticeFilter('all'),
+                      ),
+                      const SizedBox(width: 10),
+                      _FilterChip(
+                        label: 'Urgent',
+                        selected: _selectedNoticeFilter == 'urgent',
+                        onTap: () => _setNoticeFilter('urgent'),
+                      ),
+                      const SizedBox(width: 10),
+                      _FilterChip(
+                        label: 'General',
+                        selected: _selectedNoticeFilter == 'general',
+                        onTap: () => _setNoticeFilter('general'),
+                      ),
+                      const SizedBox(width: 10),
+                      _FilterChip(
+                        label: 'Events',
+                        selected: _selectedNoticeFilter == 'event',
+                        onTap: () => _setNoticeFilter('event'),
+                      ),
+                      const SizedBox(width: 10),
+                      _FilterChip(
+                        label: 'Facility',
+                        selected: _selectedNoticeFilter == 'facility',
+                        onTap: () => _setNoticeFilter('facility'),
+                      ),
                     ],
                   ),
                 ),
@@ -1614,6 +1655,10 @@ class _NoticesScreenState extends State<NoticesScreen> {
                 if (snapshot.connectionState != ConnectionState.done &&
                     notices.isEmpty)
                   const _DataPlaceholderCard(label: 'Loading notices...')
+                else if (filtered.isEmpty)
+                  const _DataPlaceholderCard(
+                    label: 'No notices in this category right now.',
+                  )
                 else ...[
                   if (urgent.isNotEmpty) ...[
                     _UrgentNoticeCard(
@@ -1670,6 +1715,21 @@ class _NoticesScreenState extends State<NoticesScreen> {
         currentPage: AppPage.notices,
       ),
     );
+  }
+
+  void _setNoticeFilter(String filter) {
+    setState(() {
+      _selectedNoticeFilter = filter;
+    });
+  }
+
+  bool _matchesNoticeFilter(Map<String, dynamic> row) {
+    if (_selectedNoticeFilter == 'all') {
+      return true;
+    }
+
+    return (row['kind'] as String? ?? '').trim().toLowerCase() ==
+        _selectedNoticeFilter;
   }
 }
 
@@ -2492,11 +2552,11 @@ class NotificationsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'NEW',
+                  'New',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 12,
                     color: AvenueColors.onSurfaceVariant,
                     fontWeight: FontWeight.w800,
+                    letterSpacing: 0.8,
                   ),
                 ),
                 const SizedBox(height: 14),
@@ -2529,11 +2589,11 @@ class NotificationsScreen extends StatelessWidget {
                   ),
                 const SizedBox(height: 24),
                 Text(
-                  'EARLIER',
+                  'Earlier',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 12,
                     color: AvenueColors.onSurfaceVariant,
                     fontWeight: FontWeight.w800,
+                    letterSpacing: 0.8,
                   ),
                 ),
                 const SizedBox(height: 14),
@@ -3802,24 +3862,34 @@ class _EquipmentChip extends StatelessWidget {
 }
 
 class _FilterChip extends StatelessWidget {
-  const _FilterChip({required this.label, this.selected = false});
+  const _FilterChip({required this.label, this.selected = false, this.onTap});
 
   final String label;
   final bool selected;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-        color: selected ? AvenueColors.primary : AvenueColors.surfaceLow,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        label,
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: selected ? Colors.white : AvenueColors.onSurfaceVariant,
-          fontWeight: FontWeight.w700,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          curve: Curves.easeOut,
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+          decoration: BoxDecoration(
+            color: selected ? AvenueColors.primary : AvenueColors.surfaceHigh,
+            borderRadius: BorderRadius.circular(999),
+          ),
+          child: Text(
+            label,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: selected ? Colors.white : AvenueColors.onSurfaceVariant,
+              fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+            ),
+          ),
         ),
       ),
     );
@@ -3843,42 +3913,63 @@ class _UrgentNoticeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return AvenueCard(
       radius: 18,
-      padding: const EdgeInsets.all(16),
-      child: Column(
+      padding: EdgeInsets.zero,
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              const AvenuePill(
-                label: 'URGENT',
-                backgroundColor: Color(0xFFFFE2E0),
-                foregroundColor: Color(0xFFD33B2C),
-              ),
-              const Spacer(),
-              Text(dateText, style: Theme.of(context).textTheme.bodySmall),
-            ],
-          ),
-          const SizedBox(height: 14),
-          Text(
-            title,
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            body,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AvenueColors.onSurfaceVariant,
-              height: 1.5,
+          Container(
+            width: 4,
+            height: 198,
+            decoration: const BoxDecoration(
+              color: Color(0xFFD33B2C),
+              borderRadius: BorderRadius.horizontal(left: Radius.circular(18)),
             ),
           ),
-          const SizedBox(height: 14),
-          Text(
-            '$actionLabel →',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: const Color(0xFFD33B2C),
-              fontWeight: FontWeight.w800,
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const AvenuePill(
+                        label: 'URGENT',
+                        backgroundColor: Color(0xFFFFE2E0),
+                        foregroundColor: Color(0xFFD33B2C),
+                      ),
+                      const Spacer(),
+                      Text(
+                        dateText,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    body,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AvenueColors.onSurfaceVariant,
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  Text(
+                    '$actionLabel →',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: const Color(0xFFD33B2C),
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -3955,7 +4046,7 @@ class _EventNoticeCard extends StatelessWidget {
                       children: [
                         AvenuePill(
                           label: category,
-                          backgroundColor: Color(0x22000000),
+                          backgroundColor: const Color(0x33000000),
                           foregroundColor: Colors.white,
                         ),
                         const SizedBox(height: 10),
@@ -3978,7 +4069,7 @@ class _EventNoticeCard extends StatelessWidget {
                 const Expanded(child: _EventAttendees()),
                 const SizedBox(width: 12),
                 SizedBox(
-                  width: 94,
+                  width: 106,
                   child: AvenuePrimaryButton(
                     label: buttonLabel,
                     onPressed: onTap,
@@ -4737,7 +4828,7 @@ class _NotificationDetailCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AvenueCard(
-      radius: 0,
+      radius: 18,
       padding: const EdgeInsets.all(18),
       child: Stack(
         children: [
@@ -4786,7 +4877,7 @@ class _NotificationDetailCard extends StatelessWidget {
                     if (actionLabel != null) ...[
                       const SizedBox(height: 14),
                       SizedBox(
-                        width: 120,
+                        width: 128,
                         child: AvenuePrimaryButton(
                           label: actionLabel!,
                           onPressed: () {},
@@ -4802,10 +4893,10 @@ class _NotificationDetailCard extends StatelessWidget {
           ),
           if (unread)
             const Positioned(
-              top: 2,
-              right: 2,
+              top: 4,
+              right: 4,
               child: CircleAvatar(
-                radius: 4,
+                radius: 5,
                 backgroundColor: AvenueColors.primary,
               ),
             ),
@@ -4833,10 +4924,10 @@ class _ReadNotificationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AvenueCard(
-      radius: 0,
+      radius: 18,
       padding: const EdgeInsets.all(18),
       child: Opacity(
-        opacity: 0.84,
+        opacity: 0.82,
         child: Row(
           children: [
             if (avatarUrl != null)

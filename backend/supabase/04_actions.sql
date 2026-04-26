@@ -311,6 +311,426 @@ begin
 end;
 $$;
 
+create or replace function public.create_community_suggestion(
+  p_user_id uuid,
+  p_title text,
+  p_category text,
+  p_summary text,
+  p_details text,
+  p_audience_scope text default 'all_residents',
+  p_poll_enabled boolean default true,
+  p_target_votes integer default 24,
+  p_cover_image_url text default null,
+  p_icon_name text default 'lightbulb',
+  p_accent_hex text default '#005BBF'
+)
+returns table (
+  suggestion_id uuid,
+  title text,
+  category text,
+  status text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_suggestion_id uuid;
+begin
+  insert into public.community_suggestions (
+    created_by,
+    title,
+    category,
+    summary,
+    details,
+    audience_scope,
+    icon_name,
+    accent_hex,
+    cover_image_url,
+    poll_enabled,
+    target_votes,
+    votes_in_favor,
+    votes_needs_review,
+    status,
+    created_at
+  )
+  values (
+    p_user_id,
+    trim(p_title),
+    trim(p_category),
+    trim(p_summary),
+    trim(p_details),
+    lower(trim(coalesce(p_audience_scope, 'all_residents'))),
+    trim(coalesce(p_icon_name, 'lightbulb')),
+    coalesce(p_accent_hex, '#005BBF'),
+    nullif(trim(coalesce(p_cover_image_url, '')), ''),
+    coalesce(p_poll_enabled, true),
+    greatest(coalesce(p_target_votes, 24), 1),
+    0,
+    0,
+    'review',
+    now()
+  )
+  returning id into v_suggestion_id;
+
+  return query
+  select
+    v_suggestion_id,
+    trim(p_title),
+    trim(p_category),
+    'review';
+end;
+$$;
+
+create or replace function public.review_community_suggestion(
+  p_admin_user_id uuid,
+  p_suggestion_id uuid,
+  p_decision text default 'published'
+)
+returns table (
+  suggestion_id uuid,
+  title text,
+  status text,
+  reviewed_at timestamptz
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_admin_name text;
+  v_status text := lower(trim(coalesce(p_decision, 'published')));
+  v_reviewed_at timestamptz := now();
+  v_suggestion_id uuid;
+  v_title text;
+begin
+  select full_name
+  into v_admin_name
+  from public.app_users
+  where id = p_admin_user_id
+    and role = 'admin'
+  limit 1;
+
+  if v_admin_name is null then
+    raise exception 'Only an admin user can review community suggestions.';
+  end if;
+
+  if v_status in ('publish', 'published', 'approve', 'approved', 'active') then
+    v_status := 'published';
+  elsif v_status in ('reject', 'rejected', 'decline', 'declined') then
+    v_status := 'rejected';
+  else
+    raise exception 'Unsupported community review decision: %', p_decision;
+  end if;
+
+  update public.community_suggestions
+  set
+    status = v_status,
+    reviewed_by = p_admin_user_id,
+    reviewed_at = v_reviewed_at,
+    published_at = case
+      when v_status = 'published' then v_reviewed_at
+      else public.community_suggestions.published_at
+    end
+  where id = p_suggestion_id
+    and public.community_suggestions.status in (
+      'review',
+      'published',
+      'active',
+      'rejected'
+    )
+  returning id, public.community_suggestions.title
+  into v_suggestion_id, v_title;
+
+  if v_suggestion_id is null then
+    raise exception 'Community suggestion not found.';
+  end if;
+
+  if v_status = 'published' then
+    insert into public.community_suggestion_members (
+      suggestion_id,
+      user_id,
+      joined_at
+    )
+    select
+      s.id,
+      s.created_by,
+      v_reviewed_at
+    from public.community_suggestions s
+    join public.app_users creator on creator.id = s.created_by
+    where s.id = v_suggestion_id
+      and creator.role = 'resident'
+      and creator.status = 'active'
+    on conflict (suggestion_id, user_id) do nothing;
+  end if;
+
+  return query
+  select
+    v_suggestion_id,
+    v_title,
+    v_status,
+    v_reviewed_at;
+end;
+$$;
+
+create or replace function public.join_community_suggestion(
+  p_user_id uuid,
+  p_suggestion_id uuid
+)
+returns table (
+  suggestion_id uuid,
+  user_id uuid,
+  joined_at timestamptz
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_joined_at timestamptz := now();
+begin
+  if not exists (
+    select 1
+    from public.app_users
+    where id = p_user_id
+      and role = 'resident'
+      and status = 'active'
+  ) then
+    raise exception 'Only an active resident can join community suggestions.';
+  end if;
+
+  if not exists (
+    select 1
+    from public.community_suggestions
+    where id = p_suggestion_id
+      and status in ('published', 'active')
+  ) then
+    raise exception 'Community suggestion is not open for joining.';
+  end if;
+
+  insert into public.community_suggestion_members (
+    suggestion_id,
+    user_id,
+    joined_at
+  )
+  values (
+    p_suggestion_id,
+    p_user_id,
+    v_joined_at
+  )
+  on conflict (suggestion_id, user_id)
+  do update set joined_at = public.community_suggestion_members.joined_at
+  returning
+    public.community_suggestion_members.suggestion_id,
+    public.community_suggestion_members.user_id,
+    public.community_suggestion_members.joined_at
+  into suggestion_id, user_id, joined_at;
+
+  return next;
+end;
+$$;
+
+create or replace function public.vote_community_suggestion(
+  p_user_id uuid,
+  p_suggestion_id uuid,
+  p_vote_kind text default 'in_favor'
+)
+returns table (
+  suggestion_id uuid,
+  vote_kind text,
+  votes_in_favor integer,
+  votes_needs_review integer,
+  total_votes integer,
+  support_percent integer
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_vote_kind text := lower(trim(coalesce(p_vote_kind, 'in_favor')));
+  v_existing_vote text;
+  v_votes_in_favor integer;
+  v_votes_needs_review integer;
+begin
+  if v_vote_kind in ('support', 'in_favor', 'favor', 'yes') then
+    v_vote_kind := 'in_favor';
+  elsif v_vote_kind in ('needs_review', 'review', 'no') then
+    v_vote_kind := 'needs_review';
+  else
+    raise exception 'Unsupported vote kind: %', p_vote_kind;
+  end if;
+
+  if not exists (
+    select 1
+    from public.app_users
+    where id = p_user_id
+      and role = 'resident'
+      and status = 'active'
+  ) then
+    raise exception 'Only an active resident can vote on community suggestions.';
+  end if;
+
+  if not exists (
+    select 1
+    from public.community_suggestions
+    where id = p_suggestion_id
+      and status in ('published', 'active')
+      and poll_enabled = true
+  ) then
+    raise exception 'Community suggestion is not open for voting.';
+  end if;
+
+  if not exists (
+    select 1
+    from public.community_suggestion_members
+    where suggestion_id = p_suggestion_id
+      and user_id = p_user_id
+  ) then
+    raise exception 'Join this community suggestion before voting.';
+  end if;
+
+  select vote_kind
+  into v_existing_vote
+  from public.community_suggestion_votes
+  where suggestion_id = p_suggestion_id
+    and user_id = p_user_id;
+
+  insert into public.community_suggestion_votes (
+    suggestion_id,
+    user_id,
+    vote_kind,
+    created_at,
+    updated_at
+  )
+  values (
+    p_suggestion_id,
+    p_user_id,
+    v_vote_kind,
+    now(),
+    now()
+  )
+  on conflict (suggestion_id, user_id)
+  do update set
+    vote_kind = excluded.vote_kind,
+    updated_at = now();
+
+  update public.community_suggestions
+  set
+    votes_in_favor = greatest(
+      votes_in_favor
+      + case
+        when v_vote_kind = 'in_favor' and coalesce(v_existing_vote, '') <> 'in_favor' then 1
+        else 0
+      end
+      - case
+        when v_existing_vote = 'in_favor' and v_vote_kind <> 'in_favor' then 1
+        else 0
+      end,
+      0
+    ),
+    votes_needs_review = greatest(
+      votes_needs_review
+      + case
+        when v_vote_kind = 'needs_review' and coalesce(v_existing_vote, '') <> 'needs_review' then 1
+        else 0
+      end
+      - case
+        when v_existing_vote = 'needs_review' and v_vote_kind <> 'needs_review' then 1
+        else 0
+      end,
+      0
+    )
+  where id = p_suggestion_id
+  returning
+    public.community_suggestions.votes_in_favor,
+    public.community_suggestions.votes_needs_review
+  into v_votes_in_favor, v_votes_needs_review;
+
+  return query
+  select
+    p_suggestion_id,
+    v_vote_kind,
+    v_votes_in_favor,
+    v_votes_needs_review,
+    (v_votes_in_favor + v_votes_needs_review),
+    case
+      when (v_votes_in_favor + v_votes_needs_review) = 0 then 0
+      else round((v_votes_in_favor::numeric / (v_votes_in_favor + v_votes_needs_review)::numeric) * 100)::integer
+    end;
+end;
+$$;
+
+create or replace function public.add_community_suggestion_comment(
+  p_user_id uuid,
+  p_suggestion_id uuid,
+  p_body text
+)
+returns table (
+  comment_id uuid,
+  suggestion_id uuid,
+  body text,
+  created_at timestamptz
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_comment_id uuid;
+  v_created_at timestamptz := now();
+begin
+  if not exists (
+    select 1
+    from public.app_users
+    where id = p_user_id
+      and role = 'resident'
+      and status = 'active'
+  ) then
+    raise exception 'Only an active resident can comment on community suggestions.';
+  end if;
+
+  if not exists (
+    select 1
+    from public.community_suggestions
+    where id = p_suggestion_id
+      and status in ('published', 'active')
+  ) then
+    raise exception 'Community suggestion is not open for comments.';
+  end if;
+
+  if not exists (
+    select 1
+    from public.community_suggestion_members
+    where suggestion_id = p_suggestion_id
+      and user_id = p_user_id
+  ) then
+    raise exception 'Join this community suggestion before commenting.';
+  end if;
+
+  insert into public.community_suggestion_comments (
+    suggestion_id,
+    user_id,
+    body,
+    created_at
+  )
+  values (
+    p_suggestion_id,
+    p_user_id,
+    trim(p_body),
+    v_created_at
+  )
+  returning id into v_comment_id;
+
+  return query
+  select
+    v_comment_id,
+    p_suggestion_id,
+    trim(p_body),
+    v_created_at;
+end;
+$$;
+
 create or replace function public.create_guard_visitor_entry(
   p_guard_user_id uuid,
   p_visitor_name text,
@@ -634,6 +1054,11 @@ grant execute on function public.create_resident_app_user(text, text, text, text
 grant execute on function public.create_visitor_pass(uuid, text, text, public.visitor_kind, timestamptz) to anon, authenticated;
 grant execute on function public.create_resident_complaint(uuid, text, text, text, text) to anon, authenticated;
 grant execute on function public.create_announcement(uuid, public.notice_kind, text, text, text, public.announcement_state, timestamptz) to anon, authenticated;
+grant execute on function public.create_community_suggestion(uuid, text, text, text, text, text, boolean, integer, text, text, text) to anon, authenticated;
+grant execute on function public.review_community_suggestion(uuid, uuid, text) to anon, authenticated;
+grant execute on function public.join_community_suggestion(uuid, uuid) to anon, authenticated;
+grant execute on function public.vote_community_suggestion(uuid, uuid, text) to anon, authenticated;
+grant execute on function public.add_community_suggestion_comment(uuid, uuid, text) to anon, authenticated;
 grant execute on function public.create_guard_visitor_entry(uuid, text, text, text, text, public.visitor_kind, text) to anon, authenticated;
 grant execute on function public.process_guard_visitor_pass(uuid, uuid, text) to anon, authenticated;
 grant execute on function public.process_guard_qr_entry(uuid, text, text) to anon, authenticated;

@@ -40,6 +40,9 @@ select * from public.authenticate_app_user('guard@gmail.com', 'guard', 'guard');
 ## Important note
 
 This schema is intentionally permissive for development with the Supabase publishable key.
+`01_schema.sql` and `05_push_notifications.sql` both disable RLS automatically for the demo tables,
+so you should not need to re-run manual `alter table ... disable row level security` statements after a fresh setup.
+
 Before going live, replace this with:
 
 - real Supabase Auth users

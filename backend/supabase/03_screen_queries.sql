@@ -27,11 +27,18 @@ select code, name, category, status_label, availability_text, occupancy_note, ct
 from public.amenities
 order by name;
 
-select a.name, b.booking_date, b.time_slot, b.guest_count, b.booking_status
-from public.amenity_bookings b
-join public.amenities a on a.id = b.amenity_id
-where b.user_id = (select id from public.app_users where email = 'user@gmail.com')
-order by b.booking_date desc;
+select
+  public.amenities.name,
+  public.amenity_bookings.booking_date,
+  public.amenity_bookings.time_slot,
+  public.amenity_bookings.guest_count,
+  public.amenity_bookings.booking_status
+from public.amenity_bookings
+join public.amenities on public.amenities.id = public.amenity_bookings.amenity_id
+where public.amenity_bookings.user_id = (
+  select id from public.app_users where email = 'user@gmail.com'
+)
+order by public.amenity_bookings.booking_date desc;
 
 -- Bills and payments
 select method_name, method_type, masked_value, note, is_primary
@@ -81,6 +88,16 @@ select state, kind, title, target_audience, reads_count, scheduled_for, created_
 from public.announcements
 order by created_at desc;
 
+select
+  code,
+  title,
+  state,
+  resident_name,
+  unit_number,
+  assigned_to,
+  created_at
+from public.admin_complaints_v;
+
 select full_name, email, unit_number, tower, resident_kind, status
 from public.resident_directory_v;
 
@@ -97,21 +114,55 @@ from public.guard_duty_logs
 where guard_user_id = (select id from public.app_users where email = 'guard@gmail.com')
 order by logged_at desc;
 
--- Guard write actions
-select *
-from public.create_guard_visitor_entry(
-  (select id from public.app_users where email = 'guard@gmail.com'),
-  'Walk-in Courier',
-  'B-204',
-  'Package delivery',
-  '+91 99999 11111',
-  'delivery',
-  'approved'
+-- Community feed, meetings, and support
+select
+  title,
+  category,
+  author_name,
+  status,
+  progress_percent,
+  member_count,
+  comment_count,
+  created_at
+from public.community_suggestion_feed_v
+order by created_at desc;
+
+select
+  title,
+  category,
+  author_name,
+  status,
+  progress_percent,
+  member_count,
+  comment_count,
+  created_at
+from public.admin_community_suggestion_feed_v
+order by created_at desc;
+
+select
+  full_name,
+  unit_number,
+  body,
+  created_at
+from public.community_suggestion_comments_v
+where suggestion_id = (
+  select id
+  from public.community_suggestions
+  order by created_at desc
+  limit 1
 );
 
-select *
-from public.process_guard_qr_entry(
-  (select id from public.app_users where email = 'guard@gmail.com'),
-  'QR-DEL-1034',
-  'approved'
-);
+select
+  category,
+  title,
+  summary,
+  meeting_date
+from public.community_meetings
+order by meeting_date desc;
+
+select
+  category,
+  question,
+  answer
+from public.community_support_faqs
+order by sort_order asc;

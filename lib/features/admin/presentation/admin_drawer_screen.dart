@@ -70,7 +70,9 @@ class AdminDrawerScreen extends StatelessWidget {
                           color: _AdminPalette.surfaceLow,
                           borderRadius: BorderRadius.circular(24),
                           border: Border.all(
-                            color: _AdminPalette.outline.withValues(alpha: 0.45),
+                            color: _AdminPalette.outline.withValues(
+                              alpha: 0.45,
+                            ),
                           ),
                         ),
                         child: Row(
@@ -88,7 +90,9 @@ class AdminDrawerScreen extends StatelessWidget {
                                 children: [
                                   Text(
                                     currentUser?.fullName ?? 'Marcus Sterling',
-                                    style: Theme.of(context).textTheme.titleLarge
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge
                                         ?.copyWith(fontWeight: FontWeight.w800),
                                   ),
                                   const SizedBox(height: 4),
@@ -142,11 +146,30 @@ class AdminDrawerScreen extends StatelessWidget {
                             label: 'Announcements',
                             icon: Icons.campaign_rounded,
                             selected:
-                                currentPage ==
-                                AppPage.announcementsManagement,
+                                currentPage == AppPage.announcementsManagement,
                             onTap: () => goToPage(
                               context,
                               AppPage.announcementsManagement,
+                              replace: true,
+                            ),
+                          ),
+                          _AdminDrawerNavItem(
+                            label: 'Complaints',
+                            icon: Icons.report_problem_rounded,
+                            selected: currentPage == AppPage.adminComplaints,
+                            onTap: () => goToPage(
+                              context,
+                              AppPage.adminComplaints,
+                              replace: true,
+                            ),
+                          ),
+                          _AdminDrawerNavItem(
+                            label: 'Community',
+                            icon: Icons.forum_rounded,
+                            selected: currentPage == AppPage.adminCommunity,
+                            onTap: () => goToPage(
+                              context,
+                              AppPage.adminCommunity,
                               replace: true,
                             ),
                           ),

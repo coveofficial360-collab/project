@@ -310,14 +310,13 @@ class _AdminTopBar extends StatelessWidget implements PreferredSizeWidget {
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.w900,
-                color: title == 'COVE' ? AvenueColors.primary : _AdminPalette.ink,
+                color: title == 'COVE'
+                    ? AvenueColors.primary
+                    : _AdminPalette.ink,
               ),
             ),
           ),
-          if (trailing != null) ...[
-            trailing!,
-            const SizedBox(width: 8),
-          ],
+          if (trailing != null) ...[trailing!, const SizedBox(width: 8)],
           AvenueNetworkAvatar(
             imageUrl: currentUser?.avatarUrl ?? _adminAvatarUrl,
             size: 40,
@@ -627,10 +626,7 @@ class _AdminFeatureCard extends StatelessWidget {
 }
 
 class _AdminGlassCard extends StatelessWidget {
-  const _AdminGlassCard({
-    required this.child,
-    this.radius = 24,
-  });
+  const _AdminGlassCard({required this.child, this.radius = 24});
 
   final Widget child;
   final double radius;
@@ -641,7 +637,9 @@ class _AdminGlassCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: _AdminPalette.surface.withValues(alpha: 0.88),
         borderRadius: BorderRadius.circular(radius),
-        border: Border.all(color: _AdminPalette.outline.withValues(alpha: 0.22)),
+        border: Border.all(
+          color: _AdminPalette.outline.withValues(alpha: 0.22),
+        ),
         boxShadow: const [
           BoxShadow(
             color: _AdminPalette.shadow,
@@ -747,6 +745,38 @@ class _AdminSectionLabel extends StatelessWidget {
   }
 }
 
+class _AdminMiniInfo extends StatelessWidget {
+  const _AdminMiniInfo({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      decoration: BoxDecoration(
+        color: _AdminPalette.surfaceLow,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: _AdminPalette.muted),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: _AdminPalette.muted,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _ReportOptionCard extends StatelessWidget {
   const _ReportOptionCard({
     required this.icon,
@@ -793,7 +823,9 @@ class _ReportOptionCard extends StatelessWidget {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: selected ? AvenueColors.primary : _AdminPalette.surfaceLow,
+                  color: selected
+                      ? AvenueColors.primary
+                      : _AdminPalette.surfaceLow,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -824,7 +856,10 @@ class _ReportOptionCard extends StatelessWidget {
                 ),
               ),
               if (selected)
-                const Icon(Icons.check_circle_rounded, color: AvenueColors.primary),
+                const Icon(
+                  Icons.check_circle_rounded,
+                  color: AvenueColors.primary,
+                ),
             ],
           ),
         ),
@@ -890,9 +925,9 @@ class _ReportFormatRow extends StatelessWidget {
       leading: Icon(icon, color: iconColor),
       title: Text(
         title,
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.w700,
-        ),
+        style: Theme.of(
+          context,
+        ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
       ),
       trailing: Icon(
         selected ? Icons.radio_button_checked : Icons.radio_button_off_rounded,
@@ -1196,9 +1231,9 @@ class _AnnouncementHistoryCard extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               title,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w800,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
             ),
             const SizedBox(height: 6),
             Text(
@@ -1257,10 +1292,7 @@ class _AdminMetaPill extends StatelessWidget {
 }
 
 class _AdminSearchBar extends StatelessWidget {
-  const _AdminSearchBar({
-    required this.controller,
-    required this.hintText,
-  });
+  const _AdminSearchBar({required this.controller, required this.hintText});
 
   final TextEditingController controller;
   final String hintText;
@@ -1271,7 +1303,9 @@ class _AdminSearchBar extends StatelessWidget {
       decoration: BoxDecoration(
         color: _AdminPalette.surface,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: _AdminPalette.outline.withValues(alpha: 0.22)),
+        border: Border.all(
+          color: _AdminPalette.outline.withValues(alpha: 0.22),
+        ),
         boxShadow: const [
           BoxShadow(
             color: _AdminPalette.shadow,
@@ -1284,7 +1318,10 @@ class _AdminSearchBar extends StatelessWidget {
         controller: controller,
         decoration: InputDecoration(
           hintText: hintText,
-          prefixIcon: const Icon(Icons.search_rounded, color: _AdminPalette.muted),
+          prefixIcon: const Icon(
+            Icons.search_rounded,
+            color: _AdminPalette.muted,
+          ),
           suffixIcon: controller.text.isEmpty
               ? null
               : IconButton(
@@ -1370,9 +1407,9 @@ class _ResidentInsightTile extends StatelessWidget {
             const SizedBox(height: 14),
             Text(
               value,
-              style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                fontWeight: FontWeight.w900,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w900),
             ),
             const SizedBox(height: 6),
             Text(
@@ -1484,10 +1521,7 @@ class _ResidentDirectoryCard extends StatelessWidget {
 }
 
 class _ResidentAvatar extends StatelessWidget {
-  const _ResidentAvatar({
-    required this.imageUrl,
-    required this.initials,
-  });
+  const _ResidentAvatar({required this.imageUrl, required this.initials});
 
   final String? imageUrl;
   final String initials;
@@ -1628,10 +1662,7 @@ class _AdminDrawerNavItem extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(
-                icon,
-                color: selected ? Colors.white : _AdminPalette.muted,
-              ),
+              Icon(icon, color: selected ? Colors.white : _AdminPalette.muted),
               const SizedBox(width: 14),
               Text(
                 label,
@@ -1662,9 +1693,9 @@ class _AdminEmptyState extends StatelessWidget {
           child: Text(
             label,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: _AdminPalette.muted,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: _AdminPalette.muted),
           ),
         ),
       ),

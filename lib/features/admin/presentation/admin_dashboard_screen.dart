@@ -24,19 +24,21 @@ class AdminDashboardScreen extends StatelessWidget {
 
           final activityRows = <_AdminActivityModel>[
             if (transactions.isNotEmpty)
-              ...transactions.take(2).map(
-                (row) => _AdminActivityModel(
-                  icon: row['icon_name'] == 'flash_on'
-                      ? Icons.bolt_rounded
-                      : Icons.receipt_long_rounded,
-                  tint: row['icon_name'] == 'flash_on'
-                      ? const Color(0xFFE4F2FF)
-                      : const Color(0xFFFFF1C8),
-                  title: row['title'] as String? ?? 'Transaction',
-                  subtitle: row['subtitle'] as String? ?? '',
-                  trailing: _formatCurrency(row['amount']),
-                ),
-              ),
+              ...transactions
+                  .take(2)
+                  .map(
+                    (row) => _AdminActivityModel(
+                      icon: row['icon_name'] == 'flash_on'
+                          ? Icons.bolt_rounded
+                          : Icons.receipt_long_rounded,
+                      tint: row['icon_name'] == 'flash_on'
+                          ? const Color(0xFFE4F2FF)
+                          : const Color(0xFFFFF1C8),
+                      title: row['title'] as String? ?? 'Transaction',
+                      subtitle: row['subtitle'] as String? ?? '',
+                      trailing: _formatCurrency(row['amount']),
+                    ),
+                  ),
             _AdminActivityModel(
               icon: Icons.person_add_alt_1_rounded,
               tint: const Color(0xFFE7F6EE),
@@ -150,6 +152,18 @@ class AdminDashboardScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       _AdminQuickActionButton(
+                        icon: Icons.report_problem_rounded,
+                        label: 'Complaints',
+                        onTap: () => goToPage(context, AppPage.adminComplaints),
+                      ),
+                      const SizedBox(width: 10),
+                      _AdminQuickActionButton(
+                        icon: Icons.forum_rounded,
+                        label: 'Community',
+                        onTap: () => goToPage(context, AppPage.adminCommunity),
+                      ),
+                      const SizedBox(width: 10),
+                      _AdminQuickActionButton(
                         icon: Icons.summarize_rounded,
                         label: 'Generate Report',
                         onTap: () => goToPage(context, AppPage.generateReports),
@@ -217,10 +231,8 @@ class AdminDashboardScreen extends StatelessWidget {
                 _AdminSectionHeading(
                   title: 'Recent Activity',
                   actionLabel: 'View All',
-                  onActionTap: () => goToPage(
-                    context,
-                    AppPage.announcementsManagement,
-                  ),
+                  onActionTap: () =>
+                      goToPage(context, AppPage.announcementsManagement),
                 ),
                 const SizedBox(height: 12),
                 if (snapshot.connectionState != ConnectionState.done &&
@@ -229,12 +241,14 @@ class AdminDashboardScreen extends StatelessWidget {
                     label: 'Loading current admin activity...',
                   )
                 else
-                  ...activityRows.take(4).map(
-                    (row) => Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: _AdminActivityTile(model: row),
-                    ),
-                  ),
+                  ...activityRows
+                      .take(4)
+                      .map(
+                        (row) => Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: _AdminActivityTile(model: row),
+                        ),
+                      ),
               ],
             ),
           );

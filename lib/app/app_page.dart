@@ -12,12 +12,20 @@ enum AppPage {
   notifications(slug: 'notifications'),
   visitor(slug: 'visitor'),
   drawer(slug: 'drawer'),
+  communityFeed(slug: 'community'),
+  communityShareIdea(slug: 'community-share-idea'),
+  communitySuggestionDetail(slug: 'community-suggestion'),
+  communityMeetings(slug: 'community-meetings'),
+  communityMeetingDetail(slug: 'community-meeting-detail'),
+  communitySupport(slug: 'community-support'),
   adminMenu(slug: 'admin-menu'),
   adminDrawer(slug: 'admin-drawer'),
   generateReports(slug: 'generate-reports'),
   announcementsManagement(slug: 'announcements-management'),
   addResident(slug: 'add-resident'),
-  residentDirectory(slug: 'resident-directory');
+  residentDirectory(slug: 'resident-directory'),
+  adminComplaints(slug: 'admin-complaints'),
+  adminCommunity(slug: 'admin-community');
 
   const AppPage({required this.slug});
 
