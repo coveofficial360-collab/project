@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Amenity Booking Logs - Cove Glass</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Scripts -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-container": "#FFFFFF",
+                    "on-primary-fixed": "#001A41",
+                    "tertiary": "#9E4300",
+                    "surface-container-low": "#F3F4F5",
+                    "surface-variant": "#E1E3E4",
+                    "on-tertiary": "#FFFFFF",
+                    "surface-container-highest": "#E1E3E4",
+                    "outline-variant": "#C1C6D6",
+                    "secondary-container": "#FDAF0B",
+                    "on-secondary-container": "#694600",
+                    "primary-container": "#1A73E8",
+                    "background": "#F8F9FA",
+                    "on-tertiary-fixed-variant": "#783100",
+                    "inverse-on-surface": "#F0F1F2",
+                    "surface-bright": "#F8F9FA",
+                    "secondary": "#805600",
+                    "primary-fixed": "#D8E2FF",
+                    "surface-tint": "#005BC0",
+                    "outline": "#727785",
+                    "on-surface": "#191C1D",
+                    "surface-container-high": "#E7E8E9",
+                    "on-background": "#191C1D",
+                    "primary-fixed-dim": "#ADC7FF",
+                    "surface-dim": "#D9DADB",
+                    "on-primary": "#FFFFFF",
+                    "tertiary-fixed": "#FFDBCB",
+                    "on-secondary-fixed": "#281800",
+                    "tertiary-fixed-dim": "#FFB691",
+                    "on-error-container": "#93000A",
+                    "secondary-fixed": "#FFDDAF",
+                    "inverse-primary": "#ADC7FF",
+                    "on-tertiary-container": "#0E0200",
+                    "on-primary-fixed-variant": "#004493",
+                    "secondary-fixed-dim": "#FFBA43",
+                    "on-tertiary-fixed": "#341100",
+                    "error": "#BA1A1A",
+                    "surface-container-lowest": "#FFFFFF",
+                    "on-surface-variant": "#414754",
+                    "surface": "#F8F9FA",
+                    "primary": "#005BBF",
+                    "on-secondary": "#FFFFFF",
+                    "on-error": "#FFFFFF",
+                    "surface-container": "#EDEEEF",
+                    "on-secondary-fixed-variant": "#614000",
+                    "error-container": "#FFDAD6",
+                    "tertiary-container": "#C55500",
+                    "inverse-surface": "#2E3132"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "display": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-header { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl shadow-sm flex justify-between items-center w-full px-6 py-3">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-high border-2 border-primary-container">
+<img class="w-full h-full object-cover" data-alt="Professional portrait of a male building administrator in a minimalist office setting with soft natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBiTTPz-audfZsudsOmNZAU3A-cXCoUAtcFkcDFolMICMR-fbVpw5DHRDix6_jhtt0Hu6dKdLlqbkJjCynnZpp7aIA87wyEPG6eBHqJPVCBVebMVB70zkRz7bujyp_akjcYjd3uMPn8vrlYjQDvzL26jd_QQEIUmv4fvzs2mdsNdbITzEuKPgTlhw5JgKPeqh0I7RRpllTZ2bozUPoFzO-oRnKJi8Yzx7PBt7iSndF9MwTFsuDFzptHVZ4sKOEVXzgNXZi2UhDMnw" style=""/>
+</div>
+<span class="font-['Plus_Jakarta_Sans'] font-bold tracking-tight text-xl text-slate-900 dark:text-slate-50" style="">Cove Glass</span>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full text-blue-600 dark:text-blue-400 hover:bg-slate-100/50 transition-colors" style="">
+<span class="material-symbols-outlined" data-icon="notifications" style="">notifications</span>
+</button>
+</header>
+<main class="pt-20 px-6 max-w-md mx-auto">
+<!-- Page Title & Summary -->
+<section class="mb-8 flex items-end justify-between">
+<div>
+<h1 class="text-3xl font-extrabold tracking-tight text-on-surface mb-2" style="">Booking Logs</h1>
+<p class="text-on-surface-variant text-sm font-medium" style="">Monitoring 24 activity streams today.</p>
+</div>
+<button class="flex items-center gap-2 bg-surface-container-high hover:bg-surface-variant px-4 py-2 rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="calendar_month">calendar_month</span>
+<span class="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Filter</span>
+</button>
+</section>
+<!-- Weekly Overview (Metric Cards) -->
+<section class="mb-8 grid grid-cols-2 gap-4">
+<div class="bg-surface-container-lowest p-5 rounded-3xl shadow-sm border border-outline-variant/15">
+<div class="flex items-center justify-between mb-3">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="event_available" style="">event_available</span>
+<span class="text-[10px] font-bold tracking-widest uppercase text-on-surface-variant opacity-60" style="">Volume</span>
+</div>
+<div class="text-2xl font-bold tracking-tight" style="">142</div>
+<div class="text-[10px] font-semibold text-primary mt-1" style="">+12% from last week</div>
+</div>
+<div class="bg-surface-container-lowest p-5 rounded-3xl shadow-sm border border-outline-variant/15">
+<div class="flex items-center justify-between mb-3">
+<span class="material-symbols-outlined text-secondary text-xl" data-icon="group" style="">group</span>
+<span class="text-[10px] font-bold tracking-widest uppercase text-on-surface-variant opacity-60" style="">Resident</span>
+</div>
+<div class="text-2xl font-bold tracking-tight" style="">384</div>
+<div class="text-[10px] font-semibold text-secondary mt-1" style="">Peak: Sat Afternoon</div>
+</div>
+</section>
+<!-- Filter Toggle -->
+<section class="mb-6">
+<div class="flex p-1.5 bg-surface-container-high rounded-full w-full">
+<button class="flex-1 py-2.5 px-4 rounded-full text-sm font-bold bg-white text-primary shadow-sm transition-all" style="">Upcoming</button>
+<button class="flex-1 py-2.5 px-4 rounded-full text-sm font-semibold text-on-surface-variant transition-all" style="">Completed</button>
+</div>
+</section>
+<!-- Live Reservation Feed -->
+<section class="space-y-4">
+<!-- Item 1 -->
+<div class="group relative bg-surface-container-lowest p-5 rounded-[2.5rem] shadow-sm hover:shadow-md transition-all duration-300 border border-outline-variant/10 active:scale-95">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="pool" style='font-variation-settings: "FILL" 1;'>pool</span>
+</div>
+<div>
+<h3 class="font-bold text-on-surface" style="">Infinity Pool</h3>
+<p class="text-[10px] font-bold tracking-widest uppercase text-on-surface-variant" style="">OCT 24, 2024 • 4:00 PM - 6:00 PM</p>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-y-3 pt-3 border-t border-outline-variant/10">
+<div>
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-wider mb-0.5" style="">Resident</p>
+<p class="text-sm font-semibold" style="">Sarah Jenkins</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-wider mb-0.5" style="">Unit</p>
+<p class="text-sm font-semibold" style="">Penthouse B</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-xs text-on-surface-variant" data-icon="group" style="">group</span>
+<p class="text-sm font-medium" style="">4 Guests</p>
+</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="group relative bg-surface-container-lowest p-5 rounded-[2.5rem] shadow-sm hover:shadow-md transition-all duration-300 border border-outline-variant/10 active:scale-95">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" data-icon="restaurant" style='font-variation-settings: "FILL" 1;'>restaurant</span>
+</div>
+<div>
+<h3 class="font-bold text-on-surface" style="">Private Dining</h3>
+<p class="text-[10px] font-bold tracking-widest uppercase text-on-surface-variant" style="">OCT 24, 2024 • 7:30 PM - 10:00 PM</p>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-y-3 pt-3 border-t border-outline-variant/10">
+<div>
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-wider mb-0.5" style="">Resident</p>
+<p class="text-sm font-semibold" style="">David Chen</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-wider mb-0.5" style="">Unit</p>
+<p class="text-sm font-semibold" style="">Suite 1204</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-xs text-on-surface-variant" data-icon="group" style="">group</span>
+<p class="text-sm font-medium" style="">8 Guests</p>
+</div>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="group relative bg-surface-container-lowest p-5 rounded-[2.5rem] shadow-sm hover:shadow-md transition-all duration-300 border border-outline-variant/10 active:scale-95">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="sports_tennis" style='font-variation-settings: "FILL" 1;'>sports_tennis</span>
+</div>
+<div>
+<h3 class="font-bold text-on-surface" style="">Tennis Court 2</h3>
+<p class="text-[10px] font-bold tracking-widest uppercase text-on-surface-variant" style="">OCT 25, 2024 • 8:00 AM</p>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-y-3 pt-3 border-t border-outline-variant/10">
+<div>
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-wider mb-0.5" style="">Resident</p>
+<p class="text-sm font-semibold" style="">Marcus Miller</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-wider mb-0.5" style="">Unit</p>
+<p class="text-sm font-semibold" style="">Garden Villa 4</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-xs text-on-surface-variant" data-icon="group" style="">group</span>
+<p class="text-sm font-medium" style="">2 Guests</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-3 pb-8 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-slate-200/30 dark:border-slate-700/30 shadow-[0_-12px_32px_rgba(25,28,29,0.06)] rounded-t-3xl">
+<!-- Add Amenity -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:text-blue-500 transition-colors duration-300 ease-out" href="#" style="">
+<span class="material-symbols-outlined mb-1" data-icon="add_circle" style="">add_circle</span>
+<span class="font-['Inter'] text-[10px] font-medium uppercase tracking-widest" style="">Add Amenity</span>
+</a>
+<!-- Manage -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:text-blue-500 transition-colors duration-300 ease-out" href="#" style="">
+<span class="material-symbols-outlined mb-1" data-icon="layers" style="">layers</span>
+<span class="font-['Inter'] text-[10px] font-medium uppercase tracking-widest" style="">Manage</span>
+</a>
+<!-- Logs (Active) -->
+<a class="flex flex-col items-center justify-center bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-200 rounded-full px-5 py-2 transition-colors duration-300 ease-out scale-105" href="#" style="">
+<span class="material-symbols-outlined mb-1" data-icon="history" style='font-variation-settings: "FILL" 1;'>history</span>
+<span class="font-['Inter'] text-[10px] font-medium uppercase tracking-widest" style="">Logs</span>
+</a>
+</nav>
+</body></html>

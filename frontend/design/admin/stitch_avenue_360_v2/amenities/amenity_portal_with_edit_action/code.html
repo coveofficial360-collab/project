@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cove Amenities | Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-dim": "#D9DADB",
+                      "surface-container-high": "#E7E8E9",
+                      "primary": "#005BBF",
+                      "primary-fixed": "#D8E2FF",
+                      "outline": "#727785",
+                      "surface-bright": "#F8F9FA",
+                      "surface-container-highest": "#E1E3E4",
+                      "secondary-fixed-dim": "#FFBA43",
+                      "error": "#BA1A1A",
+                      "on-surface-variant": "#414754",
+                      "tertiary-fixed-dim": "#FFB691",
+                      "on-tertiary-fixed": "#341100",
+                      "on-primary-container": "#FFFFFF",
+                      "inverse-on-surface": "#F0F1F2",
+                      "tertiary-fixed": "#FFDBCB",
+                      "tertiary-container": "#C55500",
+                      "on-error": "#FFFFFF",
+                      "inverse-surface": "#2E3132",
+                      "tertiary": "#9E4300",
+                      "secondary-container": "#FDAF0B",
+                      "on-background": "#191C1D",
+                      "on-primary-fixed-variant": "#004493",
+                      "primary-container": "#1A73E8",
+                      "outline-variant": "#C1C6D6",
+                      "on-secondary-fixed-variant": "#614000",
+                      "on-tertiary-container": "#0E0200",
+                      "on-surface": "#191C1D",
+                      "on-secondary-container": "#694600",
+                      "surface-container-lowest": "#FFFFFF",
+                      "surface-container": "#EDEEEF",
+                      "background": "#F8F9FA",
+                      "inverse-primary": "#ADC7FF",
+                      "on-secondary-fixed": "#281800",
+                      "on-primary": "#FFFFFF",
+                      "primary-fixed-dim": "#ADC7FF",
+                      "secondary": "#805600",
+                      "error-container": "#FFDAD6",
+                      "on-primary-fixed": "#001A41",
+                      "surface-container-low": "#F3F4F5",
+                      "on-tertiary": "#FFFFFF",
+                      "secondary-fixed": "#FFDDAF",
+                      "on-error-container": "#93000A",
+                      "on-tertiary-fixed-variant": "#783100",
+                      "surface-tint": "#005BC0",
+                      "surface-variant": "#E1E3E4",
+                      "surface": "#F8F9FA",
+                      "on-secondary": "#FFFFFF"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "fontFamily": {
+                      "headline": ["Plus Jakarta Sans"],
+                      "display": ["Plus Jakarta Sans"],
+                      "body": ["Inter"],
+                      "label": ["Inter"]
+              }
+            },
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- TopAppBar -->
+<header class="sticky top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl shadow-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-blue-600 dark:text-blue-400" data-icon="apartment">apartment</span>
+<h1 class="text-xl font-extrabold text-slate-900 dark:text-slate-50 font-['Plus_Jakarta_Sans'] tracking-tight">Cove Amenities</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-slate-500 hover:bg-slate-100 p-2 rounded-full transition-colors" data-icon="search">search</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/10">
+<img alt="Property Manager Profile" data-alt="Professional headshot of a property manager in a sleek modern office setting, soft natural lighting, high-end photography style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA83od8rxQtM9HPGaNL51TdAxK_5Dx94AFDboON6McmzK0YHMIMSUmGHMV4L7_4yZxwB7odhd6Zws6Mh1jfMyFdgLHfvE8_NCAPQH8CyDksBSE84fw1e-2ETKRcAvjPibO0OelN_qbFUPfLZk9FrIEN19k2JYh3X0tzeZIuiIv8EadNr8P5xlyki-k0HG2UQ5fn-QJctOE0lxHgCM7ax49L2lCf4K-HW7Dprtd_eRNX5li8XCVuGGvoCi38-xs_TPUtSC6aUXs2gg"/>
+</div>
+</div>
+</header>
+<main class="max-w-5xl mx-auto px-6 pt-8 pb-32">
+<!-- Section Title -->
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline text-2xl font-bold text-on-surface tracking-tight">Active Facilities</h3>
+<div class="flex gap-2">
+<button class="material-symbols-outlined p-2 text-outline hover:text-primary transition-colors" data-icon="filter_list">filter_list</button>
+<button class="material-symbols-outlined p-2 text-outline hover:text-primary transition-colors" data-icon="grid_view">grid_view</button>
+</div>
+</div>
+<!-- Facility Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Amenity Card 1: Infinity Pool -->
+<div class="group relative bg-surface-container-lowest rounded-[32px] overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-outline-variant/10">
+<div class="h-40 overflow-hidden relative">
+<img alt="Infinity Pool" class="w-full h-full object-cover" data-alt="Luxurious infinity pool overlooking a modern city skyline at dusk, crystal clear turquoise water, elegant poolside furniture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyOY1LSegW-iTgXBcA0iaA4Ff_vYfZzNa3gBeoK6GzMS4VcUusm0iLmylhqj4XMYx01HEfpkGmgFdTSJP3KpmAAEbZe1Jnrh8RdSrTwYRLRpzMgcL83iJLPdXBeXaN4M9J0Faom874FkmVOD6UouAyh8de0dqgKmWQ0C7pQ3ylRykAMEQjqblIqwepRopARI9Z3zBX5zm003Soa01_OBq88DnxnNU3BSM30eCfwm-fPi8snq-nY9G3jdqEiXwGrNbLX3HUC0FbNg"/>
+<div class="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+<span class="text-[10px] font-bold text-on-surface uppercase tracking-wider">Open</span>
+</div>
+</div>
+<div class="p-6">
+<h4 class="font-headline text-lg font-bold mb-1">Infinity Pool</h4>
+<p class="text-xs text-on-surface-variant font-medium mb-4 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="location_on">location_on</span> Rooftop Terrace, North
+                    </p>
+<div>
+<p class="text-[10px] uppercase tracking-widest text-outline mb-1">Occupancy</p>
+<p class="text-lg font-bold text-primary">24 <span class="text-sm font-medium text-outline">/ 45</span></p>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-outline-variant/10">
+<button class="flex items-center justify-center gap-1 px-2 py-2 bg-emerald-50 text-emerald-700 rounded-xl text-[10px] font-bold uppercase hover:bg-emerald-100 transition-colors border border-emerald-200/50">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Open
+                        </button>
+<button class="flex items-center justify-center gap-1 px-2 py-2 bg-blue-50 text-blue-700 rounded-xl text-[10px] font-bold uppercase hover:bg-blue-100 transition-colors border border-blue-200/50">
+<span class="material-symbols-outlined text-[14px]">edit</span> Edit
+                        </button>
+<button class="flex items-center justify-center gap-1 px-2 py-2 bg-orange-50 text-orange-700 rounded-xl text-[10px] font-bold uppercase hover:bg-orange-100 transition-colors border border-orange-200/50">
+<span class="material-symbols-outlined text-[14px]">build</span> Maintenance
+                        </button>
+<button class="flex items-center justify-center gap-1 px-2 py-2 bg-error-container/30 text-error rounded-xl text-[10px] font-bold uppercase hover:bg-error-container/50 transition-colors border border-error/10">
+<span class="material-symbols-outlined text-[14px]">delete</span> Delete
+                        </button>
+</div>
+</div>
+</div>
+<!-- Amenity Card 2: Zenith Gym -->
+<div class="group relative bg-surface-container-lowest rounded-[32px] overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-outline-variant/10">
+<div class="h-40 overflow-hidden relative">
+<img alt="Zenith Gym" class="w-full h-full object-cover" data-alt="High-end modern gym with floor-to-ceiling windows, premium black equipment, sleek architectural lighting, minimalist aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQ0b-SfFGWKo8G6t2mQ0_eB_Gh7qPZyGT3k2vjbXUxw2zPz4js_EsW2evXOjB6r5B8QhaHX53WUHpA5H2JZt1YOQG1n570DlAfX0gE1Wwh1mmuQCPfftXoI6c0yd5nrMM4Ps3P4RKRluSsnpGiUfl_TbEanDdjTIBR7UpjQEAhhKRHz78g2xOJ1vBeS3eSH13rp1oIes4e1bgASOLNUlnxi0H-fuI3Dv7aiMZ3XxFAvZQ8EfO9wVUASdZcfjYhtmw34ClvtReBCQ"/>
+<div class="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
+<span class="w-2 h-2 rounded-full bg-orange-500"></span>
+<span class="text-[10px] font-bold text-on-surface uppercase tracking-wider">Busy</span>
+</div>
+</div>
+<div class="p-6">
+<h4 class="font-headline text-lg font-bold mb-1">Zenith Gym</h4>
+<p class="text-xs text-on-surface-variant font-medium mb-4 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="location_on">location_on</span> Level 2, West Wing
+                    </p>
+<div>
+<p class="text-[10px] uppercase tracking-widest text-outline mb-1">Occupancy</p>
+<p class="text-lg font-bold text-orange-600">38 <span class="text-sm font-medium text-outline">/ 40</span></p>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-outline-variant/10">
+<button class="flex items-center justify-center gap-1 px-2 py-2 bg-emerald-50 text-emerald-700 rounded-xl text-[10px] font-bold uppercase hover:bg-emerald-100 transition-colors border border-emerald-200/50">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Open
+                        </button>
+<button class="flex items-center justify-center gap-1 px-2 py-2 bg-blue-50 text-blue-700 rounded-xl text-[10px] font-bold uppercase hover:bg-blue-100 transition-colors border border-blue-200/50">
+<span class="material-symbols-outlined text-[14px]">edit</span> Edit
+                        </button>
+<button class="flex items-center justify-center gap-1 px-2 py-2 bg-orange-50 text-orange-700 rounded-xl text-[10px] font-bold uppercase hover:bg-orange-100 transition-colors border border-orange-200/50">
+<span class="material-symbols-outlined text-[14px]">build</span> Maintenance
+                        </button>
+<button class="flex items-center justify-center gap-1 px-2 py-2 bg-error-container/30 text-error rounded-xl text-[10px] font-bold uppercase hover:bg-error-container/50 transition-colors border border-error/10">
+<span class="material-symbols-outlined text-[14px]">delete</span> Delete
+                        </button>
+</div>
+</div>
+</div>
+<!-- Amenity Card 3: Resident Lounge -->
+<div class="group relative bg-surface-container-lowest rounded-[32px] overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-outline-variant/10">
+<div class="h-40 overflow-hidden relative">
+<img alt="Resident Lounge" class="w-full h-full object-cover" data-alt="Quiet upscale resident lounge with velvet armchairs, library walls, and soft ambient lamp lighting, warm and cozy sanctuary" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYXU3kfMV39QquO81yuaXhscKDKvYGGeCb8h6nA1Jz6IRdMKOofi2_GKEscsNUf2KoteGhLf-35hM6jAiZ5F_4gqWIarueNUAXGJq0SAU3zRvccE2Syt0khdANOKgaNbqdLbmc3y4h4WoOkIe8PXt6IL_IAG6aGSaVtloiJLCBnUX5imSpN6nq5LQQcrxdl9UURDcC-jmIDJVuyTBKWC0d_PwQP3YgYzdldDYi0ankL4E8kvaUjsLNj9NrZi_oVBmAtDIOd8agOA"/>
+<div class="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span class="text-[10px] font-bold text-on-surface uppercase tracking-wider">Open</span>
+</div>
+</div>
+<div class="p-6">
+<h4 class="font-headline text-lg font-bold mb-1">Resident Lounge</h4>
+<p class="text-xs text-on-surface-variant font-medium mb-4 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="location_on">location_on</span> Lobby Level
+                    </p>
+<div>
+<p class="text-[10px] uppercase tracking-widest text-outline mb-1">Occupancy</p>
+<p class="text-lg font-bold text-primary">12 <span class="text-sm font-medium text-outline">/ 60</span></p>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-outline-variant/10">
+<button class="flex items-center justify-center gap-1 px-2 py-2 bg-emerald-50 text-emerald-700 rounded-xl text-[10px] font-bold uppercase hover:bg-emerald-100 transition-colors border border-emerald-200/50">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Open
+                        </button>
+<button class="flex items-center justify-center gap-1 px-2 py-2 bg-blue-50 text-blue-700 rounded-xl text-[10px] font-bold uppercase hover:bg-blue-100 transition-colors border border-blue-200/50">
+<span class="material-symbols-outlined text-[14px]">edit</span> Edit
+                        </button>
+<button class="flex items-center justify-center gap-1 px-2 py-2 bg-orange-50 text-orange-700 rounded-xl text-[10px] font-bold uppercase hover:bg-orange-100 transition-colors border border-orange-200/50">
+<span class="material-symbols-outlined text-[14px]">build</span> Maintenance
+                        </button>
+<button class="flex items-center justify-center gap-1 px-2 py-2 bg-error-container/30 text-error rounded-xl text-[10px] font-bold uppercase hover:bg-error-container/50 transition-colors border border-error/10">
+<span class="material-symbols-outlined text-[14px]">delete</span> Delete
+                        </button>
+</div>
+</div>
+</div>
+<!-- Amenity Card 4: Sky Cinema (Maintenance) -->
+<div class="group relative bg-surface-container-lowest rounded-[32px] overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-outline-variant/10">
+<div class="h-40 overflow-hidden relative grayscale opacity-70">
+<img alt="Sky Cinema" class="w-full h-full object-cover" data-alt="Private cinema room with luxury reclining seats and large projector screen, moody lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGjPNN-KQVHYkGIRhwjSSHPh4jono37ARx_ZvK-sV4M2hhAh_zfUipIRqAByMrd3glbXS_G_fV8J5gwrDDinJDGM1P6xkpuNTTCclzcCDDC8El2vbOkdS3CVskqPRNYZ20K6NxyF-iZNXZXnTl66ouVt6n5od6amGtavWVwQ8hdiPVoBbPkttO6kruYYwzgbPIdMS1O_dNKwRwoiJMrvryO3veR-mc9qCQ71UegfaCpiQ5Sf4WUQ1T6vMKEr6WkrsqsCKylGf5Gw"/>
+<div class="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
+<span class="text-[10px] font-bold uppercase tracking-wider">Maintenance</span>
+</div>
+</div>
+<div class="p-6">
+<h4 class="font-headline text-lg font-bold mb-1 text-outline">Sky Cinema</h4>
+<p class="text-xs text-on-surface-variant font-medium mb-4 flex items-center gap-1 opacity-50">
+<span class="material-symbols-outlined text-[14px]" data-icon="location_on">location_on</span> Rooftop, South
+                    </p>
+<div class="flex items-center gap-1.5 text-error">
+<span class="text-[10px] font-bold uppercase tracking-widest">Unavailable</span>
+<span class="material-symbols-outlined text-sm" data-icon="build">build</span>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-outline-variant/10">
+<button class="flex items-center justify-center gap-1 px-2 py-2 bg-emerald-50 text-emerald-700 rounded-xl text-[10px] font-bold uppercase hover:bg-emerald-100 transition-colors border border-emerald-200/50">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Open
+                        </button>
+<button class="flex items-center justify-center gap-1 px-2 py-2 bg-blue-50 text-blue-700 rounded-xl text-[10px] font-bold uppercase hover:bg-blue-100 transition-colors border border-blue-200/50">
+<span class="material-symbols-outlined text-[14px]">edit</span> Edit
+                        </button>
+<button class="flex items-center justify-center gap-1 px-2 py-2 bg-orange-50 text-orange-700 rounded-xl text-[10px] font-bold uppercase hover:bg-orange-100 transition-colors border border-orange-200/50">
+<span class="material-symbols-outlined text-[14px]">build</span> Maintenance
+                        </button>
+<button class="flex items-center justify-center gap-1 px-2 py-2 bg-error-container/30 text-error rounded-xl text-[10px] font-bold uppercase hover:bg-error-container/50 transition-colors border border-error/10">
+<span class="material-symbols-outlined text-[14px]">delete</span> Delete
+                        </button>
+</div>
+</div>
+</div>
+<!-- Add New Placeholder Card -->
+<div class="group border-2 border-dashed border-outline-variant rounded-[32px] flex flex-col items-center justify-center p-8 text-center hover:border-primary transition-colors cursor-pointer">
+<div class="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center mb-4 group-hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="add">add</span>
+</div>
+<h4 class="font-headline font-bold text-on-surface">Add Facility</h4>
+<p class="text-xs text-outline mt-1">Deploy a new resident amenity</p>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-8 pt-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl rounded-t-[32px] shadow-[0_-12px_32px_rgba(25,28,29,0.06)]">
+<!-- Add Amenity -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-6 py-2 hover:text-blue-500 transition-all" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="add_circle">add_circle</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-widest font-bold">Add Amenity</span>
+</a>
+<!-- Manage (Active) -->
+<a class="flex flex-col items-center justify-center bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 rounded-full px-6 py-2 transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="dashboard_customize" style="font-variation-settings: 'FILL' 1;">dashboard_customize</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-widest font-bold">Manage</span>
+</a>
+<!-- Logs -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-6 py-2 hover:text-blue-500 transition-all" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="analytics">analytics</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-widest font-bold">Logs</span>
+</a>
+</nav>
+</body></html>

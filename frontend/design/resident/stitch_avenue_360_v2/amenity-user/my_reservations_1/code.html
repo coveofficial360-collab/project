@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Booking Log - Avenue360</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#C55500",
+                        "on-primary-container": "#FFFFFF",
+                        "on-error-container": "#93000A",
+                        "surface": "#F8F9FA",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "on-primary-fixed-variant": "#004493",
+                        "on-background": "#191C1D",
+                        "surface-tint": "#005BC0",
+                        "on-error": "#FFFFFF",
+                        "outline": "#727785",
+                        "on-surface-variant": "#414754",
+                        "on-secondary": "#FFFFFF",
+                        "inverse-on-surface": "#F0F1F2",
+                        "secondary-container": "#FDAF0B",
+                        "background": "#F8F9FA",
+                        "surface-variant": "#E1E3E4",
+                        "secondary-fixed-dim": "#FFBA43",
+                        "secondary": "#805600",
+                        "on-tertiary-fixed": "#341100",
+                        "surface-container-low": "#F3F4F5",
+                        "on-tertiary-container": "#0E0200",
+                        "on-surface": "#191C1D",
+                        "on-secondary-container": "#694600",
+                        "on-primary-fixed": "#001A41",
+                        "surface-container-highest": "#E1E3E4",
+                        "inverse-surface": "#2E3132",
+                        "on-tertiary": "#FFFFFF",
+                        "inverse-primary": "#ADC7FF",
+                        "error-container": "#FFDAD6",
+                        "tertiary-fixed": "#FFDBCB",
+                        "surface-dim": "#D9DADB",
+                        "error": "#BA1A1A",
+                        "on-secondary-fixed-variant": "#614000",
+                        "on-secondary-fixed": "#281800",
+                        "primary-fixed-dim": "#ADC7FF",
+                        "primary": "#005BBF",
+                        "tertiary-fixed-dim": "#FFB691",
+                        "surface-bright": "#F8F9FA",
+                        "surface-container-high": "#E7E8E9",
+                        "surface-container-lowest": "#FFFFFF",
+                        "on-primary": "#FFFFFF",
+                        "primary-container": "#1A73E8",
+                        "primary-fixed": "#D8E2FF",
+                        "tertiary": "#9E4300",
+                        "secondary-fixed": "#FFDDAF",
+                        "outline-variant": "#C1C6D6",
+                        "surface-container": "#EDEEEF"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F9FA;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl shadow-sm flex items-center justify-between px-6 py-4 w-full">
+<div class="flex items-center gap-4">
+<button class="active:scale-95 transition-transform duration-200 text-blue-700 dark:text-blue-400">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-['Plus_Jakarta_Sans'] font-bold text-lg tracking-tight text-slate-900 dark:text-slate-50">Avenue360</h1>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="close up portrait of a young professional man in a modern setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbdGnCzMLYugGEo_3_IDL01TV-J3XGAhGIkdF8sLV7pyy7CxHlFHF85xQypeBpXSt2M7L3AHjt0hnbox2e-JuCg-Zlb4JpXgpqaP6MtlSyPs9C_p0NKE85iEh-wf29_P_x9uVsihbMX3NyRDrNvkFOpnYSy4_wNpyVOZXNRS-nA2kuqPK1wlFJf6m3yZX-RmZzo07r-yT9fydgo82n4Xd-cBxAjVP-89VQrvQCI9qjWDcMcAZRE7gvPmzVrArQ_TDfuvjk-UU5zQ"/>
+</div>
+</header>
+<main class="pt-24 pb-32 px-6 max-w-2xl mx-auto">
+<!-- Hero Title -->
+<section class="mb-8">
+<p class="font-label text-[10px] font-medium uppercase tracking-widest text-primary mb-1">Personal Dashboard</p>
+<h2 class="font-headline text-3xl font-bold tracking-tight text-on-surface">Your Bookings</h2>
+</section>
+<!-- Tab Switcher -->
+<div class="bg-surface-container-low p-1.5 rounded-full flex mb-8">
+<button class="flex-1 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 bg-white text-primary shadow-sm">
+                Upcoming
+            </button>
+<button class="flex-1 py-2.5 rounded-full text-sm font-medium transition-all duration-300 text-on-surface-variant hover:bg-white/50">
+                Completed
+            </button>
+</div>
+<!-- Bookings List -->
+<div class="space-y-6">
+<!-- Booking Card 1 (Upcoming) -->
+<div class="group relative bg-surface-container-lowest rounded-[2rem] p-4 shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+<div class="flex flex-col md:flex-row gap-5">
+<div class="w-full md:w-32 h-32 rounded-2xl overflow-hidden shrink-0">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="luxury infinity pool overlooking a city skyline at dusk with glowing underwater lights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3CvmP0ia_ZjJTyqa9V-RIAVcCL6xYAFupY2yzktplWKX57LQ7C_V0Fw1V5tOKyfxdwCZ-6YMBTc8kqYirVs3RROCDDvPFIV_etOV33OVIy20V_FIC7mUoG2UnfSvI3AZHA2KsCLW6bzjLeCOsl3K08nW0KsOE8O7_bjmd6_O-B6n96SBTkpZc6NReM3Gz0or7ZDoY-8Ivpk4Nj5jBPUo3-oweD3je_L4aouVvgcCSHBdfMjtXHCzH4yP8FuvIUTNH0KAApwj3YQ"/>
+</div>
+<div class="flex flex-col justify-between flex-grow">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="font-headline text-xl font-bold text-on-surface">Rooftop Sky Pool</h3>
+<span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase">Confirmed</span>
+</div>
+<div class="mt-3 flex items-center gap-4 text-on-surface-variant">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span class="text-xs font-medium">Oct 24, 2023</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-xs font-medium">04:00 PM - 06:00 PM</span>
+</div>
+</div>
+</div>
+<div class="mt-5 flex gap-3">
+<button class="px-6 py-2 rounded-full bg-surface-container-high text-on-surface text-xs font-semibold hover:bg-error-container hover:text-on-error-container transition-colors">
+                                Cancel
+                            </button>
+<button class="px-6 py-2 rounded-full bg-primary text-white text-xs font-semibold shadow-sm active:scale-95 transition-transform">
+                                Manage
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Booking Card 2 (Upcoming) -->
+<div class="group relative bg-surface-container-lowest rounded-[2rem] p-4 shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+<div class="flex flex-col md:flex-row gap-5">
+<div class="w-full md:w-32 h-32 rounded-2xl overflow-hidden shrink-0">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="modern fitness center with sleek exercise machines and large floor-to-ceiling windows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBllJI0ofD4kfb0oOhEFqqR2qOPr7To73imtSV5ZhM6UA_uT3ANm-hIr2GsbuZtuspSY0I_lB8Z-JnIh6mvw2ou-0fBZD1JUpZLY2KoL1ezF7YpPwrIjLGFSjZc6M5VumeGbpx5E7oEslgDuLtHZuxpxPmXlrM_kI8Dp5Whq6il3aIJODzbhDjtk8ZQ-Pq526_YqBsKPSRfHmXfAvwRrwg3FB2QTbWABoBYFKZAYthXATD3FlAICgz0gVbutx-_Vdc0zJIZ7rB4g"/>
+</div>
+<div class="flex flex-col justify-between flex-grow">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="font-headline text-xl font-bold text-on-surface">Private Gym Studio</h3>
+<span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase">Confirmed</span>
+</div>
+<div class="mt-3 flex items-center gap-4 text-on-surface-variant">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span class="text-xs font-medium">Oct 25, 2023</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-xs font-medium">08:00 AM - 09:30 AM</span>
+</div>
+</div>
+</div>
+<div class="mt-5 flex gap-3">
+<button class="px-6 py-2 rounded-full bg-surface-container-high text-on-surface text-xs font-semibold hover:bg-error-container hover:text-on-error-container transition-colors">
+                                Cancel
+                            </button>
+<button class="px-6 py-2 rounded-full bg-primary text-white text-xs font-semibold shadow-sm active:scale-95 transition-transform">
+                                Manage
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Booking Card 3 (Visual Placeholder for Completed section style) -->
+<div class="opacity-70 grayscale-[0.5] group relative bg-surface-container-low rounded-[2rem] p-4 border border-outline-variant/10">
+<div class="flex flex-col md:flex-row gap-5">
+<div class="w-full md:w-32 h-32 rounded-2xl overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="high-end resident cinema lounge with plush velvet seats and atmospheric blue lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-7-ROg_v3c51L-Uvw9sv6pEpMkim3jcllF0XVUjZiCgCFXSmSHqU0HYIigpaMTFvm_6nUEoxGy5lm_GAEZaP00xRSgo0fIWk3UNdGQfyeA8xPowXu0HY9vblx5Hk4s5NZlUEL-ZwOWkXyyIZ-dkksJVLuqA17wp-i7cJhUOxh5EZ52bMhJVoW6y91vwMNBTdU27tBh5hu7oFHkQyaIxfBezEpr1cIyGbTx40nBZrP5FoTMQ12OBr3PlyTrsBLH3-wOBJ9Be7AJg"/>
+</div>
+<div class="flex flex-col justify-between flex-grow">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="font-headline text-xl font-bold text-on-surface-variant">Private Cinema</h3>
+<span class="bg-on-surface-variant/10 text-on-surface-variant px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase">Completed</span>
+</div>
+<div class="mt-3 flex items-center gap-4 text-on-surface-variant/70">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span class="text-xs font-medium">Oct 18, 2023</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-xs font-medium">08:00 PM - 11:00 PM</span>
+</div>
+</div>
+</div>
+<div class="mt-5 flex gap-3">
+<button class="px-6 py-2 rounded-full bg-white text-primary text-xs font-semibold shadow-sm border border-primary/10">
+                                View Details
+                            </button>
+<button class="px-6 py-2 rounded-full bg-secondary-container text-on-secondary-container text-xs font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                Rate
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Helpful Tip / Bento Fragment -->
+<div class="mt-12 bg-primary-container p-6 rounded-[2.5rem] text-on-primary-container flex items-center gap-6 overflow-hidden relative">
+<div class="flex-grow z-10">
+<h4 class="font-headline font-bold text-xl mb-2">Need a change?</h4>
+<p class="text-sm text-on-primary-container/80 leading-relaxed max-w-[240px]">You can cancel bookings up to 2 hours before the scheduled time without any penalty.</p>
+</div>
+<div class="absolute -right-4 -bottom-4 w-32 h-32 bg-white/10 rounded-full blur-3xl"></div>
+<span class="material-symbols-outlined text-6xl opacity-20 transform -rotate-12">history_edu</span>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-[32px] bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl shadow-[0_-12px_32px_rgba(25,28,29,0.06)] flex justify-around items-center px-4 pt-3 pb-8 w-full">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:bg-slate-100/50 transition-colors active:scale-90 transition-all duration-300 ease-out" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-['Inter'] text-[10px] font-medium uppercase tracking-widest mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:bg-slate-100/50 transition-colors active:scale-90 transition-all duration-300 ease-out" href="#">
+<span class="material-symbols-outlined">rebase_edit</span>
+<span class="font-['Inter'] text-[10px] font-medium uppercase tracking-widest mt-1">Amenities</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:bg-slate-100/50 transition-colors active:scale-90 transition-all duration-300 ease-out" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-['Inter'] text-[10px] font-medium uppercase tracking-widest mt-1">Notices</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 rounded-full px-5 py-2 active:scale-90 transition-all duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-['Inter'] text-[10px] font-medium uppercase tracking-widest mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

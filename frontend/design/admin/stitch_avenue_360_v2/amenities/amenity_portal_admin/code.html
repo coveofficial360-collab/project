@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-dim": "#D9DADB",
+                    "surface-container-high": "#E7E8E9",
+                    "primary": "#005BBF",
+                    "primary-fixed": "#D8E2FF",
+                    "outline": "#727785",
+                    "surface-bright": "#F8F9FA",
+                    "surface-container-highest": "#E1E3E4",
+                    "secondary-fixed-dim": "#FFBA43",
+                    "error": "#BA1A1A",
+                    "on-surface-variant": "#414754",
+                    "tertiary-fixed-dim": "#FFB691",
+                    "on-tertiary-fixed": "#341100",
+                    "on-primary-container": "#FFFFFF",
+                    "inverse-on-surface": "#F0F1F2",
+                    "tertiary-fixed": "#FFDBCB",
+                    "tertiary-container": "#C55500",
+                    "on-error": "#FFFFFF",
+                    "inverse-surface": "#2E3132",
+                    "tertiary": "#9E4300",
+                    "secondary-container": "#FDAF0B",
+                    "on-background": "#191C1D",
+                    "on-primary-fixed-variant": "#004493",
+                    "primary-container": "#1A73E8",
+                    "outline-variant": "#C1C6D6",
+                    "on-secondary-fixed-variant": "#614000",
+                    "on-tertiary-container": "#0E0200",
+                    "on-surface": "#191C1D",
+                    "on-secondary-container": "#694600",
+                    "surface-container-lowest": "#FFFFFF",
+                    "surface-container": "#EDEEEF",
+                    "background": "#F8F9FA",
+                    "inverse-primary": "#ADC7FF",
+                    "on-secondary-fixed": "#281800",
+                    "on-primary": "#FFFFFF",
+                    "primary-fixed-dim": "#ADC7FF",
+                    "secondary": "#805600",
+                    "error-container": "#FFDAD6",
+                    "on-primary-fixed": "#001A41",
+                    "surface-container-low": "#F3F4F5",
+                    "on-tertiary": "#FFFFFF",
+                    "secondary-fixed": "#FFDDAF",
+                    "on-error-container": "#93000A",
+                    "on-tertiary-fixed-variant": "#783100",
+                    "surface-tint": "#005BC0",
+                    "surface-variant": "#E1E3E4",
+                    "surface": "#F8F9FA",
+                    "on-secondary": "#FFFFFF"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "display": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        }
+      }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="sticky top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl shadow-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-blue-600 dark:text-blue-400 text-2xl">apartment</span>
+<h1 class="text-xl font-extrabold text-slate-900 dark:text-slate-50 font-headline tracking-tight">Cove Amenities</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex gap-6 items-center">
+<a class="text-blue-600 dark:text-blue-400 font-bold font-headline" href="#">Manage</a>
+<a class="text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors px-3 py-1 rounded-lg" href="#">Logs</a>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden border-2 border-white shadow-sm">
+<img alt="Property Manager Profile" class="w-full h-full object-cover" data-alt="Professional headshot of a property manager in a corporate setting with soft natural office lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2IQyQVPP47GumuM8Z2_CD2y3NdwCp0HA9p56Gjemqm41HtxiwHM-zadY2_--jAHUsNLdcIrhwP_kPkHbh0enQycIyhWJuUnBt65hmi7MvIMeT5nsvpDkPH3_w_uEXWx1Rxyn7mp3LM4GsF5jKjQLGElSczFA6U6Glct0kLg00qtxS9aTzPlUKW8VF29hqsGr1cwH4NL8Ca-EP96HSBHVItFxtnQwpJJYxgO7eQuqHD4BdkXdrE_vLydT3jPFJCXrHvmQPpDhpCA"/>
+</div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-6 pt-8">
+<!-- Hero Section / Context -->
+<div class="mb-10">
+<p class="text-xs font-bold uppercase tracking-widest text-primary mb-2 font-label">Administrative Overview</p>
+<h2 class="text-3xl md:text-4xl font-extrabold font-headline tracking-tight text-on-surface mb-4">Amenity Status</h2>
+<div class="flex flex-wrap gap-4">
+<div class="px-4 py-2 bg-surface-container-lowest rounded-full shadow-sm flex items-center gap-2 border border-outline-variant/15">
+<span class="w-2 h-2 rounded-full bg-green-500"></span>
+<span class="text-sm font-medium">8 Open Now</span>
+</div>
+<div class="px-4 py-2 bg-surface-container-lowest rounded-full shadow-sm flex items-center gap-2 border border-outline-variant/15">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+<span class="text-sm font-medium">3 Maintenance</span>
+</div>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Featured Amenity: Rooftop Pool -->
+<div class="md:col-span-8 group relative overflow-hidden rounded-[32px] min-h-[380px] md:h-[450px] shadow-[0_12px_32px_rgba(25,28,29,0.06)] hover:-translate-y-1 transition-all duration-300">
+<img class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Luxurious rooftop infinity pool at sunset with crystal clear blue water and modern lounge chairs" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAaQYcBk-i6jlD3MHa42RIYs7I9YRHP2spmbxIs0Y554JegYevM0R4mvpZ4SpLtkRYxlLzSp9yy1gJ0EECD_aEKBVen-c84ZXZ3MkxUR4YTsbFEjzGBE1fYYJy9mqn0DgHEsKGETINEmOYR3y0D8A6er9BM21EHnmmKpRCTKXwxxqB55pb06fg6xpRk3VqwUeE4aPAemOXwryx7Aj9ZFFA-9txTNuZqFGWDFUHkdnLXvxzHmk4lXowg3sGFRdfBP-0iCkQWAcssCg"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+<!-- Top Badges -->
+<div class="absolute top-6 left-6 flex flex-wrap gap-3">
+<div class="bg-white/95 backdrop-blur-md px-4 py-2 rounded-full flex items-center gap-2 shadow-sm">
+<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+<span class="text-[10px] font-extrabold font-label uppercase tracking-wider text-slate-900">Open Now</span>
+</div>
+<div class="bg-black/30 backdrop-blur-md px-4 py-2 rounded-full text-white text-[10px] font-bold uppercase tracking-wider border border-white/20">
+      42% Capacity
+    </div>
+</div>
+<!-- Bottom Content -->
+<div class="absolute bottom-8 left-8 right-8">
+<h3 class="text-3xl md:text-4xl font-extrabold text-white font-headline mb-3 leading-tight tracking-tight">Skydeck Infinity Pool</h3>
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div class="max-w-md">
+<p class="text-white/90 font-medium text-sm md:text-base leading-relaxed">Level 42 • Water quality certified 2 hours ago</p>
+<p class="text-white/70 text-xs mt-1">Optimal temperature maintained</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Side Card: Fitness Center -->
+<div class="md:col-span-4 group relative overflow-hidden rounded-[32px] min-h-[300px] shadow-[0_12px_32px_rgba(25,28,29,0.06)] hover:-translate-y-1 transition-all duration-300">
+<img class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Modern high-end fitness center with state-of-the-art equipment and large floor-to-ceiling windows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABJWaOyzu_TX5TnwHzsdlxreLVyFbWL27CHpuUtH7eIQCS_AmgzDV8iAgge0DwbkrWyHoMtSVSpPl-XHJ-Rvg6ZSsBa8p4nkINoih8op74Pv0ywxMnTbTe4xJPa4yg8Lzi2KIBOmgot_ugmy2Nzjy03I666QNx4k1psW-Mc_K_4NNsrw1oW5_ImeT6tt-uEoQonxWj4FKtYoGES9USb43b6QqZcuiWg2g_h5ELhW3jfIs4OLZDUvD6r5_oE1RlyMw_eiMQMf4cmA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+<div class="absolute top-6 right-6">
+<div class="bg-secondary-container text-on-secondary-container px-4 py-1.5 rounded-full flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<span class="text-xs font-bold font-label uppercase tracking-wider">Busy</span>
+</div>
+</div>
+<div class="absolute bottom-8 left-8">
+<h3 class="text-xl font-bold text-white font-headline">Cove Wellness Lab</h3>
+<p class="text-white/70 text-sm mt-1">94% Capacity • Peak hours</p>
+</div>
+</div>
+<!-- Grid Items: Regular Amenities -->
+<div class="md:col-span-4 group relative overflow-hidden rounded-[32px] aspect-square shadow-[0_12px_32px_rgba(25,28,29,0.06)] hover:-translate-y-1 transition-all duration-300">
+<img class="absolute inset-0 w-full h-full object-cover" data-alt="Sleek modern co-working lounge with designer furniture, bookshelves, and focused lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTFD2cpgTiichUn8k6OC7_5AcvtRLKKAXq5hvPYCFOlJoGLTstIuScfG-hM1kkkvM0hg5f3atVpcRH7WHYmy112IRrXR4_WUgxZtw_sf-CA_r5Xab-LiV-46uE9ugFoT60FT5h262_6sPSjv6Nkwl0gmjgzjUFacdIZfiHJIYnVN1-O469_STd4JUYISeoWAhIvZpTMc0HLP9KGK2cumoC79-p4sLLBsX_JyKSA3e9ekpvP2K61as7Ozef_hqPgzA9xrRsmgjD8Q"/>
+<div class="absolute inset-0 bg-black/40"></div>
+<div class="absolute inset-0 p-8 flex flex-col justify-end">
+<div class="bg-white/90 backdrop-blur-md self-start mb-4 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-green-600">Active</div>
+<h3 class="text-lg font-bold text-white font-headline">Executive Lounge</h3>
+<p class="text-white/80 text-xs mt-1">Keycard access enabled</p>
+</div>
+</div>
+<div class="md:col-span-4 group relative overflow-hidden rounded-[32px] aspect-square shadow-[0_12px_32px_rgba(25,28,29,0.06)] hover:-translate-y-1 transition-all duration-300">
+<img class="absolute inset-0 w-full h-full object-cover" data-alt="Professional grade private cinema room with plush velvet seating and ambient low lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXnl43fDusoCa-qkPSfn1yq_NiM-4GBruJ-ATWBRRxTcPaSbRZ4gFmdhF9FrX9O7iNp4tXBNuwkv2h9-i1fq0eqYJA4Ig_MF-2ChcgYJ8nE64-Z8MMQLjm88wOt6amIqRwK9s7fL6XflS-zoqcGeS3n0G0j9DbUz2-Pxfxe1d8H7jNRsYXKDD8yRpIggwd8h6CjxUW1KvSZtEAFaJKNFDL9QSSGqYlGnON5L46ySRa2IPvtfSPU13HC4MMG-G9b8bheoO7-pGC9A"/>
+<div class="absolute inset-0 bg-black/40"></div>
+<div class="absolute inset-0 p-8 flex flex-col justify-end">
+<div class="bg-white/90 backdrop-blur-md self-start mb-4 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-slate-500">Reserved</div>
+<h3 class="text-lg font-bold text-white font-headline">Media Room</h3>
+<p class="text-white/80 text-xs mt-1">Booked until 10:00 PM</p>
+</div>
+</div>
+<div class="md:col-span-4 group relative overflow-hidden rounded-[32px] aspect-square shadow-[0_12px_32px_rgba(25,28,29,0.06)] hover:-translate-y-1 transition-all duration-300">
+<img class="absolute inset-0 w-full h-full object-cover" data-alt="High-end private meeting room with glass walls and minimalist white furniture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeMWTJCHvUbf7gNWmzasx6p9t2me17Av-PMD13iDCIwtJ0i4ona5p1x7QujFWUC2SKGicvnagTeUUlcLpdWx73MR0ALJnlmXq3jBGpj4vwshdpmYI_nLHT9j3JaAcoQpL2O13wUxttlUlHbgWKQJOKzYPslXnSzHu9X7qlfsasvbHauqRleuiZnB2Vuf3Wf7sODq27xT4EnH9rACuV6ABDlNm2Wf8mcjgPX-DgejNLZPQLPtA3p1mVQCoGvpBU1zYX1MPAm81r4A"/>
+<div class="absolute inset-0 bg-black/40"></div>
+<div class="absolute inset-0 p-8 flex flex-col justify-end">
+<div class="bg-error/90 backdrop-blur-md self-start mb-4 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-white">MAINTENANCE</div>
+<h3 class="text-lg font-bold text-white font-headline">Meeting Suite A</h3>
+<p class="text-white/80 text-xs mt-1">Deep cleaning in progress</p>
+</div>
+</div>
+</div>
+<!-- Quick Stats / Recent Actions -->
+<section class="mt-16 mb-8">
+<h4 class="text-lg font-bold font-headline mb-6">Recent Log Activity</h4>
+<div class="bg-surface-container-lowest rounded-[24px] border border-outline-variant/15 overflow-hidden">
+<div class="p-6 border-b border-outline-variant/15 flex items-center justify-between hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+<span class="material-symbols-outlined text-xl">event_available</span>
+</div>
+<div>
+<p class="text-sm font-bold">New Booking: Media Room</p>
+<p class="text-xs text-on-surface-variant">Apartment 402B • 2 hours ago</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+<div class="p-6 border-b border-outline-variant/15 flex items-center justify-between hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+<span class="material-symbols-outlined text-xl">construction</span>
+</div>
+<div>
+<p class="text-sm font-bold">Maintenance Log: Fitness Center</p>
+<p class="text-xs text-on-surface-variant">HVAC inspection • 5 hours ago</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-8 pt-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl rounded-t-[32px] shadow-[0_-12px_32px_rgba(25,28,29,0.06)]">
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-6 py-2 hover:text-blue-500 transition-all active:translate-y-[-2px] duration-200">
+<span class="material-symbols-outlined mb-1">add_circle</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-widest font-bold">Add Amenity</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 rounded-full px-6 py-2 hover:text-blue-500 transition-all active:translate-y-[-2px] duration-200">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">dashboard_customize</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-widest font-bold">Manage</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-6 py-2 hover:text-blue-500 transition-all active:translate-y-[-2px] duration-200">
+<span class="material-symbols-outlined mb-1">analytics</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-widest font-bold">Logs</span>
+</button>
+</nav>
+</body></html>
