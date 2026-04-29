@@ -128,10 +128,17 @@ begin
 end;
 $$;
 
+drop function if exists public.create_resident_complaint(uuid, text, text, text, text);
+
 create or replace function public.create_resident_complaint(
   p_user_id uuid,
+  p_category text,
   p_title text,
   p_description text,
+  p_location_label text default null,
+  p_urgency text default 'normal',
+  p_preferred_access_time text default null,
+  p_photo_url text default null,
   p_icon_name text default 'electrical_services',
   p_accent_hex text default '#E2E3E8'
 )
@@ -148,32 +155,54 @@ as $$
 declare
   v_complaint_id uuid;
   v_code text := 'CMP-' || lpad(nextval('public.app_complaint_code_seq')::text, 4, '0');
+  v_category text := lower(trim(coalesce(p_category, 'other')));
+  v_urgency text := lower(trim(coalesce(p_urgency, 'normal')));
 begin
+  if v_urgency not in ('low', 'normal', 'urgent') then
+    v_urgency := 'normal';
+  end if;
+
   insert into public.complaints (
     user_id,
     code,
+    category,
     title,
     description,
+    location_label,
+    urgency,
+    preferred_access_time,
+    photo_url,
     state,
     assigned_to,
+    admin_notes,
+    resolution_note,
     meta_label,
     meta_value,
     icon_name,
     accent_hex,
     created_at,
+    updated_at,
     resolved_at
   )
   values (
     p_user_id,
     v_code,
-    p_title,
-    p_description,
+    v_category,
+    trim(p_title),
+    trim(p_description),
+    nullif(trim(coalesce(p_location_label, '')), ''),
+    v_urgency,
+    nullif(trim(coalesce(p_preferred_access_time, '')), ''),
+    nullif(trim(coalesce(p_photo_url, '')), ''),
     'pending',
+    null,
+    null,
     null,
     'STATUS',
     'Awaiting Assignment',
     p_icon_name,
     p_accent_hex,
+    now(),
     now(),
     null
   )
@@ -183,8 +212,133 @@ begin
   select
     v_complaint_id,
     v_code,
-    p_title,
+    trim(p_title),
     'pending'::public.complaint_state;
+end;
+$$;
+
+create or replace function public.update_complaint_admin_status(
+  p_admin_user_id uuid,
+  p_complaint_id uuid,
+  p_state public.complaint_state,
+  p_assigned_to text default null,
+  p_admin_notes text default null,
+  p_resolution_note text default null
+)
+returns table (
+  complaint_id uuid,
+  code text,
+  state public.complaint_state,
+  assigned_to text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_admin_name text;
+  v_complaint record;
+  v_assigned_to text := nullif(trim(coalesce(p_assigned_to, '')), '');
+  v_admin_notes text := nullif(trim(coalesce(p_admin_notes, '')), '');
+  v_resolution_note text := nullif(trim(coalesce(p_resolution_note, '')), '');
+  v_meta_label text;
+  v_meta_value text;
+  v_resolved_at timestamptz;
+begin
+  select full_name
+  into v_admin_name
+  from public.app_users
+  where id = p_admin_user_id
+    and role = 'admin'
+  limit 1;
+
+  if v_admin_name is null then
+    raise exception 'Only an admin user can review complaints.';
+  end if;
+
+  select
+    c.id,
+    c.code,
+    c.user_id,
+    c.title,
+    c.assigned_to
+  into v_complaint
+  from public.complaints c
+  where c.id = p_complaint_id
+  limit 1;
+
+  if v_complaint.id is null then
+    raise exception 'Complaint was not found.';
+  end if;
+
+  if p_state = 'in_progress' then
+    v_meta_label := 'ASSIGNED TO';
+    v_meta_value := coalesce(v_assigned_to, v_complaint.assigned_to, 'Maintenance Team');
+    v_resolved_at := null;
+  elsif p_state = 'resolved' then
+    v_meta_label := 'RESOLVED BY';
+    v_meta_value := coalesce(v_assigned_to, v_complaint.assigned_to, v_admin_name);
+    v_resolved_at := now();
+  elsif p_state = 'pending' then
+    v_meta_label := 'STATUS';
+    v_meta_value := 'Awaiting Assignment';
+    v_resolved_at := null;
+  else
+    raise exception 'Unsupported complaint state: %', p_state;
+  end if;
+
+  update public.complaints c
+  set
+    state = p_state,
+    assigned_to = case
+      when p_state = 'pending' then null
+      else coalesce(v_assigned_to, c.assigned_to, v_meta_value)
+    end,
+    admin_notes = coalesce(v_admin_notes, c.admin_notes),
+    resolution_note = case
+      when p_state = 'resolved' then coalesce(v_resolution_note, c.resolution_note)
+      else c.resolution_note
+    end,
+    meta_label = v_meta_label,
+    meta_value = v_meta_value,
+    resolved_at = v_resolved_at
+  where c.id = p_complaint_id;
+
+  insert into public.notifications (
+    user_id,
+    kind,
+    title,
+    body,
+    badge_label,
+    action_label,
+    image_url,
+    is_unread,
+    created_at
+  )
+  values (
+    v_complaint.user_id,
+    'complaint',
+    'Complaint ' || v_complaint.code || ' updated',
+    case
+      when p_state = 'resolved' then 'Your complaint "' || v_complaint.title || '" has been resolved.'
+      when p_state = 'in_progress' then 'Your complaint "' || v_complaint.title || '" is now assigned to ' || v_meta_value || '.'
+      else 'Your complaint "' || v_complaint.title || '" is back under review.'
+    end,
+    upper(replace(p_state::text, '_', ' ')),
+    'VIEW COMPLAINT',
+    null,
+    true,
+    now()
+  );
+
+  return query
+  select
+    c.id,
+    c.code,
+    c.state,
+    c.assigned_to
+  from public.complaints c
+  where c.id = p_complaint_id;
 end;
 $$;
 
@@ -461,7 +615,7 @@ begin
     where s.id = v_suggestion_id
       and creator.role = 'resident'
       and creator.status = 'active'
-    on conflict (suggestion_id, user_id) do nothing;
+    on conflict on constraint community_suggestion_members_pkey do nothing;
   end if;
 
   return query
@@ -518,7 +672,7 @@ begin
     p_user_id,
     v_joined_at
   )
-  on conflict (suggestion_id, user_id)
+  on conflict on constraint community_suggestion_members_pkey
   do update set joined_at = public.community_suggestion_members.joined_at
   returning
     public.community_suggestion_members.suggestion_id,
@@ -583,18 +737,18 @@ begin
 
   if not exists (
     select 1
-    from public.community_suggestion_members
-    where suggestion_id = p_suggestion_id
-      and user_id = p_user_id
+    from public.community_suggestion_members member_record
+    where member_record.suggestion_id = p_suggestion_id
+      and member_record.user_id = p_user_id
   ) then
     raise exception 'Join this community suggestion before voting.';
   end if;
 
-  select vote_kind
+  select vote_record.vote_kind
   into v_existing_vote
-  from public.community_suggestion_votes
-  where suggestion_id = p_suggestion_id
-    and user_id = p_user_id;
+  from public.community_suggestion_votes vote_record
+  where vote_record.suggestion_id = p_suggestion_id
+    and vote_record.user_id = p_user_id;
 
   insert into public.community_suggestion_votes (
     suggestion_id,
@@ -610,7 +764,7 @@ begin
     now(),
     now()
   )
-  on conflict (suggestion_id, user_id)
+  on conflict on constraint community_suggestion_votes_pkey
   do update set
     vote_kind = excluded.vote_kind,
     updated_at = now();
@@ -618,7 +772,7 @@ begin
   update public.community_suggestions
   set
     votes_in_favor = greatest(
-      votes_in_favor
+      public.community_suggestions.votes_in_favor
       + case
         when v_vote_kind = 'in_favor' and coalesce(v_existing_vote, '') <> 'in_favor' then 1
         else 0
@@ -630,7 +784,7 @@ begin
       0
     ),
     votes_needs_review = greatest(
-      votes_needs_review
+      public.community_suggestions.votes_needs_review
       + case
         when v_vote_kind = 'needs_review' and coalesce(v_existing_vote, '') <> 'needs_review' then 1
         else 0
@@ -701,9 +855,9 @@ begin
 
   if not exists (
     select 1
-    from public.community_suggestion_members
-    where suggestion_id = p_suggestion_id
-      and user_id = p_user_id
+    from public.community_suggestion_members member_record
+    where member_record.suggestion_id = p_suggestion_id
+      and member_record.user_id = p_user_id
   ) then
     raise exception 'Join this community suggestion before commenting.';
   end if;
@@ -1052,7 +1206,8 @@ order by vp.expected_arrival asc;
 
 grant execute on function public.create_resident_app_user(text, text, text, text, public.resident_kind, text, text) to anon, authenticated;
 grant execute on function public.create_visitor_pass(uuid, text, text, public.visitor_kind, timestamptz) to anon, authenticated;
-grant execute on function public.create_resident_complaint(uuid, text, text, text, text) to anon, authenticated;
+grant execute on function public.create_resident_complaint(uuid, text, text, text, text, text, text, text, text, text) to anon, authenticated;
+grant execute on function public.update_complaint_admin_status(uuid, uuid, public.complaint_state, text, text, text) to anon, authenticated;
 grant execute on function public.create_announcement(uuid, public.notice_kind, text, text, text, public.announcement_state, timestamptz) to anon, authenticated;
 grant execute on function public.create_community_suggestion(uuid, text, text, text, text, text, boolean, integer, text, text, text) to anon, authenticated;
 grant execute on function public.review_community_suggestion(uuid, uuid, text) to anon, authenticated;

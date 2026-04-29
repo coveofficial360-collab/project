@@ -110,6 +110,20 @@ void _showCommunityMessage(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
 }
 
+String _communityErrorMessage(Object error) {
+  final message = error.toString();
+  final sanitized = message
+      .replaceFirst('PostgrestException(message: ', '')
+      .replaceFirst('Exception: ', '')
+      .trim();
+
+  if (sanitized.length <= 140) {
+    return sanitized;
+  }
+
+  return '${sanitized.substring(0, 137)}...';
+}
+
 class CommunityFeedScreen extends StatefulWidget {
   const CommunityFeedScreen({super.key});
 
@@ -627,9 +641,12 @@ class _SuggestionDiscussionScreenState
             : 'Your review vote was counted.',
       );
       _refresh();
-    } catch (_) {
+    } catch (error) {
       if (mounted) {
-        _showCommunityMessage(context, 'Could not save your vote right now.');
+        _showCommunityMessage(
+          context,
+          'Could not save your vote: ${_communityErrorMessage(error)}',
+        );
       }
     } finally {
       if (mounted) {

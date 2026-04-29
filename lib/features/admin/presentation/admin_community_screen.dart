@@ -226,10 +226,14 @@ class _AdminCommunityScreenState extends State<AdminCommunityScreen> {
         context,
       ).showSnackBar(SnackBar(content: Text('Suggestion marked as $status.')));
       _refresh();
-    } catch (_) {
+    } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not review this suggestion.')),
+          SnackBar(
+            content: Text(
+              'Could not review this suggestion: ${_friendlySupabaseError(error)}',
+            ),
+          ),
         );
       }
     } finally {
@@ -240,6 +244,20 @@ class _AdminCommunityScreenState extends State<AdminCommunityScreen> {
       }
     }
   }
+}
+
+String _friendlySupabaseError(Object error) {
+  final message = error.toString();
+  final sanitized = message
+      .replaceFirst('PostgrestException(message: ', '')
+      .replaceFirst('Exception: ', '')
+      .trim();
+
+  if (sanitized.length <= 160) {
+    return sanitized;
+  }
+
+  return '${sanitized.substring(0, 157)}...';
 }
 
 class _AdminCommunitySuggestionCard extends StatelessWidget {

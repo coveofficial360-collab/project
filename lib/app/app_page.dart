@@ -8,6 +8,8 @@ enum AppPage {
   notices(slug: 'notices'),
   bills(slug: 'bills'),
   complaints(slug: 'complaints'),
+  createComplaint(slug: 'create-complaint'),
+  complaintDetail(slug: 'complaint-detail'),
   profile(slug: 'profile'),
   notifications(slug: 'notifications'),
   visitor(slug: 'visitor'),
@@ -25,6 +27,7 @@ enum AppPage {
   addResident(slug: 'add-resident'),
   residentDirectory(slug: 'resident-directory'),
   adminComplaints(slug: 'admin-complaints'),
+  adminComplaintDetail(slug: 'admin-complaint-detail'),
   adminCommunity(slug: 'admin-community');
 
   const AppPage({required this.slug});

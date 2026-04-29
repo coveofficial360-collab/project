@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../app/app_page.dart';
 import '../../../core/notifications/resident_notifications_controller.dart';
@@ -396,6 +397,18 @@ IconData _complaintIcon(String? iconName) {
       return Icons.electrical_services_rounded;
     case 'plumbing':
       return Icons.plumbing_rounded;
+    case 'security':
+      return Icons.security_rounded;
+    case 'elevator':
+      return Icons.elevator_rounded;
+    case 'local_parking':
+      return Icons.local_parking_rounded;
+    case 'campaign':
+      return Icons.campaign_rounded;
+    case 'pool':
+      return Icons.pool_rounded;
+    case 'cleaning_services':
+      return Icons.cleaning_services_rounded;
     default:
       return Icons.build_circle_outlined;
   }
@@ -437,9 +450,22 @@ String _visitorKindValue(String label) {
 String _complaintTypeIcon(String label) {
   switch (label) {
     case 'Water Leak':
+    case 'Water':
       return 'water_drop';
     case 'Plumbing':
       return 'plumbing';
+    case 'Housekeeping':
+      return 'cleaning_services';
+    case 'Security':
+      return 'security';
+    case 'Lift':
+      return 'elevator';
+    case 'Parking':
+      return 'local_parking';
+    case 'Noise':
+      return 'campaign';
+    case 'Amenity':
+      return 'pool';
     default:
       return 'electrical_services';
   }
@@ -448,11 +474,51 @@ String _complaintTypeIcon(String label) {
 String _complaintTypeAccent(String label) {
   switch (label) {
     case 'Water Leak':
+    case 'Water':
       return '#FFB018';
     case 'Plumbing':
       return '#D8E2FF';
+    case 'Housekeeping':
+      return '#DFF7EA';
+    case 'Security':
+      return '#FFE4D6';
+    case 'Lift':
+      return '#E9E5FF';
+    case 'Parking':
+      return '#E1F3FF';
+    case 'Noise':
+      return '#FFE8F1';
+    case 'Amenity':
+      return '#DDF7FF';
     default:
       return '#E2E3E8';
+  }
+}
+
+String _complaintCategoryValue(String label) {
+  return label.toLowerCase().replaceAll(' ', '_');
+}
+
+String _complaintCategoryLabel(String? value) {
+  if (value == null || value.trim().isEmpty) {
+    return 'Other';
+  }
+
+  return value
+      .split('_')
+      .where((part) => part.isNotEmpty)
+      .map((part) => '${part[0].toUpperCase()}${part.substring(1)}')
+      .join(' ');
+}
+
+String _complaintUrgencyLabel(String? value) {
+  switch (value) {
+    case 'urgent':
+      return 'Urgent';
+    case 'low':
+      return 'Low';
+    default:
+      return 'Normal';
   }
 }
 
@@ -1949,7 +2015,7 @@ class _ComplaintsScreenState extends State<ComplaintsScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AvenueColors.primary,
-        onPressed: _showCreateComplaintSheet,
+        onPressed: _openCreateComplaintScreen,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: const Icon(Icons.add_rounded, color: Colors.white, size: 32),
       ),
@@ -2027,9 +2093,22 @@ class _ComplaintsScreenState extends State<ComplaintsScreen> {
                         title: row['title'] as String? ?? 'Complaint',
                         description: row['description'] as String? ?? '',
                         icon: _complaintIcon(row['icon_name'] as String?),
+                        category: _complaintCategoryLabel(
+                          row['category'] as String?,
+                        ),
+                        urgency: _complaintUrgencyLabel(
+                          row['urgency'] as String?,
+                        ),
+                        location: row['location_label'] as String?,
+                        preferredAccessTime:
+                            row['preferred_access_time'] as String?,
+                        photoUrl: row['photo_url'] as String?,
+                        adminNotes: row['admin_notes'] as String?,
+                        resolutionNote: row['resolution_note'] as String?,
                         metaLabel: row['meta_label'] as String? ?? 'STATUS',
                         metaValue: row['meta_value'] as String? ?? '-',
                         metaIcon: _complaintMetaIcon(row['state'] as String?),
+                        onTap: () => _openComplaintDetail(row),
                       ),
                     ),
                   ),
@@ -2045,147 +2124,749 @@ class _ComplaintsScreenState extends State<ComplaintsScreen> {
     );
   }
 
-  Future<void> _showCreateComplaintSheet() async {
-    final titleController = TextEditingController();
-    final descriptionController = TextEditingController();
-    String selectedType = 'Electrical';
-    bool isSubmitting = false;
+  Future<void> _openCreateComplaintScreen() async {
+    final created = await Navigator.of(
+      context,
+    ).pushNamed(AppPage.createComplaint.routeName);
 
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (sheetContext) {
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            return Padding(
-              padding: EdgeInsets.only(
-                left: 16,
-                right: 16,
-                top: 32,
-                bottom: MediaQuery.of(context).viewInsets.bottom + 16,
-              ),
-              child: AvenueCard(
-                radius: 28,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Raise Complaint',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: titleController,
-                      decoration: _sheetInputDecoration(
-                        context,
-                        hintText: 'Complaint title',
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    TextField(
-                      controller: descriptionController,
-                      maxLines: 4,
-                      decoration: _sheetInputDecoration(
-                        context,
-                        hintText: 'Describe the issue',
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: ['Electrical', 'Water Leak', 'Plumbing']
-                          .map(
-                            (type) => ChoiceChip(
-                              label: Text(type),
-                              selected: selectedType == type,
-                              onSelected: (_) {
-                                setModalState(() {
-                                  selectedType = type;
-                                });
-                              },
-                            ),
-                          )
-                          .toList(),
-                    ),
-                    const SizedBox(height: 18),
-                    AvenuePrimaryButton(
-                      label: isSubmitting ? 'Submitting...' : 'Submit',
-                      onPressed: () async {
-                        if (isSubmitting) {
-                          return;
-                        }
+    if (created == true && mounted) {
+      setState(() {
+        _showActive = true;
+        _complaintsFuture = _ComplaintsData.load(_repository);
+      });
+    }
+  }
 
-                        final title = titleController.text.trim();
-                        final description = descriptionController.text.trim();
-                        if (title.isEmpty || description.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Enter both title and description.',
-                              ),
-                            ),
-                          );
-                          return;
-                        }
-
-                        setModalState(() {
-                          isSubmitting = true;
-                        });
-
-                        Map<String, dynamic>? result;
-                        try {
-                          result = await _repository.createComplaint(
-                            title: title,
-                            description: description,
-                            iconName: _complaintTypeIcon(selectedType),
-                            accentHex: _complaintTypeAccent(selectedType),
-                          );
-                        } catch (_) {
-                          result = null;
-                        }
-
-                        if (!mounted || !sheetContext.mounted) {
-                          return;
-                        }
-
-                        Navigator.of(sheetContext).pop();
-                        if (result != null) {
-                          setState(() {
-                            _showActive = true;
-                            _complaintsFuture = _ComplaintsData.load(
-                              _repository,
-                            );
-                          });
-                          ScaffoldMessenger.of(this.context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Complaint ${result['code']} created.',
-                              ),
-                            ),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(this.context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Could not create complaint.'),
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
+  void _openComplaintDetail(Map<String, dynamic> row) {
+    Navigator.of(context).pushNamed(
+      AppPage.complaintDetail.routeName,
+      arguments: {'complaint': row},
     );
   }
+}
+
+class CreateComplaintScreen extends StatefulWidget {
+  const CreateComplaintScreen({super.key});
+
+  @override
+  State<CreateComplaintScreen> createState() => _CreateComplaintScreenState();
+}
+
+class _CreateComplaintScreenState extends State<CreateComplaintScreen> {
+  final AvenueRepository _repository = AvenueRepository();
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _preferredAccessController =
+      TextEditingController();
+
+  final List<String> _categories = const [
+    'Electrical',
+    'Plumbing',
+    'Water',
+    'Housekeeping',
+    'Security',
+    'Lift',
+    'Parking',
+    'Noise',
+    'Amenity',
+    'Other',
+  ];
+  final List<String> _urgencies = const ['Low', 'Normal', 'Urgent'];
+
+  String _selectedCategory = 'Electrical';
+  String _selectedUrgency = 'Normal';
+  XFile? _selectedPhoto;
+  bool _isSubmitting = false;
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    _locationController.dispose();
+    _preferredAccessController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _pickPhoto() async {
+    try {
+      final photo = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 82,
+        maxWidth: 1600,
+      );
+      if (photo == null || !mounted) {
+        return;
+      }
+      setState(() {
+        _selectedPhoto = photo;
+      });
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not open photo picker.')),
+      );
+    }
+  }
+
+  Future<void> _submitComplaint() async {
+    if (_isSubmitting) {
+      return;
+    }
+
+    final title = _titleController.text.trim();
+    final description = _descriptionController.text.trim();
+    if (title.isEmpty || description.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Enter both title and description.')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    Map<String, dynamic>? result;
+    try {
+      String? photoUrl;
+      final selectedPhoto = _selectedPhoto;
+      if (selectedPhoto != null) {
+        photoUrl = await _repository.uploadComplaintPhoto(
+          bytes: await selectedPhoto.readAsBytes(),
+          fileName: selectedPhoto.name,
+        );
+      }
+
+      result = await _repository.createComplaint(
+        category: _complaintCategoryValue(_selectedCategory),
+        title: title,
+        description: description,
+        locationLabel: _locationController.text,
+        urgency: _selectedUrgency,
+        preferredAccessTime: _preferredAccessController.text,
+        photoUrl: photoUrl,
+        iconName: _complaintTypeIcon(_selectedCategory),
+        accentHex: _complaintTypeAccent(_selectedCategory),
+      );
+    } catch (_) {
+      result = null;
+    }
+
+    if (!mounted) {
+      return;
+    }
+
+    if (result == null) {
+      setState(() {
+        _isSubmitting = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not create complaint.')),
+      );
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Complaint ${result['code']} created.')),
+    );
+    Navigator.of(context).pop(true);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueScaffold(
+      topBar: AvenueTopBar(
+        title: 'New Complaint',
+        leading: AvenueIconButton(
+          icon: Icons.arrow_back_ios_new_rounded,
+          onPressed: () => Navigator.of(context).pop(),
+          size: 40,
+        ),
+      ),
+      body: _ResidentScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const AvenuePill(
+              label: 'SERVICE REQUEST',
+              backgroundColor: Color(0x1A005BBF),
+              foregroundColor: AvenueColors.primary,
+            ),
+            const SizedBox(height: 14),
+            Text(
+              'Tell us what needs attention',
+              style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                fontWeight: FontWeight.w900,
+                height: 1.05,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Add the details once here. Admin will assign the right team and you will get updates in your notifications.',
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: AvenueColors.onSurfaceVariant,
+                height: 1.5,
+              ),
+            ),
+            const SizedBox(height: 22),
+            AvenueCard(
+              radius: 28,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const _ComplaintFormLabel('CATEGORY'),
+                  const SizedBox(height: 8),
+                  _ComplaintDropdownField(
+                    value: _selectedCategory,
+                    icon: Icons.category_outlined,
+                    items: _categories,
+                    onChanged: (value) {
+                      if (value == null) {
+                        return;
+                      }
+                      setState(() {
+                        _selectedCategory = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 14),
+                  const _ComplaintFormLabel('URGENCY'),
+                  const SizedBox(height: 8),
+                  _ComplaintDropdownField(
+                    value: _selectedUrgency,
+                    icon: Icons.priority_high_rounded,
+                    items: _urgencies,
+                    onChanged: (value) {
+                      if (value == null) {
+                        return;
+                      }
+                      setState(() {
+                        _selectedUrgency = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 18),
+                  const _ComplaintFormLabel('TITLE'),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: _titleController,
+                    decoration: _sheetInputDecoration(
+                      context,
+                      hintText: 'e.g. Lift button not working',
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  const _ComplaintFormLabel('DESCRIPTION'),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: _descriptionController,
+                    maxLines: 5,
+                    decoration: _sheetInputDecoration(
+                      context,
+                      hintText: 'Describe the issue clearly',
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  const _ComplaintFormLabel('LOCATION OPTIONAL'),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: _locationController,
+                    decoration: _sheetInputDecoration(
+                      context,
+                      hintText: 'Unit, lobby, parking slot, amenity area...',
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  const _ComplaintFormLabel('PREFERRED ACCESS TIME OPTIONAL'),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: _preferredAccessController,
+                    decoration: _sheetInputDecoration(
+                      context,
+                      hintText: 'e.g. Weekdays after 6 PM',
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  const _ComplaintFormLabel('PHOTO OPTIONAL'),
+                  const SizedBox(height: 8),
+                  _ComplaintPhotoUploadTile(
+                    fileName: _selectedPhoto?.name,
+                    onTap: _pickPhoto,
+                    onClear: _selectedPhoto == null
+                        ? null
+                        : () {
+                            setState(() {
+                              _selectedPhoto = null;
+                            });
+                          },
+                  ),
+                  const SizedBox(height: 22),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          style: OutlinedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(54),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          child: const Text('Cancel'),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        flex: 2,
+                        child: AvenuePrimaryButton(
+                          label: _isSubmitting
+                              ? 'Submitting...'
+                              : 'Submit Complaint',
+                          onPressed: _submitComplaint,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 14),
+            const _ComplaintInfoBanner(
+              icon: Icons.notifications_active_outlined,
+              title: 'LIVE UPDATES',
+              body:
+                  'When admin assigns or resolves the complaint, you will see the status and notes here.',
+            ),
+          ],
+        ),
+      ),
+      bottomNavigation: AvenueBottomNavigationBar(
+        items: _residentNavItems,
+        currentPage: AppPage.complaints,
+      ),
+    );
+  }
+}
+
+class ComplaintDetailScreen extends StatelessWidget {
+  const ComplaintDetailScreen({required this.row, super.key});
+
+  final Map<String, dynamic> row;
+
+  @override
+  Widget build(BuildContext context) {
+    final state = row['state'] as String?;
+    final accentColor = Color(
+      int.parse(
+        (row['accent_hex'] as String? ?? '#E2E3E8').replaceFirst('#', '0xFF'),
+      ),
+    );
+
+    return AvenueScaffold(
+      topBar: AvenueTopBar(
+        title: 'Complaint Details',
+        leading: AvenueIconButton(
+          icon: Icons.arrow_back_ios_new_rounded,
+          onPressed: () => Navigator.of(context).pop(),
+          size: 40,
+        ),
+      ),
+      body: _ResidentScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AvenueCard(
+              radius: 28,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: 54,
+                        height: 54,
+                        decoration: BoxDecoration(
+                          color: accentColor.withValues(alpha: 0.45),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          _complaintIcon(row['icon_name'] as String?),
+                          color: AvenueColors.onSurface,
+                        ),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '#${row['code'] ?? '--'}',
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(fontWeight: FontWeight.w900),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              row['title'] as String? ?? 'Complaint',
+                              style: Theme.of(context).textTheme.headlineSmall
+                                  ?.copyWith(fontWeight: FontWeight.w900),
+                            ),
+                          ],
+                        ),
+                      ),
+                      AvenuePill(
+                        label: _complaintStatusLabel(state),
+                        backgroundColor: _complaintStatusColor(
+                          state,
+                        ).withValues(alpha: 0.12),
+                        foregroundColor: _complaintStatusColor(state),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 18),
+                  Text(
+                    row['description'] as String? ?? '',
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: AvenueColors.onSurfaceVariant,
+                      height: 1.5,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 14),
+            AvenueCard(
+              radius: 24,
+              child: Column(
+                children: [
+                  _ComplaintDetailRow(
+                    icon: Icons.category_outlined,
+                    label: 'Category',
+                    value: _complaintCategoryLabel(row['category'] as String?),
+                  ),
+                  _ComplaintDetailRow(
+                    icon: Icons.priority_high_rounded,
+                    label: 'Urgency',
+                    value: _complaintUrgencyLabel(row['urgency'] as String?),
+                  ),
+                  _ComplaintDetailRow(
+                    icon: Icons.location_on_outlined,
+                    label: 'Location',
+                    value: _optionalText(row['location_label']),
+                  ),
+                  _ComplaintDetailRow(
+                    icon: Icons.schedule_rounded,
+                    label: 'Preferred Access',
+                    value: _optionalText(row['preferred_access_time']),
+                  ),
+                  _ComplaintDetailRow(
+                    icon: Icons.engineering_outlined,
+                    label: row['meta_label'] as String? ?? 'Status',
+                    value: row['meta_value'] as String? ?? '-',
+                  ),
+                  _ComplaintDetailRow(
+                    icon: Icons.calendar_today_rounded,
+                    label: 'Created',
+                    value: _dateTimeLabel(row['created_at']),
+                    showDivider: false,
+                  ),
+                ],
+              ),
+            ),
+            if ((row['admin_notes'] as String?)?.isNotEmpty ?? false) ...[
+              const SizedBox(height: 14),
+              _ComplaintInfoBanner(
+                icon: Icons.admin_panel_settings_outlined,
+                title: 'ADMIN NOTE',
+                body: row['admin_notes'] as String,
+              ),
+            ],
+            if ((row['resolution_note'] as String?)?.isNotEmpty ?? false) ...[
+              const SizedBox(height: 14),
+              _ComplaintInfoBanner(
+                icon: Icons.verified_rounded,
+                title: 'RESOLUTION',
+                body: row['resolution_note'] as String,
+              ),
+            ],
+            if ((row['photo_url'] as String?)?.isNotEmpty ?? false) ...[
+              const SizedBox(height: 14),
+              _ComplaintInfoBanner(
+                icon: Icons.photo_outlined,
+                title: 'PHOTO',
+                body: row['photo_url'] as String,
+              ),
+            ],
+          ],
+        ),
+      ),
+      bottomNavigation: AvenueBottomNavigationBar(
+        items: _residentNavItems,
+        currentPage: AppPage.complaints,
+      ),
+    );
+  }
+}
+
+class _ComplaintFormLabel extends StatelessWidget {
+  const _ComplaintFormLabel(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+        color: AvenueColors.outline,
+        fontWeight: FontWeight.w900,
+        letterSpacing: 0.8,
+      ),
+    );
+  }
+}
+
+class _ComplaintDropdownField extends StatelessWidget {
+  const _ComplaintDropdownField({
+    required this.value,
+    required this.icon,
+    required this.items,
+    required this.onChanged,
+  });
+
+  final String value;
+  final IconData icon;
+  final List<String> items;
+  final ValueChanged<String?> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AvenueColors.surfaceHigh,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: DropdownButtonFormField<String>(
+        initialValue: value,
+        items: items
+            .map((item) => DropdownMenuItem(value: item, child: Text(item)))
+            .toList(),
+        onChanged: onChanged,
+        icon: const Icon(Icons.keyboard_arrow_down_rounded),
+        decoration: InputDecoration(
+          prefixIcon: Icon(icon, color: AvenueColors.outline),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 14,
+            vertical: 14,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ComplaintPhotoUploadTile extends StatelessWidget {
+  const _ComplaintPhotoUploadTile({
+    required this.fileName,
+    required this.onTap,
+    this.onClear,
+  });
+
+  final String? fileName;
+  final VoidCallback onTap;
+  final VoidCallback? onClear;
+
+  @override
+  Widget build(BuildContext context) {
+    final hasFile = fileName != null && fileName!.trim().isNotEmpty;
+
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AvenueColors.surfaceHigh,
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: const BoxDecoration(
+              color: AvenueColors.surfaceLow,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              hasFile ? Icons.photo_rounded : Icons.upload_file_rounded,
+              color: AvenueColors.primary,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  hasFile ? fileName! : 'Upload a photo',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  hasFile
+                      ? 'Tap replace if you selected the wrong image.'
+                      : 'Attach a photo from your gallery.',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AvenueColors.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (onClear != null)
+            IconButton(
+              onPressed: onClear,
+              icon: const Icon(Icons.close_rounded),
+            ),
+          TextButton(
+            onPressed: onTap,
+            child: Text(hasFile ? 'Replace' : 'Upload'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ComplaintInfoBanner extends StatelessWidget {
+  const _ComplaintInfoBanner({
+    required this.icon,
+    required this.title,
+    required this.body,
+  });
+
+  final IconData icon;
+  final String title;
+  final String body;
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueCard(
+      radius: 22,
+      color: AvenueColors.surfaceLow,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 42,
+            height: 42,
+            decoration: const BoxDecoration(
+              color: AvenueColors.primary,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: Colors.white, size: 20),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AvenueColors.primary,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0.8,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  body,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AvenueColors.onSurfaceVariant,
+                    height: 1.45,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ComplaintDetailRow extends StatelessWidget {
+  const _ComplaintDetailRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+    this.showDivider = true,
+  });
+
+  final IconData icon;
+  final String label;
+  final String value;
+  final bool showDivider;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Container(
+              width: 38,
+              height: 38,
+              decoration: const BoxDecoration(
+                color: AvenueColors.surfaceLow,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, size: 18, color: AvenueColors.outline),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label.toUpperCase(),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: AvenueColors.outline,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0.8,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    value,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        if (showDivider) ...[
+          const SizedBox(height: 14),
+          const Divider(height: 1),
+          const SizedBox(height: 14),
+        ],
+      ],
+    );
+  }
+}
+
+String _optionalText(Object? value) {
+  final text = value?.toString().trim() ?? '';
+  return text.isEmpty ? 'Not specified' : text;
 }
 
 class ProfileScreen extends StatelessWidget {
@@ -2496,8 +3177,21 @@ class ProfileScreen extends StatelessWidget {
   }
 }
 
-class NotificationsScreen extends StatelessWidget {
+class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
+
+  @override
+  State<NotificationsScreen> createState() => _NotificationsScreenState();
+}
+
+class _NotificationsScreenState extends State<NotificationsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ResidentNotificationsController.instance.markAllAsRead();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -4582,9 +5276,17 @@ class _ComplaintCard extends StatelessWidget {
     required this.title,
     required this.description,
     required this.icon,
+    required this.category,
+    required this.urgency,
     required this.metaLabel,
     required this.metaValue,
     required this.metaIcon,
+    this.location,
+    this.preferredAccessTime,
+    this.photoUrl,
+    this.adminNotes,
+    this.resolutionNote,
+    this.onTap,
   });
 
   final Color accentColor;
@@ -4595,9 +5297,17 @@ class _ComplaintCard extends StatelessWidget {
   final String title;
   final String description;
   final IconData icon;
+  final String category;
+  final String urgency;
+  final String? location;
+  final String? preferredAccessTime;
+  final String? photoUrl;
+  final String? adminNotes;
+  final String? resolutionNote;
   final String metaLabel;
   final String metaValue;
   final IconData metaIcon;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -4605,98 +5315,150 @@ class _ComplaintCard extends StatelessWidget {
       children: [
         AvenueCard(
           radius: 18,
-          padding: const EdgeInsets.all(18),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      '$complaintId  •  $timestamp',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  AvenuePill(
-                    label: status,
-                    backgroundColor: statusColor.withValues(alpha: 0.1),
-                    foregroundColor: statusColor,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Row(
+          padding: EdgeInsets.zero,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(18),
+            onTap: onTap,
+            child: Padding(
+              padding: const EdgeInsets.all(18),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(icon, color: AvenueColors.onSurfaceVariant, size: 22),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      title,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Text(
-                description,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AvenueColors.onSurfaceVariant,
-                  height: 1.45,
-                ),
-              ),
-              const SizedBox(height: 16),
-              const Divider(height: 1),
-              const SizedBox(height: 14),
-              Row(
-                children: [
-                  Container(
-                    width: 34,
-                    height: 34,
-                    decoration: const BoxDecoration(
-                      color: AvenueColors.surfaceLow,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      metaIcon,
-                      size: 18,
-                      color: AvenueColors.outline,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          metaLabel,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          '$complaintId  •  $timestamp',
                           style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(fontWeight: FontWeight.w800),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          metaValue,
-                          style: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(fontWeight: FontWeight.w700),
                         ),
-                      ],
+                      ),
+                      AvenuePill(
+                        label: status,
+                        backgroundColor: statusColor.withValues(alpha: 0.1),
+                        foregroundColor: statusColor,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(
+                        icon,
+                        color: AvenueColors.onSurfaceVariant,
+                        size: 22,
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          title,
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(fontWeight: FontWeight.w800),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    description,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AvenueColors.onSurfaceVariant,
+                      height: 1.45,
                     ),
                   ),
-                  Text(
-                    'View Details',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AvenueColors.primary,
-                      fontWeight: FontWeight.w700,
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      _ComplaintDetailChip(
+                        icon: Icons.category_outlined,
+                        label: category,
+                      ),
+                      _ComplaintDetailChip(
+                        icon: Icons.priority_high_rounded,
+                        label: urgency,
+                      ),
+                      if (location != null && location!.trim().isNotEmpty)
+                        _ComplaintDetailChip(
+                          icon: Icons.location_on_outlined,
+                          label: location!,
+                        ),
+                      if (preferredAccessTime != null &&
+                          preferredAccessTime!.trim().isNotEmpty)
+                        _ComplaintDetailChip(
+                          icon: Icons.schedule_rounded,
+                          label: preferredAccessTime!,
+                        ),
+                      if (photoUrl != null && photoUrl!.trim().isNotEmpty)
+                        const _ComplaintDetailChip(
+                          icon: Icons.photo_outlined,
+                          label: 'Photo attached',
+                        ),
+                    ],
+                  ),
+                  if (adminNotes != null && adminNotes!.trim().isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    _ComplaintNoteBlock(title: 'Admin note', body: adminNotes!),
+                  ],
+                  if (resolutionNote != null &&
+                      resolutionNote!.trim().isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    _ComplaintNoteBlock(
+                      title: 'Resolution',
+                      body: resolutionNote!,
                     ),
+                  ],
+                  const SizedBox(height: 16),
+                  const Divider(height: 1),
+                  const SizedBox(height: 14),
+                  Row(
+                    children: [
+                      Container(
+                        width: 34,
+                        height: 34,
+                        decoration: const BoxDecoration(
+                          color: AvenueColors.surfaceLow,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          metaIcon,
+                          size: 18,
+                          color: AvenueColors.outline,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              metaLabel,
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(fontWeight: FontWeight.w800),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              metaValue,
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.w700),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Text(
+                        'View Details',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: AvenueColors.primary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
         Positioned(
@@ -4712,6 +5474,78 @@ class _ComplaintCard extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _ComplaintDetailChip extends StatelessWidget {
+  const _ComplaintDetailChip({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      decoration: BoxDecoration(
+        color: AvenueColors.surfaceLow,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: AvenueColors.onSurfaceVariant),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: AvenueColors.onSurfaceVariant,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ComplaintNoteBlock extends StatelessWidget {
+  const _ComplaintNoteBlock({required this.title, required this.body});
+
+  final String title;
+  final String body;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AvenueColors.surfaceLow,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title.toUpperCase(),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: AvenueColors.outline,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.8,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            body,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: AvenueColors.onSurfaceVariant,
+              height: 1.35,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -46,6 +46,10 @@ class ResidentNotificationsController {
 
   Future<void> markAllAsRead() async {
     await _repository.markAllCurrentUserNotificationsRead();
+    final updatedRows = rowsNotifier.value
+        .map((row) => {...row, 'is_unread': false})
+        .toList(growable: false);
+    _setRows(updatedRows);
   }
 
   Future<void> _handleUserChanged() async {

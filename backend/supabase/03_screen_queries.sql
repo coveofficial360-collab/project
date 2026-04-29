@@ -52,10 +52,56 @@ where user_id = (select id from public.app_users where email = 'user@gmail.com')
 order by activity_at desc;
 
 -- Complaints
-select code, title, description, state, assigned_to, meta_label, meta_value, created_at, resolved_at
+select
+  code,
+  category,
+  title,
+  description,
+  location_label,
+  urgency,
+  preferred_access_time,
+  photo_url,
+  state,
+  assigned_to,
+  admin_notes,
+  resolution_note,
+  meta_label,
+  meta_value,
+  created_at,
+  resolved_at
 from public.complaints
 where user_id = (select id from public.app_users where email = 'user@gmail.com')
 order by created_at desc;
+
+-- Complaint write actions
+select *
+from public.create_resident_complaint(
+  (select id from public.app_users where email = 'user@gmail.com'),
+  'electrical',
+  'Balcony socket not working',
+  'The balcony power socket stopped working after last night''s rain.',
+  'Balcony',
+  'normal',
+  'Tomorrow after 5 PM',
+  null,
+  'electrical_services',
+  '#E2E3E8'
+);
+
+select *
+from public.update_complaint_admin_status(
+  (select id from public.app_users where email = 'admin@gmail.com'),
+  (
+    select id
+    from public.complaints
+    where code = 'CMP-8895'
+    limit 1
+  ),
+  'in_progress',
+  'Maintenance Desk',
+  'Assigned from admin complaint queue.',
+  null
+);
 
 -- Profile
 select full_name, email, phone, unit_number, tower, resident_kind, status
@@ -90,11 +136,19 @@ order by created_at desc;
 
 select
   code,
+  category,
   title,
+  description,
+  location_label,
+  urgency,
+  preferred_access_time,
+  photo_url,
   state,
   resident_name,
   unit_number,
   assigned_to,
+  admin_notes,
+  resolution_note,
   created_at
 from public.admin_complaints_v;
 

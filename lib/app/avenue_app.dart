@@ -61,6 +61,16 @@ class AvenueApp extends StatelessWidget {
                 return const BillsScreen();
               case AppPage.complaints:
                 return const ComplaintsScreen();
+              case AppPage.createComplaint:
+                return const CreateComplaintScreen();
+              case AppPage.complaintDetail:
+                final arguments = settings.arguments is Map<String, dynamic>
+                    ? settings.arguments! as Map<String, dynamic>
+                    : const <String, dynamic>{};
+                final row = arguments['complaint'] is Map
+                    ? Map<String, dynamic>.from(arguments['complaint'] as Map)
+                    : const <String, dynamic>{};
+                return ComplaintDetailScreen(row: row);
               case AppPage.profile:
                 return const ProfileScreen();
               case AppPage.notifications:
@@ -114,6 +124,14 @@ class AvenueApp extends StatelessWidget {
                 return const ResidentDirectoryScreen();
               case AppPage.adminComplaints:
                 return const AdminComplaintsScreen();
+              case AppPage.adminComplaintDetail:
+                final arguments = settings.arguments is Map<String, dynamic>
+                    ? settings.arguments! as Map<String, dynamic>
+                    : const <String, dynamic>{};
+                final row = arguments['complaint'] is Map
+                    ? Map<String, dynamic>.from(arguments['complaint'] as Map)
+                    : const <String, dynamic>{};
+                return AdminComplaintDetailScreen(row: row);
               case AppPage.adminCommunity:
                 return const AdminCommunityScreen();
             }

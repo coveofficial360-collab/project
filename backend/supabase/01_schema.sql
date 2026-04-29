@@ -1,5 +1,31 @@
 create extension if not exists pgcrypto with schema extensions;
 
+insert into storage.buckets (id, name, public)
+values ('complaint-photos', 'complaint-photos', true)
+on conflict (id) do update set public = excluded.public;
+
+do $$
+begin
+  create policy "complaint_photos_public_read"
+  on storage.objects
+  for select
+  to anon, authenticated
+  using (bucket_id = 'complaint-photos');
+exception
+  when duplicate_object then null;
+end $$;
+
+do $$
+begin
+  create policy "complaint_photos_public_insert"
+  on storage.objects
+  for insert
+  to anon, authenticated
+  with check (bucket_id = 'complaint-photos');
+exception
+  when duplicate_object then null;
+end $$;
+
 do $$
 begin
   create type public.app_role as enum ('resident', 'admin', 'guard');
@@ -165,17 +191,55 @@ create table if not exists public.complaints (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references public.app_users(id) on delete cascade,
   code text not null unique,
+  category text not null default 'other',
   title text not null,
   description text not null,
+  location_label text,
+  urgency text not null default 'normal',
+  preferred_access_time text,
+  photo_url text,
   state public.complaint_state not null,
   assigned_to text,
+  admin_notes text,
+  resolution_note text,
   meta_label text not null,
   meta_value text not null,
   icon_name text not null,
   accent_hex text not null,
   created_at timestamptz not null,
+  updated_at timestamptz not null default now(),
   resolved_at timestamptz
 );
+
+alter table public.complaints
+add column if not exists category text not null default 'other';
+
+alter table public.complaints
+add column if not exists location_label text;
+
+alter table public.complaints
+add column if not exists urgency text not null default 'normal';
+
+alter table public.complaints
+add column if not exists preferred_access_time text;
+
+alter table public.complaints
+add column if not exists photo_url text;
+
+alter table public.complaints
+add column if not exists admin_notes text;
+
+alter table public.complaints
+add column if not exists resolution_note text;
+
+alter table public.complaints
+add column if not exists updated_at timestamptz not null default now();
+
+alter table public.complaints
+alter column category set default 'other';
+
+alter table public.complaints
+alter column urgency set default 'normal';
 
 create table if not exists public.notices (
   id uuid primary key default gen_random_uuid(),
@@ -351,6 +415,12 @@ before update on public.app_users
 for each row
 execute function public.set_updated_at();
 
+drop trigger if exists trg_complaints_updated_at on public.complaints;
+create trigger trg_complaints_updated_at
+before update on public.complaints
+for each row
+execute function public.set_updated_at();
+
 create or replace function public.authenticate_app_user(
   p_email text,
   p_password text,
@@ -406,6 +476,8 @@ select
   (select count(*) from public.complaints where state in ('in_progress', 'pending')) as open_complaints,
   (select coalesce(sum(amount), 0) from public.admin_transactions where amount > 0) as total_collected;
 
+drop view if exists public.admin_complaints_v;
+
 create or replace view public.admin_complaints_v as
 select
   complaint_record.id,
@@ -415,15 +487,23 @@ select
   resident.tower,
   resident.phone,
   complaint_record.code,
+  complaint_record.category,
   complaint_record.title,
   complaint_record.description,
+  complaint_record.location_label,
+  complaint_record.urgency,
+  complaint_record.preferred_access_time,
+  complaint_record.photo_url,
   complaint_record.state,
   complaint_record.assigned_to,
+  complaint_record.admin_notes,
+  complaint_record.resolution_note,
   complaint_record.meta_label,
   complaint_record.meta_value,
   complaint_record.icon_name,
   complaint_record.accent_hex,
   complaint_record.created_at,
+  complaint_record.updated_at,
   complaint_record.resolved_at
 from public.complaints complaint_record
 join public.app_users resident on resident.id = complaint_record.user_id

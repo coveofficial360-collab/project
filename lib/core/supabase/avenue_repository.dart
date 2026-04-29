@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/app_user.dart';
@@ -586,10 +588,15 @@ class AvenueRepository {
   }
 
   Future<Map<String, dynamic>?> createComplaint({
+    required String category,
     required String title,
     required String description,
+    required String urgency,
     required String iconName,
     required String accentHex,
+    String? locationLabel,
+    String? preferredAccessTime,
+    String? photoUrl,
   }) async {
     final currentUser = AppSession.instance.currentUser;
     if (currentUser == null) {
@@ -600,10 +607,77 @@ class AvenueRepository {
       'create_resident_complaint',
       params: {
         'p_user_id': currentUser.id,
+        'p_category': category.trim().toLowerCase(),
         'p_title': title.trim(),
         'p_description': description.trim(),
+        'p_location_label': locationLabel?.trim(),
+        'p_urgency': urgency.trim().toLowerCase(),
+        'p_preferred_access_time': preferredAccessTime?.trim(),
+        'p_photo_url': photoUrl?.trim(),
         'p_icon_name': iconName,
         'p_accent_hex': accentHex,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<String?> uploadComplaintPhoto({
+    required Uint8List bytes,
+    required String fileName,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null || bytes.isEmpty) {
+      return null;
+    }
+
+    final cleanedName = fileName.trim().replaceAll(
+      RegExp(r'[^a-zA-Z0-9._-]'),
+      '_',
+    );
+    final safeName = cleanedName.isEmpty ? 'complaint-photo.jpg' : cleanedName;
+    final storagePath =
+        '${currentUser.id}/${DateTime.now().millisecondsSinceEpoch}_$safeName';
+
+    await _client.storage
+        .from('complaint-photos')
+        .uploadBinary(
+          storagePath,
+          bytes,
+          fileOptions: FileOptions(
+            contentType: _contentTypeForFileName(safeName),
+            upsert: false,
+          ),
+        );
+
+    return _client.storage.from('complaint-photos').getPublicUrl(storagePath);
+  }
+
+  Future<Map<String, dynamic>?> updateAdminComplaintStatus({
+    required String complaintId,
+    required String state,
+    String? assignedTo,
+    String? adminNotes,
+    String? resolutionNote,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'update_complaint_admin_status',
+      params: {
+        'p_admin_user_id': currentUser.id,
+        'p_complaint_id': complaintId,
+        'p_state': state,
+        'p_assigned_to': assignedTo?.trim(),
+        'p_admin_notes': adminNotes?.trim(),
+        'p_resolution_note': resolutionNote?.trim(),
       },
     );
 
@@ -788,5 +862,19 @@ class AvenueRepository {
     }
 
     return rows.map((row) => Map<String, dynamic>.from(row as Map)).toList();
+  }
+
+  String _contentTypeForFileName(String fileName) {
+    final lower = fileName.toLowerCase();
+    if (lower.endsWith('.png')) {
+      return 'image/png';
+    }
+    if (lower.endsWith('.webp')) {
+      return 'image/webp';
+    }
+    if (lower.endsWith('.gif')) {
+      return 'image/gif';
+    }
+    return 'image/jpeg';
   }
 }
