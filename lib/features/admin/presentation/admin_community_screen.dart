@@ -228,12 +228,11 @@ class _AdminCommunityScreenState extends State<AdminCommunityScreen> {
       _refresh();
     } catch (error) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
+        showAvenueDialogMessage(
+          context,
+          message:
               'Could not review this suggestion: ${_friendlySupabaseError(error)}',
-            ),
-          ),
+          type: AvenueMessageType.error,
         );
       }
     } finally {
@@ -351,29 +350,26 @@ class _AdminCommunitySuggestionCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            Row(
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 _AdminMiniInfo(
                   icon: Icons.how_to_vote_outlined,
                   label: '${row['total_votes'] ?? 0} votes',
                 ),
-                const SizedBox(width: 8),
                 _AdminMiniInfo(
                   icon: Icons.thumb_up_alt_outlined,
                   label: '$support% support',
                 ),
-                const SizedBox(width: 8),
                 _AdminMiniInfo(
                   icon: Icons.chat_bubble_outline_rounded,
                   label: '${row['comment_count'] ?? 0} comments',
                 ),
-                const Spacer(),
-                Text(
-                  _timeAgoLabel(row['created_at']),
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: _AdminPalette.muted,
-                    fontWeight: FontWeight.w700,
-                  ),
+                _AdminMiniInfo(
+                  icon: Icons.schedule_rounded,
+                  label: _timeAgoLabel(row['created_at']),
                 ),
               ],
             ),

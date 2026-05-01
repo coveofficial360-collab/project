@@ -15,8 +15,11 @@ class AdminDrawerScreen extends StatelessWidget {
       body: Stack(
         children: [
           GestureDetector(
+            behavior: HitTestBehavior.opaque,
             onTap: () => Navigator.of(context).pop(),
-            child: Container(color: Colors.black.withValues(alpha: 0.32)),
+            child: Container(
+              color: AvenueColors.primary.withValues(alpha: 0.14),
+            ),
           ),
           Align(
             alignment: Alignment.centerLeft,
@@ -150,6 +153,26 @@ class AdminDrawerScreen extends StatelessWidget {
                             onTap: () => goToPage(
                               context,
                               AppPage.announcementsManagement,
+                              replace: true,
+                            ),
+                          ),
+                          _AdminDrawerNavItem(
+                            label: 'Amenities',
+                            icon: Icons.apartment_rounded,
+                            selected: currentPage == AppPage.adminAmenities,
+                            onTap: () => goToPage(
+                              context,
+                              AppPage.adminAmenities,
+                              replace: true,
+                            ),
+                          ),
+                          _AdminDrawerNavItem(
+                            label: 'Services',
+                            icon: Icons.handyman_rounded,
+                            selected: currentPage == AppPage.adminServices,
+                            onTap: () => goToPage(
+                              context,
+                              AppPage.adminServices,
                               replace: true,
                             ),
                           ),

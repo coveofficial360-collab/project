@@ -133,8 +133,24 @@ create table if not exists public.amenities (
   image_url text,
   available_now boolean not null default true,
   booking_required boolean not null default true,
+  capacity_percent integer not null default 0,
+  access_note text,
+  rules text[] not null default '{}',
+  sort_order integer not null default 0,
   created_at timestamptz not null default now()
 );
+
+alter table public.amenities
+add column if not exists capacity_percent integer not null default 0;
+
+alter table public.amenities
+add column if not exists access_note text;
+
+alter table public.amenities
+add column if not exists rules text[] not null default '{}';
+
+alter table public.amenities
+add column if not exists sort_order integer not null default 0;
 
 create table if not exists public.amenity_bookings (
   id uuid primary key default gen_random_uuid(),
@@ -142,9 +158,72 @@ create table if not exists public.amenity_bookings (
   amenity_id uuid not null references public.amenities(id) on delete cascade,
   booking_date date not null,
   time_slot text not null,
-  guest_count integer not null default 0,
+  guest_count integer not null default 1,
   booking_status text not null default 'confirmed',
   booking_fee numeric(10, 2) not null default 0,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.amenity_time_slots (
+  id uuid primary key default gen_random_uuid(),
+  amenity_id uuid not null references public.amenities(id) on delete cascade,
+  start_time time not null,
+  end_time time not null,
+  slot_capacity integer not null default 1,
+  is_active boolean not null default true,
+  sort_order integer not null default 0,
+  created_at timestamptz not null default now(),
+  constraint amenity_time_slots_time_order_check check (end_time > start_time),
+  constraint amenity_time_slots_capacity_check check (slot_capacity between 1 and 200)
+);
+
+create unique index if not exists amenity_time_slots_unique_window_uq
+on public.amenity_time_slots (amenity_id, start_time, end_time);
+
+alter table public.amenity_bookings
+alter column guest_count set default 1;
+
+alter table public.amenity_bookings
+drop constraint if exists amenity_bookings_guest_count_check;
+
+alter table public.amenity_bookings
+add constraint amenity_bookings_guest_count_check
+check (guest_count between 0 and 4);
+
+-- Existing demo/test data may already contain duplicate active bookings.
+-- Keep the newest row active and archive older duplicates before enforcing
+-- the permanent uniqueness rule below.
+with duplicate_active_bookings as (
+  select
+    id,
+    row_number() over (
+      partition by user_id, amenity_id, booking_date, lower(trim(time_slot))
+      order by created_at desc, id desc
+    ) as duplicate_rank
+  from public.amenity_bookings
+  where booking_status in ('confirmed', 'pending')
+)
+update public.amenity_bookings booking
+set booking_status = 'cancelled_duplicate'
+from duplicate_active_bookings duplicate_record
+where booking.id = duplicate_record.id
+  and duplicate_record.duplicate_rank > 1;
+
+create unique index if not exists amenity_bookings_user_amenity_slot_active_uq
+on public.amenity_bookings (user_id, amenity_id, booking_date, lower(trim(time_slot)))
+where booking_status in ('confirmed', 'pending');
+
+create table if not exists public.service_providers (
+  id uuid primary key default gen_random_uuid(),
+  full_name text not null,
+  specialty text not null,
+  phone text not null,
+  experience_label text,
+  availability_status text not null default 'available',
+  rating numeric(3, 2) not null default 4.8,
+  jobs_completed integer not null default 0,
+  image_url text,
+  notes text,
   created_at timestamptz not null default now()
 );
 
@@ -476,6 +555,32 @@ select
   (select count(*) from public.complaints where state in ('in_progress', 'pending')) as open_complaints,
   (select coalesce(sum(amount), 0) from public.admin_transactions where amount > 0) as total_collected;
 
+drop view if exists public.admin_amenity_bookings_v;
+
+create or replace view public.admin_amenity_bookings_v as
+select
+  booking.id,
+  booking.user_id,
+  resident.full_name as resident_name,
+  resident.unit_number,
+  resident.tower,
+  booking.amenity_id,
+  amenity.name as amenity_name,
+  amenity.code as amenity_code,
+  amenity.location_label,
+  amenity.image_url,
+  booking.booking_date,
+  booking.time_slot,
+  booking.guest_count,
+  booking.booking_status,
+  booking.booking_fee,
+  booking.created_at
+from public.amenity_bookings booking
+join public.amenities amenity on amenity.id = booking.amenity_id
+join public.app_users resident on resident.id = booking.user_id
+where booking.booking_status in ('confirmed', 'pending')
+order by booking.booking_date desc, booking.created_at desc;
+
 drop view if exists public.admin_complaints_v;
 
 create or replace view public.admin_complaints_v as
@@ -660,6 +765,7 @@ grant select, insert, update, delete on all tables in schema public to anon, aut
 grant execute on function public.authenticate_app_user(text, text, public.app_role) to anon, authenticated;
 grant select on public.resident_directory_v to anon, authenticated;
 grant select on public.admin_dashboard_metrics_v to anon, authenticated;
+grant select on public.admin_amenity_bookings_v to anon, authenticated;
 grant select on public.admin_complaints_v to anon, authenticated;
 grant select on public.guard_gate_activity_v to anon, authenticated;
 grant select on public.community_suggestion_feed_v to anon, authenticated;
@@ -672,6 +778,8 @@ alter table public.household_members disable row level security;
 alter table public.vehicles disable row level security;
 alter table public.amenities disable row level security;
 alter table public.amenity_bookings disable row level security;
+alter table public.amenity_time_slots disable row level security;
+alter table public.service_providers disable row level security;
 alter table public.bills disable row level security;
 alter table public.payment_methods disable row level security;
 alter table public.payment_activity disable row level security;

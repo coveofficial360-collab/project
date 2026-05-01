@@ -1,12 +1,7 @@
 part of 'admin_screens.dart';
 
 class AnnouncementsManagementScreen extends StatefulWidget {
-  const AnnouncementsManagementScreen({
-    super.key,
-    this.openComposerOnStart = false,
-  });
-
-  final bool openComposerOnStart;
+  const AnnouncementsManagementScreen({super.key});
 
   @override
   State<AnnouncementsManagementScreen> createState() =>
@@ -20,21 +15,11 @@ class _AnnouncementsManagementScreenState
 
   String _selectedState = 'sent';
   int _visibleRows = 6;
-  bool _composerShown = false;
 
   @override
   void initState() {
     super.initState();
     _announcementsFuture = _AnnouncementsData.load(_repository);
-
-    if (widget.openComposerOnStart) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted && !_composerShown) {
-          _composerShown = true;
-          _showCreateAnnouncementSheet();
-        }
-      });
-    }
   }
 
   @override
@@ -44,10 +29,8 @@ class _AnnouncementsManagementScreenState
       topBar: _AdminTopBar(
         title: 'Announcements',
         leadingIcon: Icons.menu_rounded,
-        onLeadingTap: () => _openAdminMenu(
-          context,
-          AppPage.announcementsManagement,
-        ),
+        onLeadingTap: () =>
+            _openAdminMenu(context, AppPage.announcementsManagement),
         trailing: IconButton(
           onPressed: () {
             setState(() {
@@ -59,7 +42,7 @@ class _AnnouncementsManagementScreenState
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _showCreateAnnouncementSheet,
+        onPressed: _openAddAnnouncement,
         backgroundColor: AvenueColors.primary,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: const Icon(Icons.add_rounded, color: Colors.white, size: 32),
@@ -160,8 +143,7 @@ class _AnnouncementsManagementScreenState
                         timestamp: _timeAgoLabel(row['created_at']),
                         title: row['title'] as String? ?? 'Announcement',
                         body: row['body'] as String? ?? '',
-                        reads:
-                            '${row['reads_count']?.toString() ?? '0'} Reads',
+                        reads: '${row['reads_count']?.toString() ?? '0'} Reads',
                         audience:
                             row['target_audience'] as String? ?? 'Residents',
                       ),
@@ -198,56 +180,89 @@ class _AnnouncementsManagementScreenState
     );
   }
 
-  Future<void> _showCreateAnnouncementSheet() async {
-    final titleController = TextEditingController();
-    final bodyController = TextEditingController();
-    final audienceController = TextEditingController(text: 'All Residents');
-    String selectedKind = 'general';
-    bool isSubmitting = false;
+  Future<void> _openAddAnnouncement() async {
+    final created = await Navigator.of(
+      context,
+    ).pushNamed(AppPage.addAnnouncement.routeName);
+    if (created == true && mounted) {
+      setState(() {
+        _announcementsFuture = _AnnouncementsData.load(_repository);
+        _selectedState = 'sent';
+        _visibleRows = 6;
+      });
+    }
+  }
+}
 
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (sheetContext) {
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            return Padding(
-              padding: EdgeInsets.only(
-                left: 16,
-                right: 16,
-                top: 30,
-                bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+class AddAnnouncementScreen extends StatefulWidget {
+  const AddAnnouncementScreen({super.key});
+
+  @override
+  State<AddAnnouncementScreen> createState() => _AddAnnouncementScreenState();
+}
+
+class _AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
+  final AvenueRepository _repository = AvenueRepository();
+  final titleController = TextEditingController();
+  final bodyController = TextEditingController();
+  final audienceController = TextEditingController(text: 'All Residents');
+
+  String selectedKind = 'general';
+  bool isSubmitting = false;
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    bodyController.dispose();
+    audienceController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _AdminScaffold(
+      currentPage: AppPage.announcementsManagement,
+      showBottomNavigation: false,
+      topBar: _AdminTopBar(
+        title: 'Add Announcement',
+        leadingIcon: Icons.arrow_back_rounded,
+        onLeadingTap: () => Navigator.of(context).pop(),
+      ),
+      child: _AdminBody(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const _AdminTag(
+              label: 'NOTICE MODULE',
+              background: Color(0x1A005BBF),
+              foreground: AvenueColors.primary,
+            ),
+            const SizedBox(height: 14),
+            Text(
+              'Create Announcement',
+              style: Theme.of(
+                context,
+              ).textTheme.displayMedium?.copyWith(fontSize: 32, height: 1.05),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Compose a resident notice, choose the audience, and publish it to the notice board.',
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: _AdminPalette.muted,
+                height: 1.5,
               ),
-              child: _AdminGlassCard(
-                radius: 30,
+            ),
+            const SizedBox(height: 20),
+            _AdminGlassCard(
+              radius: 28,
+              backgroundColor: _AdminPalette.surfaceLow.withValues(alpha: 0.74),
+              child: Padding(
+                padding: const EdgeInsets.all(18),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Text(
-                          'New Announcement',
-                          style: Theme.of(context).textTheme.headlineMedium
-                              ?.copyWith(fontWeight: FontWeight.w800),
-                        ),
-                        const Spacer(),
-                        IconButton(
-                          onPressed: () => Navigator.of(sheetContext).pop(),
-                          icon: const Icon(Icons.close_rounded),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      'Compose a notice that appears in the resident notice board and triggers live updates.',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: _AdminPalette.muted,
-                        height: 1.45,
-                      ),
-                    ),
-                    const SizedBox(height: 18),
+                    const _AdminSectionLabel(text: 'ANNOUNCEMENT DETAILS'),
+                    const SizedBox(height: 12),
                     _AdminComposerField(
                       label: 'Title',
                       hintText: 'Water supply update',
@@ -267,9 +282,9 @@ class _AnnouncementsManagementScreenState
                       hintText: 'All Residents',
                       controller: audienceController,
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 20),
                     Text(
-                      'Announcement Type',
+                      'ANNOUNCEMENT TYPE',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         fontWeight: FontWeight.w800,
                         color: _AdminPalette.muted,
@@ -283,134 +298,157 @@ class _AnnouncementsManagementScreenState
                         _AdminSelectChip(
                           label: 'General',
                           selected: selectedKind == 'general',
-                          onTap: () {
-                            setModalState(() {
-                              selectedKind = 'general';
-                            });
-                          },
+                          onTap: () => setState(() => selectedKind = 'general'),
                         ),
                         _AdminSelectChip(
                           label: 'Urgent',
                           selected: selectedKind == 'urgent',
-                          onTap: () {
-                            setModalState(() {
-                              selectedKind = 'urgent';
-                            });
-                          },
+                          onTap: () => setState(() => selectedKind = 'urgent'),
                         ),
                         _AdminSelectChip(
                           label: 'Event',
                           selected: selectedKind == 'event',
-                          onTap: () {
-                            setModalState(() {
-                              selectedKind = 'event';
-                            });
-                          },
+                          onTap: () => setState(() => selectedKind = 'event'),
                         ),
                         _AdminSelectChip(
                           label: 'Facility',
                           selected: selectedKind == 'facility',
-                          onTap: () {
-                            setModalState(() {
-                              selectedKind = 'facility';
-                            });
-                          },
+                          onTap: () =>
+                              setState(() => selectedKind = 'facility'),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 18),
-                    AvenuePrimaryButton(
-                      label: isSubmitting ? 'Publishing...' : 'Publish',
-                      onPressed: () async {
-                        if (isSubmitting) {
-                          return;
-                        }
-
-                        final title = titleController.text.trim();
-                        final body = bodyController.text.trim();
-                        final audience = audienceController.text.trim();
-                        if (title.isEmpty || body.isEmpty || audience.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Enter title, body, and target audience.',
+                    const SizedBox(height: 22),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            style: OutlinedButton.styleFrom(
+                              minimumSize: const Size.fromHeight(54),
+                              side: BorderSide(
+                                color: AvenueColors.primary.withValues(
+                                  alpha: 0.25,
+                                ),
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
                               ),
                             ),
-                          );
-                          return;
-                        }
-
-                        setModalState(() {
-                          isSubmitting = true;
-                        });
-
-                        final messenger = ScaffoldMessenger.of(this.context);
-                        Map<String, dynamic>? result;
-                        String? errorMessage;
-                        try {
-                          result = await _repository.createAnnouncement(
-                            kind: selectedKind,
-                            title: title,
-                            body: body,
-                            targetAudience: audience,
-                          );
-                        } catch (error) {
-                          errorMessage = error.toString();
-                        }
-
-                        if (!mounted || !sheetContext.mounted) {
-                          return;
-                        }
-
-                        Navigator.of(sheetContext).pop();
-
-                        if (result == null) {
-                          messenger.showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                errorMessage ??
-                                    'Could not publish announcement.',
-                              ),
+                            child: Text(
+                              'Cancel',
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(
+                                    color: AvenueColors.primary,
+                                    fontWeight: FontWeight.w800,
+                                  ),
                             ),
-                          );
-                          return;
-                        }
-
-                        final announcementId =
-                            result['announcement_id']?.toString() ?? '';
-                        var successMessage = 'Announcement published.';
-
-                        if (announcementId.isNotEmpty) {
-                          try {
-                            await _repository.sendAnnouncementPush(
-                              announcementId: announcementId,
-                            );
-                          } catch (_) {
-                            successMessage =
-                                'Announcement published. Push delivery is not configured yet.';
-                          }
-                        }
-
-                        setState(() {
-                          _announcementsFuture = _AnnouncementsData.load(
-                            _repository,
-                          );
-                          _selectedState = 'sent';
-                          _visibleRows = 6;
-                        });
-
-                        messenger.showSnackBar(
-                          SnackBar(content: Text(successMessage)),
-                        );
-                      },
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          flex: 2,
+                          child: AvenuePrimaryButton(
+                            label: isSubmitting ? 'Publishing...' : 'Publish',
+                            onPressed: _publishAnnouncement,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
-            );
-          },
-        );
-      },
+            ),
+            const SizedBox(height: 18),
+            const _AdminInfoBanner(
+              icon: Icons.notifications_active_rounded,
+              title: 'LIVE UPDATE',
+              body:
+                  'Published notices appear in the resident notice board and create resident notifications.',
+            ),
+            const SizedBox(height: 12),
+            const _AdminInfoBanner(
+              icon: Icons.group_rounded,
+              title: 'AUDIENCE',
+              body:
+                  'Use all residents for community notices or a focused audience label for targeted communication.',
+            ),
+          ],
+        ),
+      ),
     );
+  }
+
+  Future<void> _publishAnnouncement() async {
+    if (isSubmitting) {
+      return;
+    }
+
+    final title = titleController.text.trim();
+    final body = bodyController.text.trim();
+    final audience = audienceController.text.trim();
+    if (title.isEmpty || body.isEmpty || audience.isEmpty) {
+      showAvenueDialogMessage(
+        context,
+        title: 'Missing details',
+        message: 'Enter title, body, and audience.',
+        type: AvenueMessageType.error,
+      );
+      return;
+    }
+
+    setState(() {
+      isSubmitting = true;
+    });
+
+    Map<String, dynamic>? result;
+    String? errorMessage;
+    try {
+      result = await _repository.createAnnouncement(
+        kind: selectedKind,
+        title: title,
+        body: body,
+        targetAudience: audience,
+      );
+    } catch (error) {
+      errorMessage = error.toString();
+    }
+
+    if (!mounted) {
+      return;
+    }
+
+    if (result == null) {
+      setState(() {
+        isSubmitting = false;
+      });
+      showAvenueDialogMessage(
+        context,
+        message: errorMessage ?? 'Could not publish notice.',
+        type: AvenueMessageType.error,
+      );
+      return;
+    }
+
+    final announcementId = result['announcement_id']?.toString() ?? '';
+    var successMessage = 'Announcement published.';
+
+    if (announcementId.isNotEmpty) {
+      try {
+        await _repository.sendAnnouncementPush(announcementId: announcementId);
+      } catch (_) {
+        successMessage =
+            'Announcement published. Push delivery is not configured yet.';
+      }
+    }
+
+    if (!mounted) {
+      return;
+    }
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(successMessage)));
+    Navigator.of(context).pop(true);
   }
 }

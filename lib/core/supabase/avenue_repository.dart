@@ -72,7 +72,21 @@ class AvenueRepository {
     final rows = await _client
         .from('amenities')
         .select()
+        .order('sort_order', ascending: true)
         .order('created_at', ascending: true);
+
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchAmenityTimeSlots(
+    String amenityId,
+  ) async {
+    final rows = await _client
+        .from('amenity_time_slots')
+        .select()
+        .eq('amenity_id', amenityId)
+        .order('sort_order', ascending: true)
+        .order('start_time', ascending: true);
 
     return _castRows(rows);
   }
@@ -101,7 +115,26 @@ class AvenueRepository {
         .from('amenity_bookings')
         .select('*, amenities(name, code, location_label, image_url)')
         .eq('user_id', currentUser.id)
+        .filter('booking_status', 'in', '(confirmed,pending)')
         .order('booking_date', ascending: true);
+
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchAdminAmenityBookings() async {
+    final rows = await _client
+        .from('admin_amenity_bookings_v')
+        .select()
+        .order('booking_date', ascending: false);
+
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchServiceProviders() async {
+    final rows = await _client
+        .from('service_providers')
+        .select()
+        .order('created_at', ascending: false);
 
     return _castRows(rows);
   }
@@ -577,6 +610,189 @@ class AvenueRepository {
         'p_phone': phone.trim(),
         'p_visitor_kind': visitorKind,
         'p_expected_arrival': expectedArrival.toIso8601String(),
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> createAmenityBooking({
+    required String amenityId,
+    required DateTime bookingDate,
+    required String timeSlot,
+    required int guestCount,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'create_amenity_booking',
+      params: {
+        'p_user_id': currentUser.id,
+        'p_amenity_id': amenityId,
+        'p_booking_date': bookingDate.toIso8601String().split('T').first,
+        'p_time_slot': timeSlot.trim(),
+        'p_guest_count': guestCount,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> createAdminAmenity({
+    required String name,
+    required String category,
+    required String description,
+    required String locationLabel,
+    required String statusLabel,
+    required String availabilityText,
+    required String occupancyNote,
+    required int capacityPercent,
+    required bool bookingRequired,
+    String? imageUrl,
+    String? accessNote,
+    List<String> rules = const [],
+    List<Map<String, dynamic>> timeSlots = const [],
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'create_admin_amenity',
+      params: {
+        'p_admin_user_id': currentUser.id,
+        'p_name': name.trim(),
+        'p_category': category.trim(),
+        'p_description': description.trim(),
+        'p_location_label': locationLabel.trim(),
+        'p_status_label': statusLabel.trim(),
+        'p_availability_text': availabilityText.trim(),
+        'p_occupancy_note': occupancyNote.trim(),
+        'p_capacity_percent': capacityPercent,
+        'p_booking_required': bookingRequired,
+        'p_image_url': imageUrl?.trim(),
+        'p_access_note': accessNote?.trim(),
+        'p_rules': rules,
+        'p_time_slots': timeSlots,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> updateAdminAmenity({
+    required String amenityId,
+    required String name,
+    required String category,
+    required String description,
+    required String locationLabel,
+    required String statusLabel,
+    required String availabilityText,
+    required String occupancyNote,
+    required int capacityPercent,
+    required bool bookingRequired,
+    String? imageUrl,
+    String? accessNote,
+    List<String> rules = const [],
+    List<Map<String, dynamic>> timeSlots = const [],
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'update_admin_amenity',
+      params: {
+        'p_admin_user_id': currentUser.id,
+        'p_amenity_id': amenityId,
+        'p_name': name.trim(),
+        'p_category': category.trim(),
+        'p_description': description.trim(),
+        'p_location_label': locationLabel.trim(),
+        'p_status_label': statusLabel.trim(),
+        'p_availability_text': availabilityText.trim(),
+        'p_occupancy_note': occupancyNote.trim(),
+        'p_capacity_percent': capacityPercent,
+        'p_booking_required': bookingRequired,
+        'p_image_url': imageUrl?.trim(),
+        'p_access_note': accessNote?.trim(),
+        'p_rules': rules,
+        'p_time_slots': timeSlots,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> updateAdminAmenityStatus({
+    required String amenityId,
+    required String statusLabel,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'update_admin_amenity_status',
+      params: {
+        'p_admin_user_id': currentUser.id,
+        'p_amenity_id': amenityId,
+        'p_status_label': statusLabel.trim(),
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> createServiceProvider({
+    required String fullName,
+    required String specialty,
+    required String phone,
+    required String experienceLabel,
+    required String availabilityStatus,
+    String? notes,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'create_admin_service_provider',
+      params: {
+        'p_admin_user_id': currentUser.id,
+        'p_full_name': fullName.trim(),
+        'p_specialty': specialty.trim(),
+        'p_phone': phone.trim(),
+        'p_experience_label': experienceLabel.trim(),
+        'p_availability_status': availabilityStatus.trim(),
+        'p_notes': notes?.trim(),
       },
     );
 

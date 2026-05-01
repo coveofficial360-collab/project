@@ -447,9 +447,19 @@ class _GuardHomeScreenState extends State<GuardHomeScreen> {
       return;
     }
 
-    ScaffoldMessenger.of(
+    final lowerMessage = message.toLowerCase();
+    final isError =
+        lowerMessage.contains('could not') ||
+        lowerMessage.contains('failed') ||
+        lowerMessage.contains('enter ') ||
+        lowerMessage.contains('no resident') ||
+        lowerMessage.contains('no visitor') ||
+        lowerMessage.contains('already been processed');
+    showAvenueDialogMessage(
       context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+      message: message,
+      type: isError ? AvenueMessageType.error : AvenueMessageType.info,
+    );
   }
 }
 

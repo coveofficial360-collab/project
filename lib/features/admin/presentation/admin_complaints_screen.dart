@@ -255,10 +255,10 @@ class _AdminComplaintDetailScreenState
       setState(() {
         _isSubmitting = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Could not update this complaint right now.'),
-        ),
+      showAvenueDialogMessage(
+        context,
+        message: 'Could not update this complaint right now.',
+        type: AvenueMessageType.error,
       );
       return;
     }

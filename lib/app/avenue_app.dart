@@ -36,12 +36,23 @@ class AvenueApp extends StatelessWidget {
         }
 
         final page = AppPage.fromRoute(settings.name) ?? AppPage.login;
+        final isOverlayPage =
+            page == AppPage.drawer || page == AppPage.adminMenu;
 
         return PageRouteBuilder<void>(
           settings: settings,
+          opaque: !isOverlayPage,
+          barrierColor: Colors.transparent,
           transitionDuration: Duration.zero,
           reverseTransitionDuration: Duration.zero,
           pageBuilder: (_, _, _) {
+            final arguments = settings.arguments is Map<String, dynamic>
+                ? settings.arguments! as Map<String, dynamic>
+                : const <String, dynamic>{};
+            final amenity = arguments['amenity'] is Map
+                ? Map<String, dynamic>.from(arguments['amenity'] as Map)
+                : null;
+
             switch (page) {
               case AppPage.login:
                 return const LoginScreen();
@@ -52,9 +63,11 @@ class AvenueApp extends StatelessWidget {
               case AppPage.amenities:
                 return const AmenitiesScreen();
               case AppPage.amenityBooking:
-                return const AmenityBookingScreen();
+                return AmenityBookingScreen(initialAmenity: amenity);
               case AppPage.amenityDetailsGym:
-                return const AmenityDetailsGymScreen();
+                return AmenityDetailsGymScreen(initialAmenity: amenity);
+              case AppPage.amenityReservations:
+                return const AmenityReservationsScreen();
               case AppPage.notices:
                 return const NoticesScreen();
               case AppPage.bills:
@@ -64,9 +77,6 @@ class AvenueApp extends StatelessWidget {
               case AppPage.createComplaint:
                 return const CreateComplaintScreen();
               case AppPage.complaintDetail:
-                final arguments = settings.arguments is Map<String, dynamic>
-                    ? settings.arguments! as Map<String, dynamic>
-                    : const <String, dynamic>{};
                 final row = arguments['complaint'] is Map
                     ? Map<String, dynamic>.from(arguments['complaint'] as Map)
                     : const <String, dynamic>{};
@@ -84,18 +94,12 @@ class AvenueApp extends StatelessWidget {
               case AppPage.communityShareIdea:
                 return const ShareIdeaScreen();
               case AppPage.communitySuggestionDetail:
-                final arguments = settings.arguments is Map<String, dynamic>
-                    ? settings.arguments! as Map<String, dynamic>
-                    : const <String, dynamic>{};
                 return SuggestionDiscussionScreen(
                   suggestionId: arguments['suggestionId'] as String?,
                 );
               case AppPage.communityMeetings:
                 return const CommunityMeetingsScreen();
               case AppPage.communityMeetingDetail:
-                final arguments = settings.arguments is Map<String, dynamic>
-                    ? settings.arguments! as Map<String, dynamic>
-                    : const <String, dynamic>{};
                 return MeetingMinutesScreen(
                   meetingId: arguments['meetingId'] as String?,
                 );
@@ -109,15 +113,24 @@ class AvenueApp extends StatelessWidget {
                 );
               case AppPage.adminDrawer:
                 return const AdminDashboardScreen();
+              case AppPage.adminAmenities:
+                return const AdminAmenitiesScreen();
+              case AppPage.adminAmenityBookings:
+                return const AdminAmenityBookingsScreen();
+              case AppPage.addAmenity:
+                return const AddAmenityScreen();
+              case AppPage.editAmenity:
+                return AddAmenityScreen(initialAmenity: amenity);
+              case AppPage.adminServices:
+                return const AdminServicesScreen();
+              case AppPage.addServiceProvider:
+                return const AddServiceProviderScreen();
               case AppPage.generateReports:
                 return const GenerateReportsScreen();
               case AppPage.announcementsManagement:
-                final arguments = settings.arguments is Map<String, dynamic>
-                    ? settings.arguments! as Map<String, dynamic>
-                    : const <String, dynamic>{};
-                return AnnouncementsManagementScreen(
-                  openComposerOnStart: arguments['openComposer'] == true,
-                );
+                return const AnnouncementsManagementScreen();
+              case AppPage.addAnnouncement:
+                return const AddAnnouncementScreen();
               case AppPage.addResident:
                 return const AddResidentScreen();
               case AppPage.residentDirectory:
@@ -125,9 +138,6 @@ class AvenueApp extends StatelessWidget {
               case AppPage.adminComplaints:
                 return const AdminComplaintsScreen();
               case AppPage.adminComplaintDetail:
-                final arguments = settings.arguments is Map<String, dynamic>
-                    ? settings.arguments! as Map<String, dynamic>
-                    : const <String, dynamic>{};
                 final row = arguments['complaint'] is Map
                     ? Map<String, dynamic>.from(arguments['complaint'] as Map)
                     : const <String, dynamic>{};

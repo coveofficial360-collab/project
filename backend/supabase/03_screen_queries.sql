@@ -23,9 +23,19 @@ where user_id = (select id from public.app_users where email = 'user@gmail.com')
 order by created_at desc;
 
 -- Amenities and bookings
-select code, name, category, status_label, availability_text, occupancy_note, cta_label
+select
+  code,
+  name,
+  category,
+  status_label,
+  availability_text,
+  occupancy_note,
+  cta_label,
+  capacity_percent,
+  access_note,
+  rules
 from public.amenities
-order by name;
+order by sort_order asc, name;
 
 select
   public.amenities.name,
@@ -39,6 +49,40 @@ where public.amenity_bookings.user_id = (
   select id from public.app_users where email = 'user@gmail.com'
 )
 order by public.amenity_bookings.booking_date desc;
+
+-- Reset only this demo booking slot so this test block can be rerun safely.
+update public.amenity_bookings
+set booking_status = 'cancelled_demo_rerun'
+where user_id = (select id from public.app_users where email = 'user@gmail.com')
+  and amenity_id = (select id from public.amenities where code = 'modern-gym')
+  and booking_date = current_date + 2
+  and lower(trim(time_slot)) = lower(trim('18:00 - 19:00'))
+  and booking_status in ('confirmed', 'pending');
+
+select *
+from public.create_amenity_booking(
+  (select id from public.app_users where email = 'user@gmail.com'),
+  (select id from public.amenities where code = 'modern-gym'),
+  current_date + 2,
+  '18:00 - 19:00',
+  1
+);
+
+-- This duplicate should be blocked with a friendly validation notice.
+do $$
+begin
+  perform *
+  from public.create_amenity_booking(
+    (select id from public.app_users where email = 'user@gmail.com'),
+    (select id from public.amenities where code = 'modern-gym'),
+    current_date + 2,
+    '18:00 - 19:00',
+    1
+  );
+exception
+  when others then
+    raise notice 'Expected duplicate booking validation: %', sqlerrm;
+end $$;
 
 -- Bills and payments
 select method_name, method_type, masked_value, note, is_primary
@@ -151,6 +195,100 @@ select
   resolution_note,
   created_at
 from public.admin_complaints_v;
+
+-- Admin amenities, booking logs, and services
+select
+  code,
+  name,
+  category,
+  location_label,
+  status_label,
+  capacity_percent,
+  booking_required
+from public.amenities
+order by sort_order asc, created_at asc;
+
+select
+  amenity_name,
+  resident_name,
+  unit_number,
+  booking_date,
+  time_slot,
+  guest_count,
+  booking_status
+from public.admin_amenity_bookings_v;
+
+select
+  full_name,
+  specialty,
+  phone,
+  availability_status,
+  rating,
+  jobs_completed
+from public.service_providers
+order by created_at desc;
+
+-- Reset demo amenity so this test block can be rerun safely.
+delete from public.amenities
+where name = 'Podcast Studio'
+  and category = 'Entertainment';
+
+select *
+from public.create_admin_amenity(
+  (select id from public.app_users where email = 'admin@gmail.com'),
+  'Podcast Studio',
+  'Entertainment',
+  'Sound-treated studio for resident recordings and calls.',
+  'Level 2 Media Wing',
+  'OPEN',
+  'Available 9 AM to 8 PM',
+  'Low usage today',
+  18,
+  true,
+  null,
+  'Bring your resident ID.',
+  array['Leave equipment powered off after use.', 'Food is not allowed inside.'],
+  jsonb_build_array(
+    jsonb_build_object('start_time', '09:00', 'end_time', '11:00', 'capacity', 10),
+    jsonb_build_object('start_time', '17:00', 'end_time', '19:00', 'capacity', 12)
+  )
+);
+
+select
+  amenity.name as amenity_name,
+  slot.start_time,
+  slot.end_time,
+  slot.slot_capacity,
+  slot.sort_order
+from public.amenity_time_slots slot
+join public.amenities amenity on amenity.id = slot.amenity_id
+where amenity.code = (
+  select code
+  from public.amenities
+  where name = 'Podcast Studio'
+  order by created_at desc
+  limit 1
+)
+order by slot.sort_order asc, slot.start_time asc;
+
+-- Reset demo service provider so this test block can be rerun safely.
+delete from public.service_providers
+where full_name = 'Priya Nair'
+  and specialty = 'Housekeeping';
+
+select *
+from public.create_admin_service_provider(
+  (select id from public.app_users where email = 'admin@gmail.com'),
+  'Priya Nair',
+  'Housekeeping',
+  '+91 90000 12345',
+  'Deep-clean specialist • 7 yrs exp.',
+  'available',
+  4.9,
+  72,
+  null,
+  'Preferred for amenity turnover and common-area cleaning.'
+);
 
 select full_name, email, unit_number, tower, resident_kind, status
 from public.resident_directory_v;

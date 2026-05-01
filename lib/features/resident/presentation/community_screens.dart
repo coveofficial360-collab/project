@@ -107,7 +107,16 @@ void _openMeeting(BuildContext context, String meetingId) {
 }
 
 void _showCommunityMessage(BuildContext context, String message) {
-  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  final lowerMessage = message.toLowerCase();
+  final isError =
+      lowerMessage.contains('could not') ||
+      lowerMessage.contains('wrong') ||
+      lowerMessage.contains('join the discussion before');
+  showAvenueDialogMessage(
+    context,
+    message: message,
+    type: isError ? AvenueMessageType.error : AvenueMessageType.success,
+  );
 }
 
 String _communityErrorMessage(Object error) {

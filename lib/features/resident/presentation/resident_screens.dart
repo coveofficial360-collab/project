@@ -269,13 +269,45 @@ Color _amenityStatusForeground(String? status) {
   }
 }
 
-AppPage _amenityTargetPage(String? code) {
-  switch (code) {
-    case 'modern-gym':
-      return AppPage.amenityDetailsGym;
-    default:
-      return AppPage.amenityBooking;
+String _amenityFallbackImage(Map<String, dynamic>? amenity) {
+  final code = amenity?['code']?.toString();
+  if (code == 'modern-gym') {
+    return _gymImageUrl;
   }
+  if (code == 'rooftop-lounge') {
+    return _loungeImageUrl;
+  }
+  return _poolImageUrl;
+}
+
+void _openAmenityDetails(BuildContext context, Map<String, dynamic> amenity) {
+  Navigator.of(context).pushNamed(
+    AppPage.amenityDetailsGym.routeName,
+    arguments: {'amenity': amenity},
+  );
+}
+
+void _openAmenityBooking(BuildContext context, Map<String, dynamic> amenity) {
+  Navigator.of(context).pushNamed(
+    AppPage.amenityBooking.routeName,
+    arguments: {'amenity': amenity},
+  );
+}
+
+List<String> _amenityRules(Map<String, dynamic>? amenity) {
+  final rawRules = amenity?['rules'];
+  if (rawRules is Iterable) {
+    return rawRules
+        .map((rule) => rule.toString().trim())
+        .where((rule) => rule.isNotEmpty)
+        .toList(growable: false);
+  }
+
+  return const [
+    'Residents must carry their digital ID for verification at the entrance.',
+    'Please keep the space clean and respect posted operating guidelines.',
+    'Cancellations should be made at least 2 hours in advance where applicable.',
+  ];
 }
 
 IconData _noticeIconForKind(String? kind) {
@@ -597,6 +629,32 @@ class _AmenitiesData {
   }
 }
 
+class _AmenityBookingData {
+  const _AmenityBookingData({
+    required this.amenity,
+    required this.timeSlots,
+  });
+
+  final Map<String, dynamic>? amenity;
+  final List<Map<String, dynamic>> timeSlots;
+
+  static Future<_AmenityBookingData> load(
+    AvenueRepository repository, {
+    Map<String, dynamic>? initialAmenity,
+  }) async {
+    final amenity = initialAmenity ?? await repository.fetchAmenityByCode('infinity-pool');
+    final amenityId = amenity?['id']?.toString();
+    final timeSlots = amenityId == null
+        ? const <Map<String, dynamic>>[]
+        : await repository.fetchAmenityTimeSlots(amenityId);
+
+    return _AmenityBookingData(
+      amenity: amenity,
+      timeSlots: timeSlots,
+    );
+  }
+}
+
 class _BillsData {
   const _BillsData({
     required this.bills,
@@ -670,126 +728,149 @@ class ResidentDrawerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AvenueScaffold(
-      backgroundColor: const Color(0xFFB8B8B8),
-      body: SafeArea(
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Container(
-            width: 310,
-            height: double.infinity,
-            padding: const EdgeInsets.fromLTRB(20, 28, 20, 24),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(34),
-                bottomRight: Radius.circular(34),
-              ),
+      backgroundColor: Colors.transparent,
+      body: Stack(
+        children: [
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => Navigator.of(context).pop(),
+            child: Container(
+              color: AvenueColors.primary.withValues(alpha: 0.12),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+          ),
+          SafeArea(
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                width: 310,
+                height: double.infinity,
+                margin: const EdgeInsets.only(top: 10, bottom: 10),
+                padding: const EdgeInsets.fromLTRB(20, 28, 20, 24),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(34),
+                    bottomRight: Radius.circular(34),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AvenueNetworkAvatar(
-                      imageUrl: _drawerAvatarUrl,
-                      size: 64,
-                      fallbackLabel: 'AS',
+                    Row(
+                      children: [
+                        AvenueNetworkAvatar(
+                          imageUrl: _drawerAvatarUrl,
+                          size: 64,
+                          fallbackLabel: 'AS',
+                        ),
+                        const Spacer(),
+                        IconButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          icon: const Icon(Icons.close_rounded),
+                          color: AvenueColors.onSurfaceVariant,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Aditya Sharma',
+                      style: Theme.of(context).textTheme.headlineMedium
+                          ?.copyWith(fontWeight: FontWeight.w800),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Flat B-204',
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: AvenueColors.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const AvenuePill(
+                      label: 'ACTIVE MEMBER',
+                      backgroundColor: Color(0x1AFFBA43),
+                      foregroundColor: Color(0xFFE29B00),
+                    ),
+                    const SizedBox(height: 28),
+                    _DrawerItem(
+                      label: 'Dashboard',
+                      icon: Icons.dashboard_customize_rounded,
+                      selected: true,
+                      onTap: () =>
+                          goToPage(context, AppPage.home, replace: true),
+                    ),
+                    const SizedBox(height: 8),
+                    _DrawerItem(
+                      label: 'Payments',
+                      icon: Icons.payments_outlined,
+                      onTap: () =>
+                          goToPage(context, AppPage.bills, replace: true),
+                    ),
+                    const SizedBox(height: 8),
+                    _DrawerItem(
+                      label: 'My Complaints',
+                      icon: Icons.info_outline_rounded,
+                      onTap: () =>
+                          goToPage(context, AppPage.complaints, replace: true),
+                    ),
+                    const SizedBox(height: 8),
+                    _DrawerItem(
+                      label: 'Notice Board',
+                      icon: Icons.campaign_outlined,
+                      onTap: () =>
+                          goToPage(context, AppPage.notices, replace: true),
+                    ),
+                    const SizedBox(height: 8),
+                    _DrawerItem(
+                      label: 'Community',
+                      icon: Icons.groups_rounded,
+                      onTap: () => goToPage(
+                        context,
+                        AppPage.communityFeed,
+                        replace: true,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    _DrawerItem(
+                      label: 'Amenities',
+                      icon: Icons.pool_rounded,
+                      onTap: () =>
+                          goToPage(context, AppPage.amenities, replace: true),
+                    ),
+                    const SizedBox(height: 8),
+                    _DrawerItem(
+                      label: 'Support',
+                      icon: Icons.help_outline,
+                      onTap: () => goToPage(
+                        context,
+                        AppPage.communitySupport,
+                        replace: true,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const _DrawerItem(label: 'Settings', icon: Icons.settings),
+                    const Spacer(),
+                    TextButton.icon(
+                      onPressed: () =>
+                          goToPage(context, AppPage.login, replace: true),
+                      icon: const Icon(
+                        Icons.logout_rounded,
+                        color: Color(0xFFD32F2F),
+                      ),
+                      label: Text(
+                        'Logout',
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              color: const Color(0xFFD32F2F),
+                              fontWeight: FontWeight.w800,
+                            ),
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
-                Text(
-                  'Aditya Sharma',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Flat B-204',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: AvenueColors.onSurfaceVariant,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                const AvenuePill(
-                  label: 'ACTIVE MEMBER',
-                  backgroundColor: Color(0x1AFFBA43),
-                  foregroundColor: Color(0xFFE29B00),
-                ),
-                const SizedBox(height: 28),
-                _DrawerItem(
-                  label: 'Dashboard',
-                  icon: Icons.dashboard_customize_rounded,
-                  selected: true,
-                  onTap: () => goToPage(context, AppPage.home, replace: true),
-                ),
-                const SizedBox(height: 8),
-                _DrawerItem(
-                  label: 'Payments',
-                  icon: Icons.payments_outlined,
-                  onTap: () => goToPage(context, AppPage.bills, replace: true),
-                ),
-                const SizedBox(height: 8),
-                _DrawerItem(
-                  label: 'My Complaints',
-                  icon: Icons.info_outline_rounded,
-                  onTap: () =>
-                      goToPage(context, AppPage.complaints, replace: true),
-                ),
-                const SizedBox(height: 8),
-                _DrawerItem(
-                  label: 'Notice Board',
-                  icon: Icons.campaign_outlined,
-                  onTap: () =>
-                      goToPage(context, AppPage.notices, replace: true),
-                ),
-                const SizedBox(height: 8),
-                _DrawerItem(
-                  label: 'Community',
-                  icon: Icons.groups_rounded,
-                  onTap: () =>
-                      goToPage(context, AppPage.communityFeed, replace: true),
-                ),
-                const SizedBox(height: 8),
-                _DrawerItem(
-                  label: 'Amenities',
-                  icon: Icons.pool_rounded,
-                  onTap: () =>
-                      goToPage(context, AppPage.amenities, replace: true),
-                ),
-                const SizedBox(height: 8),
-                _DrawerItem(
-                  label: 'Support',
-                  icon: Icons.help_outline,
-                  onTap: () => goToPage(
-                    context,
-                    AppPage.communitySupport,
-                    replace: true,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const _DrawerItem(label: 'Settings', icon: Icons.settings),
-                const Spacer(),
-                TextButton.icon(
-                  onPressed: () =>
-                      goToPage(context, AppPage.login, replace: true),
-                  icon: const Icon(
-                    Icons.logout_rounded,
-                    color: Color(0xFFD32F2F),
-                  ),
-                  label: Text(
-                    'Logout',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: const Color(0xFFD32F2F),
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -1000,8 +1081,22 @@ class _ResidentNotificationBellButton extends StatelessWidget {
   }
 }
 
-class AmenitiesScreen extends StatelessWidget {
+class AmenitiesScreen extends StatefulWidget {
   const AmenitiesScreen({super.key});
+
+  @override
+  State<AmenitiesScreen> createState() => _AmenitiesScreenState();
+}
+
+class _AmenitiesScreenState extends State<AmenitiesScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  String _selectedCategory = 'All Spaces';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1009,120 +1104,140 @@ class AmenitiesScreen extends StatelessWidget {
 
     return AvenueScaffold(
       topBar: AvenueTopBar(
-        title: 'Avenue360',
+        title: 'Cove',
         leading: AvenueIconButton(
           icon: Icons.arrow_back_ios_new_rounded,
           onPressed: () => goBackOrHome(context),
           size: 40,
         ),
+        actions: [
+          AvenueIconButton(icon: Icons.search_rounded, onPressed: () {}),
+          const SizedBox(width: 12),
+        ],
       ),
       body: FutureBuilder<_AmenitiesData>(
         future: _AmenitiesData.load(repository),
         builder: (context, snapshot) {
-          final amenities =
+          final allAmenities =
               snapshot.data?.amenities ?? const <Map<String, dynamic>>[];
+          final query = _searchController.text.trim().toLowerCase();
+          final amenities = allAmenities.where((amenity) {
+            final category = amenity['category']?.toString() ?? '';
+            final searchable =
+                '${amenity['name']} ${amenity['description']} $category'
+                    .toLowerCase();
+            final categoryMatches =
+                _selectedCategory == 'All Spaces' ||
+                category.toLowerCase() == _selectedCategory.toLowerCase() ||
+                (_selectedCategory == 'Popular' &&
+                    (amenity['capacity_percent'] ?? 0) is int &&
+                    (amenity['capacity_percent'] as int) < 60);
+            final searchMatches = query.isEmpty || searchable.contains(query);
+            return categoryMatches && searchMatches;
+          }).toList();
 
           return _ResidentScrollView(
+            padding: const EdgeInsets.fromLTRB(24, 20, 24, 28),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Amenities',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.displayMedium?.copyWith(fontSize: 22),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Discover and book resident facilities',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AvenueColors.onSurfaceVariant,
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton.icon(
+                    onPressed: () =>
+                        goToPage(context, AppPage.amenityReservations),
+                    style: TextButton.styleFrom(
+                      backgroundColor: AvenueColors.primary.withValues(
+                        alpha: 0.1,
+                      ),
+                      foregroundColor: AvenueColors.primary,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 10,
+                      ),
+                      shape: const StadiumBorder(),
+                    ),
+                    icon: const Icon(Icons.calendar_month_rounded, size: 18),
+                    label: Text(
+                      'Show My Bookings'.toUpperCase(),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: AvenueColors.primary,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.8,
+                      ),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 16),
-                const AvenueSearchField(
-                  hintText: 'Search for pools, gyms, lounges...',
-                ),
-                const SizedBox(height: 22),
+                const SizedBox(height: 20),
                 Text(
-                  'Categories',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
+                  'Discover Your\nUrban Sanctuary',
+                  style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                    fontSize: 30,
+                    height: 1.08,
                   ),
                 ),
-                const SizedBox(height: 12),
-                const Row(
-                  children: [
-                    Expanded(
-                      child: _CategoryBubble(
-                        icon: Icons.star_rounded,
-                        label: 'Popular',
-                        backgroundColor: Color(0xFFE8EEFF),
+                const SizedBox(height: 20),
+                Container(
+                  height: 56,
+                  padding: const EdgeInsets.symmetric(horizontal: 18),
+                  decoration: BoxDecoration(
+                    color: AvenueColors.surfaceHigh,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.search_rounded,
+                        color: AvenueColors.outline,
                       ),
-                    ),
-                    SizedBox(width: 12),
-                    Expanded(
-                      child: _CategoryBubble(
-                        icon: Icons.spa_outlined,
-                        label: 'Wellness',
-                        backgroundColor: Color(0xFFFFF0E7),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: TextField(
+                          controller: _searchController,
+                          onChanged: (_) => setState(() {}),
+                          decoration: const InputDecoration(
+                            hintText: 'Search amenities...',
+                            border: InputBorder.none,
+                          ),
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 12),
-                    Expanded(
-                      child: _CategoryBubble(
-                        icon: Icons.sports_esports_rounded,
-                        label: 'Entertainment',
-                        backgroundColor: Color(0xFFFFF2DB),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 24),
-                AvenueSectionHeader(
-                  title: 'Featured Spaces',
-                  actionLabel: 'View All',
-                  onActionTap: () {},
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children:
+                        ['All Spaces', 'Popular', 'Wellness', 'Entertainment']
+                            .map(
+                              (category) => Padding(
+                                padding: const EdgeInsets.only(right: 10),
+                                child: _CoveFilterChip(
+                                  label: category,
+                                  selected: _selectedCategory == category,
+                                  onTap: () => setState(
+                                    () => _selectedCategory = category,
+                                  ),
+                                ),
+                              ),
+                            )
+                            .toList(),
+                  ),
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: 28),
                 if (snapshot.connectionState != ConnectionState.done &&
-                    amenities.isEmpty)
+                    allAmenities.isEmpty)
                   const _DataPlaceholderCard(label: 'Loading amenities...')
+                else if (amenities.isEmpty)
+                  const _DataPlaceholderCard(label: 'No amenities found.')
                 else
                   ...amenities.map(
                     (amenity) => Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: _AmenityCard(
-                        imageUrl:
-                            amenity['image_url'] as String? ??
-                            (amenity['code'] == 'modern-gym'
-                                ? _gymImageUrl
-                                : amenity['code'] == 'rooftop-lounge'
-                                ? _loungeImageUrl
-                                : _poolImageUrl),
-                        status:
-                            amenity['status_label'] as String? ?? 'AVAILABLE',
-                        statusBackground: _amenityStatusBackground(
-                          amenity['status_label'] as String?,
-                        ),
-                        statusForeground: _amenityStatusForeground(
-                          amenity['status_label'] as String?,
-                        ),
-                        title: amenity['name'] as String? ?? 'Amenity',
-                        subtitle:
-                            amenity['occupancy_note'] as String? ??
-                            amenity['availability_text'] as String? ??
-                            '',
-                        icon: _amenityIconForCategory(
-                          amenity['category'] as String?,
-                        ),
-                        primaryActionLabel:
-                            amenity['cta_label'] as String? ?? 'View Details',
-                        outlinedButton: amenity['cta_label'] == 'View Details',
-                        onTap: () => goToPage(
-                          context,
-                          _amenityTargetPage(amenity['code'] as String?),
-                        ),
+                      padding: const EdgeInsets.only(bottom: 24),
+                      child: _CoveAmenityHubCard(
+                        amenity: amenity,
+                        onDetails: () => _openAmenityDetails(context, amenity),
                       ),
                     ),
                   ),
@@ -1139,8 +1254,8 @@ class AmenitiesScreen extends StatelessWidget {
   }
 }
 
-class AmenityBookingScreen extends StatelessWidget {
-  const AmenityBookingScreen({super.key});
+class AmenityReservationsScreen extends StatelessWidget {
+  const AmenityReservationsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -1148,33 +1263,173 @@ class AmenityBookingScreen extends StatelessWidget {
 
     return AvenueScaffold(
       topBar: AvenueTopBar(
-        title: 'AmenityBooking',
+        title: 'Reservations',
         leading: AvenueIconButton(
           icon: Icons.arrow_back_ios_new_rounded,
           onPressed: () => goBackOrHome(context),
           size: 40,
         ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 18),
-            child: AvenueNetworkAvatar(
-              imageUrl:
-                  'https://lh3.googleusercontent.com/aida-public/AB6AXuB1YXMzmKZSPkhaEw73PawWxa3olLvM1izNAiYnNfpQeM5ZfE5lkz5i2dDIKtlX_YImkpolNHFuk5sRi2rInVSUpF5ctoJPzdkQz0UGE7VS5S2XM11HbfzZXVyM8k6NrenPifXFp0XcVSVueOpZo0vLywTrOmKupKiHU_ETdxsy1qDjaC4IklvXjJ_BklTdB9mZQ9ZPyuexoAotp7vzvSFH-cGTNSm2Hirs3a5armdGnnl_ZGG6SVAs-Q44-D5n5rjZngQ0rqL6O0A',
-              size: 34,
-              fallbackLabel: 'A',
+      ),
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: repository.fetchCurrentUserAmenityBookings(),
+        builder: (context, snapshot) {
+          final rows = snapshot.data ?? const <Map<String, dynamic>>[];
+
+          return _ResidentScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'My Reservations',
+                  style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Track upcoming and completed amenity bookings.',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: AvenueColors.onSurfaceVariant,
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                if (snapshot.connectionState != ConnectionState.done &&
+                    rows.isEmpty)
+                  const _DataPlaceholderCard(label: 'Loading reservations...')
+                else if (rows.isEmpty)
+                  const _DataPlaceholderCard(
+                    label: 'No amenity reservations yet.',
+                  )
+                else
+                  ...rows.map((row) {
+                    final amenity = row['amenities'] is Map
+                        ? row['amenities'] as Map
+                        : {};
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 14),
+                      child: AvenueCard(
+                        radius: 24,
+                        child: Row(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(18),
+                              child: Image.network(
+                                amenity['image_url'] as String? ??
+                                    _poolImageUrl,
+                                width: 78,
+                                height: 78,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    amenity['name'] as String? ?? 'Amenity',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge
+                                        ?.copyWith(fontWeight: FontWeight.w900),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    '${_calendarDateLabel(row['booking_date'])} • ${row['time_slot'] ?? '--'}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          color: AvenueColors.onSurfaceVariant,
+                                        ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  AvenuePill(
+                                    label:
+                                        (row['booking_status'] ?? 'confirmed')
+                                            .toString()
+                                            .toUpperCase(),
+                                    backgroundColor: const Color(0x1A005BBF),
+                                    foregroundColor: AvenueColors.primary,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+              ],
             ),
-          ),
+          );
+        },
+      ),
+      bottomNavigation: AvenueBottomNavigationBar(
+        items: _residentNavItems,
+        currentPage: AppPage.amenities,
+      ),
+    );
+  }
+}
+
+class AmenityBookingScreen extends StatefulWidget {
+  const AmenityBookingScreen({super.key, this.initialAmenity});
+
+  final Map<String, dynamic>? initialAmenity;
+
+  @override
+  State<AmenityBookingScreen> createState() => _AmenityBookingScreenState();
+}
+
+class _AmenityBookingScreenState extends State<AmenityBookingScreen> {
+  late DateTime _selectedDate;
+  String? _selectedTimeSlot;
+  int _guestCount = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedDate = DateTime.now().add(const Duration(days: 1));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final repository = AvenueRepository();
+
+    return AvenueScaffold(
+      topBar: AvenueTopBar(
+        title: 'Avenue360',
+        leading: AvenueIconButton(
+          icon: Icons.arrow_back_ios_new_rounded,
+          onPressed: () => goBackOrHome(context),
+          size: 40,
+        ),
+        actions: [
+          AvenueIconButton(icon: Icons.more_vert_rounded, onPressed: () {}),
+          const SizedBox(width: 12),
         ],
       ),
-      body: FutureBuilder<_AmenitiesData>(
-        future: _AmenitiesData.load(repository),
+      body: FutureBuilder<_AmenityBookingData>(
+        future: _AmenityBookingData.load(
+          repository,
+          initialAmenity: widget.initialAmenity,
+        ),
         builder: (context, snapshot) {
-          final amenity = snapshot.data?.poolAmenity;
-          final booking = snapshot.data?.bookings.isNotEmpty == true
-              ? snapshot.data!.bookings.first
-              : null;
-          final bookingFee = booking?['booking_fee'];
-          final guestCount = booking?['guest_count']?.toString() ?? '02';
+          final amenity = snapshot.data?.amenity;
+          final slotRows = snapshot.data?.timeSlots ?? const <Map<String, dynamic>>[];
+          final slotLabels = slotRows
+              .where((row) => row['is_active'] != false)
+              .map(_amenityTimeSlotLabel)
+              .where((label) => label.isNotEmpty)
+              .toList(growable: false);
+          final selectedTimeSlot = _selectedTimeSlot ??
+              (slotLabels.isNotEmpty ? slotLabels.first : null);
+          final visibleDates = List<DateTime>.generate(
+            5,
+            (index) => DateTime.now().add(Duration(days: index + 1)),
+          );
 
           return _ResidentScrollView(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
@@ -1183,7 +1438,10 @@ class AmenityBookingScreen extends StatelessWidget {
               children: [
                 _HeroImageCard(
                   imageUrl:
-                      amenity?['image_url'] as String? ?? _bookingPoolImageUrl,
+                      amenity?['image_url'] as String? ??
+                      (amenity == null
+                          ? _bookingPoolImageUrl
+                          : _amenityFallbackImage(amenity)),
                   height: 206,
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(18, 16, 18, 18),
@@ -1225,7 +1483,7 @@ class AmenityBookingScreen extends StatelessWidget {
                     ),
                     const Spacer(),
                     Text(
-                      _calendarDateLabel(booking?['booking_date']),
+                      _calendarDateLabel(_selectedDate),
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AvenueColors.primary,
                         fontWeight: FontWeight.w700,
@@ -1235,31 +1493,30 @@ class AmenityBookingScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 Row(
-                  children: [
-                    Expanded(
-                      child: _DateChip(
-                        dayLabel: 'BOOK',
-                        dateLabel: _dayOfMonthLabel(booking?['booking_date']),
-                        selected: true,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    const Expanded(
-                      child: _DateChip(dayLabel: 'TUE', dateLabel: '21'),
-                    ),
-                    const SizedBox(width: 8),
-                    const Expanded(
-                      child: _DateChip(dayLabel: 'WED', dateLabel: '22'),
-                    ),
-                    const SizedBox(width: 8),
-                    const Expanded(
-                      child: _DateChip(dayLabel: 'THU', dateLabel: '23'),
-                    ),
-                    const SizedBox(width: 8),
-                    const Expanded(
-                      child: _DateChip(dayLabel: 'FRI', dateLabel: '24'),
-                    ),
-                  ],
+                  children: visibleDates
+                      .map(
+                        (date) => Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              right: date == visibleDates.last ? 0 : 8,
+                            ),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(18),
+                              onTap: () {
+                                setState(() {
+                                  _selectedDate = date;
+                                });
+                              },
+                              child: _DateChip(
+                                dayLabel: _weekdayChipLabel(date),
+                                dateLabel: _dayOfMonthLabel(date),
+                                selected: _isSameDate(_selectedDate, date),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                      .toList(growable: false),
                 ),
                 const SizedBox(height: 22),
                 Text(
@@ -1269,21 +1526,33 @@ class AmenityBookingScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Wrap(
-                  spacing: 10,
-                  runSpacing: 10,
-                  children: [
-                    const _TimeChip(label: '06:00 - 08:00'),
-                    _TimeChip(
-                      label:
-                          booking?['time_slot'] as String? ?? '10:00 - 12:00',
-                      selected: true,
-                    ),
-                    const _TimeChip(label: '14:00 - 16:00'),
-                    const _TimeChip(label: '16:00 - 18:00'),
-                    const _TimeChip(label: '20:00 - 22:00'),
-                  ],
-                ),
+                if (slotLabels.isEmpty)
+                  const AvenueCard(
+                    padding: EdgeInsets.all(18),
+                    radius: 26,
+                    child: Text('No booking slots have been configured for this amenity yet.'),
+                  )
+                else
+                  Wrap(
+                    spacing: 10,
+                    runSpacing: 10,
+                    children: slotLabels
+                        .map(
+                          (label) => InkWell(
+                            borderRadius: BorderRadius.circular(18),
+                            onTap: () {
+                              setState(() {
+                                _selectedTimeSlot = label;
+                              });
+                            },
+                            child: _TimeChip(
+                              label: label,
+                              selected: selectedTimeSlot == label,
+                            ),
+                          ),
+                        )
+                        .toList(growable: false),
+                  ),
                 const SizedBox(height: 18),
                 AvenueCard(
                   padding: const EdgeInsets.all(18),
@@ -1307,19 +1576,39 @@ class AmenityBookingScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const _CounterButton(icon: Icons.remove_rounded),
+                      InkWell(
+                        onTap: _guestCount <= 1
+                            ? null
+                            : () {
+                                setState(() {
+                                  _guestCount -= 1;
+                                });
+                              },
+                        borderRadius: BorderRadius.circular(999),
+                        child: const _CounterButton(icon: Icons.remove_rounded),
+                      ),
                       Container(
                         width: 54,
                         alignment: Alignment.center,
                         child: Text(
-                          guestCount.padLeft(2, '0'),
+                          _guestCount.toString().padLeft(2, '0'),
                           style: Theme.of(context).textTheme.headlineMedium
                               ?.copyWith(fontWeight: FontWeight.w800),
                         ),
                       ),
-                      const _CounterButton(
-                        icon: Icons.add_rounded,
-                        filled: true,
+                      InkWell(
+                        onTap: _guestCount >= 4
+                            ? null
+                            : () {
+                                setState(() {
+                                  _guestCount += 1;
+                                });
+                              },
+                        borderRadius: BorderRadius.circular(999),
+                        child: const _CounterButton(
+                          icon: Icons.add_rounded,
+                          filled: true,
+                        ),
                       ),
                     ],
                   ),
@@ -1347,38 +1636,18 @@ class AmenityBookingScreen extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 14),
-                      const _BulletLine(
-                        text:
-                            'Residents must carry their digital ID for verification at the entrance.',
-                      ),
-                      const SizedBox(height: 10),
-                      const _BulletLine(
-                        text:
-                            'No glassware or breakable containers allowed in the pool area.',
-                      ),
-                      const SizedBox(height: 10),
-                      const _BulletLine(
-                        text:
-                            'Personal towels are mandatory; pool-side service is currently unavailable.',
-                      ),
-                      const SizedBox(height: 10),
-                      const _BulletLine(
-                        text:
-                            'Shower is mandatory before entering the pool water.',
-                      ),
-                      const SizedBox(height: 10),
-                      const _BulletLine(
-                        text:
-                            'Cancellations must be made at least 2 hours in advance.',
+                      ..._amenityRules(amenity).map(
+                        (rule) => Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: _BulletLine(text: rule),
+                        ),
                       ),
                       const SizedBox(height: 18),
                       const Divider(height: 1),
                       const SizedBox(height: 14),
                       _BookingSummaryRow(
                         label: 'Booking Fee',
-                        value: bookingFee == null
-                            ? 'Complimentary'
-                            : _currencyLabel(bookingFee),
+                        value: 'Complimentary',
                       ),
                       const SizedBox(height: 6),
                       _BookingSummaryRow(
@@ -1394,9 +1663,7 @@ class AmenityBookingScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        bookingFee == null
-                            ? _currencyLabel(0)
-                            : _currencyLabel(bookingFee),
+                        _currencyLabel(0),
                         style: Theme.of(
                           context,
                         ).textTheme.displayMedium?.copyWith(fontSize: 26),
@@ -1408,19 +1675,72 @@ class AmenityBookingScreen extends StatelessWidget {
                 AvenuePrimaryButton(
                   label: 'Confirm Booking',
                   icon: Icons.check_circle_rounded,
-                  onPressed: () {},
+                  onPressed: () async {
+                    final amenityId = amenity?['id']?.toString();
+                    if (amenityId == null) {
+                      return;
+                    }
+                    if (selectedTimeSlot == null) {
+                      showAvenueDialogMessage(
+                        context,
+                        message: 'No booking slots are currently available for this amenity.',
+                        type: AvenueMessageType.error,
+                      );
+                      return;
+                    }
+                    Map<String, dynamic>? result;
+                    String? errorMessage;
+                    try {
+                      result = await repository.createAmenityBooking(
+                        amenityId: amenityId,
+                        bookingDate: _selectedDate,
+                        timeSlot: selectedTimeSlot,
+                        guestCount: _guestCount,
+                      );
+                    } catch (error) {
+                      result = null;
+                      errorMessage = _friendlySupabaseMessage(error);
+                    }
+                    if (!context.mounted) {
+                      return;
+                    }
+                    if (result == null) {
+                      showAvenueDialogMessage(
+                        context,
+                        message:
+                            errorMessage ??
+                            'Could not confirm booking right now.',
+                        type: AvenueMessageType.error,
+                      );
+                      return;
+                    }
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Amenity booking confirmed.'),
+                      ),
+                    );
+                    if (mounted) {
+                      Navigator.of(context).pop(true);
+                    }
+                  },
                 ),
               ],
             ),
           );
         },
       ),
+      bottomNavigation: AvenueBottomNavigationBar(
+        items: _residentNavItems,
+        currentPage: AppPage.amenities,
+      ),
     );
   }
 }
 
 class AmenityDetailsGymScreen extends StatelessWidget {
-  const AmenityDetailsGymScreen({super.key});
+  const AmenityDetailsGymScreen({super.key, this.initialAmenity});
+
+  final Map<String, dynamic>? initialAmenity;
 
   @override
   Widget build(BuildContext context) {
@@ -1428,7 +1748,7 @@ class AmenityDetailsGymScreen extends StatelessWidget {
 
     return AvenueScaffold(
       topBar: AvenueTopBar(
-        title: 'AmenityDetails',
+        title: 'Amenity Details',
         leading: AvenueIconButton(
           icon: Icons.arrow_back_ios_new_rounded,
           onPressed: () => goBackOrHome(context),
@@ -1442,14 +1762,25 @@ class AmenityDetailsGymScreen extends StatelessWidget {
       body: FutureBuilder<_AmenitiesData>(
         future: _AmenitiesData.load(repository),
         builder: (context, snapshot) {
-          final gym = snapshot.data?.gymAmenity;
+          final amenity = initialAmenity ?? snapshot.data?.gymAmenity;
+          final capacityPercent =
+              int.tryParse('${amenity?['capacity_percent'] ?? 0}') ?? 0;
+          final occupancyValue =
+              (capacityPercent.clamp(0, 100) as num).toDouble() / 100;
+          final bookingRequired = amenity?['booking_required'] != false;
+          final availableNow = amenity?['available_now'] == true;
+          final rules = _amenityRules(amenity);
 
           return _ResidentScrollView(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
             child: Column(
               children: [
                 _HeroImageCard(
-                  imageUrl: gym?['image_url'] as String? ?? _gymDetailImageUrl,
+                  imageUrl:
+                      amenity?['image_url'] as String? ??
+                      (amenity == null
+                          ? _gymDetailImageUrl
+                          : _amenityFallbackImage(amenity)),
                   height: 260,
                   borderRadius: 32,
                   child: Padding(
@@ -1457,37 +1788,45 @@ class AmenityDetailsGymScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
                           children: [
                             AvenuePill(
-                              label: gym?['status_label'] as String? ?? 'BUSY',
+                              label:
+                                  amenity?['status_label'] as String? ??
+                                  'AVAILABLE',
                               backgroundColor: _amenityStatusBackground(
-                                gym?['status_label'] as String?,
+                                amenity?['status_label'] as String?,
                               ),
                               foregroundColor: _amenityStatusForeground(
-                                gym?['status_label'] as String?,
+                                amenity?['status_label'] as String?,
                               ),
                             ),
-                            const SizedBox(width: 8),
-                            const AvenuePill(
-                              label: 'LVL 4',
-                              backgroundColor: Color(0x33000000),
+                            AvenuePill(
+                              label:
+                                  amenity?['location_label'] as String? ??
+                                  'Avenue360',
+                              backgroundColor: const Color(0x33000000),
                               foregroundColor: Colors.white,
                             ),
                           ],
                         ),
                         const Spacer(),
                         Text(
-                          gym?['name'] as String? ?? 'Modern Gym',
+                          amenity?['name'] as String? ?? 'Modern Gym',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.displayMedium
                               ?.copyWith(color: Colors.white, fontSize: 22),
                         ),
+                        const SizedBox(height: 16),
                       ],
                     ),
                   ),
                 ),
                 Transform.translate(
-                  offset: const Offset(0, -22),
+                  offset: const Offset(0, -8),
                   child: AvenueCard(
                     radius: 32,
                     padding: const EdgeInsets.fromLTRB(20, 22, 20, 20),
@@ -1495,7 +1834,7 @@ class AmenityDetailsGymScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          gym?['description'] as String? ??
+                          amenity?['description'] as String? ??
                               'Elevate your wellness journey in our state-of-the-art fitness center.',
                           style: Theme.of(context).textTheme.bodyLarge
                               ?.copyWith(
@@ -1505,20 +1844,29 @@ class AmenityDetailsGymScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 18),
                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               'Live Occupancy',
                               style: Theme.of(context).textTheme.titleMedium
                                   ?.copyWith(fontWeight: FontWeight.w800),
                             ),
-                            const Spacer(),
-                            Text(
-                              gym?['occupancy_note'] as String? ?? '80% Full',
-                              style: Theme.of(context).textTheme.titleMedium
-                                  ?.copyWith(
-                                    color: AvenueColors.primary,
-                                    fontWeight: FontWeight.w800,
-                                  ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                amenity?['occupancy_note'] as String? ??
+                                    (capacityPercent > 0
+                                        ? '$capacityPercent% Full'
+                                        : 'Open Now'),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.right,
+                                style: Theme.of(context).textTheme.titleMedium
+                                    ?.copyWith(
+                                      color: AvenueColors.primary,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                              ),
                             ),
                           ],
                         ),
@@ -1526,7 +1874,7 @@ class AmenityDetailsGymScreen extends StatelessWidget {
                         ClipRRect(
                           borderRadius: BorderRadius.circular(999),
                           child: LinearProgressIndicator(
-                            value: 0.8,
+                            value: occupancyValue,
                             minHeight: 8,
                             backgroundColor: AvenueColors.surfaceHigh,
                             valueColor: const AlwaysStoppedAnimation(
@@ -1536,76 +1884,130 @@ class AmenityDetailsGymScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          gym?['availability_text'] as String? ??
+                          amenity?['availability_text'] as String? ??
                               'Peak hours expected until 8:00 PM',
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                         const SizedBox(height: 18),
-                        const Row(
+                        Row(
                           children: [
                             Expanded(
                               child: _InfoMiniCard(
                                 icon: Icons.schedule_rounded,
-                                title: 'Operating\nHours',
-                                subtitle: 'Daily\n6:00 AM - 10:00 PM',
+                                title: 'Availability',
+                                subtitle:
+                                    amenity?['availability_text'] as String? ??
+                                    'Daily access',
                               ),
                             ),
-                            SizedBox(width: 12),
+                            const SizedBox(width: 12),
                             Expanded(
                               child: _InfoMiniCard(
-                                icon: Icons.flash_on_rounded,
-                                title: 'Peak Time',
-                                subtitle: 'Evenings\n5:00 PM - 8:00 PM',
+                                icon: Icons.place_rounded,
+                                title: 'Location',
+                                subtitle:
+                                    amenity?['location_label'] as String? ??
+                                    'Avenue360',
                               ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 18),
                         Text(
-                          'Amenities & Equipment',
+                          'Access & Rules',
                           style: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(fontWeight: FontWeight.w800),
                         ),
                         const SizedBox(height: 14),
-                        const Wrap(
+                        Wrap(
                           spacing: 12,
                           runSpacing: 12,
                           children: [
                             _EquipmentChip(
-                              icon: Icons.directions_run_rounded,
-                              label: 'CARDIO',
+                              icon: _amenityIconForCategory(
+                                amenity?['category'] as String?,
+                              ),
+                              label:
+                                  (amenity?['category'] as String? ?? 'Amenity')
+                                      .toUpperCase(),
                             ),
                             _EquipmentChip(
-                              icon: Icons.fitness_center_rounded,
-                              label: 'WEIGHTS',
+                              icon: bookingRequired
+                                  ? Icons.event_available_rounded
+                                  : Icons.verified_rounded,
+                              label: bookingRequired
+                                  ? 'BOOKING'
+                                  : 'OPEN ACCESS',
                             ),
-                            _EquipmentChip(
-                              icon: Icons.self_improvement_rounded,
-                              label: 'YOGA AREA',
-                            ),
-                            _EquipmentChip(
-                              icon: Icons.lock_outline_rounded,
-                              label: 'LOCKERS',
-                            ),
+                            if ((amenity?['access_note'] as String?)
+                                    ?.isNotEmpty ==
+                                true)
+                              const _EquipmentChip(
+                                icon: Icons.badge_rounded,
+                                label: 'ACCESS NOTE',
+                              ),
                           ],
+                        ),
+                        if ((amenity?['access_note'] as String?)?.isNotEmpty ==
+                            true) ...[
+                          const SizedBox(height: 14),
+                          Text(
+                            amenity!['access_note'] as String,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: AvenueColors.onSurfaceVariant,
+                                  height: 1.45,
+                                ),
+                          ),
+                        ],
+                        const SizedBox(height: 16),
+                        ...rules.map(
+                          (rule) => Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: _BulletLine(text: rule),
+                          ),
                         ),
                         const SizedBox(height: 24),
                         Text(
-                          'Book a Slot',
+                          bookingRequired ? 'Book a Slot' : 'Access Details',
                           style: Theme.of(context).textTheme.titleLarge
                               ?.copyWith(fontWeight: FontWeight.w800),
                         ),
                         const SizedBox(height: 8),
-                        const AvenuePill(
-                          label: 'AVAILABLE NOW',
-                          backgroundColor: Color(0x1A8FA8FF),
-                          foregroundColor: Color(0xFF6E82FF),
+                        AvenuePill(
+                          label: bookingRequired
+                              ? 'BOOKING AVAILABLE'
+                              : 'NO BOOKING REQUIRED',
+                          backgroundColor: const Color(0x1A8FA8FF),
+                          foregroundColor: const Color(0xFF6E82FF),
                         ),
                         const SizedBox(height: 14),
                         AvenuePrimaryButton(
-                          label: 'Reserve 60 Minute Session',
-                          onPressed: () =>
-                              goToPage(context, AppPage.amenityBooking),
+                          label: bookingRequired ? 'Book Now' : 'View Access',
+                          onPressed: () {
+                            if (amenity == null) {
+                              return;
+                            }
+                            if (!bookingRequired) {
+                              showAvenueDialogMessage(
+                                context,
+                                message:
+                                    'This amenity is open access and does not need a booking.',
+                                type: AvenueMessageType.info,
+                              );
+                              return;
+                            }
+                            if (!availableNow) {
+                              showAvenueDialogMessage(
+                                context,
+                                message:
+                                    'This amenity is not available for booking right now.',
+                                type: AvenueMessageType.error,
+                              );
+                              return;
+                            }
+                            _openAmenityBooking(context, amenity);
+                          },
                         ),
                       ],
                     ),
@@ -1615,6 +2017,10 @@ class AmenityDetailsGymScreen extends StatelessWidget {
             ),
           );
         },
+      ),
+      bottomNavigation: AvenueBottomNavigationBar(
+        items: _residentNavItems,
+        currentPage: AppPage.amenities,
       ),
     );
   }
@@ -2205,8 +2611,10 @@ class _CreateComplaintScreenState extends State<CreateComplaintScreen> {
       if (!mounted) {
         return;
       }
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not open photo picker.')),
+      showAvenueDialogMessage(
+        context,
+        message: 'Could not open photo picker.',
+        type: AvenueMessageType.error,
       );
     }
   }
@@ -2219,8 +2627,11 @@ class _CreateComplaintScreenState extends State<CreateComplaintScreen> {
     final title = _titleController.text.trim();
     final description = _descriptionController.text.trim();
     if (title.isEmpty || description.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Enter both title and description.')),
+      showAvenueDialogMessage(
+        context,
+        title: 'Missing details',
+        message: 'Enter both title and description.',
+        type: AvenueMessageType.error,
       );
       return;
     }
@@ -2263,8 +2674,10 @@ class _CreateComplaintScreenState extends State<CreateComplaintScreen> {
       setState(() {
         _isSubmitting = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not create complaint.')),
+      showAvenueDialogMessage(
+        context,
+        message: 'Could not create complaint.',
+        type: AvenueMessageType.error,
       );
       return;
     }
@@ -2867,6 +3280,20 @@ class _ComplaintDetailRow extends StatelessWidget {
 String _optionalText(Object? value) {
   final text = value?.toString().trim() ?? '';
   return text.isEmpty ? 'Not specified' : text;
+}
+
+String _friendlySupabaseMessage(Object error) {
+  final message = error
+      .toString()
+      .replaceFirst('PostgrestException(message: ', '')
+      .replaceFirst('Exception: ', '')
+      .trim();
+  final endIndex = message.indexOf(', code:');
+  final cleaned = endIndex == -1 ? message : message.substring(0, endIndex);
+  if (cleaned.isEmpty || cleaned.length > 160) {
+    return 'Could not complete this action right now.';
+  }
+  return cleaned;
 }
 
 class ProfileScreen extends StatelessWidget {
@@ -3653,10 +4080,11 @@ class _VisitorScreenState extends State<VisitorScreen> {
     final phone = _phoneController.text.trim();
 
     if (visitorName.isEmpty || phone.isEmpty || _expectedArrival == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Enter name, phone, and expected arrival.'),
-        ),
+      showAvenueDialogMessage(
+        context,
+        title: 'Missing details',
+        message: 'Enter name, phone, and expected arrival.',
+        type: AvenueMessageType.error,
       );
       return;
     }
@@ -3687,8 +4115,10 @@ class _VisitorScreenState extends State<VisitorScreen> {
     });
 
     if (result == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not generate visitor pass.')),
+      showAvenueDialogMessage(
+        context,
+        message: 'Could not generate visitor pass.',
+        type: AvenueMessageType.error,
       );
       return;
     }
@@ -4104,40 +4534,182 @@ class _NotificationPreviewTile extends StatelessWidget {
   }
 }
 
-class _CategoryBubble extends StatelessWidget {
-  const _CategoryBubble({
-    required this.icon,
+class _CoveFilterChip extends StatelessWidget {
+  const _CoveFilterChip({
     required this.label,
-    required this.backgroundColor,
+    required this.selected,
+    required this.onTap,
   });
 
-  final IconData icon;
   final String label;
-  final Color backgroundColor;
+  final bool selected;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return AvenueCard(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
-      radius: 18,
-      child: Column(
-        children: [
-          Container(
-            width: 42,
-            height: 42,
-            decoration: BoxDecoration(
-              color: backgroundColor,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, color: AvenueColors.onSurfaceVariant, size: 20),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(999),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 11),
+        decoration: BoxDecoration(
+          color: selected ? AvenueColors.primary : Colors.white,
+          borderRadius: BorderRadius.circular(999),
+          border: selected
+              ? null
+              : Border.all(
+                  color: AvenueColors.outlineVariant.withValues(alpha: 0.5),
+                ),
+          boxShadow: selected
+              ? const [
+                  BoxShadow(
+                    color: Color(0x22005BBF),
+                    blurRadius: 18,
+                    offset: Offset(0, 8),
+                  ),
+                ]
+              : null,
+        ),
+        child: Text(
+          label,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: selected ? Colors.white : AvenueColors.onSurfaceVariant,
+            fontWeight: FontWeight.w800,
           ),
-          const SizedBox(height: 8),
-          Text(
-            label,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: AvenueColors.onSurfaceVariant,
+        ),
+      ),
+    );
+  }
+}
+
+class _CoveAmenityHubCard extends StatelessWidget {
+  const _CoveAmenityHubCard({
+    required this.amenity,
+    required this.onDetails,
+  });
+
+  final Map<String, dynamic> amenity;
+  final VoidCallback onDetails;
+
+  @override
+  Widget build(BuildContext context) {
+    final capacity =
+        int.tryParse('${amenity['capacity_percent'] ?? 0}')?.clamp(0, 100) ?? 0;
+    final status = amenity['status_label'] as String? ?? 'OPEN NOW';
+    return AvenueCard(
+      radius: 32,
+      padding: EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GestureDetector(
+            onTap: onDetails,
+            child: _HeroImageCard(
+              imageUrl:
+                  amenity['image_url'] as String? ??
+                  _amenityFallbackImage(amenity),
+              height: 256,
+              borderRadius: 32,
+              child: Padding(
+                padding: const EdgeInsets.all(18),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AvenuePill(
+                      label: status,
+                      backgroundColor: _amenityStatusBackground(status),
+                      foregroundColor: _amenityStatusForeground(status),
+                    ),
+                    const Spacer(),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 9,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.36),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.groups_rounded,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            amenity['occupancy_note'] as String? ??
+                                '$capacity% Occupied',
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(22),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: onDetails,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          amenity['name'] as String? ?? 'Amenity',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(fontWeight: FontWeight.w900),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          amenity['location_label'] as String? ??
+                              'Avenue360 resident space',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: AvenueColors.onSurfaceVariant),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 14),
+                ElevatedButton(
+                  onPressed: onDetails,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AvenueColors.primary,
+                    foregroundColor: Colors.white,
+                    elevation: 8,
+                    shadowColor: AvenueColors.primary.withValues(alpha: 0.22),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 14,
+                    ),
+                    shape: const StadiumBorder(),
+                  ),
+                  child: Text(
+                    'View Details',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -4146,126 +4718,34 @@ class _CategoryBubble extends StatelessWidget {
   }
 }
 
-class _AmenityCard extends StatelessWidget {
-  const _AmenityCard({
-    required this.imageUrl,
-    required this.status,
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-    required this.primaryActionLabel,
-    required this.onTap,
-    this.statusBackground = const Color(0x22000000),
-    this.statusForeground = Colors.white,
-    this.outlinedButton = false,
-  });
+String _weekdayChipLabel(DateTime value) {
+  const labels = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+  return labels[value.weekday - 1];
+}
 
-  final String imageUrl;
-  final String status;
-  final String title;
-  final String subtitle;
-  final IconData icon;
-  final String primaryActionLabel;
-  final VoidCallback onTap;
-  final Color statusBackground;
-  final Color statusForeground;
-  final bool outlinedButton;
+bool _isSameDate(DateTime left, DateTime right) {
+  return left.year == right.year &&
+      left.month == right.month &&
+      left.day == right.day;
+}
 
-  @override
-  Widget build(BuildContext context) {
-    return AvenueCard(
-      radius: 18,
-      padding: EdgeInsets.zero,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _HeroImageCard(
-            imageUrl: imageUrl,
-            height: 156,
-            borderRadius: 18,
-            child: Align(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: AvenuePill(
-                  label: status,
-                  backgroundColor: statusBackground,
-                  foregroundColor: statusForeground,
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            title,
-                            style: Theme.of(context).textTheme.titleLarge
-                                ?.copyWith(fontWeight: FontWeight.w800),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            subtitle,
-                            style: Theme.of(context).textTheme.bodySmall
-                                ?.copyWith(
-                                  color: AvenueColors.onSurfaceVariant,
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      width: 30,
-                      height: 30,
-                      decoration: const BoxDecoration(
-                        color: AvenueColors.surfaceLow,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(icon, size: 16, color: AvenueColors.primary),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                if (outlinedButton)
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton(
-                      onPressed: onTap,
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: AvenueColors.primary,
-                        shape: const StadiumBorder(),
-                        side: BorderSide(
-                          color: AvenueColors.outlineVariant.withValues(
-                            alpha: 0.5,
-                          ),
-                        ),
-                      ),
-                      child: Text(primaryActionLabel),
-                    ),
-                  )
-                else
-                  AvenuePrimaryButton(
-                    label: primaryActionLabel,
-                    onPressed: onTap,
-                    height: 42,
-                    fontSize: 14,
-                  ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+String _amenityTimeSlotLabel(Map<String, dynamic> row) {
+  final start = _timeValueLabel(row['start_time']);
+  final end = _timeValueLabel(row['end_time']);
+  if (start.isEmpty || end.isEmpty) {
+    return '';
   }
+
+  return '$start - $end';
+}
+
+String _timeValueLabel(dynamic value) {
+  final raw = value?.toString().trim() ?? '';
+  if (raw.length >= 5 && raw.contains(':')) {
+    return raw.substring(0, 5);
+  }
+
+  return raw;
 }
 
 class _HeroImageCard extends StatelessWidget {

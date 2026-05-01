@@ -128,6 +128,557 @@ begin
 end;
 $$;
 
+drop function if exists public.create_admin_amenity(uuid, text, text, text, text, text, text, text, integer, boolean, text, text, text[]);
+
+create or replace function public.create_admin_amenity(
+  p_admin_user_id uuid,
+  p_name text,
+  p_category text,
+  p_description text,
+  p_location_label text,
+  p_status_label text default 'OPEN',
+  p_availability_text text default null,
+  p_occupancy_note text default null,
+  p_capacity_percent integer default 0,
+  p_booking_required boolean default true,
+  p_image_url text default null,
+  p_access_note text default null,
+  p_rules text[] default '{}',
+  p_time_slots jsonb default '[]'::jsonb
+)
+returns table (
+  amenity_id uuid,
+  code text,
+  name text,
+  status_label text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_admin_exists boolean;
+  v_amenity_id uuid;
+  v_code text := lower(regexp_replace(trim(p_name), '[^a-zA-Z0-9]+', '-', 'g'));
+  v_slot_record jsonb;
+  v_slot_order bigint;
+  v_start_text text;
+  v_end_text text;
+  v_capacity_text text;
+  v_capacity integer;
+begin
+  select exists (
+    select 1
+    from public.app_users
+    where id = p_admin_user_id
+      and role = 'admin'
+  )
+  into v_admin_exists;
+
+  if not v_admin_exists then
+    raise exception 'Only an admin user can create amenities.';
+  end if;
+
+  v_code := trim(both '-' from v_code);
+  if v_code = '' then
+    v_code := 'amenity-' || lower(substr(replace(gen_random_uuid()::text, '-', ''), 1, 8));
+  end if;
+
+  if exists (
+    select 1
+    from public.amenities amenity_record
+    where amenity_record.code = v_code
+  ) then
+    raise exception 'An amenity named "%" already exists. Choose a different name.', trim(p_name);
+  end if;
+
+  insert into public.amenities (
+    code,
+    name,
+    category,
+    description,
+    location_label,
+    availability_text,
+    occupancy_note,
+    status_label,
+    cta_label,
+    image_url,
+    available_now,
+    booking_required,
+    capacity_percent,
+    access_note,
+    rules,
+    sort_order,
+    created_at
+  )
+  values (
+    v_code,
+    trim(p_name),
+    trim(p_category),
+    trim(p_description),
+    trim(p_location_label),
+    nullif(trim(coalesce(p_availability_text, '')), ''),
+    nullif(trim(coalesce(p_occupancy_note, '')), ''),
+    upper(trim(coalesce(p_status_label, 'OPEN'))),
+    case when coalesce(p_booking_required, true) then 'Reserve' else 'View Details' end,
+    nullif(trim(coalesce(p_image_url, '')), ''),
+    upper(trim(coalesce(p_status_label, 'OPEN'))) in ('OPEN', 'AVAILABLE', 'ACTIVE'),
+    coalesce(p_booking_required, true),
+    greatest(0, least(100, coalesce(p_capacity_percent, 0))),
+    nullif(trim(coalesce(p_access_note, '')), ''),
+    coalesce(p_rules, '{}'),
+    99,
+    now()
+  )
+  returning id into v_amenity_id;
+
+  for v_slot_record, v_slot_order in
+    select slot_record, slot_order
+    from jsonb_array_elements(coalesce(p_time_slots, '[]'::jsonb)) with ordinality as slot_data(slot_record, slot_order)
+  loop
+    v_start_text := trim(coalesce(v_slot_record->>'start_time', ''));
+    v_end_text := trim(coalesce(v_slot_record->>'end_time', ''));
+    v_capacity_text := trim(coalesce(v_slot_record->>'capacity', '1'));
+
+    if v_start_text = '' or v_end_text = '' then
+      continue;
+    end if;
+
+    if v_start_text !~ '^([01][0-9]|2[0-3]):[0-5][0-9]$'
+       or v_end_text !~ '^([01][0-9]|2[0-3]):[0-5][0-9]$' then
+      raise exception 'Invalid time slot format. Use HH:MM values, for example 08:00.';
+    end if;
+
+    if v_capacity_text !~ '^[0-9]+$' then
+      raise exception 'Invalid slot capacity. Use numeric values only.';
+    end if;
+
+    v_capacity := greatest(1, least(200, v_capacity_text::integer));
+
+    insert into public.amenity_time_slots (
+      amenity_id,
+      start_time,
+      end_time,
+      slot_capacity,
+      is_active,
+      sort_order,
+      created_at
+    )
+    values (
+      v_amenity_id,
+      v_start_text::time,
+      v_end_text::time,
+      v_capacity,
+      true,
+      greatest(v_slot_order::integer - 1, 0),
+      now()
+    );
+  end loop;
+
+  return query
+  select
+    v_amenity_id,
+    v_code,
+    trim(p_name),
+    upper(trim(coalesce(p_status_label, 'OPEN')));
+end;
+$$;
+
+create or replace function public.update_admin_amenity(
+  p_admin_user_id uuid,
+  p_amenity_id uuid,
+  p_name text,
+  p_category text,
+  p_description text,
+  p_location_label text,
+  p_status_label text default 'OPEN',
+  p_availability_text text default null,
+  p_occupancy_note text default null,
+  p_capacity_percent integer default 0,
+  p_booking_required boolean default true,
+  p_image_url text default null,
+  p_access_note text default null,
+  p_rules text[] default '{}',
+  p_time_slots jsonb default '[]'::jsonb
+)
+returns table (
+  amenity_id uuid,
+  code text,
+  name text,
+  status_label text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_admin_exists boolean;
+  v_amenity public.amenities%rowtype;
+  v_slot_record jsonb;
+  v_slot_order bigint;
+  v_start_text text;
+  v_end_text text;
+  v_capacity_text text;
+  v_capacity integer;
+  v_status text := upper(trim(coalesce(p_status_label, 'OPEN')));
+begin
+  select exists (
+    select 1
+    from public.app_users
+    where id = p_admin_user_id
+      and role = 'admin'
+  )
+  into v_admin_exists;
+
+  if not v_admin_exists then
+    raise exception 'Only an admin user can update amenities.';
+  end if;
+
+  select *
+  into v_amenity
+  from public.amenities
+  where id = p_amenity_id
+  limit 1;
+
+  if v_amenity.id is null then
+    raise exception 'Amenity was not found.';
+  end if;
+
+  update public.amenities
+  set
+    name = trim(p_name),
+    category = trim(p_category),
+    description = trim(p_description),
+    location_label = trim(p_location_label),
+    availability_text = nullif(trim(coalesce(p_availability_text, '')), ''),
+    occupancy_note = nullif(trim(coalesce(p_occupancy_note, '')), ''),
+    status_label = v_status,
+    cta_label = case when coalesce(p_booking_required, true) then 'Reserve' else 'View Details' end,
+    image_url = nullif(trim(coalesce(p_image_url, '')), ''),
+    available_now = v_status in ('OPEN', 'AVAILABLE', 'ACTIVE'),
+    booking_required = coalesce(p_booking_required, true),
+    capacity_percent = greatest(0, least(100, coalesce(p_capacity_percent, 0))),
+    access_note = nullif(trim(coalesce(p_access_note, '')), ''),
+    rules = coalesce(p_rules, '{}')
+  where id = p_amenity_id;
+
+  delete from public.amenity_time_slots time_slot_record
+  where time_slot_record.amenity_id = p_amenity_id;
+
+  for v_slot_record, v_slot_order in
+    select slot_record, slot_order
+    from jsonb_array_elements(coalesce(p_time_slots, '[]'::jsonb)) with ordinality as slot_data(slot_record, slot_order)
+  loop
+    v_start_text := trim(coalesce(v_slot_record->>'start_time', ''));
+    v_end_text := trim(coalesce(v_slot_record->>'end_time', ''));
+    v_capacity_text := trim(coalesce(v_slot_record->>'capacity', '1'));
+
+    if v_start_text = '' or v_end_text = '' then
+      continue;
+    end if;
+
+    if v_start_text !~ '^([01][0-9]|2[0-3]):[0-5][0-9]$'
+       or v_end_text !~ '^([01][0-9]|2[0-3]):[0-5][0-9]$' then
+      raise exception 'Invalid time slot format. Use HH:MM values, for example 08:00.';
+    end if;
+
+    if v_capacity_text !~ '^[0-9]+$' then
+      raise exception 'Invalid slot capacity. Use numeric values only.';
+    end if;
+
+    v_capacity := greatest(1, least(200, v_capacity_text::integer));
+
+    insert into public.amenity_time_slots (
+      amenity_id,
+      start_time,
+      end_time,
+      slot_capacity,
+      is_active,
+      sort_order,
+      created_at
+    )
+    values (
+      p_amenity_id,
+      v_start_text::time,
+      v_end_text::time,
+      v_capacity,
+      true,
+      greatest(v_slot_order::integer - 1, 0),
+      now()
+    );
+  end loop;
+
+  return query
+  select
+    updated_amenity.id,
+    updated_amenity.code,
+    updated_amenity.name,
+    updated_amenity.status_label
+  from public.amenities updated_amenity
+  where updated_amenity.id = p_amenity_id;
+end;
+$$;
+
+create or replace function public.update_admin_amenity_status(
+  p_admin_user_id uuid,
+  p_amenity_id uuid,
+  p_status_label text
+)
+returns table (
+  amenity_id uuid,
+  code text,
+  name text,
+  status_label text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_admin_exists boolean;
+  v_status text := upper(trim(coalesce(p_status_label, 'OPEN')));
+begin
+  select exists (
+    select 1
+    from public.app_users
+    where id = p_admin_user_id
+      and role = 'admin'
+  )
+  into v_admin_exists;
+
+  if not v_admin_exists then
+    raise exception 'Only an admin user can update amenities.';
+  end if;
+
+  if not exists (
+    select 1
+    from public.amenities
+    where id = p_amenity_id
+  ) then
+    raise exception 'Amenity was not found.';
+  end if;
+
+  update public.amenities
+  set
+    status_label = v_status,
+    available_now = v_status in ('OPEN', 'AVAILABLE', 'ACTIVE')
+  where id = p_amenity_id;
+
+  return query
+  select
+    updated_amenity.id,
+    updated_amenity.code,
+    updated_amenity.name,
+    updated_amenity.status_label
+  from public.amenities updated_amenity
+  where updated_amenity.id = p_amenity_id;
+end;
+$$;
+
+create or replace function public.create_admin_service_provider(
+  p_admin_user_id uuid,
+  p_full_name text,
+  p_specialty text,
+  p_phone text,
+  p_experience_label text default null,
+  p_availability_status text default 'available',
+  p_rating numeric default 4.8,
+  p_jobs_completed integer default 0,
+  p_image_url text default null,
+  p_notes text default null
+)
+returns table (
+  service_provider_id uuid,
+  full_name text,
+  specialty text,
+  availability_status text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_admin_exists boolean;
+  v_provider_id uuid;
+begin
+  select exists (
+    select 1
+    from public.app_users
+    where id = p_admin_user_id
+      and role = 'admin'
+  )
+  into v_admin_exists;
+
+  if not v_admin_exists then
+    raise exception 'Only an admin user can create service providers.';
+  end if;
+
+  insert into public.service_providers (
+    full_name,
+    specialty,
+    phone,
+    experience_label,
+    availability_status,
+    rating,
+    jobs_completed,
+    image_url,
+    notes,
+    created_at
+  )
+  values (
+    trim(p_full_name),
+    trim(p_specialty),
+    trim(p_phone),
+    nullif(trim(coalesce(p_experience_label, '')), ''),
+    lower(trim(coalesce(p_availability_status, 'available'))),
+    coalesce(p_rating, 4.8),
+    greatest(coalesce(p_jobs_completed, 0), 0),
+    nullif(trim(coalesce(p_image_url, '')), ''),
+    nullif(trim(coalesce(p_notes, '')), ''),
+    now()
+  )
+  returning id into v_provider_id;
+
+  return query
+  select
+    v_provider_id,
+    trim(p_full_name),
+    trim(p_specialty),
+    lower(trim(coalesce(p_availability_status, 'available')));
+end;
+$$;
+
+drop function if exists public.create_amenity_booking(uuid, uuid, date, text, integer);
+
+create or replace function public.create_amenity_booking(
+  p_user_id uuid,
+  p_amenity_id uuid,
+  p_booking_date date,
+  p_time_slot text,
+  p_guest_count integer default 1
+)
+returns table (
+  booking_id uuid,
+  amenity_id uuid,
+  booking_date date,
+  time_slot text,
+  booking_status text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_booking_id uuid;
+  v_user_is_resident boolean;
+  v_amenity record;
+  v_clean_time_slot text := trim(coalesce(p_time_slot, ''));
+  v_guest_count integer := coalesce(p_guest_count, 1);
+begin
+  if p_user_id is null then
+    raise exception 'Please sign in before booking an amenity.';
+  end if;
+
+  select exists (
+    select 1
+    from public.app_users
+    where id = p_user_id
+      and role = 'resident'
+      and status = 'active'
+  )
+  into v_user_is_resident;
+
+  if not v_user_is_resident then
+    raise exception 'Only active residents can book amenities.';
+  end if;
+
+  select
+    a.id,
+    a.name,
+    a.available_now,
+    a.booking_required,
+    a.status_label
+  into v_amenity
+  from public.amenities a
+  where a.id = p_amenity_id
+  limit 1;
+
+  if v_amenity.id is null then
+    raise exception 'Amenity was not found.';
+  end if;
+
+  if not coalesce(v_amenity.booking_required, true) then
+    raise exception '% does not require booking.', v_amenity.name;
+  end if;
+
+  if not coalesce(v_amenity.available_now, false)
+     or lower(coalesce(v_amenity.status_label, '')) in ('maintenance', 'closed', 'reserved') then
+    raise exception '% is not available for booking right now.', v_amenity.name;
+  end if;
+
+  if p_booking_date < current_date then
+    raise exception 'Please choose today or a future date.';
+  end if;
+
+  if p_booking_date > current_date + 30 then
+    raise exception 'Amenity bookings can only be made up to 30 days in advance.';
+  end if;
+
+  if v_clean_time_slot = '' then
+    raise exception 'Please choose a time slot.';
+  end if;
+
+  if v_guest_count < 0 or v_guest_count > 4 then
+    raise exception 'Guest count must be between 0 and 4.';
+  end if;
+
+  if exists (
+    select 1
+    from public.amenity_bookings booking
+    where booking.user_id = p_user_id
+      and booking.amenity_id = p_amenity_id
+      and booking.booking_date = p_booking_date
+      and lower(trim(booking.time_slot)) = lower(v_clean_time_slot)
+      and booking.booking_status in ('confirmed', 'pending')
+  ) then
+    raise exception 'You already booked this amenity for the selected date and time.';
+  end if;
+
+  insert into public.amenity_bookings (
+    user_id,
+    amenity_id,
+    booking_date,
+    time_slot,
+    guest_count,
+    booking_status,
+    booking_fee,
+    created_at
+  )
+  values (
+    p_user_id,
+    p_amenity_id,
+    p_booking_date,
+    v_clean_time_slot,
+    v_guest_count,
+    'confirmed',
+    0,
+    now()
+  )
+  returning id into v_booking_id;
+
+  return query
+  select
+    v_booking_id,
+    p_amenity_id,
+    p_booking_date,
+    v_clean_time_slot,
+    'confirmed';
+exception
+  when unique_violation then
+    raise exception 'You already booked this amenity for the selected date and time.';
+end;
+$$;
+
 drop function if exists public.create_resident_complaint(uuid, text, text, text, text);
 
 create or replace function public.create_resident_complaint(
@@ -1206,6 +1757,11 @@ order by vp.expected_arrival asc;
 
 grant execute on function public.create_resident_app_user(text, text, text, text, public.resident_kind, text, text) to anon, authenticated;
 grant execute on function public.create_visitor_pass(uuid, text, text, public.visitor_kind, timestamptz) to anon, authenticated;
+grant execute on function public.create_admin_amenity(uuid, text, text, text, text, text, text, text, integer, boolean, text, text, text[], jsonb) to anon, authenticated;
+grant execute on function public.update_admin_amenity(uuid, uuid, text, text, text, text, text, text, text, integer, boolean, text, text, text[], jsonb) to anon, authenticated;
+grant execute on function public.update_admin_amenity_status(uuid, uuid, text) to anon, authenticated;
+grant execute on function public.create_admin_service_provider(uuid, text, text, text, text, text, numeric, integer, text, text) to anon, authenticated;
+grant execute on function public.create_amenity_booking(uuid, uuid, date, text, integer) to anon, authenticated;
 grant execute on function public.create_resident_complaint(uuid, text, text, text, text, text, text, text, text, text) to anon, authenticated;
 grant execute on function public.update_complaint_admin_status(uuid, uuid, public.complaint_state, text, text, text) to anon, authenticated;
 grant execute on function public.create_announcement(uuid, public.notice_kind, text, text, text, public.announcement_state, timestamptz) to anon, authenticated;
