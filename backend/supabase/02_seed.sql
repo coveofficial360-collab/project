@@ -46,7 +46,7 @@ values
     'active',
     null,
     'https://lh3.googleusercontent.com/aida-public/AB6AXuBg0i9YM5IEGdzLL17BoAjodnNcI3uMuhlrCCaBsSoWkHRuSTvuGGhC3LFb4q5Ebhr6wd0gKAU0tpfQsVa1Ys8kTPY4dwv5W1Rl_zaSIuSjTYx65EmI1873v2bqyYHmUjy10zff8OscnqTSqj6qLPrCX_mFqd5jOt4dcplv9SyfqD-xCFPkQzuakDhkKqvAvyELUbJ6nDQNQZ1YOlcDG4zOTMzbqZJzpihPXVJGtaro8oaY97tXbO0iD3P0D494f5t46VwIZa9jS5-3',
-    'Primary resident testing account for the Avenue360 app.'
+    'Primary resident testing account for the Cove app.'
   ),
   (
     'admin@gmail.com',
@@ -61,7 +61,7 @@ values
     'active',
     'Estate Manager',
     'https://lh3.googleusercontent.com/aida-public/AB6AXuAZdFL4zMKpNZY3_fSbha5C3gXuInFJaXecNCbr8iBFFz3_w2bT1u7sKXRKA_mGeEYUQRsvR6eYozhpVULtvbYT9UoajJMm5eOURoEbprw28WXIA5zbhb5Ox0YHGWo9VHVwLVgRHuFVLggQJLb9hR6m_XYNdwFDr9tpKVicHa-zB3dRt8pemssN2VpGkDJUE_Wkh91T9sEPQPUAyMjsHT_EyPel3i6My0wSuuSYWr8hb2rsuudulKvCjbBKLoNIPvgf9YXQ-CcHEEQ',
-    'Primary admin testing account for Avenue360 operations.'
+    'Primary admin testing account for Cove operations.'
   ),
   (
     'guard@gmail.com',
@@ -305,7 +305,7 @@ insert into public.bills (
   last_paid_on,
   action_label
 )
-select id, 'maintenance-q2', 'Quarterly Maintenance', 'Avenue360', 'maintenance', 'due', 'Due in 3 days', 2200, null, current_date + 3, null, 'Pay Now'
+select id, 'maintenance-q2', 'Quarterly Maintenance', 'Cove', 'maintenance', 'due', 'Due in 3 days', 2200, null, current_date + 3, null, 'Pay Now'
 from public.app_users
 where email = 'user@gmail.com';
 

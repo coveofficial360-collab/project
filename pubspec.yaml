@@ -1,5 +1,5 @@
 name: stitch_avenue_360_v2
-description: "A native Flutter implementation of the Avenue360 screen set."
+description: "A native Flutter implementation of the Cove screen set."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -64,16 +64,17 @@ flutter:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: assets/branding/app_icon.jpeg
-  adaptive_icon_foreground: assets/branding/app_icon.jpeg
+  remove_alpha_ios: true
+  image_path: assets/branding/app_icon.png
+  adaptive_icon_foreground: assets/branding/app_icon.png
   adaptive_icon_background: "#F4FAFF"
 
 flutter_native_splash:
   color: "#F4FAFF"
-  image: assets/branding/opening_splash.jpeg
+  image: assets/branding/opening_splash.png
   android: true
   ios: true
   web: false
   android_12:
-    image: assets/branding/opening_splash.jpeg
+    image: assets/branding/opening_splash.png
     color: "#F4FAFF"

@@ -18,7 +18,7 @@ class AvenueApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Avenue360',
+      title: 'Cove',
       debugShowCheckedModeBanner: false,
       theme: AvenueTheme.light(),
       initialRoute: supabaseBootstrap.isReady
@@ -88,7 +88,11 @@ class AvenueApp extends StatelessWidget {
               case AppPage.visitor:
                 return const VisitorScreen();
               case AppPage.drawer:
-                return const ResidentDrawerScreen();
+                return ResidentDrawerScreen(
+                  currentPage: settings.arguments is AppPage
+                      ? settings.arguments! as AppPage
+                      : AppPage.home,
+                );
               case AppPage.communityFeed:
                 return const CommunityFeedScreen();
               case AppPage.communityShareIdea:

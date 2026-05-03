@@ -80,7 +80,7 @@ class AdminDashboardScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  'Welcome back, ${currentUser?.fullName.split(' ').first ?? 'Marcus'}. Here is what is happening across Avenue360 today.',
+                  'Welcome back, ${currentUser?.fullName.split(' ').first ?? 'Marcus'}. Here is what is happening across Cove today.',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: _AdminPalette.muted,
                     height: 1.5,

@@ -407,7 +407,7 @@ class _AdminAmenityMosaicCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    '${row['location_label'] ?? 'Avenue360'} • ${row['availability_text'] ?? row['occupancy_note'] ?? 'Resident access enabled'}',
+                    '${row['location_label'] ?? 'Cove'} • ${row['availability_text'] ?? row['occupancy_note'] ?? 'Resident access enabled'}',
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(

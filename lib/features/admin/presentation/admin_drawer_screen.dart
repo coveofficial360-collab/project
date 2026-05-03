@@ -5,6 +5,14 @@ class AdminDrawerScreen extends StatelessWidget {
 
   final AppPage currentPage;
 
+  void _navigateFromDrawer(BuildContext context, AppPage targetPage) {
+    Navigator.of(context).pop();
+    if (targetPage == currentPage) {
+      return;
+    }
+    Navigator.of(context).pushReplacementNamed(targetPage.routeName);
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentUser = AppSession.instance.currentUser;
@@ -49,7 +57,7 @@ class AdminDrawerScreen extends StatelessWidget {
                       child: Row(
                         children: [
                           Text(
-                            'Avenue360',
+                            'Cove',
                             style: Theme.of(context).textTheme.headlineMedium
                                 ?.copyWith(
                                   fontWeight: FontWeight.w900,
@@ -129,20 +137,18 @@ class AdminDrawerScreen extends StatelessWidget {
                             label: 'Dashboard',
                             icon: Icons.dashboard_rounded,
                             selected: currentPage == AppPage.adminDrawer,
-                            onTap: () => goToPage(
+                            onTap: () => _navigateFromDrawer(
                               context,
                               AppPage.adminDrawer,
-                              replace: true,
                             ),
                           ),
                           _AdminDrawerNavItem(
                             label: 'Resident Directory',
                             icon: Icons.group_rounded,
                             selected: currentPage == AppPage.residentDirectory,
-                            onTap: () => goToPage(
+                            onTap: () => _navigateFromDrawer(
                               context,
                               AppPage.residentDirectory,
-                              replace: true,
                             ),
                           ),
                           _AdminDrawerNavItem(
@@ -150,67 +156,64 @@ class AdminDrawerScreen extends StatelessWidget {
                             icon: Icons.campaign_rounded,
                             selected:
                                 currentPage == AppPage.announcementsManagement,
-                            onTap: () => goToPage(
+                            onTap: () => _navigateFromDrawer(
                               context,
                               AppPage.announcementsManagement,
-                              replace: true,
                             ),
                           ),
                           _AdminDrawerNavItem(
                             label: 'Amenities',
                             icon: Icons.apartment_rounded,
                             selected: currentPage == AppPage.adminAmenities,
-                            onTap: () => goToPage(
+                            onTap: () => _navigateFromDrawer(
                               context,
                               AppPage.adminAmenities,
-                              replace: true,
                             ),
                           ),
                           _AdminDrawerNavItem(
                             label: 'Services',
                             icon: Icons.handyman_rounded,
                             selected: currentPage == AppPage.adminServices,
-                            onTap: () => goToPage(
+                            onTap: () => _navigateFromDrawer(
                               context,
                               AppPage.adminServices,
-                              replace: true,
                             ),
                           ),
                           _AdminDrawerNavItem(
                             label: 'Complaints',
                             icon: Icons.report_problem_rounded,
                             selected: currentPage == AppPage.adminComplaints,
-                            onTap: () => goToPage(
+                            onTap: () => _navigateFromDrawer(
                               context,
                               AppPage.adminComplaints,
-                              replace: true,
                             ),
                           ),
                           _AdminDrawerNavItem(
                             label: 'Community',
                             icon: Icons.forum_rounded,
                             selected: currentPage == AppPage.adminCommunity,
-                            onTap: () => goToPage(
+                            onTap: () => _navigateFromDrawer(
                               context,
                               AppPage.adminCommunity,
-                              replace: true,
                             ),
                           ),
                           _AdminDrawerNavItem(
                             label: 'Generate Reports',
                             icon: Icons.summarize_rounded,
                             selected: currentPage == AppPage.generateReports,
-                            onTap: () => goToPage(
+                            onTap: () => _navigateFromDrawer(
                               context,
                               AppPage.generateReports,
-                              replace: true,
                             ),
                           ),
                           _AdminDrawerNavItem(
                             label: 'Add Resident',
                             icon: Icons.person_add_alt_1_rounded,
                             selected: false,
-                            onTap: () => goToPage(context, AppPage.addResident),
+                            onTap: () => _navigateFromDrawer(
+                              context,
+                              AppPage.addResident,
+                            ),
                           ),
                           const SizedBox(height: 20),
                           const _AdminSupportCard(),

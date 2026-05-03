@@ -19,8 +19,8 @@ class FirebasePushConfig {
   );
   static const String iosAppId = String.fromEnvironment('FIREBASE_IOS_APP_ID');
 
-  static const String notificationChannelId = 'avenue360_announcements';
-  static const String notificationChannelName = 'Avenue360 Alerts';
+  static const String notificationChannelId = 'cove_announcements';
+  static const String notificationChannelName = 'Cove Alerts';
   static const String notificationChannelDescription =
       'Resident alerts and community announcements';
 

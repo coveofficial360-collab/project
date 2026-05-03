@@ -166,7 +166,10 @@ class _CommunityFeedScreenState extends State<CommunityFeedScreen> {
         centerTitle: false,
         leading: AvenueIconButton(
           icon: Icons.menu_rounded,
-          onPressed: () => goToPage(context, AppPage.drawer),
+          onPressed: () => Navigator.of(context).pushNamed(
+            AppPage.drawer.routeName,
+            arguments: AppPage.communityFeed,
+          ),
         ),
         titleWidget: Text(
           'Community',

@@ -630,10 +630,7 @@ class _AmenitiesData {
 }
 
 class _AmenityBookingData {
-  const _AmenityBookingData({
-    required this.amenity,
-    required this.timeSlots,
-  });
+  const _AmenityBookingData({required this.amenity, required this.timeSlots});
 
   final Map<String, dynamic>? amenity;
   final List<Map<String, dynamic>> timeSlots;
@@ -642,16 +639,14 @@ class _AmenityBookingData {
     AvenueRepository repository, {
     Map<String, dynamic>? initialAmenity,
   }) async {
-    final amenity = initialAmenity ?? await repository.fetchAmenityByCode('infinity-pool');
+    final amenity =
+        initialAmenity ?? await repository.fetchAmenityByCode('infinity-pool');
     final amenityId = amenity?['id']?.toString();
     final timeSlots = amenityId == null
         ? const <Map<String, dynamic>>[]
         : await repository.fetchAmenityTimeSlots(amenityId);
 
-    return _AmenityBookingData(
-      amenity: amenity,
-      timeSlots: timeSlots,
-    );
+    return _AmenityBookingData(amenity: amenity, timeSlots: timeSlots);
   }
 }
 
@@ -723,7 +718,25 @@ InputDecoration _sheetInputDecoration(
 }
 
 class ResidentDrawerScreen extends StatelessWidget {
-  const ResidentDrawerScreen({super.key});
+  const ResidentDrawerScreen({super.key, this.currentPage = AppPage.home});
+
+  final AppPage currentPage;
+
+  bool get _isCommunitySection =>
+      currentPage == AppPage.communityFeed ||
+      currentPage == AppPage.communityShareIdea ||
+      currentPage == AppPage.communitySuggestionDetail ||
+      currentPage == AppPage.communityMeetings ||
+      currentPage == AppPage.communityMeetingDetail ||
+      currentPage == AppPage.communitySupport;
+
+  void _navigateFromDrawer(BuildContext context, AppPage targetPage) {
+    Navigator.of(context).pop();
+    if (targetPage == currentPage) {
+      return;
+    }
+    Navigator.of(context).pushReplacementNamed(targetPage.routeName);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -794,56 +807,56 @@ class ResidentDrawerScreen extends StatelessWidget {
                     _DrawerItem(
                       label: 'Dashboard',
                       icon: Icons.dashboard_customize_rounded,
-                      selected: true,
-                      onTap: () =>
-                          goToPage(context, AppPage.home, replace: true),
+                      selected: currentPage == AppPage.home,
+                      onTap: () => _navigateFromDrawer(context, AppPage.home),
                     ),
                     const SizedBox(height: 8),
                     _DrawerItem(
                       label: 'Payments',
                       icon: Icons.payments_outlined,
-                      onTap: () =>
-                          goToPage(context, AppPage.bills, replace: true),
+                      selected: currentPage == AppPage.bills,
+                      onTap: () => _navigateFromDrawer(context, AppPage.bills),
                     ),
                     const SizedBox(height: 8),
                     _DrawerItem(
                       label: 'My Complaints',
                       icon: Icons.info_outline_rounded,
+                      selected: currentPage == AppPage.complaints,
                       onTap: () =>
-                          goToPage(context, AppPage.complaints, replace: true),
+                          _navigateFromDrawer(context, AppPage.complaints),
                     ),
                     const SizedBox(height: 8),
                     _DrawerItem(
                       label: 'Notice Board',
                       icon: Icons.campaign_outlined,
+                      selected: currentPage == AppPage.notices,
                       onTap: () =>
-                          goToPage(context, AppPage.notices, replace: true),
+                          _navigateFromDrawer(context, AppPage.notices),
                     ),
                     const SizedBox(height: 8),
                     _DrawerItem(
                       label: 'Community',
                       icon: Icons.groups_rounded,
-                      onTap: () => goToPage(
-                        context,
-                        AppPage.communityFeed,
-                        replace: true,
-                      ),
+                      selected: _isCommunitySection,
+                      onTap: () =>
+                          _navigateFromDrawer(context, AppPage.communityFeed),
                     ),
                     const SizedBox(height: 8),
                     _DrawerItem(
                       label: 'Amenities',
                       icon: Icons.pool_rounded,
+                      selected: currentPage == AppPage.amenities,
                       onTap: () =>
-                          goToPage(context, AppPage.amenities, replace: true),
+                          _navigateFromDrawer(context, AppPage.amenities),
                     ),
                     const SizedBox(height: 8),
                     _DrawerItem(
                       label: 'Support',
                       icon: Icons.help_outline,
-                      onTap: () => goToPage(
+                      selected: currentPage == AppPage.communitySupport,
+                      onTap: () => _navigateFromDrawer(
                         context,
                         AppPage.communitySupport,
-                        replace: true,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -886,11 +899,13 @@ class HomeScreen extends StatelessWidget {
 
     return AvenueScaffold(
       topBar: AvenueTopBar(
-        title: 'Avenue360',
+        title: 'Cove',
         centerTitle: false,
         leading: AvenueIconButton(
           icon: Icons.menu_rounded,
-          onPressed: () => goToPage(context, AppPage.drawer),
+          onPressed: () => Navigator.of(
+            context,
+          ).pushNamed(AppPage.drawer.routeName, arguments: AppPage.home),
         ),
         titleWidget: Row(
           children: [
@@ -901,7 +916,7 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Text(
-              'Avenue360',
+              'Cove',
               style: Theme.of(
                 context,
               ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
@@ -1400,7 +1415,7 @@ class _AmenityBookingScreenState extends State<AmenityBookingScreen> {
 
     return AvenueScaffold(
       topBar: AvenueTopBar(
-        title: 'Avenue360',
+        title: 'Cove',
         leading: AvenueIconButton(
           icon: Icons.arrow_back_ios_new_rounded,
           onPressed: () => goBackOrHome(context),
@@ -1418,13 +1433,15 @@ class _AmenityBookingScreenState extends State<AmenityBookingScreen> {
         ),
         builder: (context, snapshot) {
           final amenity = snapshot.data?.amenity;
-          final slotRows = snapshot.data?.timeSlots ?? const <Map<String, dynamic>>[];
+          final slotRows =
+              snapshot.data?.timeSlots ?? const <Map<String, dynamic>>[];
           final slotLabels = slotRows
               .where((row) => row['is_active'] != false)
               .map(_amenityTimeSlotLabel)
               .where((label) => label.isNotEmpty)
               .toList(growable: false);
-          final selectedTimeSlot = _selectedTimeSlot ??
+          final selectedTimeSlot =
+              _selectedTimeSlot ??
               (slotLabels.isNotEmpty ? slotLabels.first : null);
           final visibleDates = List<DateTime>.generate(
             5,
@@ -1455,7 +1472,7 @@ class _AmenityBookingScreenState extends State<AmenityBookingScreen> {
                         ),
                         const Spacer(),
                         Text(
-                          '${amenity?['name'] as String? ?? 'Infinity Pool'} at Avenue360',
+                          '${amenity?['name'] as String? ?? 'Infinity Pool'} at Cove',
                           style: Theme.of(context).textTheme.displayMedium
                               ?.copyWith(color: Colors.white, fontSize: 20),
                         ),
@@ -1530,7 +1547,9 @@ class _AmenityBookingScreenState extends State<AmenityBookingScreen> {
                   const AvenueCard(
                     padding: EdgeInsets.all(18),
                     radius: 26,
-                    child: Text('No booking slots have been configured for this amenity yet.'),
+                    child: Text(
+                      'No booking slots have been configured for this amenity yet.',
+                    ),
                   )
                 else
                   Wrap(
@@ -1683,7 +1702,8 @@ class _AmenityBookingScreenState extends State<AmenityBookingScreen> {
                     if (selectedTimeSlot == null) {
                       showAvenueDialogMessage(
                         context,
-                        message: 'No booking slots are currently available for this amenity.',
+                        message:
+                            'No booking slots are currently available for this amenity.',
                         type: AvenueMessageType.error,
                       );
                       return;
@@ -1806,7 +1826,7 @@ class AmenityDetailsGymScreen extends StatelessWidget {
                             AvenuePill(
                               label:
                                   amenity?['location_label'] as String? ??
-                                  'Avenue360',
+                                  'Cove',
                               backgroundColor: const Color(0x33000000),
                               foregroundColor: Colors.white,
                             ),
@@ -1907,7 +1927,7 @@ class AmenityDetailsGymScreen extends StatelessWidget {
                                 title: 'Location',
                                 subtitle:
                                     amenity?['location_label'] as String? ??
-                                    'Avenue360',
+                                    'Cove',
                               ),
                             ),
                           ],
@@ -4583,10 +4603,7 @@ class _CoveFilterChip extends StatelessWidget {
 }
 
 class _CoveAmenityHubCard extends StatelessWidget {
-  const _CoveAmenityHubCard({
-    required this.amenity,
-    required this.onDetails,
-  });
+  const _CoveAmenityHubCard({required this.amenity, required this.onDetails});
 
   final Map<String, dynamic> amenity;
   final VoidCallback onDetails;
@@ -4677,7 +4694,7 @@ class _CoveAmenityHubCard extends StatelessWidget {
                         const SizedBox(height: 5),
                         Text(
                           amenity['location_label'] as String? ??
-                              'Avenue360 resident space',
+                              'Cove resident space',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.bodyMedium

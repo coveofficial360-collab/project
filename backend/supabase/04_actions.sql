@@ -56,7 +56,7 @@ begin
     p_resident_kind,
     'active',
     p_avatar_url,
-    'Resident created from the Avenue360 admin app.'
+    'Resident created from the Cove admin app.'
   )
   returning id into v_user_id;
 
