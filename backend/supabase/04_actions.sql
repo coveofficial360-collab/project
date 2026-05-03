@@ -1016,6 +1016,8 @@ begin
 end;
 $$;
 
+drop function if exists public.create_community_suggestion(uuid, text, text, text, text, text, boolean, integer, text, text, text);
+
 create or replace function public.create_community_suggestion(
   p_user_id uuid,
   p_title text,
@@ -1027,7 +1029,8 @@ create or replace function public.create_community_suggestion(
   p_target_votes integer default 24,
   p_cover_image_url text default null,
   p_icon_name text default 'lightbulb',
-  p_accent_hex text default '#005BBF'
+  p_accent_hex text default '#005BBF',
+  p_selected_resident_ids uuid[] default '{}'
 )
 returns table (
   suggestion_id uuid,
@@ -1041,7 +1044,16 @@ set search_path = public
 as $$
 declare
   v_suggestion_id uuid;
+  v_audience_scope text := lower(trim(coalesce(p_audience_scope, 'all_residents')));
+  v_selected_count integer;
 begin
+  if v_audience_scope = 'selected_residents' then
+    v_selected_count := coalesce(array_length(p_selected_resident_ids, 1), 0);
+    if v_selected_count = 0 then
+      raise exception 'Select at least one resident for a selected audience suggestion.';
+    end if;
+  end if;
+
   insert into public.community_suggestions (
     created_by,
     title,
@@ -1065,7 +1077,7 @@ begin
     trim(p_category),
     trim(p_summary),
     trim(p_details),
-    lower(trim(coalesce(p_audience_scope, 'all_residents'))),
+    v_audience_scope,
     trim(coalesce(p_icon_name, 'lightbulb')),
     coalesce(p_accent_hex, '#005BBF'),
     nullif(trim(coalesce(p_cover_image_url, '')), ''),
@@ -1077,6 +1089,31 @@ begin
     now()
   )
   returning id into v_suggestion_id;
+
+  if v_audience_scope = 'selected_residents' then
+    if exists (
+      select 1
+      from unnest(p_selected_resident_ids) resident_id
+      left join public.app_users resident
+        on resident.id = resident_id
+      where resident.id is null
+         or resident.role <> 'resident'
+    ) then
+      raise exception 'One or more selected residents are invalid.';
+    end if;
+
+    insert into public.community_suggestion_target_residents (
+      suggestion_id,
+      resident_user_id,
+      created_at
+    )
+    select
+      v_suggestion_id,
+      resident_id,
+      now()
+    from unnest(p_selected_resident_ids) resident_id
+    on conflict on constraint community_suggestion_target_residents_pkey do nothing;
+  end if;
 
   return query
   select
@@ -1738,6 +1775,111 @@ begin
 end;
 $$;
 
+create or replace function public.set_guard_attendance(
+  p_guard_user_id uuid,
+  p_action text,
+  p_notes text default null
+)
+returns table (
+  attendance_id uuid,
+  guard_user_id uuid,
+  attendance_date date,
+  check_in_at timestamptz,
+  check_out_at timestamptz,
+  status text,
+  notes text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_action text := lower(trim(coalesce(p_action, '')));
+  v_today date := current_date;
+  v_attendance_id uuid;
+  v_check_in_at timestamptz;
+  v_check_out_at timestamptz;
+  v_status text;
+  v_notes text;
+begin
+  if not exists (
+    select 1
+    from public.app_users guard_user
+    where guard_user.id = p_guard_user_id
+      and guard_user.role = 'guard'
+      and guard_user.status = 'active'
+  ) then
+    raise exception 'Only an active guard can mark attendance.';
+  end if;
+
+  if v_action not in ('check_in', 'check_out') then
+    raise exception 'Unsupported attendance action: %', p_action;
+  end if;
+
+  insert into public.guard_attendance_logs (
+    guard_user_id,
+    attendance_date,
+    check_in_at,
+    check_out_at,
+    status,
+    notes,
+    created_at,
+    updated_at
+  )
+  values (
+    p_guard_user_id,
+    v_today,
+    case when v_action = 'check_in' then now() else null end,
+    null,
+    case when v_action = 'check_in' then 'present' else 'pending' end,
+    nullif(trim(coalesce(p_notes, '')), ''),
+    now(),
+    now()
+  )
+  on conflict on constraint guard_attendance_logs_unique_guard_day
+  do update set
+    check_in_at = case
+      when v_action = 'check_in' and public.guard_attendance_logs.check_in_at is null then now()
+      else public.guard_attendance_logs.check_in_at
+    end,
+    check_out_at = case
+      when v_action = 'check_out' then now()
+      else public.guard_attendance_logs.check_out_at
+    end,
+    status = case
+      when v_action = 'check_out' then 'completed'
+      when public.guard_attendance_logs.check_in_at is not null then public.guard_attendance_logs.status
+      else 'present'
+    end,
+    notes = coalesce(
+      nullif(trim(coalesce(p_notes, '')), ''),
+      public.guard_attendance_logs.notes
+    ),
+    updated_at = now()
+  returning
+    id,
+    public.guard_attendance_logs.check_in_at,
+    public.guard_attendance_logs.check_out_at,
+    public.guard_attendance_logs.status,
+    public.guard_attendance_logs.notes
+  into v_attendance_id, v_check_in_at, v_check_out_at, v_status, v_notes;
+
+  if v_action = 'check_out' and v_check_in_at is null then
+    raise exception 'Check-in is required before check-out.';
+  end if;
+
+  return query
+  select
+    v_attendance_id,
+    p_guard_user_id,
+    v_today,
+    v_check_in_at,
+    v_check_out_at,
+    v_status,
+    v_notes;
+end;
+$$;
+
 create or replace view public.guard_gate_activity_v as
 select
   vp.id,
@@ -1765,7 +1907,7 @@ grant execute on function public.create_amenity_booking(uuid, uuid, date, text, 
 grant execute on function public.create_resident_complaint(uuid, text, text, text, text, text, text, text, text, text) to anon, authenticated;
 grant execute on function public.update_complaint_admin_status(uuid, uuid, public.complaint_state, text, text, text) to anon, authenticated;
 grant execute on function public.create_announcement(uuid, public.notice_kind, text, text, text, public.announcement_state, timestamptz) to anon, authenticated;
-grant execute on function public.create_community_suggestion(uuid, text, text, text, text, text, boolean, integer, text, text, text) to anon, authenticated;
+grant execute on function public.create_community_suggestion(uuid, text, text, text, text, text, boolean, integer, text, text, text, uuid[]) to anon, authenticated;
 grant execute on function public.review_community_suggestion(uuid, uuid, text) to anon, authenticated;
 grant execute on function public.join_community_suggestion(uuid, uuid) to anon, authenticated;
 grant execute on function public.vote_community_suggestion(uuid, uuid, text) to anon, authenticated;
@@ -1773,6 +1915,7 @@ grant execute on function public.add_community_suggestion_comment(uuid, uuid, te
 grant execute on function public.create_guard_visitor_entry(uuid, text, text, text, text, public.visitor_kind, text) to anon, authenticated;
 grant execute on function public.process_guard_visitor_pass(uuid, uuid, text) to anon, authenticated;
 grant execute on function public.process_guard_qr_entry(uuid, text, text) to anon, authenticated;
+grant execute on function public.set_guard_attendance(uuid, text, text) to anon, authenticated;
 
 do $$
 begin

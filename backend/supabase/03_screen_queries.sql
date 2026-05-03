@@ -306,6 +306,25 @@ from public.guard_duty_logs
 where guard_user_id = (select id from public.app_users where email = 'guard@gmail.com')
 order by logged_at desc;
 
+select attendance_date, check_in_at, check_out_at, status, notes
+from public.guard_attendance_logs
+where guard_user_id = (select id from public.app_users where email = 'guard@gmail.com')
+order by attendance_date desc;
+
+select *
+from public.set_guard_attendance(
+  (select id from public.app_users where email = 'guard@gmail.com'),
+  'check_in',
+  'Shift started from main north gate.'
+);
+
+select *
+from public.set_guard_attendance(
+  (select id from public.app_users where email = 'guard@gmail.com'),
+  'check_out',
+  'Shift completed and handed over.'
+);
+
 -- Community feed, meetings, and support
 select
   title,

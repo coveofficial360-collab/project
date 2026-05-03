@@ -168,32 +168,13 @@ class _CommunityFeedScreenState extends State<CommunityFeedScreen> {
           icon: Icons.menu_rounded,
           onPressed: () => goToPage(context, AppPage.drawer),
         ),
-        titleWidget: Row(
-          children: [
-            const Icon(
-              Icons.groups_rounded,
-              color: AvenueColors.primary,
-              size: 20,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              'Community',
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
-            ),
-          ],
+        titleWidget: Text(
+          'Community',
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
         ),
         actions: [
-          AvenueIconButton(
-            icon: Icons.history_edu_rounded,
-            onPressed: () => goToPage(context, AppPage.communityMeetings),
-          ),
-          const SizedBox(width: 4),
-          AvenueIconButton(
-            icon: Icons.support_agent_rounded,
-            onPressed: () => goToPage(context, AppPage.communitySupport),
-          ),
           Padding(
             padding: const EdgeInsets.only(right: 18, left: 8),
             child: _CommunityAvatar(
@@ -217,7 +198,7 @@ class _CommunityFeedScreenState extends State<CommunityFeedScreen> {
           return RefreshIndicator(
             onRefresh: () async => _refresh(),
             child: ListView(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 110),
+              padding: const EdgeInsets.fromLTRB(20, 24, 20, 110),
               children: [
                 Row(
                   children: [
@@ -279,6 +260,8 @@ class _ShareIdeaScreenState extends State<ShareIdeaScreen> {
   final TextEditingController _summaryController = TextEditingController();
   final TextEditingController _detailsController = TextEditingController();
   String _selectedCategory = 'Amenities';
+  String _audienceScope = 'all_residents';
+  List<Map<String, dynamic>> _selectedResidents = const [];
   bool _openAsPoll = true;
   bool _isSubmitting = false;
 
@@ -313,6 +296,14 @@ class _ShareIdeaScreenState extends State<ShareIdeaScreen> {
       return;
     }
 
+    if (_audienceScope == 'selected_residents' && _selectedResidents.isEmpty) {
+      _showCommunityMessage(
+        context,
+        'Select at least one resident before submitting.',
+      );
+      return;
+    }
+
     setState(() {
       _isSubmitting = true;
     });
@@ -323,6 +314,11 @@ class _ShareIdeaScreenState extends State<ShareIdeaScreen> {
         category: _selectedCategory,
         summary: _summaryController.text,
         details: _detailsController.text,
+        audienceScope: _audienceScope,
+        selectedResidentIds: _selectedResidents
+            .map((row) => row['id']?.toString())
+            .whereType<String>()
+            .toList(),
         pollEnabled: _openAsPoll,
         iconName: _iconNameForCategory(_selectedCategory),
         accentHex: _accentHexForCategory(_selectedCategory),
@@ -337,7 +333,12 @@ class _ShareIdeaScreenState extends State<ShareIdeaScreen> {
         return;
       }
 
-      _showCommunityMessage(context, 'Your idea was sent to admin for review.');
+      _showCommunityMessage(
+        context,
+        _audienceScope == 'selected_residents'
+            ? 'Your idea was sent to selected residents and admin for review.'
+            : 'Your idea was sent to admin for review.',
+      );
       goToPage(context, AppPage.communityFeed, replace: true);
     } catch (_) {
       if (!mounted) {
@@ -352,6 +353,31 @@ class _ShareIdeaScreenState extends State<ShareIdeaScreen> {
         });
       }
     }
+  }
+
+  Future<void> _openSelectResidents() async {
+    final result = await Navigator.of(context).pushNamed(
+      AppPage.communitySelectResidents.routeName,
+      arguments: {
+        'selectedResidentIds': _selectedResidents
+            .map((row) => row['id']?.toString())
+            .whereType<String>()
+            .toList(),
+      },
+    );
+
+    if (!mounted || result is! List) {
+      return;
+    }
+
+    final rows = result
+        .whereType<Map>()
+        .map((row) => Map<String, dynamic>.from(row))
+        .toList();
+    setState(() {
+      _selectedResidents = rows;
+      _audienceScope = 'selected_residents';
+    });
   }
 
   @override
@@ -390,25 +416,43 @@ class _ShareIdeaScreenState extends State<ShareIdeaScreen> {
               Expanded(
                 child: _AudienceChoiceChip(
                   label: 'All Residents',
-                  selected: true,
+                  selected: _audienceScope == 'all_residents',
                   icon: Icons.public_rounded,
-                  onTap: () {},
+                  onTap: () {
+                    setState(() {
+                      _audienceScope = 'all_residents';
+                    });
+                  },
                 ),
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: _AudienceChoiceChip(
-                  label: 'Selected',
-                  selected: false,
+                  label: _selectedResidents.isEmpty
+                      ? 'Selected'
+                      : 'Selected (${_selectedResidents.length})',
+                  selected: _audienceScope == 'selected_residents',
                   icon: Icons.group_rounded,
-                  onTap: () => _showCommunityMessage(
-                    context,
-                    'Selected audience is coming next. This post will go to all residents for now.',
-                  ),
+                  onTap: _openSelectResidents,
                 ),
               ),
             ],
           ),
+          if (_audienceScope == 'selected_residents' &&
+              _selectedResidents.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Text(
+              _selectedResidents
+                      .take(3)
+                      .map((row) => row['full_name']?.toString() ?? 'Resident')
+                      .join(', ') +
+                  (_selectedResidents.length > 3 ? ' and more' : ''),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: AvenueColors.onSurfaceVariant,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
           const SizedBox(height: 22),
           const _CommunitySectionLabel('Suggestion Title'),
           const SizedBox(height: 10),
@@ -517,6 +561,259 @@ class _ShareIdeaScreenState extends State<ShareIdeaScreen> {
             onPressed: _submit,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class SelectResidentsScreen extends StatefulWidget {
+  const SelectResidentsScreen({
+    super.key,
+    this.initialSelectedResidentIds = const [],
+  });
+
+  final List<String> initialSelectedResidentIds;
+
+  @override
+  State<SelectResidentsScreen> createState() => _SelectResidentsScreenState();
+}
+
+class _SelectResidentsScreenState extends State<SelectResidentsScreen> {
+  final AvenueRepository _repository = AvenueRepository();
+  final TextEditingController _searchController = TextEditingController();
+  late Future<List<Map<String, dynamic>>> _residentsFuture;
+  late final Set<String> _selectedIds;
+  List<Map<String, dynamic>> _cachedRows = const [];
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIds = {...widget.initialSelectedResidentIds};
+    _residentsFuture = _repository.fetchResidentDirectory();
+    _searchController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _toggleResident(Map<String, dynamic> row) {
+    final residentId = row['id']?.toString();
+    if (residentId == null) {
+      return;
+    }
+
+    setState(() {
+      if (_selectedIds.contains(residentId)) {
+        _selectedIds.remove(residentId);
+      } else {
+        _selectedIds.add(residentId);
+      }
+    });
+  }
+
+  void _done() {
+    final selectedRows = _cachedRows.where((row) {
+      final residentId = row['id']?.toString();
+      return residentId != null && _selectedIds.contains(residentId);
+    }).toList();
+    Navigator.of(context).pop(selectedRows);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AvenueScaffold(
+      topBar: AvenueTopBar(
+        title: 'Community',
+        centerTitle: false,
+        leading: AvenueIconButton(
+          icon: Icons.arrow_back_rounded,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: FilledButton(
+              onPressed: _done,
+              style: FilledButton.styleFrom(
+                backgroundColor: AvenueColors.primary,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(999),
+                ),
+              ),
+              child: const Text('Done'),
+            ),
+          ),
+        ],
+      ),
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: _residentsFuture,
+        builder: (context, snapshot) {
+          final rows = snapshot.data ?? const <Map<String, dynamic>>[];
+          _cachedRows = rows;
+          final query = _searchController.text.trim().toLowerCase();
+          final filtered = rows.where((row) {
+            if (query.isEmpty) {
+              return true;
+            }
+
+            final unit = row['unit_number']?.toString() ?? '';
+            final tower = row['tower']?.toString() ?? '';
+            final text = '${row['full_name'] ?? ''} $unit $tower'.toLowerCase();
+            return text.contains(query);
+          }).toList();
+
+          return ListView(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+            children: [
+              TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: 'Search residents by name or unit...',
+                  filled: true,
+                  fillColor: AvenueColors.surfaceLow,
+                  prefixIcon: const Icon(Icons.search_rounded),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(24),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 22),
+              Text(
+                'NEARBY RESIDENTS',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: AvenueColors.onSurfaceVariant,
+                  letterSpacing: 2,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 12),
+              if (snapshot.connectionState != ConnectionState.done &&
+                  rows.isEmpty)
+                const _CommunityPlaceholderCard(label: 'Loading residents...')
+              else if (filtered.isEmpty)
+                const _CommunityPlaceholderCard(
+                  label: 'No residents match your search.',
+                )
+              else
+                ...filtered.map((row) {
+                  final residentId = row['id']?.toString();
+                  final isSelected =
+                      residentId != null && _selectedIds.contains(residentId);
+                  final unit = row['unit_number']?.toString() ?? '--';
+                  final tower = row['tower']?.toString() ?? 'Tower';
+
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: AvenueCard(
+                      radius: 32,
+                      padding: const EdgeInsets.all(0),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(32),
+                          onTap: () => _toggleResident(row),
+                          child: Padding(
+                            padding: const EdgeInsets.all(14),
+                            child: Row(
+                              children: [
+                                _CommunityAvatar(
+                                  imageUrl: row['avatar_url'] as String?,
+                                  label: _initialsForName(
+                                    row['full_name'] as String?,
+                                  ),
+                                ),
+                                const SizedBox(width: 14),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        row['full_name'] as String? ??
+                                            'Resident',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w800,
+                                            ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        '$tower - $unit',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium
+                                            ?.copyWith(
+                                              color:
+                                                  AvenueColors.onSurfaceVariant,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Container(
+                                  width: 52,
+                                  height: 52,
+                                  decoration: BoxDecoration(
+                                    color: isSelected
+                                        ? AvenueColors.primaryFixed
+                                        : AvenueColors.surfaceHigh,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    isSelected
+                                        ? Icons.person_add_rounded
+                                        : Icons.person_add_alt_1_rounded,
+                                    color: isSelected
+                                        ? AvenueColors.primary
+                                        : AvenueColors.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+              const SizedBox(height: 18),
+              Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AvenueColors.surfaceHigh,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    '${_selectedIds.length} resident${_selectedIds.length == 1 ? '' : 's'} selected',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: AvenueColors.onSurfaceVariant,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -1570,23 +1867,29 @@ class _CommunitySuggestionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final accent = _hexColor(row['accent_hex'] as String?);
     final totalVotes = row['total_votes'] as int? ?? 0;
+    final hasJoined = row['has_joined'] == true;
     final targetVotes = row['target_votes'] as int? ?? 0;
     final votesNeeded = (targetVotes - totalVotes).clamp(0, targetVotes);
+    final progress = ((row['progress_percent'] as int? ?? 0) / 100)
+        .clamp(0, 1)
+        .toDouble();
+    final category = (row['category'] as String? ?? 'Community').toUpperCase();
 
     return AvenueCard(
-      radius: 30,
+      radius: 32,
       padding: const EdgeInsets.all(0),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(32),
           onTap: onTap,
           child: Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.fromLTRB(20, 22, 20, 18),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
                       width: 44,
@@ -1607,12 +1910,19 @@ class _CommunitySuggestionCard extends StatelessWidget {
                         children: [
                           Text(
                             row['title'] as String? ?? 'Suggestion',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.titleLarge
-                                ?.copyWith(fontWeight: FontWeight.w800),
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w800,
+                                  height: 1.12,
+                                ),
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            '${(row['category'] as String? ?? 'Community').toUpperCase()} • $votesNeeded VOTES NEEDED',
+                            '$category • $votesNeeded VOTES NEEDED',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.bodySmall
                                 ?.copyWith(
                                   color: AvenueColors.onSurfaceVariant,
@@ -1628,9 +1938,12 @@ class _CommunitySuggestionCard extends StatelessWidget {
                 const SizedBox(height: 14),
                 Text(
                   row['summary'] as String? ?? '',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: AvenueColors.onSurfaceVariant,
                     height: 1.55,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
                 const SizedBox(height: 14),
@@ -1640,8 +1953,7 @@ class _CommunitySuggestionCard extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(999),
                         child: LinearProgressIndicator(
-                          value: ((row['progress_percent'] as int? ?? 0) / 100)
-                              .clamp(0, 1),
+                          value: progress,
                           minHeight: 8,
                           backgroundColor: AvenueColors.surfaceHigh,
                           valueColor: AlwaysStoppedAnimation<Color>(accent),
@@ -1657,19 +1969,28 @@ class _CommunitySuggestionCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: 12),
+                Divider(
+                  color: AvenueColors.outlineVariant.withValues(alpha: 0.3),
+                  height: 1,
+                ),
+                const SizedBox(height: 10),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     _AvatarStack(
-                      commentCount: row['comment_count'] as int? ?? 0,
+                      count: totalVotes,
+                      seedName: row['author_name'] as String?,
                     ),
                     const Spacer(),
-                    AvenuePrimaryButton(
-                      label: 'Join Discussion',
-                      onPressed: onTap,
-                      fullWidth: false,
-                      height: 40,
-                      fontSize: 13,
+                    SizedBox(
+                      width: 196,
+                      child: AvenuePrimaryButton(
+                        label: hasJoined ? 'Details' : 'Join Discussion',
+                        onPressed: onTap,
+                        height: 48,
+                        fontSize: 15,
+                      ),
                     ),
                   ],
                 ),
@@ -2151,49 +2472,76 @@ class _CommunityAvatar extends StatelessWidget {
 }
 
 class _AvatarStack extends StatelessWidget {
-  const _AvatarStack({required this.commentCount});
+  const _AvatarStack({required this.count, required this.seedName});
 
-  final int commentCount;
+  final int count;
+  final String? seedName;
 
   @override
   Widget build(BuildContext context) {
-    final labels = ['A', 'R'];
+    final labels = [
+      _initialsForName(seedName),
+      seedName != null && seedName!.trim().contains(' ')
+          ? _initialsForName(seedName!.trim().split(' ').last)
+          : 'R',
+    ];
+
+    Widget buildCircle({
+      required String label,
+      required Color background,
+      Color foreground = AvenueColors.primary,
+    }) {
+      return CircleAvatar(
+        radius: 16,
+        backgroundColor: Colors.white,
+        child: CircleAvatar(
+          radius: 14,
+          backgroundColor: background,
+          child: Text(
+            label,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: foreground,
+              fontWeight: FontWeight.w800,
+              fontSize: 10,
+            ),
+          ),
+        ),
+      );
+    }
 
     return SizedBox(
-      width: 88,
+      width: 110,
+      height: 34,
       child: Stack(
+        clipBehavior: Clip.none,
         children: [
-          for (var i = 0; i < labels.length; i++)
-            Positioned(
-              left: i * 18,
-              child: CircleAvatar(
-                radius: 14,
-                backgroundColor: Colors.white,
-                child: CircleAvatar(
-                  radius: 12,
-                  backgroundColor: AvenueColors.primaryFixed,
-                  child: Text(
-                    labels[i],
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AvenueColors.primary,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ),
-              ),
-            ),
           Positioned(
-            left: 36,
+            left: 0,
+            child: buildCircle(
+              label: labels[0],
+              background: AvenueColors.primaryFixed,
+            ),
+          ),
+          Positioned(
+            left: 22,
+            child: buildCircle(
+              label: labels[1],
+              background: const Color(0xFFFFEDD5),
+              foreground: const Color(0xFF9A3412),
+            ),
+          ),
+          Positioned(
+            left: 44,
             child: CircleAvatar(
-              radius: 14,
+              radius: 16,
               backgroundColor: Colors.white,
               child: CircleAvatar(
-                radius: 12,
+                radius: 14,
                 backgroundColor: AvenueColors.surfaceHigh,
                 child: Text(
-                  '+$commentCount',
+                  '+$count',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 10,
+                    fontSize: 12,
                     fontWeight: FontWeight.w800,
                   ),
                 ),

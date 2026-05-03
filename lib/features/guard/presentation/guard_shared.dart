@@ -8,7 +8,6 @@ const _guardGateFeedUrl =
 class _GuardPalette {
   static const background = Color(0xFFF4FAFF);
   static const surface = Color(0xFFFFFFFF);
-  static const surfaceLow = Color(0xFFEEF5FA);
   static const surfaceMid = Color(0xFFE2E9EE);
   static const ink = Color(0xFF151D20);
   static const muted = Color(0xFF5C6772);
@@ -24,18 +23,25 @@ class _GuardDashboardData {
   const _GuardDashboardData({
     required this.upcomingVisitors,
     required this.logs,
+    required this.visitorLogs,
   });
 
   final List<Map<String, dynamic>> upcomingVisitors;
   final List<Map<String, dynamic>> logs;
+  final List<Map<String, dynamic>> visitorLogs;
 
   static Future<_GuardDashboardData> load(AvenueRepository repository) async {
     final results = await Future.wait([
       repository.fetchGuardGateActivities(),
       repository.fetchGuardDutyLogs(),
+      repository.fetchGuardVisitorLogs(),
     ]);
 
-    return _GuardDashboardData(upcomingVisitors: results[0], logs: results[1]);
+    return _GuardDashboardData(
+      upcomingVisitors: results[0],
+      logs: results[1],
+      visitorLogs: results[2],
+    );
   }
 }
 
@@ -306,229 +312,6 @@ class _GuardOutlinedActionButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _GuardVisitorCard extends StatelessWidget {
-  const _GuardVisitorCard(
-    this.row, {
-    this.onApprove,
-    this.onDeny,
-    this.isProcessing = false,
-  });
-
-  final Map<String, dynamic> row;
-  final VoidCallback? onApprove;
-  final VoidCallback? onDeny;
-  final bool isProcessing;
-
-  @override
-  Widget build(BuildContext context) {
-    final status = row['status']?.toString() ?? 'expected';
-    final statusColor = _guardStatusColor(status);
-    final visitorKind = _titleCase(
-      row['visitor_kind']?.toString() ?? 'Visitor',
-    );
-    final arrival = _guardArrivalLabel(row['expected_arrival']);
-
-    return _GuardGlassCard(
-      child: Padding(
-        padding: const EdgeInsets.all(18),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    row['visitor_name'] as String? ?? 'Visitor',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 7,
-                  ),
-                  decoration: BoxDecoration(
-                    color: statusColor.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                  child: Text(
-                    status.toUpperCase(),
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: statusColor,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0.6,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Text(
-              '$visitorKind • ${row['resident_name'] ?? 'Resident'} • Unit ${row['unit_number'] ?? '-'}',
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(color: _GuardPalette.muted),
-            ),
-            const SizedBox(height: 10),
-            Wrap(
-              spacing: 12,
-              runSpacing: 8,
-              children: [
-                _GuardMetaChip(
-                  icon: Icons.pin_outlined,
-                  label: 'PIN ${row['pin_code'] ?? '----'}',
-                ),
-                _GuardMetaChip(icon: Icons.schedule_rounded, label: arrival),
-              ],
-            ),
-            if (onApprove != null || onDeny != null) ...[
-              const SizedBox(height: 14),
-              Row(
-                children: [
-                  Expanded(
-                    child: _GuardPrimaryButton(
-                      label: isProcessing ? 'Processing...' : 'Allow Entry',
-                      icon: Icons.check_circle_rounded,
-                      onTap: isProcessing ? null : onApprove,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: _GuardSecondaryDangerButton(
-                      label: 'Deny',
-                      icon: Icons.cancel_rounded,
-                      onTap: isProcessing ? null : onDeny,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _GuardLogCard extends StatelessWidget {
-  const _GuardLogCard(this.row);
-
-  final Map<String, dynamic> row;
-
-  @override
-  Widget build(BuildContext context) {
-    final status = row['log_status']?.toString() ?? '';
-    final statusColor = _guardStatusColor(status);
-
-    return _GuardGlassCard(
-      child: Padding(
-        padding: const EdgeInsets.all(18),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    row['title'] as String? ?? 'Log',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ),
-                if (status.isNotEmpty)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: statusColor.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                    child: Text(
-                      status.toUpperCase(),
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: statusColor,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 0.6,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Text(
-              row['details'] as String? ?? '',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: _GuardPalette.muted,
-                height: 1.45,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 12,
-              runSpacing: 8,
-              children: [
-                if ((row['related_visitor_name'] as String?)?.isNotEmpty ??
-                    false)
-                  _GuardMetaChip(
-                    icon: Icons.person_search_rounded,
-                    label: row['related_visitor_name'] as String,
-                  ),
-                if ((row['related_unit'] as String?)?.isNotEmpty ?? false)
-                  _GuardMetaChip(
-                    icon: Icons.apartment_rounded,
-                    label: row['related_unit'] as String,
-                  ),
-                if (row['logged_at'] != null)
-                  _GuardMetaChip(
-                    icon: Icons.schedule_rounded,
-                    label: _guardArrivalLabel(row['logged_at']),
-                  ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _GuardMetaChip extends StatelessWidget {
-  const _GuardMetaChip({required this.icon, required this.label});
-
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(
-        color: _GuardPalette.surfaceLow,
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14, color: _GuardPalette.muted),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: _GuardPalette.muted,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ],
       ),
     );
   }

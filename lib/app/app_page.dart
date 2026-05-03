@@ -17,6 +17,7 @@ enum AppPage {
   drawer(slug: 'drawer'),
   communityFeed(slug: 'community'),
   communityShareIdea(slug: 'community-share-idea'),
+  communitySelectResidents(slug: 'community-select-residents'),
   communitySuggestionDetail(slug: 'community-suggestion'),
   communityMeetings(slug: 'community-meetings'),
   communityMeetingDetail(slug: 'community-meeting-detail'),

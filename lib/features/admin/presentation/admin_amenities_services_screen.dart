@@ -25,10 +25,9 @@ class _AdminAmenitiesScreenState extends State<AdminAmenitiesScreen> {
   }
 
   Future<void> _openAmenityEditor(Map<String, dynamic> row) async {
-    final updated = await Navigator.of(context).pushNamed(
-      AppPage.editAmenity.routeName,
-      arguments: {'amenity': row},
-    );
+    final updated = await Navigator.of(
+      context,
+    ).pushNamed(AppPage.editAmenity.routeName, arguments: {'amenity': row});
 
     if (updated == true && mounted) {
       _refresh();
@@ -521,8 +520,8 @@ class _AdminAmenityActionButton extends StatelessWidget {
     final backgroundColor = dark
         ? Colors.black.withValues(alpha: 0.24)
         : selected
-            ? foreground.withValues(alpha: 0.18)
-            : Colors.white.withValues(alpha: 0.92);
+        ? foreground.withValues(alpha: 0.18)
+        : Colors.white.withValues(alpha: 0.92);
     final effectiveForeground = dark ? Colors.white : foreground;
 
     return InkWell(
@@ -688,11 +687,7 @@ class _AddAmenityScreenState extends State<AddAmenityScreen> {
   void _addSlot() {
     setState(() {
       _slots.add(
-        _AmenitySlotDraft(
-          start: '09:00',
-          end: '17:00',
-          capacity: '10',
-        ),
+        _AmenitySlotDraft(start: '09:00', end: '17:00', capacity: '10'),
       );
     });
   }
@@ -722,7 +717,8 @@ class _AddAmenityScreenState extends State<AddAmenityScreen> {
     _nameController.text = amenity['name']?.toString() ?? '';
     _descriptionController.text = amenity['description']?.toString() ?? '';
     _locationController.text = amenity['location_label']?.toString() ?? '';
-    _availabilityController.text = amenity['availability_text']?.toString() ?? '';
+    _availabilityController.text =
+        amenity['availability_text']?.toString() ?? '';
     _occupancyController.text = amenity['occupancy_note']?.toString() ?? '';
     _capacityController.text = '${amenity['capacity_percent'] ?? 0}';
     _imageUrlController.text = amenity['image_url']?.toString() ?? '';
@@ -734,8 +730,9 @@ class _AddAmenityScreenState extends State<AddAmenityScreen> {
     final rules = amenity['rules'];
     if (rules is List && rules.isNotEmpty) {
       _ruleOneController.text = rules.first?.toString() ?? '';
-      _ruleTwoController.text =
-          rules.length > 1 ? rules[1]?.toString() ?? '' : '';
+      _ruleTwoController.text = rules.length > 1
+          ? rules[1]?.toString() ?? ''
+          : '';
     }
 
     _loadAmenityTimeSlots();
@@ -809,10 +806,10 @@ class _AddAmenityScreenState extends State<AddAmenityScreen> {
     });
 
     final slotSummary = _slots
-      .map(
-        (slot) =>
-          '${slot.startValue} - ${slot.endValue} (${slot.capacityValue})',
-      )
+        .map(
+          (slot) =>
+              '${slot.startValue} - ${slot.endValue} (${slot.capacityValue})',
+        )
         .join(', ');
     final availabilityText = _availabilityController.text.trim().isEmpty
         ? slotSummary
@@ -879,20 +876,18 @@ class _AddAmenityScreenState extends State<AddAmenityScreen> {
       showAvenueDialogMessage(
         context,
         message: _submitErrorMessage == null
-          ? (_isEditing
-            ? 'Could not update amenity right now.'
-            : 'Could not add amenity right now.')
-          : (_isEditing
-            ? 'Could not update amenity: $_submitErrorMessage'
-            : 'Could not add amenity: $_submitErrorMessage'),
+            ? (_isEditing
+                  ? 'Could not update amenity right now.'
+                  : 'Could not add amenity right now.')
+            : (_isEditing
+                  ? 'Could not update amenity: $_submitErrorMessage'
+                  : 'Could not add amenity: $_submitErrorMessage'),
         type: AvenueMessageType.error,
       );
       return;
     }
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           _isEditing
@@ -930,6 +925,16 @@ class _AddAmenityScreenState extends State<AddAmenityScreen> {
                 context,
               ).textTheme.displayMedium?.copyWith(fontSize: 32, height: 1.05),
             ),
+            const SizedBox(height: 8),
+            Text(
+              _isEditing
+                  ? 'Update amenity details, slots, and access rules for residents.'
+                  : 'Set up a new amenity with operations, availability, and booking rules.',
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: _AdminPalette.muted,
+                height: 1.5,
+              ),
+            ),
             const SizedBox(height: 20),
             if (_isLoadingAmenityData) ...[
               const LinearProgressIndicator(),
@@ -937,6 +942,7 @@ class _AddAmenityScreenState extends State<AddAmenityScreen> {
             ],
             _AdminGlassCard(
               radius: 32,
+              backgroundColor: _AdminPalette.surfaceLow.withValues(alpha: 0.74),
               padding: const EdgeInsets.all(18),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1176,11 +1182,45 @@ class _AddAmenityScreenState extends State<AddAmenityScreen> {
                     title: const Text('Booking required'),
                   ),
                   const SizedBox(height: 20),
-                  AvenuePrimaryButton(
-                    label: _isSubmitting
-                        ? (_isEditing ? 'Saving...' : 'Publishing...')
-                        : (_isEditing ? 'Save Changes' : 'Publish Amenity'),
-                    onPressed: _submit,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          style: OutlinedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(54),
+                            side: BorderSide(
+                              color: AvenueColors.primary.withValues(
+                                alpha: 0.25,
+                              ),
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          child: Text(
+                            'Cancel',
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  color: AvenueColors.primary,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        flex: 2,
+                        child: AvenuePrimaryButton(
+                          label: _isSubmitting
+                              ? (_isEditing ? 'Saving...' : 'Publishing...')
+                              : (_isEditing
+                                    ? 'Save Changes'
+                                    : 'Publish Amenity'),
+                          onPressed: _submit,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 10),
                   Center(
@@ -1197,6 +1237,20 @@ class _AddAmenityScreenState extends State<AddAmenityScreen> {
                   ),
                 ],
               ),
+            ),
+            const SizedBox(height: 18),
+            const _AdminInfoBanner(
+              icon: Icons.schedule_rounded,
+              title: 'SLOT MANAGEMENT',
+              body:
+                  'Time slots and capacity are used in booking validation to avoid duplicate reservations.',
+            ),
+            const SizedBox(height: 12),
+            const _AdminInfoBanner(
+              icon: Icons.visibility_rounded,
+              title: 'RESIDENT VIEW',
+              body:
+                  'Published amenities are immediately visible on the resident amenities list and detail views.',
             ),
           ],
         ),
@@ -1265,10 +1319,7 @@ class _AmenitySlotDraft {
 }
 
 class _AmenitySlotEditor extends StatelessWidget {
-  const _AmenitySlotEditor({
-    required this.slot,
-    this.onDelete,
-  });
+  const _AmenitySlotEditor({required this.slot, this.onDelete});
 
   final _AmenitySlotDraft slot;
   final VoidCallback? onDelete;
@@ -1825,6 +1876,14 @@ class _AddServiceProviderScreenState extends State<AddServiceProviderScreen> {
                 context,
               ).textTheme.displayMedium?.copyWith(fontSize: 32, height: 1.05),
             ),
+            const SizedBox(height: 8),
+            Text(
+              'Register a verified service partner with contact and availability details.',
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: _AdminPalette.muted,
+                height: 1.5,
+              ),
+            ),
             const SizedBox(height: 20),
             _AdminGlassCard(
               radius: 28,
@@ -1833,6 +1892,8 @@ class _AddServiceProviderScreenState extends State<AddServiceProviderScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const _AdminSectionLabel(text: 'SERVICE DETAILS'),
+                  const SizedBox(height: 12),
                   _AdminFormField(
                     label: 'FULL NAME',
                     hintText: 'Marcus Thorne',
@@ -1882,12 +1943,51 @@ class _AddServiceProviderScreenState extends State<AddServiceProviderScreen> {
                     controller: _notesController,
                   ),
                   const SizedBox(height: 20),
-                  AvenuePrimaryButton(
-                    label: _isSubmitting ? 'Adding...' : 'Add Service',
-                    onPressed: _submit,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          style: OutlinedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(54),
+                            side: BorderSide(
+                              color: AvenueColors.primary.withValues(
+                                alpha: 0.25,
+                              ),
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          child: Text(
+                            'Cancel',
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  color: AvenueColors.primary,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        flex: 2,
+                        child: AvenuePrimaryButton(
+                          label: _isSubmitting ? 'Adding...' : 'Add Service',
+                          onPressed: _submit,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
+            ),
+            const SizedBox(height: 18),
+            const _AdminInfoBanner(
+              icon: Icons.support_agent_rounded,
+              title: 'SERVICE FLOW',
+              body:
+                  'Added specialists appear in the admin services directory for quick assignment and resident support.',
             ),
           ],
         ),

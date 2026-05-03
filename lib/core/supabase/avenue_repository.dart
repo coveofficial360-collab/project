@@ -290,12 +290,74 @@ class AvenueRepository {
   }
 
   Future<List<Map<String, dynamic>>> fetchCommunitySuggestions() async {
+    final currentUser = AppSession.instance.currentUser;
     final rows = await _client
         .from('community_suggestion_feed_v')
         .select()
         .order('created_at', ascending: false);
 
-    return _castRows(rows);
+    final records = _castRows(rows);
+    if (currentUser == null) {
+      return records;
+    }
+
+    final targetedRows = records
+        .where(
+          (row) =>
+              (row['audience_scope']?.toString().toLowerCase() ?? '') ==
+              'selected_residents',
+        )
+        .toList();
+    if (targetedRows.isEmpty) {
+      return records;
+    }
+
+    final targetAudienceRows = await _client
+        .from('community_suggestion_target_residents')
+        .select('suggestion_id')
+        .eq('resident_user_id', currentUser.id);
+    final allowedSuggestionIds = _castRows(targetAudienceRows)
+        .map((row) => row['suggestion_id']?.toString())
+        .whereType<String>()
+        .toSet();
+
+    final visibleRecords = records.where((row) {
+      final audienceScope =
+          row['audience_scope']?.toString().toLowerCase() ?? 'all_residents';
+      if (audienceScope != 'selected_residents') {
+        return true;
+      }
+
+      final suggestionId = row['id']?.toString();
+      final createdBy = row['created_by']?.toString();
+      return (suggestionId != null &&
+              allowedSuggestionIds.contains(suggestionId)) ||
+          createdBy == currentUser.id;
+    }).toList();
+
+    if (visibleRecords.isEmpty) {
+      return visibleRecords;
+    }
+
+    final joinedRows = await _client
+        .from('community_suggestion_members')
+        .select('suggestion_id')
+        .eq('user_id', currentUser.id);
+    final joinedSuggestionIds = _castRows(joinedRows)
+        .map((row) => row['suggestion_id']?.toString())
+        .whereType<String>()
+        .toSet();
+
+    return visibleRecords.map((row) {
+      final next = Map<String, dynamic>.from(row);
+      final suggestionId = next['id']?.toString();
+      final createdBy = next['created_by']?.toString();
+      next['has_joined'] =
+          (suggestionId != null &&
+              joinedSuggestionIds.contains(suggestionId)) ||
+          createdBy == currentUser.id;
+      return next;
+    }).toList();
   }
 
   Future<List<Map<String, dynamic>>> fetchAdminCommunitySuggestions() async {
@@ -344,14 +406,25 @@ class AvenueRepository {
       return false;
     }
 
-    final rows = await _client
+    final membershipRows = await _client
         .from('community_suggestion_members')
         .select('suggestion_id')
         .eq('suggestion_id', suggestionId)
         .eq('user_id', currentUser.id)
         .limit(1);
 
-    return _castRows(rows).isNotEmpty;
+    if (_castRows(membershipRows).isNotEmpty) {
+      return true;
+    }
+
+    final creatorRows = await _client
+        .from('community_suggestions')
+        .select('id')
+        .eq('id', suggestionId)
+        .eq('created_by', currentUser.id)
+        .limit(1);
+
+    return _castRows(creatorRows).isNotEmpty;
   }
 
   Future<Map<String, dynamic>?> joinCommunitySuggestion({
@@ -380,6 +453,7 @@ class AvenueRepository {
     required String summary,
     required String details,
     String audienceScope = 'all_residents',
+    List<String> selectedResidentIds = const [],
     bool pollEnabled = true,
     int targetVotes = 24,
     String? coverImageUrl,
@@ -400,6 +474,7 @@ class AvenueRepository {
         'p_summary': summary.trim(),
         'p_details': details.trim(),
         'p_audience_scope': audienceScope,
+        'p_selected_resident_ids': selectedResidentIds,
         'p_poll_enabled': pollEnabled,
         'p_target_votes': targetVotes,
         'p_cover_image_url': coverImageUrl?.trim(),
@@ -987,6 +1062,164 @@ class AvenueRepository {
         .order('logged_at', ascending: false);
 
     return _castRows(rows);
+  }
+
+  Future<Map<String, dynamic>?> fetchGuardTodayAttendance() async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final today = DateTime.now().toIso8601String().split('T').first;
+    final rows = await _client
+        .from('guard_attendance_logs')
+        .select()
+        .eq('guard_user_id', currentUser.id)
+        .eq('attendance_date', today)
+        .limit(1);
+    final records = _castRows(rows);
+    if (records.isEmpty) {
+      return null;
+    }
+
+    return records.first;
+  }
+
+  Future<List<Map<String, dynamic>>> fetchGuardAttendanceHistory() async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return const [];
+    }
+
+    final rows = await _client
+        .from('guard_attendance_logs')
+        .select()
+        .eq('guard_user_id', currentUser.id)
+        .order('attendance_date', ascending: false)
+        .order('created_at', ascending: false)
+        .limit(31);
+
+    return _castRows(rows);
+  }
+
+  Future<Map<String, dynamic>?> setGuardAttendance({
+    required String action,
+    String? notes,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'set_guard_attendance',
+      params: {
+        'p_guard_user_id': currentUser.id,
+        'p_action': action,
+        'p_notes': notes,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchGuardVisitorLogs() async {
+    final visitorRows = await _client
+        .from('visitor_passes')
+        .select()
+        .order('expected_arrival', ascending: false);
+    final records = _castRows(visitorRows);
+
+    if (records.isEmpty) {
+      return records;
+    }
+
+    final residentIds = records
+        .map((row) => row['resident_user_id']?.toString())
+        .whereType<String>()
+        .toSet()
+        .toList();
+
+    if (residentIds.isEmpty) {
+      return records;
+    }
+
+    final residentRows = await _client
+        .from('app_users')
+        .select('id, full_name, unit_number, tower')
+        .inFilter('id', residentIds);
+    final residentsById = {
+      for (final row in _castRows(residentRows))
+        row['id']?.toString() ?? '': row,
+    };
+
+    return records.map((row) {
+      final resident =
+          residentsById[row['resident_user_id']?.toString()] ??
+          const <String, dynamic>{};
+      return {
+        ...row,
+        'resident_name': resident['full_name'],
+        'unit_number': resident['unit_number'],
+        'tower': resident['tower'],
+      };
+    }).toList();
+  }
+
+  Future<Map<String, dynamic>?> checkoutGuardVisitorPass({
+    required String passId,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final passRows = await _client
+        .from('visitor_passes')
+        .select('id, visitor_name, status, resident_user_id')
+        .eq('id', passId)
+        .limit(1);
+    final passes = _castRows(passRows);
+    if (passes.isEmpty) {
+      return null;
+    }
+
+    final pass = passes.first;
+    final status = pass['status']?.toString().trim().toLowerCase() ?? '';
+    if (status == 'checked_out' || status == 'denied') {
+      return pass;
+    }
+
+    final residentRows = await _client
+        .from('app_users')
+        .select('unit_number')
+        .eq('id', pass['resident_user_id'])
+        .limit(1);
+    final unitNumber = _castRows(residentRows).isEmpty
+        ? null
+        : _castRows(residentRows).first['unit_number']?.toString();
+
+    await _client
+        .from('visitor_passes')
+        .update({'status': 'checked_out'})
+        .eq('id', passId);
+
+    await _client.from('guard_duty_logs').insert({
+      'guard_user_id': currentUser.id,
+      'title': 'Visitor checked out',
+      'details':
+          '${pass['visitor_name'] ?? 'Visitor'} has been checked out at the gate.',
+      'related_visitor_name': pass['visitor_name'],
+      'related_unit': unitNumber,
+      'log_status': 'completed',
+      'logged_at': DateTime.now().toIso8601String(),
+    });
+
+    return {...pass, 'status': 'checked_out', 'unit_number': unitNumber};
   }
 
   Future<Map<String, dynamic>?> createGuardVisitorEntry({

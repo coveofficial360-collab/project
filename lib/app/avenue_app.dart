@@ -93,6 +93,17 @@ class AvenueApp extends StatelessWidget {
                 return const CommunityFeedScreen();
               case AppPage.communityShareIdea:
                 return const ShareIdeaScreen();
+              case AppPage.communitySelectResidents:
+                final selectedIds = arguments['selectedResidentIds'] is List
+                    ? List<String>.from(
+                        (arguments['selectedResidentIds'] as List).map(
+                          (value) => value.toString(),
+                        ),
+                      )
+                    : const <String>[];
+                return SelectResidentsScreen(
+                  initialSelectedResidentIds: selectedIds,
+                );
               case AppPage.communitySuggestionDetail:
                 return SuggestionDiscussionScreen(
                   suggestionId: arguments['suggestionId'] as String?,

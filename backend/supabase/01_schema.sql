@@ -434,6 +434,13 @@ create table if not exists public.community_suggestion_members (
   primary key (suggestion_id, user_id)
 );
 
+create table if not exists public.community_suggestion_target_residents (
+  suggestion_id uuid not null references public.community_suggestions(id) on delete cascade,
+  resident_user_id uuid not null references public.app_users(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key (suggestion_id, resident_user_id)
+);
+
 create table if not exists public.community_suggestion_comments (
   id uuid primary key default gen_random_uuid(),
   suggestion_id uuid not null references public.community_suggestions(id) on delete cascade,
@@ -478,6 +485,24 @@ create table if not exists public.guard_duty_logs (
   logged_at timestamptz not null
 );
 
+create table if not exists public.guard_attendance_logs (
+  id uuid primary key default gen_random_uuid(),
+  guard_user_id uuid not null references public.app_users(id) on delete cascade,
+  attendance_date date not null default current_date,
+  check_in_at timestamptz,
+  check_out_at timestamptz,
+  status text not null default 'present',
+  notes text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  constraint guard_attendance_logs_unique_guard_day unique (guard_user_id, attendance_date),
+  constraint guard_attendance_checkout_after_checkin_check check (
+    check_out_at is null
+    or check_in_at is null
+    or check_out_at >= check_in_at
+  )
+);
+
 create or replace function public.set_updated_at()
 returns trigger
 language plpgsql
@@ -497,6 +522,12 @@ execute function public.set_updated_at();
 drop trigger if exists trg_complaints_updated_at on public.complaints;
 create trigger trg_complaints_updated_at
 before update on public.complaints
+for each row
+execute function public.set_updated_at();
+
+drop trigger if exists trg_guard_attendance_updated_at on public.guard_attendance_logs;
+create trigger trg_guard_attendance_updated_at
+before update on public.guard_attendance_logs
 for each row
 execute function public.set_updated_at();
 
@@ -792,7 +823,9 @@ alter table public.announcements disable row level security;
 alter table public.community_suggestions disable row level security;
 alter table public.community_suggestion_votes disable row level security;
 alter table public.community_suggestion_members disable row level security;
+alter table public.community_suggestion_target_residents disable row level security;
 alter table public.community_suggestion_comments disable row level security;
 alter table public.community_meetings disable row level security;
 alter table public.community_support_faqs disable row level security;
 alter table public.guard_duty_logs disable row level security;
+alter table public.guard_attendance_logs disable row level security;
