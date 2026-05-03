@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cove - Payment Success</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-on-surface": "#f0f1f2",
+                    "on-secondary": "#ffffff",
+                    "secondary-container": "#fdaf0b",
+                    "on-tertiary-fixed-variant": "#783100",
+                    "on-background": "#191c1d",
+                    "primary": "#005bbf",
+                    "secondary-fixed-dim": "#ffba43",
+                    "on-tertiary-fixed": "#341100",
+                    "outline": "#727785",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-container": "#694600",
+                    "surface-dim": "#d9dadb",
+                    "tertiary-fixed-dim": "#ffb691",
+                    "on-secondary-fixed": "#281800",
+                    "surface": "#f8f9fa",
+                    "tertiary-container": "#c55500",
+                    "on-primary-fixed": "#001a41",
+                    "surface-container-high": "#e7e8e9",
+                    "surface-container-low": "#f3f4f5",
+                    "outline-variant": "#c1c6d6",
+                    "on-secondary-fixed-variant": "#614000",
+                    "primary-fixed-dim": "#adc7ff",
+                    "on-primary": "#ffffff",
+                    "background": "#f8f9fa",
+                    "secondary": "#805600",
+                    "primary-fixed": "#d8e2ff",
+                    "on-primary-fixed-variant": "#004493",
+                    "surface-tint": "#005bc0",
+                    "inverse-primary": "#adc7ff",
+                    "on-primary-container": "#ffffff",
+                    "tertiary": "#9e4300",
+                    "surface-container": "#edeeef",
+                    "surface-variant": "#e1e3e4",
+                    "primary-container": "#1a73e8",
+                    "on-error-container": "#93000a",
+                    "on-tertiary-container": "#0e0200",
+                    "on-surface": "#191c1d",
+                    "secondary-fixed": "#ffddaf",
+                    "surface-container-highest": "#e1e3e4",
+                    "error": "#ba1a1a",
+                    "surface-bright": "#f8f9fa",
+                    "tertiary-fixed": "#ffdbcb",
+                    "on-surface-variant": "#414754",
+                    "error-container": "#ffdad6",
+                    "on-tertiary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "inverse-surface": "#2e3132"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {},
+            "fontFamily": {
+                    "headline": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "display": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "body": [
+                            "Inter"
+                    ],
+                    "label": [
+                            "Inter"
+                    ]
+            },
+            "fontSize": {}
+    },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa; /* surface */
+            color: #191c1d; /* on-surface */
+        }
+        h1, h2, h3, .font-headline, .font-display {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .fill-icon {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col items-center justify-center p-6 antialiased">
+<!-- Main Content Container -->
+<main class="w-full max-w-md flex flex-col items-center justify-center flex-1 w-full gap-8">
+<!-- Success Header -->
+<div class="flex flex-col items-center text-center gap-4">
+<!-- Large Checkmark (Using Secondary/Accent color since Green isn't in tokens natively, secondary is a good gold-standard feature color as per instructions, but let's use a subtle green if forced, or stick to tokens. Instructions say "green animated checkmark", but tokens forbid pure colors not in config. Let's use primary or a creative use of success if available. No success in tokens. Let's use primary-container for a vibrant look or just adhere to "green" by using an inline style if strictly needed, but instructions say "Always use the named colors from the config". I will use secondary for "vip" status or primary-container. Let's use a custom green within tailwind limits just for the icon if it's a specific user request, but strictly "Do NOT use arbitrary hex colors". Okay, I will use secondary-container for a celebratory feel or primary.) Let's use primary to be safe and match the brand. -->
+<div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-2">
+<span class="material-symbols-outlined fill-icon text-primary" style="font-size: 48px;">check_circle</span>
+</div>
+<h1 class="font-headline font-bold text-3xl tracking-tight text-on-surface">Payment Successful!</h1>
+<p class="font-body text-on-surface-variant text-lg">₹2,200 paid for August 2025</p>
+</div>
+<!-- Transaction Details Card -->
+<div class="w-full bg-surface-container-lowest rounded-DEFAULT p-6 shadow-[0_12px_32px_rgba(25,28,29,0.06)] flex flex-col gap-6 w-full">
+<div class="flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<span class="font-label text-sm uppercase tracking-wider text-outline">Transaction ID</span>
+<span class="font-body font-medium text-on-surface">TXN-2025-08-00423</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-label text-sm uppercase tracking-wider text-outline">Date</span>
+<span class="font-body font-medium text-on-surface">Aug 14, 2025, 10:42 AM</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-label text-sm uppercase tracking-wider text-outline">Method</span>
+<span class="font-body font-medium text-on-surface">UPI</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-label text-sm uppercase tracking-wider text-outline">Status</span>
+<!-- Status Chip: Success (Using Primary as placeholder for success since no semantic success token exists besides tertiary/secondary) -->
+<div class="px-3 py-1 rounded-full bg-primary/10 text-primary font-body text-sm font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">check</span>
+                        Success
+                    </div>
+</div>
+</div>
+<!-- Note -->
+<div class="mt-2 pt-4 border-t border-surface-container-highest/0 bg-surface-container-low rounded-lg p-3 flex items-start gap-2">
+<span class="material-symbols-outlined text-outline text-[20px]">mark_email_read</span>
+<p class="font-body text-sm text-on-surface-variant leading-relaxed">Receipt sent to your registered email.</p>
+</div>
+</div>
+</main>
+<!-- Bottom Actions Container -->
+<div class="w-full max-w-md mt-auto pt-8 pb-4 flex flex-col gap-4 w-full">
+<!-- Primary Button -->
+<button class="w-full h-14 rounded-xl bg-gradient-to-br from-primary to-primary-container text-on-primary font-headline font-semibold text-lg flex items-center justify-center gap-2 shadow-[0_12px_32px_rgba(0,91,191,0.2)]">
+<span class="material-symbols-outlined">download</span>
+            Download Receipt
+        </button>
+<!-- Outlined Button -->
+<button class="w-full h-14 rounded-xl bg-transparent border border-outline-variant/15 text-primary font-headline font-semibold text-lg flex items-center justify-center gap-2 hover:bg-surface-container-low transition-colors">
+            Back to Maintenance
+        </button>
+</div>
+</body></html>

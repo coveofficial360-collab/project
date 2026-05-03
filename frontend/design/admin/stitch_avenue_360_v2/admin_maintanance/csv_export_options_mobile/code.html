@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Export CSV Bottom Sheet</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-on-surface": "#f0f1f2",
+                      "on-secondary": "#ffffff",
+                      "secondary-container": "#fdaf0b",
+                      "on-tertiary-fixed-variant": "#783100",
+                      "on-background": "#191c1d",
+                      "primary": "#005bbf",
+                      "secondary-fixed-dim": "#ffba43",
+                      "on-tertiary-fixed": "#341100",
+                      "outline": "#727785",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary-container": "#694600",
+                      "surface-dim": "#d9dadb",
+                      "tertiary-fixed-dim": "#ffb691",
+                      "on-secondary-fixed": "#281800",
+                      "surface": "#f8f9fa",
+                      "tertiary-container": "#c55500",
+                      "on-primary-fixed": "#001a41",
+                      "surface-container-high": "#e7e8e9",
+                      "surface-container-low": "#f3f4f5",
+                      "outline-variant": "#c1c6d6",
+                      "on-secondary-fixed-variant": "#614000",
+                      "primary-fixed-dim": "#adc7ff",
+                      "on-primary": "#ffffff",
+                      "background": "#f8f9fa",
+                      "secondary": "#805600",
+                      "primary-fixed": "#d8e2ff",
+                      "on-primary-fixed-variant": "#004493",
+                      "surface-tint": "#005bc0",
+                      "inverse-primary": "#adc7ff",
+                      "on-primary-container": "#ffffff",
+                      "tertiary": "#9e4300",
+                      "surface-container": "#edeeef",
+                      "surface-variant": "#e1e3e4",
+                      "primary-container": "#1a73e8",
+                      "on-error-container": "#93000a",
+                      "on-tertiary-container": "#0e0200",
+                      "on-surface": "#191c1d",
+                      "secondary-fixed": "#ffddaf",
+                      "surface-container-highest": "#e1e3e4",
+                      "error": "#ba1a1a",
+                      "surface-bright": "#f8f9fa",
+                      "tertiary-fixed": "#ffdbcb",
+                      "on-surface-variant": "#414754",
+                      "error-container": "#ffdad6",
+                      "on-tertiary": "#ffffff",
+                      "on-error": "#ffffff",
+                      "inverse-surface": "#2e3132"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "fontFamily": {
+                      "headline": ["Plus Jakarta Sans"],
+                      "display": ["Plus Jakarta Sans"],
+                      "body": ["Inter"],
+                      "label": ["Inter"]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        body {
+            min-height: 100dvh;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e1e3e4;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-surface-dim font-body flex items-end justify-center sm:items-center p-0 sm:p-4 text-on-surface overflow-hidden">
+<!-- Scrim / Overlay Background -->
+<div class="fixed inset-0 bg-on-surface/40 backdrop-blur-sm z-40 transition-opacity"></div>
+<!-- Bottom Sheet Container -->
+<div class="relative w-full max-w-md bg-surface-container-lowest rounded-t-[32px] sm:rounded-[32px] shadow-[0_-12px_40px_rgba(25,28,29,0.08)] z-50 overflow-hidden flex flex-col max-h-[92vh] transition-transform duration-300">
+<!-- Drag Handle (Mobile only) -->
+<div class="w-full flex justify-center pt-4 pb-1 sm:hidden shrink-0">
+<div class="w-12 h-1.5 bg-outline-variant/50 rounded-full"></div>
+</div>
+<!-- Header -->
+<div class="px-6 pt-4 pb-4 sm:pt-8 sm:pb-6 flex items-center justify-between shrink-0">
+<h2 class="font-headline font-bold text-2xl tracking-tight text-on-surface flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">description</span>
+                Export as CSV
+            </h2>
+<button class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Scrollable Content Area -->
+<div class="px-6 pb-4 flex-1 overflow-y-auto custom-scrollbar">
+<!-- Information Box -->
+<div class="bg-surface-container-low p-5 rounded-2xl border border-outline-variant/15 mb-6">
+<h3 class="font-headline font-semibold text-sm text-on-surface flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-base">info</span>
+                    Included Data Fields
+                </h3>
+<p class="font-body text-sm text-on-surface-variant leading-relaxed">
+                    Month, Amount, Status, Paid Date, and Transaction ID
+                </p>
+</div>
+<fieldset class="space-y-3">
+<legend class="sr-only">Select time range</legend>
+<!-- Radio Option Component -->
+<label class="group relative flex cursor-pointer rounded-2xl border border-outline-variant/30 bg-surface p-5 focus-within:ring-2 focus-within:ring-primary/20 hover:bg-surface-container-low transition-all has-[:checked]:border-primary has-[:checked]:bg-primary-fixed/15 min-h-[72px] items-center">
+<input checked="" class="peer sr-only" name="export_range" type="radio" value="current_month"/>
+<div class="flex w-full items-center justify-between">
+<div class="flex items-center gap-4">
+<!-- Custom Radio Visual -->
+<div class="w-6 h-6 rounded-full border-2 border-outline flex items-center justify-center group-hover:border-primary/50 peer-checked:border-primary peer-checked:bg-primary transition-all shrink-0">
+<span class="material-symbols-outlined text-[14px] text-on-primary opacity-0 peer-checked:opacity-100 transition-opacity" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="font-headline font-semibold text-base text-on-surface group-hover:text-primary transition-colors">Current Month</span>
+</div>
+</div>
+</label>
+<label class="group relative flex cursor-pointer rounded-2xl border border-outline-variant/30 bg-surface p-5 focus-within:ring-2 focus-within:ring-primary/20 hover:bg-surface-container-low transition-all has-[:checked]:border-primary has-[:checked]:bg-primary-fixed/15 min-h-[72px] items-center">
+<input class="peer sr-only" name="export_range" type="radio" value="last_3_months"/>
+<div class="flex w-full items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-6 h-6 rounded-full border-2 border-outline flex items-center justify-center group-hover:border-primary/50 peer-checked:border-primary peer-checked:bg-primary transition-all shrink-0">
+<span class="material-symbols-outlined text-[14px] text-on-primary opacity-0 peer-checked:opacity-100 transition-opacity" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="font-headline font-semibold text-base text-on-surface group-hover:text-primary transition-colors">Last 3 Months</span>
+</div>
+</div>
+</label>
+<label class="group relative flex cursor-pointer rounded-2xl border border-outline-variant/30 bg-surface p-5 focus-within:ring-2 focus-within:ring-primary/20 hover:bg-surface-container-low transition-all has-[:checked]:border-primary has-[:checked]:bg-primary-fixed/15 min-h-[72px] items-center">
+<input class="peer sr-only" name="export_range" type="radio" value="last_6_months"/>
+<div class="flex w-full items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-6 h-6 rounded-full border-2 border-outline flex items-center justify-center group-hover:border-primary/50 peer-checked:border-primary peer-checked:bg-primary transition-all shrink-0">
+<span class="material-symbols-outlined text-[14px] text-on-primary opacity-0 peer-checked:opacity-100 transition-opacity" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="font-headline font-semibold text-base text-on-surface group-hover:text-primary transition-colors">Last 6 Months</span>
+</div>
+</div>
+</label>
+<label class="group relative flex cursor-pointer rounded-2xl border border-outline-variant/30 bg-surface p-5 focus-within:ring-2 focus-within:ring-primary/20 hover:bg-surface-container-low transition-all has-[:checked]:border-primary has-[:checked]:bg-primary-fixed/15 min-h-[72px] items-center">
+<input class="peer sr-only" name="export_range" type="radio" value="full_year"/>
+<div class="flex w-full items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-6 h-6 rounded-full border-2 border-outline flex items-center justify-center group-hover:border-primary/50 peer-checked:border-primary peer-checked:bg-primary transition-all shrink-0">
+<span class="material-symbols-outlined text-[14px] text-on-primary opacity-0 peer-checked:opacity-100 transition-opacity" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="font-headline font-semibold text-base text-on-surface group-hover:text-primary transition-colors">Full Year 2025</span>
+</div>
+</div>
+</label>
+</fieldset>
+</div>
+<!-- Footer Actions (Sticky) -->
+<div class="px-6 py-6 sm:pb-8 shrink-0 bg-surface-container-lowest border-t border-outline-variant/10 flex flex-col gap-3">
+<button class="w-full h-14 rounded-full bg-primary text-on-primary font-headline font-bold text-lg flex items-center justify-center gap-2 shadow-[0_8px_24px_rgba(0,91,191,0.25)] hover:bg-primary-container hover:shadow-[0_12px_28px_rgba(0,91,191,0.35)] active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">download</span>
+                Export CSV
+            </button>
+<button class="w-full h-14 rounded-full bg-transparent text-primary font-headline font-semibold text-base flex items-center justify-center hover:bg-primary-fixed/10 active:bg-primary-fixed/20 transition-colors">
+                Cancel
+            </button>
+</div>
+</div>
+</body></html>

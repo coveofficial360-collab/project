@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pay Maintenance - Cove</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-on-surface": "#f0f1f2",
+                    "on-secondary": "#ffffff",
+                    "secondary-container": "#fdaf0b",
+                    "on-tertiary-fixed-variant": "#783100",
+                    "on-background": "#191c1d",
+                    "primary": "#005bbf",
+                    "secondary-fixed-dim": "#ffba43",
+                    "on-tertiary-fixed": "#341100",
+                    "outline": "#727785",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-container": "#694600",
+                    "surface-dim": "#d9dadb",
+                    "tertiary-fixed-dim": "#ffb691",
+                    "on-secondary-fixed": "#281800",
+                    "surface": "#f8f9fa",
+                    "tertiary-container": "#c55500",
+                    "on-primary-fixed": "#001a41",
+                    "surface-container-high": "#e7e8e9",
+                    "surface-container-low": "#f3f4f5",
+                    "outline-variant": "#c1c6d6",
+                    "on-secondary-fixed-variant": "#614000",
+                    "primary-fixed-dim": "#adc7ff",
+                    "on-primary": "#ffffff",
+                    "background": "#f8f9fa",
+                    "secondary": "#805600",
+                    "primary-fixed": "#d8e2ff",
+                    "on-primary-fixed-variant": "#004493",
+                    "surface-tint": "#005bc0",
+                    "inverse-primary": "#adc7ff",
+                    "on-primary-container": "#ffffff",
+                    "tertiary": "#9e4300",
+                    "surface-container": "#edeeef",
+                    "surface-variant": "#e1e3e4",
+                    "primary-container": "#1a73e8",
+                    "on-error-container": "#93000a",
+                    "on-tertiary-container": "#0e0200",
+                    "on-surface": "#191c1d",
+                    "secondary-fixed": "#ffddaf",
+                    "surface-container-highest": "#e1e3e4",
+                    "error": "#ba1a1a",
+                    "surface-bright": "#f8f9fa",
+                    "tertiary-fixed": "#ffdbcb",
+                    "on-surface-variant": "#414754",
+                    "error-container": "#ffdad6",
+                    "on-tertiary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "inverse-surface": "#2e3132"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {},
+            "fontFamily": {
+                    "headline": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "display": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "body": [
+                            "Inter"
+                    ],
+                    "label": [
+                            "Inter"
+                    ]
+            },
+            "fontSize": {}
+    },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body antialiased min-h-screen flex flex-col pb-safe selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Top App Bar - Transactional/Task Focused (No Bottom Nav) -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl transition-colors shadow-sm h-16 flex items-center px-4 justify-between">
+<button aria-label="Go back" class="w-10 h-10 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined" data-icon="arrow_back" style="font-variation-settings: 'FILL' 0, 'wght' 400;">arrow_back</span>
+</button>
+<h1 class="font-headline font-semibold text-lg tracking-tight text-on-surface">Pay Maintenance</h1>
+<div class="w-10 h-10"></div> <!-- Spacer for centering -->
+</header>
+<main class="flex-grow pt-20 pb-28 px-4 md:px-6 md:max-w-2xl md:mx-auto w-full flex flex-col gap-6">
+<!-- Summary Card -->
+<section class="bg-surface-container-lowest rounded-DEFAULT p-6 shadow-[0_12px_32px_rgba(25,28,29,0.06)] relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -z-0"></div>
+<div class="relative z-10 flex justify-between items-start mb-6">
+<div>
+<h2 class="font-headline text-on-surface-variant text-sm font-medium uppercase tracking-widest mb-1">Breakdown for</h2>
+<p class="font-headline text-xl font-bold text-on-surface tracking-tight">August 2025</p>
+</div>
+<div class="bg-surface-container-high px-3 py-1.5 rounded-full flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="apartment" style="font-variation-settings: 'FILL' 1;">apartment</span>
+<span class="font-label text-xs font-semibold text-on-surface tracking-wide uppercase">A-101</span>
+</div>
+</div>
+<div class="space-y-4 mb-6">
+<div class="flex justify-between items-center font-body text-sm">
+<span class="text-on-surface-variant">Maintenance Fee</span>
+<span class="text-on-surface font-medium">₹2,200</span>
+</div>
+<div class="flex justify-between items-center font-body text-sm">
+<span class="text-on-surface-variant">Late Fee</span>
+<span class="text-on-surface font-medium">₹0</span>
+</div>
+<div class="h-px w-full bg-outline-variant/30"></div>
+<div class="flex justify-between items-center">
+<span class="font-headline text-base font-semibold text-on-surface">Total Amount</span>
+<span class="font-display text-2xl font-bold text-primary tracking-tight">₹2,200</span>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-DEFAULT p-3 flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="location_on">location_on</span>
+</div>
+<div>
+<p class="font-headline text-sm font-semibold text-on-surface">Vasant Vihar</p>
+<p class="font-body text-xs text-on-surface-variant">Society Maintenance Dues</p>
+</div>
+</div>
+</section>
+<!-- Payment Methods -->
+<section class="flex flex-col gap-4">
+<h3 class="font-headline font-semibold text-base tracking-tight text-on-surface px-1">Select Payment Method</h3>
+<div class="flex flex-col gap-3">
+<!-- UPI (Selected) -->
+<label class="relative block cursor-pointer group">
+<input checked="" class="peer sr-only" name="payment_method" type="radio" value="upi"/>
+<div class="bg-surface-container-lowest rounded-DEFAULT p-4 border-2 border-primary shadow-[0_4px_16px_rgba(0,91,191,0.08)] flex items-center justify-between transition-all">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-primary-fixed/30 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="qr_code_scanner">qr_code_scanner</span>
+</div>
+<div>
+<p class="font-headline font-semibold text-on-surface">UPI</p>
+<p class="font-body text-xs text-on-surface-variant mt-0.5">GPay, PhonePe, Paytm</p>
+</div>
+</div>
+<div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-on-primary text-[16px]" data-icon="check" style="font-variation-settings: 'wght' 600;">check</span>
+</div>
+</div>
+</label>
+<!-- Cards -->
+<label class="relative block cursor-pointer group">
+<input class="peer sr-only" name="payment_method" type="radio" value="card"/>
+<div class="bg-surface-container-lowest rounded-DEFAULT p-4 border-2 border-transparent shadow-[0_2px_8px_rgba(25,28,29,0.04)] peer-checked:border-primary peer-checked:shadow-[0_4px_16px_rgba(0,91,191,0.08)] flex items-center justify-between transition-all">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-surface-container-low rounded-full flex items-center justify-center group-hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="credit_card">credit_card</span>
+</div>
+<div>
+<p class="font-headline font-semibold text-on-surface">Credit / Debit Card</p>
+<p class="font-body text-xs text-on-surface-variant mt-0.5">Visa, Mastercard, RuPay</p>
+</div>
+</div>
+<div class="w-6 h-6 rounded-full border-2 border-outline-variant flex items-center justify-center peer-checked:bg-primary peer-checked:border-primary transition-colors">
+<span class="material-symbols-outlined text-on-primary text-[16px] opacity-0 peer-checked:opacity-100 transition-opacity" data-icon="check" style="font-variation-settings: 'wght' 600;">check</span>
+</div>
+</div>
+</label>
+<!-- Net Banking -->
+<label class="relative block cursor-pointer group">
+<input class="peer sr-only" name="payment_method" type="radio" value="netbanking"/>
+<div class="bg-surface-container-lowest rounded-DEFAULT p-4 border-2 border-transparent shadow-[0_2px_8px_rgba(25,28,29,0.04)] peer-checked:border-primary peer-checked:shadow-[0_4px_16px_rgba(0,91,191,0.08)] flex items-center justify-between transition-all">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-surface-container-low rounded-full flex items-center justify-center group-hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="account_balance">account_balance</span>
+</div>
+<div>
+<p class="font-headline font-semibold text-on-surface">Net Banking</p>
+<p class="font-body text-xs text-on-surface-variant mt-0.5">All major banks supported</p>
+</div>
+</div>
+<div class="w-6 h-6 rounded-full border-2 border-outline-variant flex items-center justify-center peer-checked:bg-primary peer-checked:border-primary transition-colors">
+<span class="material-symbols-outlined text-on-primary text-[16px] opacity-0 peer-checked:opacity-100 transition-opacity" data-icon="check" style="font-variation-settings: 'wght' 600;">check</span>
+</div>
+</div>
+</label>
+</div>
+</section>
+<!-- Billing Details (Collapsed) -->
+<section class="bg-surface-container-lowest rounded-DEFAULT p-4 shadow-[0_2px_8px_rgba(25,28,29,0.04)] flex justify-between items-center cursor-pointer hover:bg-surface-bright transition-colors mt-2">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="receipt_long">receipt_long</span>
+<span class="font-headline font-medium text-sm text-on-surface">View Billing Details</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="expand_more">expand_more</span>
+</section>
+</main>
+<!-- Fixed Bottom Action Bar -->
+<div class="fixed bottom-0 w-full z-40 bg-surface-container-lowest/90 backdrop-blur-xl border-t border-outline-variant/10 p-4 md:px-6 shadow-[0_-8px_24px_rgba(0,0,0,0.02)]">
+<div class="md:max-w-2xl md:mx-auto flex flex-col gap-3">
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary font-headline font-bold text-base h-14 rounded-xl shadow-[0_8px_24px_rgba(0,91,191,0.2)] hover:shadow-[0_12px_32px_rgba(0,91,191,0.3)] transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+<span>Proceed to Pay ₹2,200</span>
+<span class="material-symbols-outlined text-lg" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<div class="flex items-center justify-center gap-1.5 text-on-surface-variant opacity-80">
+<span class="material-symbols-outlined text-[14px]" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+<span class="font-body text-xs font-medium tracking-wide">Secured via Cove Payments</span>
+</div>
+</div>
+</div>
+</body></html>
