@@ -80,7 +80,7 @@ class AdminDashboardScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  'Welcome back, ${currentUser?.fullName.split(' ').first ?? 'Marcus'}. Here is what is happening across Avenue360 today.',
+                  'Welcome back, ${currentUser?.fullName.split(' ').first ?? 'Marcus'}. Here is what is happening across Cove today.',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: _AdminPalette.muted,
                     height: 1.5,
@@ -145,16 +145,32 @@ class AdminDashboardScreen extends StatelessWidget {
                       _AdminQuickActionButton(
                         icon: Icons.campaign_rounded,
                         label: 'Post Notice',
-                        onTap: () => Navigator.of(context).pushNamed(
-                          AppPage.announcementsManagement.routeName,
-                          arguments: {'openComposer': true},
-                        ),
+                        onTap: () => goToPage(context, AppPage.addAnnouncement),
+                      ),
+                      const SizedBox(width: 10),
+                      _AdminQuickActionButton(
+                        icon: Icons.receipt_long_rounded,
+                        label: 'Maintenance',
+                        onTap: () =>
+                            goToPage(context, AppPage.adminMaintenance),
                       ),
                       const SizedBox(width: 10),
                       _AdminQuickActionButton(
                         icon: Icons.report_problem_rounded,
                         label: 'Complaints',
                         onTap: () => goToPage(context, AppPage.adminComplaints),
+                      ),
+                      const SizedBox(width: 10),
+                      _AdminQuickActionButton(
+                        icon: Icons.apartment_rounded,
+                        label: 'Amenities',
+                        onTap: () => goToPage(context, AppPage.adminAmenities),
+                      ),
+                      const SizedBox(width: 10),
+                      _AdminQuickActionButton(
+                        icon: Icons.handyman_rounded,
+                        label: 'Services',
+                        onTap: () => goToPage(context, AppPage.adminServices),
                       ),
                       const SizedBox(width: 10),
                       _AdminQuickActionButton(

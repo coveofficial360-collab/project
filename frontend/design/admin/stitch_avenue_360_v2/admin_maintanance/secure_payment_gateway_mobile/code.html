@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Secure Payment</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-secondary": "#ffffff",
+                        "secondary-container": "#fdaf0b",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "on-background": "#191c1d",
+                        "primary": "#005bbf",
+                        "secondary-fixed-dim": "#ffba43",
+                        "on-tertiary-fixed": "#341100",
+                        "outline": "#727785",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#694600",
+                        "surface-dim": "#d9dadb",
+                        "tertiary-fixed-dim": "#ffb691",
+                        "on-secondary-fixed": "#281800",
+                        "surface": "#f8f9fa",
+                        "tertiary-container": "#c55500",
+                        "on-primary-fixed": "#001a41",
+                        "surface-container-high": "#e7e8e9",
+                        "surface-container-low": "#f3f4f5",
+                        "outline-variant": "#c1c6d6",
+                        "on-secondary-fixed-variant": "#614000",
+                        "primary-fixed-dim": "#adc7ff",
+                        "on-primary": "#ffffff",
+                        "background": "#f8f9fa",
+                        "secondary": "#805600",
+                        "primary-fixed": "#d8e2ff",
+                        "on-primary-fixed-variant": "#004493",
+                        "surface-tint": "#005bc0",
+                        "inverse-primary": "#adc7ff",
+                        "on-primary-container": "#ffffff",
+                        "tertiary": "#9e4300",
+                        "surface-container": "#edeeef",
+                        "surface-variant": "#e1e3e4",
+                        "primary-container": "#1a73e8",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-container": "#0e0200",
+                        "on-surface": "#191c1d",
+                        "secondary-fixed": "#ffddaf",
+                        "surface-container-highest": "#e1e3e4",
+                        "error": "#ba1a1a",
+                        "surface-bright": "#f8f9fa",
+                        "tertiary-fixed": "#ffdbcb",
+                        "on-surface-variant": "#414754",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#2e3132"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6, .font-headline, .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body {
+            min-height: 100dvh;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col md:max-w-md md:mx-auto md:border-x md:border-outline-variant/20 md:shadow-2xl">
+<!-- Top App Bar -->
+<header class="sticky top-0 z-50 bg-surface/80 backdrop-blur-xl h-14 md:h-16 px-4 flex items-center justify-between">
+<button aria-label="Go back" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors text-on-surface">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline font-semibold text-base md:text-lg tracking-tight text-on-surface">Secure Payment</h1>
+<div aria-label="Secure" class="w-10 h-10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="lock" data-weight="fill" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 px-4 py-4 md:py-6 flex flex-col gap-6 md:gap-8 pb-48">
+<!-- UPI Section -->
+<section class="flex flex-col gap-6">
+<div class="flex flex-col gap-2">
+<h2 class="font-headline font-semibold text-lg md:text-xl tracking-tight text-on-surface">Pay with UPI</h2>
+<p class="font-body text-xs md:text-sm text-on-surface-variant leading-relaxed">Enter your UPI ID or choose a verified app installed on your device.</p>
+</div>
+<!-- Text Field Container -->
+<div class="bg-surface-container-high rounded-sm p-4 pb-2 relative group focus-within:bg-surface-container-highest transition-colors">
+<label class="font-label text-[10px] md:text-xs uppercase tracking-wider text-primary font-medium absolute top-2 left-4" for="upi_id">Enter UPI ID</label>
+<input class="w-full bg-transparent border-none p-0 pt-4 mt-1 md:mt-2 font-body text-sm md:text-base text-on-surface placeholder:text-on-surface-variant/50 focus:ring-0" id="upi_id" placeholder="e.g. rahul@okaxis" type="text"/>
+<div class="absolute bottom-0 left-0 w-full h-[2px] bg-primary scale-x-0 group-focus-within:scale-x-100 transition-transform origin-left"></div>
+</div>
+<!-- OR Divider -->
+<div class="flex items-center gap-4 py-1">
+<div class="flex-1 h-px bg-surface-variant"></div>
+<span class="font-label text-[10px] md:text-xs uppercase tracking-wider text-on-surface-variant">Or</span>
+<div class="flex-1 h-px bg-surface-variant"></div>
+</div>
+<!-- UPI App Chips Grid (Flexible) -->
+<div class="grid grid-cols-4 @xs:grid-cols-4 gap-2 md:gap-3">
+<button class="flex flex-col items-center justify-center gap-1.5 md:gap-2 p-2 md:p-3 bg-surface-container-lowest rounded-xl shadow-[0_8px_24px_rgba(25,28,29,0.04)] hover:bg-surface-container-low transition-colors border border-outline-variant/5">
+<img alt="GPay Logo" class="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover" data-alt="A clean, minimalist logo icon for a payment app" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPvwpqL5N6l0etrfeTnkN8RCo6_laJdRlL4BvxNd-8t8qIrx9suL9gFrJD_x2gX7lsvmOzn5DdKsms5bHmzMbnx-MMR5m06Ijl1LoLpt4Mbku3h8OoITWq_ESgfidqJaQSumLbR0LlEdRMOgjzdoK9gABrCThVJZM3NUBdkw2QYD6UmIfueFMvWIixlZ5FN_Japu5poyT9gLLS5JDqLpI9uQEI4w5Oc-y1YgbUSYJ9FmSLbfE-0IIBIE4WkdEHJ8Tet-Anx_AEwJw"/>
+<span class="font-body text-[10px] md:text-xs font-medium text-on-surface">GPay</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-1.5 md:gap-2 p-2 md:p-3 bg-surface-container-lowest rounded-xl shadow-[0_8px_24px_rgba(25,28,29,0.04)] hover:bg-surface-container-low transition-colors border border-outline-variant/5">
+<img alt="PhonePe Logo" class="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover" data-alt="A vibrant purple gradient app icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAz0PVaz-qzSKS-ZTSlZWek4MUkDAFyZ3EL4U4EZuczbF7Ii-_Jp1TtpDADd0-HGAqDfxzZ83dd3C0OxM3xenfukcSemHs6dxk8N2c5Iyb8xe_rr5jzJ4I2AsCz29E_7DU34M7N4Q4oQ8aNGO9CRAYkB_HlYrYgaMigNjBW9N4wDRJ6HxDTl8-HQbCsDUgmkOMF7P1s8Yk_UVqWnlBjg4214wd9XN9NXmxx1mOBWUvDyD-T1GIPw_0mcO2shzstgLwSZnXeHGjuvhY"/>
+<span class="font-body text-[10px] md:text-xs font-medium text-on-surface">PhonePe</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-1.5 md:gap-2 p-2 md:p-3 bg-surface-container-lowest rounded-xl shadow-[0_8px_24px_rgba(25,28,29,0.04)] hover:bg-surface-container-low transition-colors border border-outline-variant/5">
+<img alt="Paytm Logo" class="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover" data-alt="A blue themed app icon for digital wallet" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB56Jveqzq6eHD5bPmZcuPdfcZo8wE7IvjvJmGs68ZppybvEbewRVWhaGI5D3MMeGrPGjQPtvMc5Vv7jP8aHl5yhKbQjtzwu5qwCAxHEVyQ2wfZVTcgBtyNX-ab8VvOG193b5o896VMPygceEMB-0jgtfW6xQLzqcprCzyMIMtjdJzWs3s1qUTydCmsgbwW0yoR5qeJhtH_-LxDHTZRbvpxXDIxiqXeLkpKkgo0h_nd7pDXw17wZkwkK3aKKJBiOeg86hJgLVFBT9E"/>
+<span class="font-body text-[10px] md:text-xs font-medium text-on-surface">Paytm</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-1.5 md:gap-2 p-2 md:p-3 bg-surface-container-lowest rounded-xl shadow-[0_8px_24px_rgba(25,28,29,0.04)] hover:bg-surface-container-low transition-colors border border-outline-variant/15">
+<div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-lg md:text-xl" data-icon="account_balance">account_balance</span>
+</div>
+<span class="font-body text-[10px] md:text-xs font-medium text-on-surface">BHIM</span>
+</button>
+</div>
+</section>
+</main>
+<!-- Bottom Action Area (Sticky & Responsive) -->
+<div class="fixed bottom-0 w-full md:max-w-md bg-surface/90 backdrop-blur-xl border-t border-transparent pt-4 pb-safe px-4 z-50 rounded-t-[24px] md:rounded-t-[32px] shadow-[0_-12px_32px_rgba(25,28,29,0.06)]">
+<!-- Confirmation Card -->
+<div class="bg-surface-container-lowest rounded-xl p-3 md:p-4 mb-3 md:mb-4 flex items-center justify-between shadow-[0_4px_16px_rgba(25,28,29,0.04)] border border-outline-variant/10 relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-primary-container"></div>
+<div class="flex flex-col gap-0.5 md:gap-1 pl-2">
+<span class="font-body text-[10px] md:text-xs text-on-surface-variant">Paying Vasant Vihar RWA</span>
+<span class="font-headline font-bold text-lg md:text-xl text-on-surface tracking-tight">₹2,200</span>
+</div>
+<div class="flex items-center gap-1 bg-surface-container-low px-2 py-1 rounded-full border border-outline-variant/10">
+<span class="material-symbols-outlined text-primary text-[14px] md:text-[16px]" data-icon="verified_user" data-weight="fill" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="font-label text-[9px] md:text-[10px] uppercase tracking-wider text-primary font-medium">Secured</span>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex flex-col gap-2 md:gap-3 pb-6">
+<button class="w-full h-12 md:h-14 rounded-full bg-gradient-to-br from-primary to-primary-container text-on-primary font-headline font-semibold text-sm md:text-base shadow-[0_8px_20px_rgba(0,91,191,0.2)] hover:opacity-95 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+<span>Pay ₹2,200</span>
+<span class="material-symbols-outlined text-lg md:text-xl" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<button class="w-full py-1.5 md:py-2 font-body text-[13px] md:text-sm text-on-surface-variant hover:text-primary transition-colors text-center underline decoration-outline-variant/30 underline-offset-4">
+                Cancel transaction
+            </button>
+</div>
+</div>
+</body></html>

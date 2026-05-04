@@ -23,9 +23,19 @@ where user_id = (select id from public.app_users where email = 'user@gmail.com')
 order by created_at desc;
 
 -- Amenities and bookings
-select code, name, category, status_label, availability_text, occupancy_note, cta_label
+select
+  code,
+  name,
+  category,
+  status_label,
+  availability_text,
+  occupancy_note,
+  cta_label,
+  capacity_percent,
+  access_note,
+  rules
 from public.amenities
-order by name;
+order by sort_order asc, name;
 
 select
   public.amenities.name,
@@ -40,7 +50,56 @@ where public.amenity_bookings.user_id = (
 )
 order by public.amenity_bookings.booking_date desc;
 
+-- Reset only this demo booking slot so this test block can be rerun safely.
+update public.amenity_bookings
+set booking_status = 'cancelled_demo_rerun'
+where user_id = (select id from public.app_users where email = 'user@gmail.com')
+  and amenity_id = (select id from public.amenities where code = 'modern-gym')
+  and booking_date = current_date + 2
+  and lower(trim(time_slot)) = lower(trim('18:00 - 19:00'))
+  and booking_status in ('confirmed', 'pending');
+
+select *
+from public.create_amenity_booking(
+  (select id from public.app_users where email = 'user@gmail.com'),
+  (select id from public.amenities where code = 'modern-gym'),
+  current_date + 2,
+  '18:00 - 19:00',
+  1
+);
+
+-- This duplicate should be blocked with a friendly validation notice.
+do $$
+begin
+  perform *
+  from public.create_amenity_booking(
+    (select id from public.app_users where email = 'user@gmail.com'),
+    (select id from public.amenities where code = 'modern-gym'),
+    current_date + 2,
+    '18:00 - 19:00',
+    1
+  );
+exception
+  when others then
+    raise notice 'Expected duplicate booking validation: %', sqlerrm;
+end $$;
+
 -- Bills and payments
+select
+  code,
+  title,
+  category,
+  state,
+  amount_due,
+  amount_paid,
+  due_date,
+  last_paid_on,
+  badge_text
+from public.bills
+where user_id = (select id from public.app_users where email = 'user@gmail.com')
+  and lower(category) = 'maintenance'
+order by due_date asc nulls last, created_at desc;
+
 select method_name, method_type, masked_value, note, is_primary
 from public.payment_methods
 where user_id = (select id from public.app_users where email = 'user@gmail.com')
@@ -50,6 +109,23 @@ select activity_title, activity_category, amount, status, activity_at
 from public.payment_activity
 where user_id = (select id from public.app_users where email = 'user@gmail.com')
 order by activity_at desc;
+
+-- Resident maintenance pay action
+select *
+from public.pay_maintenance_bill(
+  (select id from public.app_users where email = 'user@gmail.com'),
+  (
+    select id
+    from public.bills
+    where user_id = (select id from public.app_users where email = 'user@gmail.com')
+      and lower(category) = 'maintenance'
+      and state <> 'paid'
+    order by due_date asc nulls last, created_at desc
+    limit 1
+  ),
+  'UPI',
+  'TXN-DEMO-1001'
+);
 
 -- Complaints
 select
@@ -152,6 +228,196 @@ select
   created_at
 from public.admin_complaints_v;
 
+-- Admin maintenance views and actions
+select
+  resident_name,
+  unit_number,
+  code,
+  amount_due,
+  due_date,
+  payment_status,
+  months_overdue
+from public.admin_maintenance_resident_log_v;
+
+do $$
+declare
+  v_admin_id uuid;
+  v_bill_id uuid;
+begin
+  select id
+  into v_admin_id
+  from public.app_users
+  where email = 'admin@gmail.com'
+  limit 1;
+
+  select bill_id
+  into v_bill_id
+  from public.admin_maintenance_resident_log_v
+  where payment_status <> 'paid'
+  order by due_date asc nulls last
+  limit 1;
+
+  if v_bill_id is null then
+    raise notice 'No unpaid maintenance bill found. Skipping admin_mark_maintenance_paid demo call.';
+    return;
+  end if;
+
+  perform *
+  from public.admin_mark_maintenance_paid(
+    v_admin_id,
+    v_bill_id,
+    'Marked paid from maintenance dashboard.',
+    current_date
+  );
+end $$;
+
+do $$
+declare
+  v_admin_id uuid;
+  v_target_resident_ids uuid[];
+begin
+  select id
+  into v_admin_id
+  from public.app_users
+  where email = 'admin@gmail.com'
+  limit 1;
+
+  select array_agg(target_rows.user_id)
+  into v_target_resident_ids
+  from (
+    select user_id
+    from public.admin_maintenance_resident_log_v
+    where payment_status in ('pending', 'overdue')
+    order by due_date asc nulls last
+    limit 3
+  ) target_rows;
+
+  if coalesce(array_length(v_target_resident_ids, 1), 0) = 0 then
+    raise notice 'No pending/overdue residents found. Skipping send_maintenance_alerts demo call.';
+    return;
+  end if;
+
+  perform *
+  from public.send_maintenance_alerts(
+    v_admin_id,
+    v_target_resident_ids,
+    'Hi [Resident Name], your maintenance of ₹[Amount] for [Month] is due on [Due Date]. Please complete payment from the Cove app.',
+    array['push', 'email']
+  );
+end $$;
+
+select *
+from public.upsert_admin_maintenance_notification_settings(
+  (select id from public.app_users where email = 'admin@gmail.com'),
+  true,
+  4,
+  true,
+  true,
+  'weekly',
+  true,
+  true,
+  true,
+  false,
+  'Hi [Resident Name], your maintenance of ₹[Amount] for [Month] is due on [Due Date]. Please pay soon to avoid late reminders.'
+);
+
+select *
+from public.admin_maintenance_notification_settings
+where admin_user_id = (select id from public.app_users where email = 'admin@gmail.com');
+
+-- Admin amenities, booking logs, and services
+select
+  code,
+  name,
+  category,
+  location_label,
+  status_label,
+  capacity_percent,
+  booking_required
+from public.amenities
+order by sort_order asc, created_at asc;
+
+select
+  amenity_name,
+  resident_name,
+  unit_number,
+  booking_date,
+  time_slot,
+  guest_count,
+  booking_status
+from public.admin_amenity_bookings_v;
+
+select
+  full_name,
+  specialty,
+  phone,
+  availability_status,
+  rating,
+  jobs_completed
+from public.service_providers
+order by created_at desc;
+
+-- Reset demo amenity so this test block can be rerun safely.
+delete from public.amenities
+where code = lower(regexp_replace(trim('Podcast Studio'), '[^a-zA-Z0-9]+', '-', 'g'));
+
+select *
+from public.create_admin_amenity(
+  (select id from public.app_users where email = 'admin@gmail.com'),
+  'Podcast Studio',
+  'Entertainment',
+  'Sound-treated studio for resident recordings and calls.',
+  'Level 2 Media Wing',
+  'OPEN',
+  'Available 9 AM to 8 PM',
+  'Low usage today',
+  18,
+  true,
+  null,
+  'Bring your resident ID.',
+  array['Leave equipment powered off after use.', 'Food is not allowed inside.'],
+  jsonb_build_array(
+    jsonb_build_object('start_time', '09:00', 'end_time', '11:00', 'capacity', 10),
+    jsonb_build_object('start_time', '17:00', 'end_time', '19:00', 'capacity', 12)
+  )
+);
+
+select
+  amenity.name as amenity_name,
+  slot.start_time,
+  slot.end_time,
+  slot.slot_capacity,
+  slot.sort_order
+from public.amenity_time_slots slot
+join public.amenities amenity on amenity.id = slot.amenity_id
+where amenity.code = (
+  select code
+  from public.amenities
+  where name = 'Podcast Studio'
+  order by created_at desc
+  limit 1
+)
+order by slot.sort_order asc, slot.start_time asc;
+
+-- Reset demo service provider so this test block can be rerun safely.
+delete from public.service_providers
+where full_name = 'Priya Nair'
+  and specialty = 'Housekeeping';
+
+select *
+from public.create_admin_service_provider(
+  (select id from public.app_users where email = 'admin@gmail.com'),
+  'Priya Nair',
+  'Housekeeping',
+  '+91 90000 12345',
+  'Deep-clean specialist • 7 yrs exp.',
+  'available',
+  4.9,
+  72,
+  null,
+  'Preferred for amenity turnover and common-area cleaning.'
+);
+
 select full_name, email, unit_number, tower, resident_kind, status
 from public.resident_directory_v;
 
@@ -167,6 +433,25 @@ select title, details, related_visitor_name, related_unit, log_status, logged_at
 from public.guard_duty_logs
 where guard_user_id = (select id from public.app_users where email = 'guard@gmail.com')
 order by logged_at desc;
+
+select attendance_date, check_in_at, check_out_at, status, notes
+from public.guard_attendance_logs
+where guard_user_id = (select id from public.app_users where email = 'guard@gmail.com')
+order by attendance_date desc;
+
+select *
+from public.set_guard_attendance(
+  (select id from public.app_users where email = 'guard@gmail.com'),
+  'check_in',
+  'Shift started from main north gate.'
+);
+
+select *
+from public.set_guard_attendance(
+  (select id from public.app_users where email = 'guard@gmail.com'),
+  'check_out',
+  'Shift completed and handed over.'
+);
 
 -- Community feed, meetings, and support
 select

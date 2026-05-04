@@ -226,12 +226,14 @@ class _AdminScaffold extends StatelessWidget {
     required this.currentPage,
     this.topBar,
     this.floatingActionButton,
+    this.showBottomNavigation = true,
   });
 
   final Widget child;
   final AppPage currentPage;
   final PreferredSizeWidget? topBar;
   final Widget? floatingActionButton;
+  final bool showBottomNavigation;
 
   @override
   Widget build(BuildContext context) {
@@ -240,10 +242,12 @@ class _AdminScaffold extends StatelessWidget {
       appBar: topBar,
       body: child,
       floatingActionButton: floatingActionButton,
-      bottomNavigationBar: AvenueBottomNavigationBar(
-        items: _adminNavItems,
-        currentPage: currentPage,
-      ),
+      bottomNavigationBar: showBottomNavigation
+          ? AvenueBottomNavigationBar(
+              items: _adminNavItems,
+              currentPage: currentPage,
+            )
+          : null,
     );
   }
 }
@@ -626,16 +630,27 @@ class _AdminFeatureCard extends StatelessWidget {
 }
 
 class _AdminGlassCard extends StatelessWidget {
-  const _AdminGlassCard({required this.child, this.radius = 24});
+  const _AdminGlassCard({
+    required this.child,
+    this.radius = 24,
+    this.backgroundColor,
+    this.padding = EdgeInsets.zero,
+  });
 
   final Widget child;
   final double radius;
+  final Color? backgroundColor;
+  final EdgeInsetsGeometry padding;
 
   @override
   Widget build(BuildContext context) {
+    final content = padding == EdgeInsets.zero
+        ? child
+        : Padding(padding: padding, child: child);
+
     return Container(
       decoration: BoxDecoration(
-        color: _AdminPalette.surface.withValues(alpha: 0.88),
+        color: backgroundColor ?? _AdminPalette.surface.withValues(alpha: 0.88),
         borderRadius: BorderRadius.circular(radius),
         border: Border.all(
           color: _AdminPalette.outline.withValues(alpha: 0.22),
@@ -648,7 +663,7 @@ class _AdminGlassCard extends StatelessWidget {
           ),
         ],
       ),
-      child: child,
+      child: content,
     );
   }
 }
@@ -971,8 +986,11 @@ class _AdminFormField extends StatelessWidget {
         const SizedBox(height: 8),
         Container(
           decoration: BoxDecoration(
-            color: _AdminPalette.surfaceLow,
+            color: _AdminPalette.surface.withValues(alpha: 0.92),
             borderRadius: BorderRadius.circular(18),
+            border: Border.all(
+              color: _AdminPalette.outline.withValues(alpha: 0.22),
+            ),
           ),
           child: TextField(
             controller: controller,
@@ -1028,8 +1046,11 @@ class _AdminComposerField extends StatelessWidget {
         const SizedBox(height: 8),
         Container(
           decoration: BoxDecoration(
-            color: _AdminPalette.surfaceLow,
+            color: _AdminPalette.surface.withValues(alpha: 0.92),
             borderRadius: BorderRadius.circular(18),
+            border: Border.all(
+              color: _AdminPalette.outline.withValues(alpha: 0.22),
+            ),
           ),
           child: TextField(
             controller: controller,
@@ -1686,6 +1707,29 @@ class _AdminEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = label.trim().toLowerCase().startsWith('loading');
+    if (isLoading) {
+      return _AdminGlassCard(
+        child: const Padding(
+          padding: EdgeInsets.all(22),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AvenueSkeletonBlock(width: 160, height: 14, radius: 999),
+              SizedBox(height: 14),
+              AvenueSkeletonBlock(
+                width: double.infinity,
+                height: 12,
+                radius: 999,
+              ),
+              SizedBox(height: 8),
+              AvenueSkeletonBlock(width: 240, height: 12, radius: 999),
+            ],
+          ),
+        ),
+      );
+    }
+
     return _AdminGlassCard(
       child: Padding(
         padding: const EdgeInsets.all(22),

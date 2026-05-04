@@ -292,7 +292,7 @@ class _BrandSection extends StatelessWidget {
         ),
         const SizedBox(height: 24),
         Text(
-          'Avenue360',
+          'Cove',
           style: theme.textTheme.displayMedium?.copyWith(fontSize: 32),
         ),
         const SizedBox(height: 8),

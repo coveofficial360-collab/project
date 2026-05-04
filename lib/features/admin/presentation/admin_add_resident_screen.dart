@@ -35,6 +35,7 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
   Widget build(BuildContext context) {
     return _AdminScaffold(
       currentPage: AppPage.residentDirectory,
+      showBottomNavigation: false,
       topBar: _AdminTopBar(
         title: 'Add Resident',
         leadingIcon: Icons.arrow_back_rounded,
@@ -52,10 +53,9 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
             const SizedBox(height: 14),
             Text(
               'Resident Registration',
-              style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                fontSize: 32,
-                height: 1.05,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.displayMedium?.copyWith(fontSize: 32, height: 1.05),
             ),
             const SizedBox(height: 8),
             Text(
@@ -68,6 +68,8 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
             const SizedBox(height: 20),
             _AdminGlassCard(
               radius: 28,
+              backgroundColor: _AdminPalette.surfaceLow.withValues(alpha: 0.74),
+              padding: const EdgeInsets.all(18),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -283,10 +285,11 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
         email.isEmpty ||
         phone.isEmpty ||
         unitNumber.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Enter name, email, phone, and unit number.'),
-        ),
+      showAvenueDialogMessage(
+        context,
+        title: 'Missing details',
+        message: 'Enter name, email, phone, and unit number.',
+        type: AvenueMessageType.error,
       );
       return;
     }
@@ -318,9 +321,11 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
     });
 
     if (result == null) {
-      ScaffoldMessenger.of(
+      showAvenueDialogMessage(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Could not add resident.')));
+        message: 'Could not add resident.',
+        type: AvenueMessageType.error,
+      );
       return;
     }
 

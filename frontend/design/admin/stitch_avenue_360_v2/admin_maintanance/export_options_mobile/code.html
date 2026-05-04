@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Export Options Bottom Sheet</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-secondary": "#ffffff",
+                        "secondary-container": "#fdaf0b",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "on-background": "#191c1d",
+                        "primary": "#005bbf",
+                        "secondary-fixed-dim": "#ffba43",
+                        "on-tertiary-fixed": "#341100",
+                        "outline": "#727785",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#694600",
+                        "surface-dim": "#d9dadb",
+                        "tertiary-fixed-dim": "#ffb691",
+                        "on-secondary-fixed": "#281800",
+                        "surface": "#f8f9fa",
+                        "tertiary-container": "#c55500",
+                        "on-primary-fixed": "#001a41",
+                        "surface-container-high": "#e7e8e9",
+                        "surface-container-low": "#f3f4f5",
+                        "outline-variant": "#c1c6d6",
+                        "on-secondary-fixed-variant": "#614000",
+                        "primary-fixed-dim": "#adc7ff",
+                        "on-primary": "#ffffff",
+                        "background": "#f8f9fa",
+                        "secondary": "#805600",
+                        "primary-fixed": "#d8e2ff",
+                        "on-primary-fixed-variant": "#004493",
+                        "surface-tint": "#005bc0",
+                        "inverse-primary": "#adc7ff",
+                        "on-primary-container": "#ffffff",
+                        "tertiary": "#9e4300",
+                        "surface-container": "#edeeef",
+                        "surface-variant": "#e1e3e4",
+                        "primary-container": "#1a73e8",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-container": "#0e0200",
+                        "on-surface": "#191c1d",
+                        "secondary-fixed": "#ffddaf",
+                        "surface-container-highest": "#e1e3e4",
+                        "error": "#ba1a1a",
+                        "surface-bright": "#f8f9fa",
+                        "tertiary-fixed": "#ffdbcb",
+                        "on-surface-variant": "#414754",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#2e3132"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            min-height: 100dvh;
+        }
+        input[type="radio"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background-color: transparent;
+            margin: 0;
+            font: inherit;
+            color: currentColor;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid #727785;
+            border-radius: 50%;
+            display: grid;
+            place-content: center;
+        }
+        input[type="radio"]::before {
+            content: "";
+            width: 0.625rem;
+            height: 0.625rem;
+            border-radius: 50%;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em #005bbf;
+        }
+        input[type="radio"]:checked {
+            border-color: #005bbf;
+        }
+        input[type="radio"]:checked::before {
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body class="bg-surface-container-highest font-body text-on-surface antialiased flex flex-col min-h-screen">
+<main class="flex-grow flex flex-col justify-end md:items-center md:justify-center">
+<!-- Overlay background (simulated) -->
+<div class="fixed inset-0 bg-on-surface/40 z-40 block"></div>
+<!-- Bottom Sheet Container -->
+<div class="relative z-50 bg-surface w-full md:max-w-[480px] rounded-t-[2.5rem] md:rounded-[2.5rem] shadow-[0_-8px_32px_rgba(0,0,0,0.1)] flex flex-col overflow-hidden pb-safe md:pb-8">
+<!-- Drag Handle (Mobile only) -->
+<div class="w-full flex justify-center pt-4 pb-2 md:hidden">
+<div class="w-10 h-1.25 bg-outline-variant rounded-full opacity-60"></div>
+</div>
+<div class="px-6 pb-6 pt-2 md:pt-8 flex flex-col gap-6">
+<!-- Header -->
+<div class="flex items-center justify-between">
+<h2 class="font-headline font-semibold text-2xl tracking-tight text-on-surface">Export as PDF</h2>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<!-- Template Preview -->
+<div class="bg-surface-container-low rounded-[1.5rem] p-4 flex items-center gap-4">
+<div class="w-16 h-16 bg-white rounded-xl shadow-sm flex-shrink-0 flex items-center justify-center border border-outline-variant/30 overflow-hidden">
+<div class="relative w-10 h-12 border border-outline-variant/30 rounded-sm bg-surface-container-lowest overflow-hidden flex flex-col items-center justify-center">
+<img alt="Preview" class="absolute inset-0 w-full h-full object-cover opacity-10" data-alt="A stylized miniature preview of a modern residential statement document." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQqgSqL_8yx0sP6vGYeJEI9fz4dOxZ5xjBzVoZZ-C-IuSJBf0PL4RShDd4Ldx6qnPbByYVY-na0txAIDAngU__g06axLIcayUys7yUeJi-SDkBYm9y-GW6RFaCLMBaLkWnYYL5BmcU5JMd77RbOJDA2lWfAzfnOEAFJlni-MSp-KjokrCSMeUNhdgfgA0McF_J6VfENReZq6YumGXA94paBAL9NJYXArTDp9wmSdwtaLXtVcrptI1b9EQpO3_iQBIgjjEEgN5oHts"/>
+<span class="material-symbols-outlined text-primary text-xl relative z-10" data-icon="description">description</span>
+</div>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-headline font-semibold text-on-surface truncate">Standard Statement</span>
+<span class="font-body text-sm text-on-surface-variant mt-0.5 line-clamp-2">Includes all transaction details and summary.</span>
+</div>
+</div>
+<!-- Radio Options -->
+<div class="flex flex-col gap-3">
+<label class="flex items-center justify-between p-4 bg-white rounded-2xl border border-outline-variant/20 cursor-pointer hover:bg-surface-container-low transition-colors shadow-sm">
+<div class="flex items-center gap-4 min-w-0">
+<span class="material-symbols-outlined text-on-surface-variant flex-shrink-0" data-icon="calendar_today">calendar_today</span>
+<span class="font-body font-medium text-on-surface truncate">Current Month Statement</span>
+</div>
+<input checked="" class="flex-shrink-0 ml-2" name="export_period" type="radio"/>
+</label>
+<label class="flex items-center justify-between p-4 bg-white rounded-2xl border border-outline-variant/20 cursor-pointer hover:bg-surface-container-low transition-colors shadow-sm">
+<div class="flex items-center gap-4 min-w-0">
+<span class="material-symbols-outlined text-on-surface-variant flex-shrink-0" data-icon="date_range">date_range</span>
+<span class="font-body font-medium text-on-surface truncate">Last 3 Months</span>
+</div>
+<input class="flex-shrink-0 ml-2" name="export_period" type="radio"/>
+</label>
+<label class="flex items-center justify-between p-4 bg-white rounded-2xl border border-outline-variant/20 cursor-pointer hover:bg-surface-container-low transition-colors shadow-sm">
+<div class="flex items-center gap-4 min-w-0">
+<span class="material-symbols-outlined text-on-surface-variant flex-shrink-0" data-icon="event_note">event_note</span>
+<span class="font-body font-medium text-on-surface truncate">Last 6 Months</span>
+</div>
+<input class="flex-shrink-0 ml-2" name="export_period" type="radio"/>
+</label>
+<label class="flex items-center justify-between p-4 bg-white rounded-2xl border border-outline-variant/20 cursor-pointer hover:bg-surface-container-low transition-colors shadow-sm">
+<div class="flex items-center gap-4 min-w-0">
+<span class="material-symbols-outlined text-on-surface-variant flex-shrink-0" data-icon="calendar_month">calendar_month</span>
+<span class="font-body font-medium text-on-surface truncate">Full Year 2025</span>
+</div>
+<input class="flex-shrink-0 ml-2" name="export_period" type="radio"/>
+</label>
+</div>
+<!-- Actions -->
+<div class="flex flex-col gap-4 mt-2">
+<button class="w-full h-14 bg-primary text-on-primary rounded-full font-headline font-semibold text-lg flex items-center justify-center gap-2 shadow-sm hover:bg-primary/90 transition-all active:scale-[0.98]">
+<span class="material-symbols-outlined" data-icon="picture_as_pdf">picture_as_pdf</span>
+                        Generate PDF
+                    </button>
+<button class="w-full py-2 text-primary font-headline font-semibold hover:bg-surface-container-low rounded-full transition-all">
+                        Cancel
+                    </button>
+</div>
+</div>
+</div>
+</main>
+</body></html>

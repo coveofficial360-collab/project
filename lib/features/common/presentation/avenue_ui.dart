@@ -21,6 +21,114 @@ void goBackOrHome(BuildContext context) {
   Navigator.of(context).pushReplacementNamed(AppPage.home.routeName);
 }
 
+enum AvenueMessageType { info, success, error }
+
+Future<void> showAvenueDialogMessage(
+  BuildContext context, {
+  required String message,
+  String? title,
+  AvenueMessageType type = AvenueMessageType.info,
+}) async {
+  final color = switch (type) {
+    AvenueMessageType.success => const Color(0xFF1F8E5A),
+    AvenueMessageType.error => const Color(0xFFD33B2C),
+    AvenueMessageType.info => AvenueColors.primary,
+  };
+  final icon = switch (type) {
+    AvenueMessageType.success => Icons.check_circle_rounded,
+    AvenueMessageType.error => Icons.error_rounded,
+    AvenueMessageType.info => Icons.info_rounded,
+  };
+  final heading =
+      title ??
+      switch (type) {
+        AvenueMessageType.success => 'Success',
+        AvenueMessageType.error => 'Something went wrong',
+        AvenueMessageType.info => 'Notice',
+      };
+
+  await showDialog<void>(
+    context: context,
+    barrierDismissible: true,
+    builder: (dialogContext) {
+      return Dialog(
+        insetPadding: const EdgeInsets.symmetric(horizontal: 28),
+        backgroundColor: Colors.transparent,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 420),
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(22, 22, 22, 18),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(28),
+              border: Border.all(
+                color: AvenueColors.outlineVariant.withValues(alpha: 0.34),
+              ),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x26000000),
+                  blurRadius: 34,
+                  offset: Offset(0, 18),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: color.withValues(alpha: 0.12),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(icon, color: color, size: 24),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            heading,
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(fontWeight: FontWeight.w900),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            message,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: AvenueColors.onSurfaceVariant,
+                                  height: 1.45,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 18),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () => Navigator.of(dialogContext).pop(),
+                    child: const Text('OK'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
 class AvenueScaffold extends StatelessWidget {
   const AvenueScaffold({
     required this.body,
@@ -668,6 +776,60 @@ class AvenueBottomNavigationBar extends StatelessWidget {
           }).toList(),
         ),
       ),
+    );
+  }
+}
+
+class AvenueSkeletonBlock extends StatefulWidget {
+  const AvenueSkeletonBlock({
+    this.width = double.infinity,
+    required this.height,
+    this.radius = 12,
+    this.margin,
+    super.key,
+  });
+
+  final double width;
+  final double height;
+  final double radius;
+  final EdgeInsetsGeometry? margin;
+
+  @override
+  State<AvenueSkeletonBlock> createState() => _AvenueSkeletonBlockState();
+}
+
+class _AvenueSkeletonBlockState extends State<AvenueSkeletonBlock>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 900),
+  )..repeat(reverse: true);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final baseColor = AvenueColors.surfaceHigh;
+    final highlightColor = AvenueColors.surfaceLow;
+
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        final color = Color.lerp(baseColor, highlightColor, _controller.value)!;
+        return Container(
+          width: widget.width,
+          height: widget.height,
+          margin: widget.margin,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(widget.radius),
+          ),
+        );
+      },
     );
   }
 }

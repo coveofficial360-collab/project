@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Cove - Send Alert</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-secondary": "#ffffff",
+                        "secondary-container": "#fdaf0b",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "on-background": "#191c1d",
+                        "primary": "#005bbf",
+                        "secondary-fixed-dim": "#ffba43",
+                        "on-tertiary-fixed": "#341100",
+                        "outline": "#727785",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#694600",
+                        "surface-dim": "#d9dadb",
+                        "tertiary-fixed-dim": "#ffb691",
+                        "on-secondary-fixed": "#281800",
+                        "surface": "#f8f9fa",
+                        "tertiary-container": "#c55500",
+                        "on-primary-fixed": "#001a41",
+                        "surface-container-high": "#e7e8e9",
+                        "surface-container-low": "#f3f4f5",
+                        "outline-variant": "#c1c6d6",
+                        "on-secondary-fixed-variant": "#614000",
+                        "primary-fixed-dim": "#adc7ff",
+                        "on-primary": "#ffffff",
+                        "background": "#f8f9fa",
+                        "secondary": "#805600",
+                        "primary-fixed": "#d8e2ff",
+                        "on-primary-fixed-variant": "#004493",
+                        "surface-tint": "#005bc0",
+                        "inverse-primary": "#adc7ff",
+                        "on-primary-container": "#ffffff",
+                        "tertiary": "#9e4300",
+                        "surface-container": "#edeeef",
+                        "surface-variant": "#e1e3e4",
+                        "primary-container": "#1a73e8",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-container": "#0e0200",
+                        "on-surface": "#191c1d",
+                        "secondary-fixed": "#ffddaf",
+                        "surface-container-highest": "#e1e3e4",
+                        "error": "#ba1a1a",
+                        "surface-bright": "#f8f9fa",
+                        "tertiary-fixed": "#ffdbcb",
+                        "on-surface-variant": "#414754",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#2e3132"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans", "sans-serif"],
+                        "display": ["Plus Jakarta Sans", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glass-overlay {
+            background-color: rgba(25, 28, 29, 0.4);
+            backdrop-filter: blur(4px);
+        }
+        .bottom-sheet-shadow {
+            box-shadow: 0 -12px 40px rgba(25, 28, 29, 0.08);
+        }
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #005bbf;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #005bbf;
+        }
+        .toggle-checkbox:checked + .toggle-label:after {
+            transform: translateX(100%);
+            border-color: white;
+        }
+    </style>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface h-screen w-screen overflow-hidden flex flex-col items-center justify-center relative">
+<!-- Background Mock (The screen underneath) -->
+<div class="absolute inset-0 z-0 flex flex-col bg-surface p-4 opacity-50 select-none">
+<div class="h-16 w-full flex items-center justify-between mb-6">
+<span class="material-symbols-outlined text-on-surface text-2xl">arrow_back</span>
+<h1 class="font-headline font-semibold text-xl tracking-tight">Forced Alerts</h1>
+<span class="material-symbols-outlined text-on-surface text-2xl opacity-0">more_vert</span>
+</div>
+<div class="flex-1 overflow-y-auto">
+<div class="bg-surface-container-lowest rounded-DEFAULT p-4 mb-3 flex items-center">
+<div class="w-12 h-12 rounded-full bg-surface-container-high mr-4"></div>
+<div class="flex-1">
+<div class="h-4 w-32 bg-surface-container-high rounded mb-2"></div>
+<div class="h-3 w-20 bg-surface-container-high rounded"></div>
+</div>
+<div class="w-6 h-6 rounded bg-primary"></div>
+</div>
+<div class="bg-surface-container-lowest rounded-DEFAULT p-4 mb-3 flex items-center">
+<div class="w-12 h-12 rounded-full bg-surface-container-high mr-4"></div>
+<div class="flex-1">
+<div class="h-4 w-28 bg-surface-container-high rounded mb-2"></div>
+<div class="h-3 w-24 bg-surface-container-high rounded"></div>
+</div>
+<div class="w-6 h-6 rounded bg-primary"></div>
+</div>
+</div>
+<div class="absolute bottom-6 right-6 w-16 h-16 rounded-full bg-primary opacity-50"></div>
+</div>
+<!-- Scrim / Glass Overlay -->
+<div class="absolute inset-0 z-40 glass-overlay transition-opacity duration-300"></div>
+<!-- Bottom Sheet -->
+<div class="absolute bottom-0 left-0 right-0 z-50 bg-surface-container-lowest rounded-t-[32px] bottom-sheet-shadow flex flex-col transform transition-transform duration-300 ease-out translate-y-0 h-[85vh] max-h-[800px] w-full max-w-md mx-auto">
+<!-- Drag Handle Area -->
+<div class="w-full flex justify-center pt-4 pb-2 shrink-0">
+<div class="w-12 h-1.5 bg-surface-container-highest rounded-full"></div>
+</div>
+<!-- Sheet Header -->
+<div class="px-6 pb-4 shrink-0 flex items-center justify-between border-b border-surface-container-low">
+<div>
+<h2 class="font-headline text-2xl font-semibold text-on-surface tracking-tight mb-1">Send Forced Alert</h2>
+<div class="flex items-center text-primary font-medium text-sm">
+<span class="material-symbols-outlined text-[16px] mr-1">group</span>
+<span>16 residents selected</span>
+</div>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-low text-on-surface-variant active:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">close</span>
+</button>
+</div>
+<!-- Sheet Content (Scrollable) -->
+<div class="px-6 py-6 overflow-y-auto flex-1 flex flex-col gap-6">
+<!-- Message Preview Section -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-baseline">
+<label class="font-headline font-semibold text-on-surface text-base">Message Preview</label>
+<span class="font-label text-[10px] sm:text-xs tracking-wider text-on-surface-variant uppercase font-medium">180 / 300</span>
+</div>
+<div class="relative bg-surface-container-low rounded-DEFAULT overflow-hidden group border border-transparent focus-within:border-primary/20 transition-colors">
+<textarea class="w-full bg-transparent border-none focus:ring-0 px-4 py-4 text-on-surface font-body text-base leading-relaxed resize-none min-h-[140px] focus:outline-none" placeholder="Enter message here...">Dear [Resident Name], your maintenance payment for the current quarter is now overdue. Please clear your dues by Friday to avoid late fees. Contact the office for assistance.</textarea>
+<!-- Bottom Focus Indicator -->
+<div class="absolute bottom-0 left-0 right-0 h-[2px] bg-primary scale-x-0 group-focus-within:scale-x-100 transition-transform origin-center duration-300"></div>
+</div>
+<p class="text-[11px] sm:text-xs text-on-surface-variant font-body px-1">Variables like <span class="font-medium">[Resident Name]</span> will be auto-filled per recipient.</p>
+</div>
+<!-- Send Via Section -->
+<div class="flex flex-col gap-3">
+<label class="font-headline font-semibold text-on-surface text-base">Send via</label>
+<div class="flex flex-wrap gap-2 sm:gap-3">
+<!-- Selected Chip (Push) -->
+<button class="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-primary text-on-primary font-medium text-sm transition-all shadow-sm">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">notifications_active</span>
+<span class="whitespace-nowrap">Push Notification</span>
+</button>
+<!-- Selected Chip (WhatsApp) -->
+<button class="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-primary/10 text-primary border border-primary/20 font-medium text-sm transition-all">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">chat</span>
+<span class="whitespace-nowrap">WhatsApp</span>
+</button>
+<!-- Unselected Chip (SMS) -->
+<button class="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-surface text-on-surface-variant border border-outline-variant/30 font-medium text-sm active:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-[18px]">sms</span>
+<span class="whitespace-nowrap">SMS</span>
+</button>
+</div>
+</div>
+<!-- Mark as Urgent Toggle -->
+<div class="flex items-center justify-between bg-surface-container-low p-4 rounded-DEFAULT mt-2">
+<div class="flex flex-col pr-4">
+<span class="font-headline font-semibold text-on-surface">Mark as Urgent</span>
+<span class="font-body text-xs sm:text-sm text-on-surface-variant leading-tight">Bypasses resident 'Do Not Disturb' settings</span>
+</div>
+<!-- Custom Toggle Switch -->
+<div class="relative inline-block w-12 shrink-0 align-middle select-none transition duration-200 ease-in">
+<input class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer z-10 top-0 left-0 transition-transform duration-200 ease-in-out border-surface-variant" id="urgent-toggle" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-variant cursor-pointer transition-colors duration-200 ease-in-out" for="urgent-toggle"></label>
+</div>
+</div>
+</div>
+<!-- Sticky Bottom Actions -->
+<div class="px-6 pt-4 pb-safe shrink-0 bg-surface-container-lowest border-t border-surface-container-low pb-8">
+<div class="flex flex-col gap-2">
+<button class="w-full h-14 rounded-xl bg-gradient-to-br from-primary to-primary-container text-on-primary font-headline font-semibold text-base flex items-center justify-center gap-2 active:scale-[0.98] transition-all shadow-[0_8px_20px_rgba(0,91,191,0.25)]">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">send</span>
+                    Send Now
+                </button>
+<button class="w-full h-12 rounded-xl bg-transparent text-on-surface-variant font-headline font-medium text-sm active:bg-surface-container-low transition-all">
+                    Cancel
+                </button>
+</div>
+</div>
+</div>
+</body></html>

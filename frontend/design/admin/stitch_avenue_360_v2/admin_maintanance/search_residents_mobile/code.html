@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cove - Search Residents</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-on-surface": "#f0f1f2",
+                      "on-secondary": "#ffffff",
+                      "secondary-container": "#fdaf0b",
+                      "on-tertiary-fixed-variant": "#783100",
+                      "on-background": "#191c1d",
+                      "primary": "#005bbf",
+                      "secondary-fixed-dim": "#ffba43",
+                      "on-tertiary-fixed": "#341100",
+                      "outline": "#727785",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary-container": "#694600",
+                      "surface-dim": "#d9dadb",
+                      "tertiary-fixed-dim": "#ffb691",
+                      "on-secondary-fixed": "#281800",
+                      "surface": "#f8f9fa",
+                      "tertiary-container": "#c55500",
+                      "on-primary-fixed": "#001a41",
+                      "surface-container-high": "#e7e8e9",
+                      "surface-container-low": "#f3f4f5",
+                      "outline-variant": "#c1c6d6",
+                      "on-secondary-fixed-variant": "#614000",
+                      "primary-fixed-dim": "#adc7ff",
+                      "on-primary": "#ffffff",
+                      "background": "#f8f9fa",
+                      "secondary": "#805600",
+                      "primary-fixed": "#d8e2ff",
+                      "on-primary-fixed-variant": "#004493",
+                      "surface-tint": "#005bc0",
+                      "inverse-primary": "#adc7ff",
+                      "on-primary-container": "#ffffff",
+                      "tertiary": "#9e4300",
+                      "surface-container": "#edeeef",
+                      "surface-variant": "#e1e3e4",
+                      "primary-container": "#1a73e8",
+                      "on-error-container": "#93000a",
+                      "on-tertiary-container": "#0e0200",
+                      "on-surface": "#191c1d",
+                      "secondary-fixed": "#ffddaf",
+                      "surface-container-highest": "#e1e3e4",
+                      "error": "#ba1a1a",
+                      "surface-bright": "#f8f9fa",
+                      "tertiary-fixed": "#ffdbcb",
+                      "on-surface-variant": "#414754",
+                      "error-container": "#ffdad6",
+                      "on-tertiary": "#ffffff",
+                      "on-error": "#ffffff",
+                      "inverse-surface": "#2e3132"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {},
+              "fontFamily": {
+                      "headline": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "display": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "body": [
+                              "Inter"
+                      ],
+                      "label": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {}
+            },
+          },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer utilities {
+            .glass-header {
+                @apply bg-surface/95 backdrop-blur-xl border-b border-surface-variant shadow-[0_4px_12px_rgba(25,28,29,0.03)];
+            }
+            .search-input-container {
+                @apply bg-surface-container-high rounded-lg border-b-2 border-transparent focus-within:border-primary focus-within:bg-surface-container-highest transition-all duration-200;
+            }
+            .no-scrollbar::-webkit-scrollbar {
+                display: none;
+            }
+            .no-scrollbar {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(667px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body antialiased min-h-screen flex flex-col pt-[148px]">
+<!-- Top App Bar & Search Area -->
+<header class="fixed top-0 w-full z-50 glass-header flex flex-col gap-4 px-4 pt-4 pb-4">
+<!-- Search Input Row -->
+<div class="flex items-center gap-2 w-full">
+<button aria-label="Go back" class="w-12 h-12 flex items-center justify-center text-on-surface-variant active:bg-surface-container-highest rounded-full transition-colors">
+<span class="material-symbols-outlined text-2xl" data-icon="arrow_back" data-weight="regular">arrow_back</span>
+</button>
+<div class="search-input-container flex-1 flex items-center px-4 h-[56px] relative">
+<span class="material-symbols-outlined text-on-surface-variant mr-3" data-icon="search" data-weight="regular">search</span>
+<input autofocus="" class="w-full bg-transparent border-none p-0 focus:ring-0 text-on-surface font-body text-base placeholder:text-on-surface-variant/70" placeholder="Search name or flat..." type="text"/>
+<button aria-label="Clear search" class="w-10 h-10 flex items-center justify-center text-on-surface-variant active:text-on-surface transition-colors absolute right-2">
+<span class="material-symbols-outlined" data-icon="close" data-weight="regular">close</span>
+</button>
+</div>
+</div>
+<!-- Search Mode Chips -->
+<div class="flex gap-2 px-2 overflow-x-auto no-scrollbar">
+<!-- Selected Chip -->
+<button class="bg-primary text-on-primary font-label text-sm font-medium px-6 py-3 rounded-full flex-shrink-0 tracking-wide shadow-sm active:scale-95 transition-transform">
+                By Name
+            </button>
+<!-- Unselected Chip -->
+<button class="bg-surface-container-high text-on-surface-variant font-label text-sm font-medium px-6 py-3 rounded-full flex-shrink-0 tracking-wide border border-outline-variant/30 active:bg-surface-container-highest active:scale-95 transition-all">
+                By Flat Number
+            </button>
+</div>
+</header>
+<!-- Main Content Area: Empty State -->
+<main class="flex-1 flex flex-col items-center justify-center px-8 pb-20">
+<div class="flex flex-col items-center text-center max-w-sm w-full mx-auto">
+<!-- Large Muted Icon -->
+<div class="w-28 h-28 rounded-full bg-surface-container-low flex items-center justify-center mb-6 shadow-[inset_0_2px_8px_rgba(25,28,29,0.03)] border border-outline-variant/10">
+<span class="material-symbols-outlined text-6xl text-surface-dim/70" data-icon="person_search" data-weight="light">person_search</span>
+</div>
+<!-- Empty State Text -->
+<h2 class="font-headline text-xl text-on-surface font-semibold tracking-tight mb-2">
+                Find a resident
+            </h2>
+<p class="font-body text-on-surface-variant leading-relaxed text-sm px-4">
+                Enter a resident's name or flat number to get started. 
+                <span class="block mt-1 font-medium text-primary/70">e.g. 'Rahul' or 'A-101'</span>
+</p>
+</div>
+</main>
+<!-- BottomNavBar (Suppressed intentionally as per rules for Task-Focused/Linear screens with Back actions) -->
+</body></html>

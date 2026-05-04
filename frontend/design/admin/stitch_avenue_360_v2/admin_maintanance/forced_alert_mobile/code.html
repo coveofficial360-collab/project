@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Send Alert - Cove</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-secondary": "#ffffff",
+                        "secondary-container": "#fdaf0b",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "on-background": "#191c1d",
+                        "primary": "#005bbf",
+                        "secondary-fixed-dim": "#ffba43",
+                        "on-tertiary-fixed": "#341100",
+                        "outline": "#727785",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#694600",
+                        "surface-dim": "#d9dadb",
+                        "tertiary-fixed-dim": "#ffb691",
+                        "on-secondary-fixed": "#281800",
+                        "surface": "#f8f9fa",
+                        "tertiary-container": "#c55500",
+                        "on-primary-fixed": "#001a41",
+                        "surface-container-high": "#e7e8e9",
+                        "surface-container-low": "#f3f4f5",
+                        "outline-variant": "#c1c6d6",
+                        "on-secondary-fixed-variant": "#614000",
+                        "primary-fixed-dim": "#adc7ff",
+                        "on-primary": "#ffffff",
+                        "background": "#f8f9fa",
+                        "secondary": "#805600",
+                        "primary-fixed": "#d8e2ff",
+                        "on-primary-fixed-variant": "#004493",
+                        "surface-tint": "#005bc0",
+                        "inverse-primary": "#adc7ff",
+                        "on-primary-container": "#ffffff",
+                        "tertiary": "#9e4300",
+                        "surface-container": "#edeeef",
+                        "surface-variant": "#e1e3e4",
+                        "primary-container": "#1a73e8",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-container": "#0e0200",
+                        "on-surface": "#191c1d",
+                        "secondary-fixed": "#ffddaf",
+                        "surface-container-highest": "#e1e3e4",
+                        "error": "#ba1a1a",
+                        "surface-bright": "#f8f9fa",
+                        "tertiary-fixed": "#ffdbcb",
+                        "on-surface-variant": "#414754",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#2e3132"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.surface');
+            color: theme('colors.on-surface');
+            font-family: theme('fontFamily.body');
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="flex justify-center min-h-screen bg-surface-container-high/50">
+<!-- Mobile Device Container -->
+<div class="w-full max-w-md bg-surface h-screen flex flex-col relative overflow-hidden shadow-2xl mx-auto md:my-8 md:h-[795px] md:rounded-[40px] md:border-8 md:border-surface-container-lowest">
+<!-- Top App Bar -->
+<header class="flex justify-between items-center h-16 px-4 bg-surface/80 backdrop-blur-xl z-50 sticky top-0 border-b border-surface-container-highest/30">
+<button aria-label="Go back" class="p-2 -ml-2 rounded-full hover:bg-surface-container text-on-surface transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-headline font-semibold text-lg tracking-tight text-on-surface">Send Alert</h1>
+<button class="font-body font-semibold text-sm text-primary hover:text-primary-container px-2 transition-colors">
+                Select All
+            </button>
+</header>
+<!-- Main Content Scrollable Area -->
+<main class="flex-1 overflow-y-auto pb-36">
+<!-- Summary Banner -->
+<section class="px-4 pt-5 pb-4">
+<div class="bg-error-container/20 rounded-2xl p-4 relative overflow-hidden border border-error-container/50">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-error"></div>
+<div class="ml-2">
+<h2 class="font-headline font-semibold text-on-surface text-[15px] mb-1">Unpaid Residents — August 2025</h2>
+<div class="flex items-center gap-2 font-body text-sm text-on-surface-variant">
+<span>16 residents</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-bold text-error">₹48,000 outstanding</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Filter Chips -->
+<section class="px-4 pb-4 overflow-x-auto whitespace-nowrap hide-scrollbar flex gap-2">
+<button class="inline-flex items-center px-5 py-2.5 rounded-full bg-on-surface text-surface font-body text-[13px] font-semibold transition-colors shadow-sm">
+                    All Unpaid
+                </button>
+<button class="inline-flex items-center px-5 py-2.5 rounded-full bg-surface-container-low text-on-surface-variant hover:bg-surface-container border border-outline-variant/30 font-body text-[13px] font-medium transition-colors">
+                    Overdue 1M
+                </button>
+<button class="inline-flex items-center px-5 py-2.5 rounded-full bg-surface-container-low text-on-surface-variant hover:bg-surface-container border border-outline-variant/30 font-body text-[13px] font-medium transition-colors">
+                    Overdue 2M+
+                </button>
+</section>
+<!-- Selection Sticky Bar (Sub-header) -->
+<div class="sticky top-0 z-40 bg-surface/90 backdrop-blur-md px-4 py-3 border-b border-surface-container-highest flex justify-between items-center">
+<div class="font-body text-sm font-medium text-on-surface">
+<span class="text-primary font-bold">16</span> selected
+                </div>
+<button class="font-body text-xs font-semibold text-outline hover:text-on-surface uppercase tracking-wide transition-colors">
+                    Deselect All
+                </button>
+</div>
+<!-- List Container -->
+<div class="px-2 py-2 flex flex-col">
+<!-- Resident Row 1 -->
+<label class="flex items-center p-3 rounded-2xl hover:bg-surface-container-low transition-colors cursor-pointer group active:bg-surface-container">
+<div class="flex-shrink-0 mr-3">
+<input checked="" class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary focus:ring-offset-surface bg-surface-container-lowest transition-all" type="checkbox"/>
+</div>
+<img alt="Resident Avatar" class="w-11 h-11 rounded-full object-cover mr-3 bg-surface-container border border-surface-container-highest" data-alt="A close up studio portrait of a confident young professional man with dark hair and a neat beard, wearing a crisp white shirt. Soft, diffused lighting against a neutral light grey background, high resolution, modern editorial style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6jzr7GiNHEAQo0WOXiNKQi7kED3lL81rUfvepbZaSdSMrWHIizV-xbok4GK3vmaJRVFcDO_4cZ0wykRXiMgJku1ONf1KDSPRvs5y9_rXjZK-OAd3D24ydZhJQhBwgV-Bc6ev2a9_w5PWaQIGvxO7RX6Zakf6Q1NRWseb7ym6WJCgi0oQW2OXoBulwwiRiAKussSvTrGBvIcyswO_yAfSCBufkgXpDbOqu8QpeOqVmOgLd7cLwP4fgxbYC_uQKS7Sr0JTEfqNj_6c"/>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start gap-2">
+<div class="min-w-0 flex-1">
+<h3 class="font-headline font-semibold text-on-surface truncate text-sm leading-tight mb-0.5">Arjun Mehta</h3>
+<p class="font-body text-xs text-on-surface-variant truncate">Flat 402 • Tower B</p>
+</div>
+<div class="flex flex-col items-end gap-1 flex-shrink-0">
+<span class="font-headline font-bold text-error text-sm leading-tight">₹6,000</span>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded bg-error/10 text-error font-body text-[9px] font-bold uppercase tracking-wider">2M+ Overdue</span>
+</div>
+</div>
+</div>
+</label>
+<!-- Resident Row 2 -->
+<label class="flex items-center p-3 rounded-2xl hover:bg-surface-container-low transition-colors cursor-pointer group active:bg-surface-container">
+<div class="flex-shrink-0 mr-3">
+<input checked="" class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary focus:ring-offset-surface bg-surface-container-lowest transition-all" type="checkbox"/>
+</div>
+<img alt="Resident Avatar" class="w-11 h-11 rounded-full object-cover mr-3 bg-surface-container border border-surface-container-highest" data-alt="A professional studio portrait of a smiling young woman with dark hair pulled back, wearing a light blue blouse. Shot with soft, even lighting against a clean white background, conveying a warm and approachable mood in a modern corporate style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB5bZ36Y7JC4v16tVoL7NBvWQg80art8kCpAIFPbLTl8yIODxC3iXVDSzkmi2JPjilRCO2rSQ3JvslwvkCqaejQ2eTkIZXB3vmx11h1cuCQExYSj9-Npz2lsulp0eLqIlO-j7ZXzTbEhn6VCMn4g9Md9VvmvRqFyB7cCQVmlJD0iXwaX3of9OqRvDt0DRGqj45Jo7YQ4WV-aiWdyLroc0G_K7et1FQc3-MLqIdb5DegpZqqOsLPohtL8NFriIE9PeHPnnomEZIAuno"/>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start gap-2">
+<div class="min-w-0 flex-1">
+<h3 class="font-headline font-semibold text-on-surface truncate text-sm leading-tight mb-0.5">Priya Sharma</h3>
+<p class="font-body text-xs text-on-surface-variant truncate">Flat 105 • Tower A</p>
+</div>
+<div class="flex flex-col items-end gap-1 flex-shrink-0">
+<span class="font-headline font-bold text-error text-sm leading-tight">₹3,000</span>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded bg-secondary-container/20 text-secondary-container font-body text-[9px] font-bold uppercase tracking-wider">1M Overdue</span>
+</div>
+</div>
+</div>
+</label>
+<!-- Resident Row 3 -->
+<label class="flex items-center p-3 rounded-2xl hover:bg-surface-container-low transition-colors cursor-pointer group active:bg-surface-container">
+<div class="flex-shrink-0 mr-3">
+<input checked="" class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary focus:ring-offset-surface bg-surface-container-lowest transition-all" type="checkbox"/>
+</div>
+<div class="w-11 h-11 rounded-full mr-3 bg-surface-container-high flex items-center justify-center border border-surface-container-highest flex-shrink-0">
+<span class="font-headline font-semibold text-on-surface-variant text-xs">RK</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start gap-2">
+<div class="min-w-0 flex-1">
+<h3 class="font-headline font-semibold text-on-surface truncate text-sm leading-tight mb-0.5">Rahul Kumar</h3>
+<p class="font-body text-xs text-on-surface-variant truncate">Flat 701 • Tower C</p>
+</div>
+<div class="flex flex-col items-end gap-1 flex-shrink-0">
+<span class="font-headline font-bold text-error text-sm leading-tight">₹3,000</span>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded bg-secondary-container/20 text-secondary-container font-body text-[9px] font-bold uppercase tracking-wider">1M Overdue</span>
+</div>
+</div>
+</div>
+</label>
+<!-- Resident Row 4 -->
+<label class="flex items-center p-3 rounded-2xl hover:bg-surface-container-low transition-colors cursor-pointer group active:bg-surface-container">
+<div class="flex-shrink-0 mr-3">
+<input checked="" class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary focus:ring-offset-surface bg-surface-container-lowest transition-all" type="checkbox"/>
+</div>
+<img alt="Resident Avatar" class="w-11 h-11 rounded-full object-cover mr-3 bg-surface-container border border-surface-container-highest" data-alt="A portrait of an older gentleman with silver hair and glasses, looking directly at the camera with a gentle expression. Warm, natural lighting highlighting his features against a subtly blurred indoor background, conveying wisdom and calm." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfT3dACbhM-LvbsnYKFh8OuQnpNkDBV2W2FUXExZDk6l7cF2EqmARPPEiy13p_ECNiiYkGWKRWuavlwiJAch3nS8n3cHO_KQVyjqzt61Ti5KvXZangXFMwtd0zZUjsuvMkMXy-1QVYFKB5PtY4O57pK4QCtnkaX9uvzfy7tajDRv4CchCvaLa45P90VNxwAu-RxqvuDZPpezqjRkhGoaVLoJ14VVkdGGNwPBDfT522OLVzf67dw9PNIS72AmzNab3l4AK5-5sVIrQ"/>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start gap-2">
+<div class="min-w-0 flex-1">
+<h3 class="font-headline font-semibold text-on-surface truncate text-sm leading-tight mb-0.5">Vikram Singh</h3>
+<p class="font-body text-xs text-on-surface-variant truncate">Flat 204 • Tower A</p>
+</div>
+<div class="flex flex-col items-end gap-1 flex-shrink-0">
+<span class="font-headline font-bold text-error text-sm leading-tight">₹9,000</span>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded bg-error/10 text-error font-body text-[9px] font-bold uppercase tracking-wider">2M+ Overdue</span>
+</div>
+</div>
+</div>
+</label>
+</div>
+</main>
+<!-- Refined Bottom Sticky Action Area -->
+<div class="absolute bottom-0 left-0 w-full p-4 pt-6 bg-gradient-to-t from-surface via-surface/95 to-transparent pb-safe-offset-4 pointer-events-none">
+<button class="pointer-events-auto w-full h-14 rounded-2xl bg-primary text-on-primary font-headline font-bold text-base flex items-center justify-center gap-3 shadow-xl shadow-primary/20 hover:bg-primary-container active:scale-[0.97] transition-all duration-200">
+<span class="material-symbols-outlined fill text-[22px]">send</span>
+<span>Send Alert to 16 Residents</span>
+</button>
+</div>
+</div>
+</body></html>

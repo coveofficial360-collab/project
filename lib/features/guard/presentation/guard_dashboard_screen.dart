@@ -18,9 +18,11 @@ class _GuardHomeScreenState extends State<GuardHomeScreen> {
   late Future<_GuardDashboardData> _dashboardFuture;
 
   String _selectedTab = 'entry';
+  String _visitorLogView = 'inside';
   String _visitPurpose = 'Delivery / Courier';
   bool _isSubmittingManualEntry = false;
   String? _activePassId;
+  String? _activeCheckoutPassId;
 
   @override
   void initState() {
@@ -86,55 +88,50 @@ class _GuardHomeScreenState extends State<GuardHomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Gate Desk Overview',
-                          style: Theme.of(context).textTheme.displaySmall
-                              ?.copyWith(
-                                color: _GuardPalette.ink,
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: -0.8,
+                        if (_selectedTab != 'attendance') ...[
+                          Text(
+                            'Gate Desk Overview',
+                            style: Theme.of(context).textTheme.displaySmall
+                                ?.copyWith(
+                                  color: _GuardPalette.ink,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: -0.8,
+                                ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Monitor approvals, log walk-in visitors, and keep the gate history synced in one place.',
+                            style: Theme.of(context).textTheme.bodyLarge
+                                ?.copyWith(
+                                  color: _GuardPalette.muted,
+                                  height: 1.45,
+                                ),
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _GuardStatCard(
+                                  label: 'Total Entries Today',
+                                  value: isLoading ? '...' : '$entriesToday',
+                                  icon: Icons.group_rounded,
+                                  iconTint: AvenueColors.primary,
+                                ),
                               ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Monitor approvals, log walk-in visitors, and keep the gate history synced in one place.',
-                          style: Theme.of(context).textTheme.bodyLarge
-                              ?.copyWith(
-                                color: _GuardPalette.muted,
-                                height: 1.45,
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: _GuardStatCard(
+                                  label: 'Currently Inside',
+                                  value: isLoading ? '...' : '$currentlyInside',
+                                  icon: Icons.meeting_room_rounded,
+                                  iconTint: _GuardPalette.secondary,
+                                  highlighted: true,
+                                ),
                               ),
-                        ),
-                        const SizedBox(height: 20),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _GuardStatCard(
-                                label: 'Total Entries Today',
-                                value: isLoading ? '...' : '$entriesToday',
-                                icon: Icons.group_rounded,
-                                iconTint: AvenueColors.primary,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: _GuardStatCard(
-                                label: 'Currently Inside',
-                                value: isLoading ? '...' : '$currentlyInside',
-                                icon: Icons.meeting_room_rounded,
-                                iconTint: _GuardPalette.secondary,
-                                highlighted: true,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 24),
-                        _GuardTabBar(
-                          selectedTab: _selectedTab,
-                          onSelect: (value) => setState(() {
-                            _selectedTab = value;
-                          }),
-                        ),
-                        const SizedBox(height: 18),
+                            ],
+                          ),
+                          const SizedBox(height: 24),
+                        ],
                         if (_selectedTab == 'entry')
                           _GuardEntryTab(
                             visitorNameController: _visitorNameController,
@@ -163,20 +160,36 @@ class _GuardHomeScreenState extends State<GuardHomeScreen> {
                               'Manager dial action can be connected next.',
                             ),
                           )
-                        else if (_selectedTab == 'preapproved')
-                          _GuardPreApprovedTab(
+                        else if (_selectedTab == 'visitor')
+                          _GuardVisitorLogsTab(
                             isLoading: isLoading,
                             hasError: hasError,
-                            visitors: data?.upcomingVisitors ?? const [],
+                            selectedView: _visitorLogView,
+                            onViewChanged: (value) => setState(() {
+                              _visitorLogView = value;
+                            }),
+                            visitors: data?.visitorLogs ?? const [],
+                            logs: data?.logs ?? const [],
                             activePassId: _activePassId,
+                            activeCheckoutPassId: _activeCheckoutPassId,
                             onApproveVisitor: _handleApproveVisitorPass,
                             onDenyVisitor: _handleDenyVisitorPass,
+                            onCheckoutVisitor: _handleCheckoutVisitorPass,
+                            onFilterTap: () => _showInfo(
+                              'Advanced visitor filters can be connected next.',
+                            ),
                           )
-                        else
-                          _GuardHistoryTab(
+                        else if (_selectedTab == 'logs')
+                          _GuardDailyEntryAnalyticsTab(
                             isLoading: isLoading,
                             hasError: hasError,
+                            visitors: data?.visitorLogs ?? const [],
                             logs: data?.logs ?? const [],
+                          )
+                        else
+                          _GuardAttendanceTab(
+                            repository: _repository,
+                            onMarked: _refreshDashboard,
                           ),
                       ],
                     ),
@@ -192,9 +205,6 @@ class _GuardHomeScreenState extends State<GuardHomeScreen> {
         onSelect: (value) => setState(() {
           _selectedTab = value;
         }),
-        onProfileTap: () => _showInfo(
-          'Guard profile details can be connected when the profile module is added.',
-        ),
       ),
     );
   }
@@ -324,6 +334,34 @@ class _GuardHomeScreenState extends State<GuardHomeScreen> {
     );
   }
 
+  Future<void> _handleCheckoutVisitorPass(
+    String passId,
+    String visitorName,
+  ) async {
+    setState(() {
+      _activeCheckoutPassId = passId;
+    });
+
+    try {
+      final result = await _repository.checkoutGuardVisitorPass(passId: passId);
+      if (result == null) {
+        _showInfo('Could not check out this visitor right now.');
+        return;
+      }
+
+      await _refreshDashboard();
+      _showInfo('$visitorName has been checked out.');
+    } catch (error) {
+      _showInfo(_friendlyGuardError(error));
+    } finally {
+      if (mounted) {
+        setState(() {
+          _activeCheckoutPassId = null;
+        });
+      }
+    }
+  }
+
   Future<void> _processVisitorPass({
     required String passId,
     required String visitorName,
@@ -447,9 +485,19 @@ class _GuardHomeScreenState extends State<GuardHomeScreen> {
       return;
     }
 
-    ScaffoldMessenger.of(
+    final lowerMessage = message.toLowerCase();
+    final isError =
+        lowerMessage.contains('could not') ||
+        lowerMessage.contains('failed') ||
+        lowerMessage.contains('enter ') ||
+        lowerMessage.contains('no resident') ||
+        lowerMessage.contains('no visitor') ||
+        lowerMessage.contains('already been processed');
+    showAvenueDialogMessage(
       context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+      message: message,
+      type: isError ? AvenueMessageType.error : AvenueMessageType.info,
+    );
   }
 }
 
@@ -661,43 +709,6 @@ class _GuardStatCard extends StatelessWidget {
   }
 }
 
-class _GuardTabBar extends StatelessWidget {
-  const _GuardTabBar({required this.selectedTab, required this.onSelect});
-
-  final String selectedTab;
-  final ValueChanged<String> onSelect;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: _GuardPalette.surfaceMid,
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Row(
-        children: [
-          _GuardTabButton(
-            label: 'Log Entry',
-            selected: selectedTab == 'entry',
-            onTap: () => onSelect('entry'),
-          ),
-          _GuardTabButton(
-            label: 'Pre-Approved',
-            selected: selectedTab == 'preapproved',
-            onTap: () => onSelect('preapproved'),
-          ),
-          _GuardTabButton(
-            label: 'History',
-            selected: selectedTab == 'history',
-            onTap: () => onSelect('history'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _GuardTabButton extends StatelessWidget {
   const _GuardTabButton({
     required this.label,
@@ -748,12 +759,10 @@ class _GuardBottomNavigationBar extends StatelessWidget {
   const _GuardBottomNavigationBar({
     required this.selectedTab,
     required this.onSelect,
-    required this.onProfileTap,
   });
 
   final String selectedTab;
   final ValueChanged<String> onSelect;
-  final VoidCallback onProfileTap;
 
   @override
   Widget build(BuildContext context) {
@@ -783,20 +792,20 @@ class _GuardBottomNavigationBar extends StatelessWidget {
             _GuardBottomNavItem(
               label: 'Visitors',
               icon: Icons.person_search_rounded,
-              selected: selectedTab == 'preapproved',
-              onTap: () => onSelect('preapproved'),
+              selected: selectedTab == 'visitor',
+              onTap: () => onSelect('visitor'),
             ),
             _GuardBottomNavItem(
-              label: 'Incidents',
-              icon: Icons.history_rounded,
-              selected: selectedTab == 'history',
-              onTap: () => onSelect('history'),
+              label: 'Logs',
+              icon: Icons.analytics_rounded,
+              selected: selectedTab == 'logs',
+              onTap: () => onSelect('logs'),
             ),
             _GuardBottomNavItem(
-              label: 'Profile',
-              icon: Icons.account_circle_outlined,
-              selected: false,
-              onTap: onProfileTap,
+              label: 'Attendance',
+              icon: Icons.fact_check_rounded,
+              selected: selectedTab == 'attendance',
+              onTap: () => onSelect('attendance'),
             ),
           ],
         ),

@@ -22,6 +22,8 @@ as $$
 declare
   v_tower text;
   v_user_id uuid;
+  v_initial_bill_code text;
+  v_initial_due_date date := current_date + 7;
 begin
   v_tower := case
     when p_unit_number is null or btrim(p_unit_number) = '' then null
@@ -56,9 +58,42 @@ begin
     p_resident_kind,
     'active',
     p_avatar_url,
-    'Resident created from the Avenue360 admin app.'
+    'Resident created from the Cove admin app.'
   )
   returning id into v_user_id;
+
+  v_initial_bill_code := 'maintenance-' || lower(substr(replace(v_user_id::text, '-', ''), 1, 8));
+
+  insert into public.bills (
+    user_id,
+    code,
+    title,
+    provider,
+    category,
+    state,
+    badge_text,
+    amount_due,
+    amount_paid,
+    due_date,
+    last_paid_on,
+    action_label,
+    created_at
+  )
+  values (
+    v_user_id,
+    v_initial_bill_code,
+    'Quarterly Maintenance',
+    'Cove',
+    'maintenance',
+    'due',
+    'Due in 7 days',
+    2200,
+    null,
+    v_initial_due_date,
+    null,
+    'Pay Now',
+    now()
+  );
 
   return query
   select
@@ -125,6 +160,557 @@ begin
     v_pin_code,
     v_qr_token,
     v_status;
+end;
+$$;
+
+drop function if exists public.create_admin_amenity(uuid, text, text, text, text, text, text, text, integer, boolean, text, text, text[]);
+
+create or replace function public.create_admin_amenity(
+  p_admin_user_id uuid,
+  p_name text,
+  p_category text,
+  p_description text,
+  p_location_label text,
+  p_status_label text default 'OPEN',
+  p_availability_text text default null,
+  p_occupancy_note text default null,
+  p_capacity_percent integer default 0,
+  p_booking_required boolean default true,
+  p_image_url text default null,
+  p_access_note text default null,
+  p_rules text[] default '{}',
+  p_time_slots jsonb default '[]'::jsonb
+)
+returns table (
+  amenity_id uuid,
+  code text,
+  name text,
+  status_label text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_admin_exists boolean;
+  v_amenity_id uuid;
+  v_code text := lower(regexp_replace(trim(p_name), '[^a-zA-Z0-9]+', '-', 'g'));
+  v_slot_record jsonb;
+  v_slot_order bigint;
+  v_start_text text;
+  v_end_text text;
+  v_capacity_text text;
+  v_capacity integer;
+begin
+  select exists (
+    select 1
+    from public.app_users
+    where id = p_admin_user_id
+      and role = 'admin'
+  )
+  into v_admin_exists;
+
+  if not v_admin_exists then
+    raise exception 'Only an admin user can create amenities.';
+  end if;
+
+  v_code := trim(both '-' from v_code);
+  if v_code = '' then
+    v_code := 'amenity-' || lower(substr(replace(gen_random_uuid()::text, '-', ''), 1, 8));
+  end if;
+
+  if exists (
+    select 1
+    from public.amenities amenity_record
+    where amenity_record.code = v_code
+  ) then
+    raise exception 'An amenity named "%" already exists. Choose a different name.', trim(p_name);
+  end if;
+
+  insert into public.amenities (
+    code,
+    name,
+    category,
+    description,
+    location_label,
+    availability_text,
+    occupancy_note,
+    status_label,
+    cta_label,
+    image_url,
+    available_now,
+    booking_required,
+    capacity_percent,
+    access_note,
+    rules,
+    sort_order,
+    created_at
+  )
+  values (
+    v_code,
+    trim(p_name),
+    trim(p_category),
+    trim(p_description),
+    trim(p_location_label),
+    nullif(trim(coalesce(p_availability_text, '')), ''),
+    nullif(trim(coalesce(p_occupancy_note, '')), ''),
+    upper(trim(coalesce(p_status_label, 'OPEN'))),
+    case when coalesce(p_booking_required, true) then 'Reserve' else 'View Details' end,
+    nullif(trim(coalesce(p_image_url, '')), ''),
+    upper(trim(coalesce(p_status_label, 'OPEN'))) in ('OPEN', 'AVAILABLE', 'ACTIVE'),
+    coalesce(p_booking_required, true),
+    greatest(0, least(100, coalesce(p_capacity_percent, 0))),
+    nullif(trim(coalesce(p_access_note, '')), ''),
+    coalesce(p_rules, '{}'),
+    99,
+    now()
+  )
+  returning id into v_amenity_id;
+
+  for v_slot_record, v_slot_order in
+    select slot_record, slot_order
+    from jsonb_array_elements(coalesce(p_time_slots, '[]'::jsonb)) with ordinality as slot_data(slot_record, slot_order)
+  loop
+    v_start_text := trim(coalesce(v_slot_record->>'start_time', ''));
+    v_end_text := trim(coalesce(v_slot_record->>'end_time', ''));
+    v_capacity_text := trim(coalesce(v_slot_record->>'capacity', '1'));
+
+    if v_start_text = '' or v_end_text = '' then
+      continue;
+    end if;
+
+    if v_start_text !~ '^([01][0-9]|2[0-3]):[0-5][0-9]$'
+       or v_end_text !~ '^([01][0-9]|2[0-3]):[0-5][0-9]$' then
+      raise exception 'Invalid time slot format. Use HH:MM values, for example 08:00.';
+    end if;
+
+    if v_capacity_text !~ '^[0-9]+$' then
+      raise exception 'Invalid slot capacity. Use numeric values only.';
+    end if;
+
+    v_capacity := greatest(1, least(200, v_capacity_text::integer));
+
+    insert into public.amenity_time_slots (
+      amenity_id,
+      start_time,
+      end_time,
+      slot_capacity,
+      is_active,
+      sort_order,
+      created_at
+    )
+    values (
+      v_amenity_id,
+      v_start_text::time,
+      v_end_text::time,
+      v_capacity,
+      true,
+      greatest(v_slot_order::integer - 1, 0),
+      now()
+    );
+  end loop;
+
+  return query
+  select
+    v_amenity_id,
+    v_code,
+    trim(p_name),
+    upper(trim(coalesce(p_status_label, 'OPEN')));
+end;
+$$;
+
+create or replace function public.update_admin_amenity(
+  p_admin_user_id uuid,
+  p_amenity_id uuid,
+  p_name text,
+  p_category text,
+  p_description text,
+  p_location_label text,
+  p_status_label text default 'OPEN',
+  p_availability_text text default null,
+  p_occupancy_note text default null,
+  p_capacity_percent integer default 0,
+  p_booking_required boolean default true,
+  p_image_url text default null,
+  p_access_note text default null,
+  p_rules text[] default '{}',
+  p_time_slots jsonb default '[]'::jsonb
+)
+returns table (
+  amenity_id uuid,
+  code text,
+  name text,
+  status_label text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_admin_exists boolean;
+  v_amenity public.amenities%rowtype;
+  v_slot_record jsonb;
+  v_slot_order bigint;
+  v_start_text text;
+  v_end_text text;
+  v_capacity_text text;
+  v_capacity integer;
+  v_status text := upper(trim(coalesce(p_status_label, 'OPEN')));
+begin
+  select exists (
+    select 1
+    from public.app_users
+    where id = p_admin_user_id
+      and role = 'admin'
+  )
+  into v_admin_exists;
+
+  if not v_admin_exists then
+    raise exception 'Only an admin user can update amenities.';
+  end if;
+
+  select *
+  into v_amenity
+  from public.amenities
+  where id = p_amenity_id
+  limit 1;
+
+  if v_amenity.id is null then
+    raise exception 'Amenity was not found.';
+  end if;
+
+  update public.amenities
+  set
+    name = trim(p_name),
+    category = trim(p_category),
+    description = trim(p_description),
+    location_label = trim(p_location_label),
+    availability_text = nullif(trim(coalesce(p_availability_text, '')), ''),
+    occupancy_note = nullif(trim(coalesce(p_occupancy_note, '')), ''),
+    status_label = v_status,
+    cta_label = case when coalesce(p_booking_required, true) then 'Reserve' else 'View Details' end,
+    image_url = nullif(trim(coalesce(p_image_url, '')), ''),
+    available_now = v_status in ('OPEN', 'AVAILABLE', 'ACTIVE'),
+    booking_required = coalesce(p_booking_required, true),
+    capacity_percent = greatest(0, least(100, coalesce(p_capacity_percent, 0))),
+    access_note = nullif(trim(coalesce(p_access_note, '')), ''),
+    rules = coalesce(p_rules, '{}')
+  where id = p_amenity_id;
+
+  delete from public.amenity_time_slots time_slot_record
+  where time_slot_record.amenity_id = p_amenity_id;
+
+  for v_slot_record, v_slot_order in
+    select slot_record, slot_order
+    from jsonb_array_elements(coalesce(p_time_slots, '[]'::jsonb)) with ordinality as slot_data(slot_record, slot_order)
+  loop
+    v_start_text := trim(coalesce(v_slot_record->>'start_time', ''));
+    v_end_text := trim(coalesce(v_slot_record->>'end_time', ''));
+    v_capacity_text := trim(coalesce(v_slot_record->>'capacity', '1'));
+
+    if v_start_text = '' or v_end_text = '' then
+      continue;
+    end if;
+
+    if v_start_text !~ '^([01][0-9]|2[0-3]):[0-5][0-9]$'
+       or v_end_text !~ '^([01][0-9]|2[0-3]):[0-5][0-9]$' then
+      raise exception 'Invalid time slot format. Use HH:MM values, for example 08:00.';
+    end if;
+
+    if v_capacity_text !~ '^[0-9]+$' then
+      raise exception 'Invalid slot capacity. Use numeric values only.';
+    end if;
+
+    v_capacity := greatest(1, least(200, v_capacity_text::integer));
+
+    insert into public.amenity_time_slots (
+      amenity_id,
+      start_time,
+      end_time,
+      slot_capacity,
+      is_active,
+      sort_order,
+      created_at
+    )
+    values (
+      p_amenity_id,
+      v_start_text::time,
+      v_end_text::time,
+      v_capacity,
+      true,
+      greatest(v_slot_order::integer - 1, 0),
+      now()
+    );
+  end loop;
+
+  return query
+  select
+    updated_amenity.id,
+    updated_amenity.code,
+    updated_amenity.name,
+    updated_amenity.status_label
+  from public.amenities updated_amenity
+  where updated_amenity.id = p_amenity_id;
+end;
+$$;
+
+create or replace function public.update_admin_amenity_status(
+  p_admin_user_id uuid,
+  p_amenity_id uuid,
+  p_status_label text
+)
+returns table (
+  amenity_id uuid,
+  code text,
+  name text,
+  status_label text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_admin_exists boolean;
+  v_status text := upper(trim(coalesce(p_status_label, 'OPEN')));
+begin
+  select exists (
+    select 1
+    from public.app_users
+    where id = p_admin_user_id
+      and role = 'admin'
+  )
+  into v_admin_exists;
+
+  if not v_admin_exists then
+    raise exception 'Only an admin user can update amenities.';
+  end if;
+
+  if not exists (
+    select 1
+    from public.amenities
+    where id = p_amenity_id
+  ) then
+    raise exception 'Amenity was not found.';
+  end if;
+
+  update public.amenities
+  set
+    status_label = v_status,
+    available_now = v_status in ('OPEN', 'AVAILABLE', 'ACTIVE')
+  where id = p_amenity_id;
+
+  return query
+  select
+    updated_amenity.id,
+    updated_amenity.code,
+    updated_amenity.name,
+    updated_amenity.status_label
+  from public.amenities updated_amenity
+  where updated_amenity.id = p_amenity_id;
+end;
+$$;
+
+create or replace function public.create_admin_service_provider(
+  p_admin_user_id uuid,
+  p_full_name text,
+  p_specialty text,
+  p_phone text,
+  p_experience_label text default null,
+  p_availability_status text default 'available',
+  p_rating numeric default 4.8,
+  p_jobs_completed integer default 0,
+  p_image_url text default null,
+  p_notes text default null
+)
+returns table (
+  service_provider_id uuid,
+  full_name text,
+  specialty text,
+  availability_status text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_admin_exists boolean;
+  v_provider_id uuid;
+begin
+  select exists (
+    select 1
+    from public.app_users
+    where id = p_admin_user_id
+      and role = 'admin'
+  )
+  into v_admin_exists;
+
+  if not v_admin_exists then
+    raise exception 'Only an admin user can create service providers.';
+  end if;
+
+  insert into public.service_providers (
+    full_name,
+    specialty,
+    phone,
+    experience_label,
+    availability_status,
+    rating,
+    jobs_completed,
+    image_url,
+    notes,
+    created_at
+  )
+  values (
+    trim(p_full_name),
+    trim(p_specialty),
+    trim(p_phone),
+    nullif(trim(coalesce(p_experience_label, '')), ''),
+    lower(trim(coalesce(p_availability_status, 'available'))),
+    coalesce(p_rating, 4.8),
+    greatest(coalesce(p_jobs_completed, 0), 0),
+    nullif(trim(coalesce(p_image_url, '')), ''),
+    nullif(trim(coalesce(p_notes, '')), ''),
+    now()
+  )
+  returning id into v_provider_id;
+
+  return query
+  select
+    v_provider_id,
+    trim(p_full_name),
+    trim(p_specialty),
+    lower(trim(coalesce(p_availability_status, 'available')));
+end;
+$$;
+
+drop function if exists public.create_amenity_booking(uuid, uuid, date, text, integer);
+
+create or replace function public.create_amenity_booking(
+  p_user_id uuid,
+  p_amenity_id uuid,
+  p_booking_date date,
+  p_time_slot text,
+  p_guest_count integer default 1
+)
+returns table (
+  booking_id uuid,
+  amenity_id uuid,
+  booking_date date,
+  time_slot text,
+  booking_status text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_booking_id uuid;
+  v_user_is_resident boolean;
+  v_amenity record;
+  v_clean_time_slot text := trim(coalesce(p_time_slot, ''));
+  v_guest_count integer := coalesce(p_guest_count, 1);
+begin
+  if p_user_id is null then
+    raise exception 'Please sign in before booking an amenity.';
+  end if;
+
+  select exists (
+    select 1
+    from public.app_users
+    where id = p_user_id
+      and role = 'resident'
+      and status = 'active'
+  )
+  into v_user_is_resident;
+
+  if not v_user_is_resident then
+    raise exception 'Only active residents can book amenities.';
+  end if;
+
+  select
+    a.id,
+    a.name,
+    a.available_now,
+    a.booking_required,
+    a.status_label
+  into v_amenity
+  from public.amenities a
+  where a.id = p_amenity_id
+  limit 1;
+
+  if v_amenity.id is null then
+    raise exception 'Amenity was not found.';
+  end if;
+
+  if not coalesce(v_amenity.booking_required, true) then
+    raise exception '% does not require booking.', v_amenity.name;
+  end if;
+
+  if not coalesce(v_amenity.available_now, false)
+     or lower(coalesce(v_amenity.status_label, '')) in ('maintenance', 'closed', 'reserved') then
+    raise exception '% is not available for booking right now.', v_amenity.name;
+  end if;
+
+  if p_booking_date < current_date then
+    raise exception 'Please choose today or a future date.';
+  end if;
+
+  if p_booking_date > current_date + 30 then
+    raise exception 'Amenity bookings can only be made up to 30 days in advance.';
+  end if;
+
+  if v_clean_time_slot = '' then
+    raise exception 'Please choose a time slot.';
+  end if;
+
+  if v_guest_count < 0 or v_guest_count > 4 then
+    raise exception 'Guest count must be between 0 and 4.';
+  end if;
+
+  if exists (
+    select 1
+    from public.amenity_bookings booking
+    where booking.user_id = p_user_id
+      and booking.amenity_id = p_amenity_id
+      and booking.booking_date = p_booking_date
+      and lower(trim(booking.time_slot)) = lower(v_clean_time_slot)
+      and booking.booking_status in ('confirmed', 'pending')
+  ) then
+    raise exception 'You already booked this amenity for the selected date and time.';
+  end if;
+
+  insert into public.amenity_bookings (
+    user_id,
+    amenity_id,
+    booking_date,
+    time_slot,
+    guest_count,
+    booking_status,
+    booking_fee,
+    created_at
+  )
+  values (
+    p_user_id,
+    p_amenity_id,
+    p_booking_date,
+    v_clean_time_slot,
+    v_guest_count,
+    'confirmed',
+    0,
+    now()
+  )
+  returning id into v_booking_id;
+
+  return query
+  select
+    v_booking_id,
+    p_amenity_id,
+    p_booking_date,
+    v_clean_time_slot,
+    'confirmed';
+exception
+  when unique_violation then
+    raise exception 'You already booked this amenity for the selected date and time.';
 end;
 $$;
 
@@ -342,6 +928,486 @@ begin
 end;
 $$;
 
+create or replace function public.pay_maintenance_bill(
+  p_user_id uuid,
+  p_bill_id uuid,
+  p_payment_method text default null,
+  p_transaction_ref text default null
+)
+returns table (
+  payment_id uuid,
+  bill_id uuid,
+  bill_code text,
+  amount_paid numeric(10, 2),
+  payment_status text,
+  paid_on timestamptz
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_bill record;
+  v_payment_id uuid;
+  v_amount numeric(10, 2);
+  v_paid_on timestamptz := now();
+  v_method text := trim(coalesce(p_payment_method, 'UPI'));
+begin
+  if not exists (
+    select 1
+    from public.app_users resident
+    where resident.id = p_user_id
+      and resident.role = 'resident'
+      and resident.status = 'active'
+  ) then
+    raise exception 'Only an active resident can pay maintenance dues.';
+  end if;
+
+  select
+    bill.id,
+    bill.user_id,
+    bill.code,
+    bill.title,
+    bill.state,
+    bill.amount_due,
+    bill.amount_paid,
+    bill.due_date
+  into v_bill
+  from public.bills bill
+  where bill.id = p_bill_id
+    and bill.user_id = p_user_id
+    and lower(trim(coalesce(bill.category, ''))) = 'maintenance'
+  limit 1;
+
+  if v_bill.id is null then
+    raise exception 'Maintenance bill was not found for this resident.';
+  end if;
+
+  v_amount := coalesce(v_bill.amount_due, v_bill.amount_paid, 0);
+
+  update public.bills bill
+  set
+    state = 'paid',
+    amount_paid = v_amount,
+    amount_due = 0,
+    badge_text = 'Paid',
+    action_label = 'View Receipt',
+    last_paid_on = v_paid_on::date
+  where bill.id = v_bill.id;
+
+  insert into public.payment_activity (
+    user_id,
+    activity_title,
+    activity_category,
+    amount,
+    status,
+    activity_at,
+    created_at
+  )
+  values (
+    p_user_id,
+    coalesce(v_bill.title, 'Maintenance Fee') || ' paid',
+    'maintenance',
+    v_amount,
+    'success',
+    v_paid_on,
+    v_paid_on
+  )
+  returning id into v_payment_id;
+
+  insert into public.admin_transactions (
+    title,
+    subtitle,
+    amount,
+    status,
+    icon_name,
+    icon_bg_hex,
+    created_at
+  )
+  values (
+    'Maintenance Fee Paid',
+    coalesce(v_bill.code, 'Maintenance Payment'),
+    v_amount,
+    'SUCCESS',
+    'receipt_long',
+    '#FFF0C7',
+    v_paid_on
+  );
+
+  insert into public.notifications (
+    user_id,
+    kind,
+    title,
+    body,
+    badge_label,
+    action_label,
+    image_url,
+    is_unread,
+    created_at
+  )
+  values (
+    p_user_id,
+    'payment',
+    'Maintenance payment successful',
+    'Your payment of ₹' || coalesce(v_amount::text, '0') || ' was received via ' || coalesce(nullif(v_method, ''), 'UPI') || '.',
+    'PAID',
+    'VIEW RECEIPT',
+    null,
+    true,
+    v_paid_on
+  );
+
+  return query
+  select
+    v_payment_id,
+    v_bill.id,
+    v_bill.code,
+    v_amount,
+    'success',
+    v_paid_on;
+end;
+$$;
+
+create or replace function public.admin_mark_maintenance_paid(
+  p_admin_user_id uuid,
+  p_bill_id uuid,
+  p_note text default null,
+  p_mark_paid_on date default current_date
+)
+returns table (
+  bill_id uuid,
+  bill_code text,
+  user_id uuid,
+  state public.bill_state,
+  updated_on date
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_admin_name text;
+  v_bill record;
+  v_amount numeric(10, 2);
+  v_paid_at timestamptz := coalesce(p_mark_paid_on::timestamptz, now());
+begin
+  select admin.full_name
+  into v_admin_name
+  from public.app_users admin
+  where admin.id = p_admin_user_id
+    and admin.role = 'admin'
+  limit 1;
+
+  if v_admin_name is null then
+    raise exception 'Only an admin can update maintenance payment status.';
+  end if;
+
+  select
+    bill.id,
+    bill.code,
+    bill.user_id,
+    bill.title,
+    bill.amount_due,
+    bill.amount_paid,
+    resident.full_name as resident_name,
+    resident.unit_number
+  into v_bill
+  from public.bills bill
+  join public.app_users resident on resident.id = bill.user_id
+  where bill.id = p_bill_id
+    and resident.role = 'resident'
+    and lower(trim(coalesce(bill.category, ''))) = 'maintenance'
+  limit 1;
+
+  if v_bill.id is null then
+    raise exception 'Maintenance bill was not found.';
+  end if;
+
+  v_amount := coalesce(v_bill.amount_due, v_bill.amount_paid, 0);
+
+  update public.bills bill
+  set
+    state = 'paid',
+    amount_paid = v_amount,
+    amount_due = 0,
+    badge_text = 'Paid',
+    action_label = 'View Receipt',
+    last_paid_on = coalesce(p_mark_paid_on, current_date)
+  where bill.id = v_bill.id;
+
+  insert into public.payment_activity (
+    user_id,
+    activity_title,
+    activity_category,
+    amount,
+    status,
+    activity_at,
+    created_at
+  )
+  values (
+    v_bill.user_id,
+    coalesce(v_bill.title, 'Maintenance Fee') || ' settled by admin',
+    'maintenance',
+    v_amount,
+    'success',
+    v_paid_at,
+    now()
+  );
+
+  insert into public.admin_transactions (
+    title,
+    subtitle,
+    amount,
+    status,
+    icon_name,
+    icon_bg_hex,
+    created_at
+  )
+  values (
+    'Maintenance Fee Paid',
+    coalesce(v_bill.resident_name, 'Resident') || case
+      when nullif(trim(coalesce(v_bill.unit_number, '')), '') is null then ''
+      else ' • ' || trim(v_bill.unit_number)
+    end,
+    v_amount,
+    'SUCCESS',
+    'receipt_long',
+    '#FFF0C7',
+    now()
+  );
+
+  insert into public.notifications (
+    user_id,
+    kind,
+    title,
+    body,
+    badge_label,
+    action_label,
+    image_url,
+    is_unread,
+    created_at
+  )
+  values (
+    v_bill.user_id,
+    'payment',
+    'Maintenance updated by admin',
+    coalesce(
+      nullif(trim(coalesce(p_note, '')), ''),
+      'Your maintenance payment has been marked as paid by the admin office.'
+    ),
+    'PAID',
+    'VIEW DETAILS',
+    null,
+    true,
+    now()
+  );
+
+  return query
+  select
+    v_bill.id,
+    v_bill.code,
+    v_bill.user_id,
+    'paid'::public.bill_state,
+    coalesce(p_mark_paid_on, current_date);
+end;
+$$;
+
+create or replace function public.send_maintenance_alerts(
+  p_admin_user_id uuid,
+  p_resident_user_ids uuid[],
+  p_message_template text,
+  p_channels text[] default '{push}'
+)
+returns table (
+  alerted_count integer,
+  title text,
+  created_at timestamptz
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_admin_name text;
+  v_created_at timestamptz := now();
+  v_alerted_count integer := 0;
+begin
+  select admin.full_name
+  into v_admin_name
+  from public.app_users admin
+  where admin.id = p_admin_user_id
+    and admin.role = 'admin'
+  limit 1;
+
+  if v_admin_name is null then
+    raise exception 'Only an admin user can send maintenance alerts.';
+  end if;
+
+  if coalesce(array_length(p_resident_user_ids, 1), 0) = 0 then
+    raise exception 'Select at least one resident before sending alerts.';
+  end if;
+
+  if trim(coalesce(p_message_template, '')) = '' then
+    raise exception 'Alert message cannot be empty.';
+  end if;
+
+  insert into public.notifications (
+    user_id,
+    kind,
+    title,
+    body,
+    badge_label,
+    action_label,
+    image_url,
+    is_unread,
+    created_at
+  )
+  select
+    resident.id,
+    'maintenance',
+    'Maintenance payment reminder',
+    replace(
+      replace(
+        replace(
+          replace(
+            p_message_template,
+            '[Resident Name]',
+            resident.full_name
+          ),
+          '[Amount]',
+          coalesce(maintenance_bill.amount_due::text, '0')
+        ),
+        '[Due Date]',
+        coalesce(to_char(maintenance_bill.due_date, 'DD Mon YYYY'), '-')
+      ),
+      '[Month]',
+      upper(coalesce(to_char(maintenance_bill.due_date, 'Mon YYYY'), to_char(current_date, 'Mon YYYY')))
+    ),
+    'REMINDER',
+    'PAY NOW',
+    null,
+    true,
+    v_created_at
+  from public.app_users resident
+  join lateral (
+    select
+      bill.amount_due,
+      bill.due_date,
+      bill.state
+    from public.bills bill
+    where bill.user_id = resident.id
+      and lower(trim(coalesce(bill.category, ''))) = 'maintenance'
+    order by bill.due_date desc nulls last, bill.created_at desc
+    limit 1
+  ) maintenance_bill on true
+  where resident.id = any(p_resident_user_ids)
+    and resident.role = 'resident'
+    and resident.status = 'active'
+    and maintenance_bill.state <> 'paid';
+
+  get diagnostics v_alerted_count = row_count;
+
+  return query
+  select
+    v_alerted_count,
+    'Maintenance payment reminder',
+    v_created_at;
+end;
+$$;
+
+create or replace function public.upsert_admin_maintenance_notification_settings(
+  p_admin_user_id uuid,
+  p_before_due_enabled boolean default true,
+  p_before_due_days integer default 5,
+  p_on_due_enabled boolean default true,
+  p_follow_up_enabled boolean default true,
+  p_follow_up_frequency text default 'weekly',
+  p_weekly_overdue_enabled boolean default true,
+  p_channel_push_enabled boolean default true,
+  p_channel_email_enabled boolean default true,
+  p_channel_sms_enabled boolean default false,
+  p_template_body text default null
+)
+returns table (
+  admin_user_id uuid,
+  before_due_days integer,
+  follow_up_frequency text,
+  channel_sms_enabled boolean,
+  updated_at timestamptz
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not exists (
+    select 1
+    from public.app_users admin
+    where admin.id = p_admin_user_id
+      and admin.role = 'admin'
+  ) then
+    raise exception 'Only an admin user can update notification settings.';
+  end if;
+
+  insert into public.admin_maintenance_notification_settings (
+    admin_user_id,
+    before_due_enabled,
+    before_due_days,
+    on_due_enabled,
+    follow_up_enabled,
+    follow_up_frequency,
+    weekly_overdue_enabled,
+    channel_push_enabled,
+    channel_email_enabled,
+    channel_sms_enabled,
+    template_body,
+    created_at,
+    updated_at
+  )
+  values (
+    p_admin_user_id,
+    coalesce(p_before_due_enabled, true),
+    greatest(1, least(30, coalesce(p_before_due_days, 5))),
+    coalesce(p_on_due_enabled, true),
+    coalesce(p_follow_up_enabled, true),
+    lower(trim(coalesce(p_follow_up_frequency, 'weekly'))),
+    coalesce(p_weekly_overdue_enabled, true),
+    coalesce(p_channel_push_enabled, true),
+    coalesce(p_channel_email_enabled, true),
+    coalesce(p_channel_sms_enabled, false),
+    coalesce(
+      nullif(trim(coalesce(p_template_body, '')), ''),
+      'Hi [Resident Name], your maintenance of ₹[Amount] for [Month] is due on [Due Date]. Please tap here to view details and pay online. Thank you!'
+    ),
+    now(),
+    now()
+  )
+  on conflict on constraint admin_maintenance_notification_settings_pkey
+  do update set
+    before_due_enabled = excluded.before_due_enabled,
+    before_due_days = excluded.before_due_days,
+    on_due_enabled = excluded.on_due_enabled,
+    follow_up_enabled = excluded.follow_up_enabled,
+    follow_up_frequency = excluded.follow_up_frequency,
+    weekly_overdue_enabled = excluded.weekly_overdue_enabled,
+    channel_push_enabled = excluded.channel_push_enabled,
+    channel_email_enabled = excluded.channel_email_enabled,
+    channel_sms_enabled = excluded.channel_sms_enabled,
+    template_body = excluded.template_body,
+    updated_at = now();
+
+  return query
+  select
+    settings.admin_user_id,
+    settings.before_due_days,
+    settings.follow_up_frequency,
+    settings.channel_sms_enabled,
+    settings.updated_at
+  from public.admin_maintenance_notification_settings settings
+  where settings.admin_user_id = p_admin_user_id;
+end;
+$$;
+
 create or replace function public.create_announcement(
   p_created_by uuid,
   p_kind public.notice_kind,
@@ -465,6 +1531,8 @@ begin
 end;
 $$;
 
+drop function if exists public.create_community_suggestion(uuid, text, text, text, text, text, boolean, integer, text, text, text);
+
 create or replace function public.create_community_suggestion(
   p_user_id uuid,
   p_title text,
@@ -476,7 +1544,8 @@ create or replace function public.create_community_suggestion(
   p_target_votes integer default 24,
   p_cover_image_url text default null,
   p_icon_name text default 'lightbulb',
-  p_accent_hex text default '#005BBF'
+  p_accent_hex text default '#005BBF',
+  p_selected_resident_ids uuid[] default '{}'
 )
 returns table (
   suggestion_id uuid,
@@ -490,7 +1559,16 @@ set search_path = public
 as $$
 declare
   v_suggestion_id uuid;
+  v_audience_scope text := lower(trim(coalesce(p_audience_scope, 'all_residents')));
+  v_selected_count integer;
 begin
+  if v_audience_scope = 'selected_residents' then
+    v_selected_count := coalesce(array_length(p_selected_resident_ids, 1), 0);
+    if v_selected_count = 0 then
+      raise exception 'Select at least one resident for a selected audience suggestion.';
+    end if;
+  end if;
+
   insert into public.community_suggestions (
     created_by,
     title,
@@ -514,7 +1592,7 @@ begin
     trim(p_category),
     trim(p_summary),
     trim(p_details),
-    lower(trim(coalesce(p_audience_scope, 'all_residents'))),
+    v_audience_scope,
     trim(coalesce(p_icon_name, 'lightbulb')),
     coalesce(p_accent_hex, '#005BBF'),
     nullif(trim(coalesce(p_cover_image_url, '')), ''),
@@ -526,6 +1604,31 @@ begin
     now()
   )
   returning id into v_suggestion_id;
+
+  if v_audience_scope = 'selected_residents' then
+    if exists (
+      select 1
+      from unnest(p_selected_resident_ids) resident_id
+      left join public.app_users resident
+        on resident.id = resident_id
+      where resident.id is null
+         or resident.role <> 'resident'
+    ) then
+      raise exception 'One or more selected residents are invalid.';
+    end if;
+
+    insert into public.community_suggestion_target_residents (
+      suggestion_id,
+      resident_user_id,
+      created_at
+    )
+    select
+      v_suggestion_id,
+      resident_id,
+      now()
+    from unnest(p_selected_resident_ids) resident_id
+    on conflict on constraint community_suggestion_target_residents_pkey do nothing;
+  end if;
 
   return query
   select
@@ -1187,6 +2290,111 @@ begin
 end;
 $$;
 
+create or replace function public.set_guard_attendance(
+  p_guard_user_id uuid,
+  p_action text,
+  p_notes text default null
+)
+returns table (
+  attendance_id uuid,
+  guard_user_id uuid,
+  attendance_date date,
+  check_in_at timestamptz,
+  check_out_at timestamptz,
+  status text,
+  notes text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_action text := lower(trim(coalesce(p_action, '')));
+  v_today date := current_date;
+  v_attendance_id uuid;
+  v_check_in_at timestamptz;
+  v_check_out_at timestamptz;
+  v_status text;
+  v_notes text;
+begin
+  if not exists (
+    select 1
+    from public.app_users guard_user
+    where guard_user.id = p_guard_user_id
+      and guard_user.role = 'guard'
+      and guard_user.status = 'active'
+  ) then
+    raise exception 'Only an active guard can mark attendance.';
+  end if;
+
+  if v_action not in ('check_in', 'check_out') then
+    raise exception 'Unsupported attendance action: %', p_action;
+  end if;
+
+  insert into public.guard_attendance_logs (
+    guard_user_id,
+    attendance_date,
+    check_in_at,
+    check_out_at,
+    status,
+    notes,
+    created_at,
+    updated_at
+  )
+  values (
+    p_guard_user_id,
+    v_today,
+    case when v_action = 'check_in' then now() else null end,
+    null,
+    case when v_action = 'check_in' then 'present' else 'pending' end,
+    nullif(trim(coalesce(p_notes, '')), ''),
+    now(),
+    now()
+  )
+  on conflict on constraint guard_attendance_logs_unique_guard_day
+  do update set
+    check_in_at = case
+      when v_action = 'check_in' and public.guard_attendance_logs.check_in_at is null then now()
+      else public.guard_attendance_logs.check_in_at
+    end,
+    check_out_at = case
+      when v_action = 'check_out' then now()
+      else public.guard_attendance_logs.check_out_at
+    end,
+    status = case
+      when v_action = 'check_out' then 'completed'
+      when public.guard_attendance_logs.check_in_at is not null then public.guard_attendance_logs.status
+      else 'present'
+    end,
+    notes = coalesce(
+      nullif(trim(coalesce(p_notes, '')), ''),
+      public.guard_attendance_logs.notes
+    ),
+    updated_at = now()
+  returning
+    id,
+    public.guard_attendance_logs.check_in_at,
+    public.guard_attendance_logs.check_out_at,
+    public.guard_attendance_logs.status,
+    public.guard_attendance_logs.notes
+  into v_attendance_id, v_check_in_at, v_check_out_at, v_status, v_notes;
+
+  if v_action = 'check_out' and v_check_in_at is null then
+    raise exception 'Check-in is required before check-out.';
+  end if;
+
+  return query
+  select
+    v_attendance_id,
+    p_guard_user_id,
+    v_today,
+    v_check_in_at,
+    v_check_out_at,
+    v_status,
+    v_notes;
+end;
+$$;
+
 create or replace view public.guard_gate_activity_v as
 select
   vp.id,
@@ -1206,10 +2414,19 @@ order by vp.expected_arrival asc;
 
 grant execute on function public.create_resident_app_user(text, text, text, text, public.resident_kind, text, text) to anon, authenticated;
 grant execute on function public.create_visitor_pass(uuid, text, text, public.visitor_kind, timestamptz) to anon, authenticated;
+grant execute on function public.create_admin_amenity(uuid, text, text, text, text, text, text, text, integer, boolean, text, text, text[], jsonb) to anon, authenticated;
+grant execute on function public.update_admin_amenity(uuid, uuid, text, text, text, text, text, text, text, integer, boolean, text, text, text[], jsonb) to anon, authenticated;
+grant execute on function public.update_admin_amenity_status(uuid, uuid, text) to anon, authenticated;
+grant execute on function public.create_admin_service_provider(uuid, text, text, text, text, text, numeric, integer, text, text) to anon, authenticated;
+grant execute on function public.create_amenity_booking(uuid, uuid, date, text, integer) to anon, authenticated;
 grant execute on function public.create_resident_complaint(uuid, text, text, text, text, text, text, text, text, text) to anon, authenticated;
 grant execute on function public.update_complaint_admin_status(uuid, uuid, public.complaint_state, text, text, text) to anon, authenticated;
+grant execute on function public.pay_maintenance_bill(uuid, uuid, text, text) to anon, authenticated;
+grant execute on function public.admin_mark_maintenance_paid(uuid, uuid, text, date) to anon, authenticated;
+grant execute on function public.send_maintenance_alerts(uuid, uuid[], text, text[]) to anon, authenticated;
+grant execute on function public.upsert_admin_maintenance_notification_settings(uuid, boolean, integer, boolean, boolean, text, boolean, boolean, boolean, boolean, text) to anon, authenticated;
 grant execute on function public.create_announcement(uuid, public.notice_kind, text, text, text, public.announcement_state, timestamptz) to anon, authenticated;
-grant execute on function public.create_community_suggestion(uuid, text, text, text, text, text, boolean, integer, text, text, text) to anon, authenticated;
+grant execute on function public.create_community_suggestion(uuid, text, text, text, text, text, boolean, integer, text, text, text, uuid[]) to anon, authenticated;
 grant execute on function public.review_community_suggestion(uuid, uuid, text) to anon, authenticated;
 grant execute on function public.join_community_suggestion(uuid, uuid) to anon, authenticated;
 grant execute on function public.vote_community_suggestion(uuid, uuid, text) to anon, authenticated;
@@ -1217,6 +2434,7 @@ grant execute on function public.add_community_suggestion_comment(uuid, uuid, te
 grant execute on function public.create_guard_visitor_entry(uuid, text, text, text, text, public.visitor_kind, text) to anon, authenticated;
 grant execute on function public.process_guard_visitor_pass(uuid, uuid, text) to anon, authenticated;
 grant execute on function public.process_guard_qr_entry(uuid, text, text) to anon, authenticated;
+grant execute on function public.set_guard_attendance(uuid, text, text) to anon, authenticated;
 
 do $$
 begin

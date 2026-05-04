@@ -133,8 +133,24 @@ create table if not exists public.amenities (
   image_url text,
   available_now boolean not null default true,
   booking_required boolean not null default true,
+  capacity_percent integer not null default 0,
+  access_note text,
+  rules text[] not null default '{}',
+  sort_order integer not null default 0,
   created_at timestamptz not null default now()
 );
+
+alter table public.amenities
+add column if not exists capacity_percent integer not null default 0;
+
+alter table public.amenities
+add column if not exists access_note text;
+
+alter table public.amenities
+add column if not exists rules text[] not null default '{}';
+
+alter table public.amenities
+add column if not exists sort_order integer not null default 0;
 
 create table if not exists public.amenity_bookings (
   id uuid primary key default gen_random_uuid(),
@@ -142,9 +158,72 @@ create table if not exists public.amenity_bookings (
   amenity_id uuid not null references public.amenities(id) on delete cascade,
   booking_date date not null,
   time_slot text not null,
-  guest_count integer not null default 0,
+  guest_count integer not null default 1,
   booking_status text not null default 'confirmed',
   booking_fee numeric(10, 2) not null default 0,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.amenity_time_slots (
+  id uuid primary key default gen_random_uuid(),
+  amenity_id uuid not null references public.amenities(id) on delete cascade,
+  start_time time not null,
+  end_time time not null,
+  slot_capacity integer not null default 1,
+  is_active boolean not null default true,
+  sort_order integer not null default 0,
+  created_at timestamptz not null default now(),
+  constraint amenity_time_slots_time_order_check check (end_time > start_time),
+  constraint amenity_time_slots_capacity_check check (slot_capacity between 1 and 200)
+);
+
+create unique index if not exists amenity_time_slots_unique_window_uq
+on public.amenity_time_slots (amenity_id, start_time, end_time);
+
+alter table public.amenity_bookings
+alter column guest_count set default 1;
+
+alter table public.amenity_bookings
+drop constraint if exists amenity_bookings_guest_count_check;
+
+alter table public.amenity_bookings
+add constraint amenity_bookings_guest_count_check
+check (guest_count between 0 and 4);
+
+-- Existing demo/test data may already contain duplicate active bookings.
+-- Keep the newest row active and archive older duplicates before enforcing
+-- the permanent uniqueness rule below.
+with duplicate_active_bookings as (
+  select
+    id,
+    row_number() over (
+      partition by user_id, amenity_id, booking_date, lower(trim(time_slot))
+      order by created_at desc, id desc
+    ) as duplicate_rank
+  from public.amenity_bookings
+  where booking_status in ('confirmed', 'pending')
+)
+update public.amenity_bookings booking
+set booking_status = 'cancelled_duplicate'
+from duplicate_active_bookings duplicate_record
+where booking.id = duplicate_record.id
+  and duplicate_record.duplicate_rank > 1;
+
+create unique index if not exists amenity_bookings_user_amenity_slot_active_uq
+on public.amenity_bookings (user_id, amenity_id, booking_date, lower(trim(time_slot)))
+where booking_status in ('confirmed', 'pending');
+
+create table if not exists public.service_providers (
+  id uuid primary key default gen_random_uuid(),
+  full_name text not null,
+  specialty text not null,
+  phone text not null,
+  experience_label text,
+  availability_status text not null default 'available',
+  rating numeric(3, 2) not null default 4.8,
+  jobs_completed integer not null default 0,
+  image_url text,
+  notes text,
   created_at timestamptz not null default now()
 );
 
@@ -305,6 +384,25 @@ create table if not exists public.announcements (
   created_at timestamptz not null default now()
 );
 
+alter table public.notifications
+add column if not exists source_announcement_id uuid references public.announcements(id) on delete set null;
+
+create table if not exists public.admin_maintenance_notification_settings (
+  admin_user_id uuid primary key references public.app_users(id) on delete cascade,
+  before_due_enabled boolean not null default true,
+  before_due_days integer not null default 5,
+  on_due_enabled boolean not null default true,
+  follow_up_enabled boolean not null default true,
+  follow_up_frequency text not null default 'weekly',
+  weekly_overdue_enabled boolean not null default true,
+  channel_push_enabled boolean not null default true,
+  channel_email_enabled boolean not null default true,
+  channel_sms_enabled boolean not null default false,
+  template_body text not null default 'Hi [Resident Name], your maintenance of ₹[Amount] for [Month] is due on [Due Date]. Please tap here to view details and pay online. Thank you!',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 create table if not exists public.community_suggestions (
   id uuid primary key default gen_random_uuid(),
   created_by uuid not null references public.app_users(id) on delete cascade,
@@ -355,6 +453,13 @@ create table if not exists public.community_suggestion_members (
   primary key (suggestion_id, user_id)
 );
 
+create table if not exists public.community_suggestion_target_residents (
+  suggestion_id uuid not null references public.community_suggestions(id) on delete cascade,
+  resident_user_id uuid not null references public.app_users(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key (suggestion_id, resident_user_id)
+);
+
 create table if not exists public.community_suggestion_comments (
   id uuid primary key default gen_random_uuid(),
   suggestion_id uuid not null references public.community_suggestions(id) on delete cascade,
@@ -399,6 +504,24 @@ create table if not exists public.guard_duty_logs (
   logged_at timestamptz not null
 );
 
+create table if not exists public.guard_attendance_logs (
+  id uuid primary key default gen_random_uuid(),
+  guard_user_id uuid not null references public.app_users(id) on delete cascade,
+  attendance_date date not null default current_date,
+  check_in_at timestamptz,
+  check_out_at timestamptz,
+  status text not null default 'present',
+  notes text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  constraint guard_attendance_logs_unique_guard_day unique (guard_user_id, attendance_date),
+  constraint guard_attendance_checkout_after_checkin_check check (
+    check_out_at is null
+    or check_in_at is null
+    or check_out_at >= check_in_at
+  )
+);
+
 create or replace function public.set_updated_at()
 returns trigger
 language plpgsql
@@ -418,6 +541,18 @@ execute function public.set_updated_at();
 drop trigger if exists trg_complaints_updated_at on public.complaints;
 create trigger trg_complaints_updated_at
 before update on public.complaints
+for each row
+execute function public.set_updated_at();
+
+drop trigger if exists trg_guard_attendance_updated_at on public.guard_attendance_logs;
+create trigger trg_guard_attendance_updated_at
+before update on public.guard_attendance_logs
+for each row
+execute function public.set_updated_at();
+
+drop trigger if exists trg_admin_maintenance_notification_settings_updated_at on public.admin_maintenance_notification_settings;
+create trigger trg_admin_maintenance_notification_settings_updated_at
+before update on public.admin_maintenance_notification_settings
 for each row
 execute function public.set_updated_at();
 
@@ -476,6 +611,32 @@ select
   (select count(*) from public.complaints where state in ('in_progress', 'pending')) as open_complaints,
   (select coalesce(sum(amount), 0) from public.admin_transactions where amount > 0) as total_collected;
 
+drop view if exists public.admin_amenity_bookings_v;
+
+create or replace view public.admin_amenity_bookings_v as
+select
+  booking.id,
+  booking.user_id,
+  resident.full_name as resident_name,
+  resident.unit_number,
+  resident.tower,
+  booking.amenity_id,
+  amenity.name as amenity_name,
+  amenity.code as amenity_code,
+  amenity.location_label,
+  amenity.image_url,
+  booking.booking_date,
+  booking.time_slot,
+  booking.guest_count,
+  booking.booking_status,
+  booking.booking_fee,
+  booking.created_at
+from public.amenity_bookings booking
+join public.amenities amenity on amenity.id = booking.amenity_id
+join public.app_users resident on resident.id = booking.user_id
+where booking.booking_status in ('confirmed', 'pending')
+order by booking.booking_date desc, booking.created_at desc;
+
 drop view if exists public.admin_complaints_v;
 
 create or replace view public.admin_complaints_v as
@@ -508,6 +669,55 @@ select
 from public.complaints complaint_record
 join public.app_users resident on resident.id = complaint_record.user_id
 order by complaint_record.created_at desc;
+
+drop view if exists public.admin_maintenance_resident_log_v;
+
+create or replace view public.admin_maintenance_resident_log_v as
+select
+  bill.id as bill_id,
+  bill.user_id,
+  resident.full_name as resident_name,
+  resident.email as resident_email,
+  resident.phone as resident_phone,
+  resident.unit_number,
+  resident.tower,
+  bill.code,
+  bill.title,
+  bill.category,
+  bill.state,
+  bill.badge_text,
+  bill.amount_due,
+  bill.amount_paid,
+  bill.due_date,
+  bill.last_paid_on,
+  case
+    when bill.state = 'paid' then 'paid'
+    when bill.due_date is not null and bill.due_date < current_date then 'overdue'
+    else 'pending'
+  end as payment_status,
+  case
+    when bill.state = 'paid' or bill.due_date is null or bill.due_date >= current_date then 0
+    else greatest(
+      1,
+      (
+        (extract(year from age(current_date, bill.due_date))::int * 12)
+        + extract(month from age(current_date, bill.due_date))::int
+      )
+    )
+  end as months_overdue,
+  bill.created_at
+from public.bills bill
+join public.app_users resident on resident.id = bill.user_id
+where resident.role = 'resident'
+  and lower(trim(coalesce(bill.category, ''))) = 'maintenance'
+order by
+  case
+    when bill.state = 'paid' then 2
+    when bill.due_date is not null and bill.due_date < current_date then 0
+    else 1
+  end,
+  bill.due_date asc nulls last,
+  bill.created_at desc;
 
 create or replace view public.guard_gate_activity_v as
 select
@@ -660,7 +870,9 @@ grant select, insert, update, delete on all tables in schema public to anon, aut
 grant execute on function public.authenticate_app_user(text, text, public.app_role) to anon, authenticated;
 grant select on public.resident_directory_v to anon, authenticated;
 grant select on public.admin_dashboard_metrics_v to anon, authenticated;
+grant select on public.admin_amenity_bookings_v to anon, authenticated;
 grant select on public.admin_complaints_v to anon, authenticated;
+grant select on public.admin_maintenance_resident_log_v to anon, authenticated;
 grant select on public.guard_gate_activity_v to anon, authenticated;
 grant select on public.community_suggestion_feed_v to anon, authenticated;
 grant select on public.admin_community_suggestion_feed_v to anon, authenticated;
@@ -672,6 +884,8 @@ alter table public.household_members disable row level security;
 alter table public.vehicles disable row level security;
 alter table public.amenities disable row level security;
 alter table public.amenity_bookings disable row level security;
+alter table public.amenity_time_slots disable row level security;
+alter table public.service_providers disable row level security;
 alter table public.bills disable row level security;
 alter table public.payment_methods disable row level security;
 alter table public.payment_activity disable row level security;
@@ -681,10 +895,13 @@ alter table public.notifications disable row level security;
 alter table public.visitor_passes disable row level security;
 alter table public.admin_transactions disable row level security;
 alter table public.announcements disable row level security;
+alter table public.admin_maintenance_notification_settings disable row level security;
 alter table public.community_suggestions disable row level security;
 alter table public.community_suggestion_votes disable row level security;
 alter table public.community_suggestion_members disable row level security;
+alter table public.community_suggestion_target_residents disable row level security;
 alter table public.community_suggestion_comments disable row level security;
 alter table public.community_meetings disable row level security;
 alter table public.community_support_faqs disable row level security;
 alter table public.guard_duty_logs disable row level security;
+alter table public.guard_attendance_logs disable row level security;

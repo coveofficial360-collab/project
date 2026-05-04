@@ -3,7 +3,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <application
-        android:label="stitch_avenue_360_v2"
+        android:label="Cove"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

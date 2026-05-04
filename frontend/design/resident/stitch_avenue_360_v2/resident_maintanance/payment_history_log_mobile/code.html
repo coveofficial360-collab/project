@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Payment History - Cove</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-secondary": "#ffffff",
+                        "secondary-container": "#fdaf0b",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "on-background": "#191c1d",
+                        "primary": "#005bbf",
+                        "secondary-fixed-dim": "#ffba43",
+                        "on-tertiary-fixed": "#341100",
+                        "outline": "#727785",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#694600",
+                        "surface-dim": "#d9dadb",
+                        "tertiary-fixed-dim": "#ffb691",
+                        "on-secondary-fixed": "#281800",
+                        "surface": "#f8f9fa",
+                        "tertiary-container": "#c55500",
+                        "on-primary-fixed": "#001a41",
+                        "surface-container-high": "#e7e8e9",
+                        "surface-container-low": "#f3f4f5",
+                        "outline-variant": "#c1c6d6",
+                        "on-secondary-fixed-variant": "#614000",
+                        "primary-fixed-dim": "#adc7ff",
+                        "on-primary": "#ffffff",
+                        "background": "#f8f9fa",
+                        "secondary": "#805600",
+                        "primary-fixed": "#d8e2ff",
+                        "on-primary-fixed-variant": "#004493",
+                        "surface-tint": "#005bc0",
+                        "inverse-primary": "#adc7ff",
+                        "on-primary-container": "#ffffff",
+                        "tertiary": "#9e4300",
+                        "surface-container": "#edeeef",
+                        "surface-variant": "#e1e3e4",
+                        "primary-container": "#1a73e8",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-container": "#0e0200",
+                        "on-surface": "#191c1d",
+                        "secondary-fixed": "#ffddaf",
+                        "surface-container-highest": "#e1e3e4",
+                        "error": "#ba1a1a",
+                        "surface-bright": "#f8f9fa",
+                        "tertiary-fixed": "#ffdbcb",
+                        "on-surface-variant": "#414754",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#2e3132"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "safe": "env(safe-area-inset-bottom)"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: theme('colors.background'); color: theme('colors.on-background'); }
+        h1, h2, h3, h4, h5, h6, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .material-symbols-outlined.fill { font-variation-settings: 'FILL' 1; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface antialiased min-h-screen flex flex-col pb-[100px]">
+<!-- Top App Bar (Task-Focused - Suppresses Main Nav) -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl shadow-sm h-16 px-4 flex justify-between items-center bg-surface-container-low transition-colors">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors text-on-surface">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<h1 class="font-headline font-semibold text-lg tracking-tight text-on-surface">Payment History</h1>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors text-on-surface">
+<span class="material-symbols-outlined text-xl">filter_list</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 pt-20 px-4 max-w-md mx-auto w-full">
+<!-- Controls: Year Selector & Filter Chips -->
+<section class="mb-6 flex flex-col gap-4">
+<!-- Year Selector -->
+<div class="flex items-center justify-between bg-surface-container-lowest rounded-xl p-3 shadow-[0_12px_32px_rgba(25,28,29,0.06)]">
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined text-xl">chevron_left</span>
+</button>
+<span class="font-headline font-bold text-lg text-primary tracking-tight">2025</span>
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined text-xl">chevron_right</span>
+</button>
+</div>
+<!-- Filter Chips (Horizontal Scroll) -->
+<div class="flex gap-3 overflow-x-auto hide-scrollbar pb-2 pt-1 px-1">
+<button class="whitespace-nowrap px-5 py-2 rounded-full font-label text-sm tracking-wide bg-primary text-on-primary shadow-sm font-medium">All</button>
+<button class="whitespace-nowrap px-5 py-2 rounded-full font-label text-sm tracking-wide bg-surface-container-lowest text-on-surface outline outline-1 outline-outline-variant/15 hover:bg-surface-container-high transition-colors">Paid</button>
+<button class="whitespace-nowrap px-5 py-2 rounded-full font-label text-sm tracking-wide bg-surface-container-lowest text-on-surface outline outline-1 outline-outline-variant/15 hover:bg-surface-container-high transition-colors">Pending</button>
+<button class="whitespace-nowrap px-5 py-2 rounded-full font-label text-sm tracking-wide bg-surface-container-lowest text-on-surface outline outline-1 outline-outline-variant/15 hover:bg-surface-container-high transition-colors">Overdue</button>
+</div>
+</section>
+<!-- Payment List (Layered Cards) -->
+<section class="flex flex-col gap-4">
+<!-- Card: Paid (July) -->
+<div class="bg-surface-container-lowest rounded-[16px] p-4 flex items-center gap-4 shadow-[0_12px_32px_rgba(25,28,29,0.03)] hover:shadow-[0_12px_32px_rgba(25,28,29,0.06)] transition-shadow">
+<!-- Avatar Month -->
+<div class="w-14 h-14 rounded-full bg-primary/10 flex flex-col items-center justify-center shrink-0">
+<span class="font-label text-[10px] uppercase tracking-wider text-primary font-bold">Jul</span>
+<span class="font-headline font-bold text-primary">25</span>
+</div>
+<!-- Details -->
+<div class="flex-1 min-w-0">
+<h3 class="font-headline font-semibold text-on-surface truncate">Monthly Maintenance</h3>
+<p class="font-body text-sm text-on-surface-variant truncate">Ref: MM-2025-07</p>
+</div>
+<!-- Amount & Status -->
+<div class="flex flex-col items-end gap-1 shrink-0">
+<span class="font-headline font-bold text-on-surface text-lg">$450.00</span>
+<div class="px-2 py-0.5 rounded-md bg-[#005bbf]/10 text-primary font-label text-[10px] tracking-wide uppercase font-semibold">Paid</div>
+</div>
+</div>
+<!-- Card: Pending (June) -->
+<div class="bg-surface-container-lowest rounded-[16px] p-4 flex items-center gap-4 shadow-[0_12px_32px_rgba(25,28,29,0.03)] hover:shadow-[0_12px_32px_rgba(25,28,29,0.06)] transition-shadow outline outline-1 outline-secondary/20">
+<div class="w-14 h-14 rounded-full bg-secondary-container/20 flex flex-col items-center justify-center shrink-0">
+<span class="font-label text-[10px] uppercase tracking-wider text-secondary font-bold">Jun</span>
+<span class="font-headline font-bold text-secondary">25</span>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="font-headline font-semibold text-on-surface truncate">Amenity Booking</h3>
+<p class="font-body text-sm text-on-surface-variant truncate">Clubhouse Event</p>
+</div>
+<div class="flex flex-col items-end gap-1 shrink-0">
+<span class="font-headline font-bold text-on-surface text-lg">$150.00</span>
+<div class="px-2 py-0.5 rounded-md bg-secondary-container/20 text-secondary font-label text-[10px] tracking-wide uppercase font-semibold">Pending</div>
+</div>
+</div>
+<!-- Card: Overdue (May) -->
+<div class="bg-surface-container-lowest rounded-[16px] p-4 flex items-center gap-4 shadow-[0_12px_32px_rgba(25,28,29,0.03)] hover:shadow-[0_12px_32px_rgba(25,28,29,0.06)] transition-shadow border-l-4 border-error">
+<div class="w-14 h-14 rounded-full bg-error/10 flex flex-col items-center justify-center shrink-0">
+<span class="font-label text-[10px] uppercase tracking-wider text-error font-bold">May</span>
+<span class="font-headline font-bold text-error">25</span>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="font-headline font-semibold text-on-surface truncate">Monthly Maintenance</h3>
+<p class="font-body text-sm text-error truncate flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">warning</span> Late Fee Applied
+                    </p>
+</div>
+<div class="flex flex-col items-end gap-1 shrink-0">
+<span class="font-headline font-bold text-error text-lg">$475.00</span>
+<div class="px-2 py-0.5 rounded-md bg-error/10 text-error font-label text-[10px] tracking-wide uppercase font-semibold">Overdue</div>
+</div>
+</div>
+<!-- Card: Paid (April) -->
+<div class="bg-surface-container-lowest rounded-[16px] p-4 flex items-center gap-4 shadow-[0_12px_32px_rgba(25,28,29,0.03)]">
+<div class="w-14 h-14 rounded-full bg-surface-container-high flex flex-col items-center justify-center shrink-0">
+<span class="font-label text-[10px] uppercase tracking-wider text-on-surface-variant font-bold">Apr</span>
+<span class="font-headline font-bold text-on-surface-variant">25</span>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="font-headline font-semibold text-on-surface truncate">Monthly Maintenance</h3>
+<p class="font-body text-sm text-on-surface-variant truncate">Ref: MM-2025-04</p>
+</div>
+<div class="flex flex-col items-end gap-1 shrink-0">
+<span class="font-headline font-bold text-on-surface text-lg">$450.00</span>
+<div class="px-2 py-0.5 rounded-md bg-surface-container-high text-on-surface-variant font-label text-[10px] tracking-wide uppercase font-semibold">Paid</div>
+</div>
+</div>
+</section>
+<!-- Breathing room for sticky bottom -->
+<div class="h-24"></div>
+</main>
+<!-- Sticky Bottom Export Bar (Overlays canvas) -->
+<div class="fixed bottom-0 w-full bg-surface/90 backdrop-blur-xl border-t border-outline-variant/10 px-4 py-4 pb-safe z-40 flex gap-3 justify-center shadow-[0_-8px_24px_rgba(0,0,0,0.05)]">
+<button class="flex-1 max-w-[200px] flex items-center justify-center gap-2 bg-surface-container-lowest text-primary font-headline font-semibold rounded-xl py-3.5 shadow-sm outline outline-1 outline-outline-variant/20 hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-xl">description</span>
+            Export PDF
+        </button>
+<button class="flex-1 max-w-[200px] flex items-center justify-center gap-2 bg-gradient-to-br from-primary to-primary-container text-on-primary font-headline font-semibold rounded-xl py-3.5 shadow-md hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-xl">table_chart</span>
+            Export CSV
+        </button>
+</div>
+</body></html>

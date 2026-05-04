@@ -68,11 +68,42 @@ class AvenueRepository {
     return _castRows(rows);
   }
 
+  Future<List<Map<String, dynamic>>> fetchCurrentUserMaintenanceBills() async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return const [];
+    }
+
+    final rows = await _client
+        .from('bills')
+        .select()
+        .eq('user_id', currentUser.id)
+        .ilike('category', 'maintenance')
+        .order('due_date', ascending: true)
+        .order('created_at', ascending: false);
+
+    return _castRows(rows);
+  }
+
   Future<List<Map<String, dynamic>>> fetchAmenities() async {
     final rows = await _client
         .from('amenities')
         .select()
+        .order('sort_order', ascending: true)
         .order('created_at', ascending: true);
+
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchAmenityTimeSlots(
+    String amenityId,
+  ) async {
+    final rows = await _client
+        .from('amenity_time_slots')
+        .select()
+        .eq('amenity_id', amenityId)
+        .order('sort_order', ascending: true)
+        .order('start_time', ascending: true);
 
     return _castRows(rows);
   }
@@ -101,7 +132,26 @@ class AvenueRepository {
         .from('amenity_bookings')
         .select('*, amenities(name, code, location_label, image_url)')
         .eq('user_id', currentUser.id)
+        .filter('booking_status', 'in', '(confirmed,pending)')
         .order('booking_date', ascending: true);
+
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchAdminAmenityBookings() async {
+    final rows = await _client
+        .from('admin_amenity_bookings_v')
+        .select()
+        .order('booking_date', ascending: false);
+
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchServiceProviders() async {
+    final rows = await _client
+        .from('service_providers')
+        .select()
+        .order('created_at', ascending: false);
 
     return _castRows(rows);
   }
@@ -257,12 +307,74 @@ class AvenueRepository {
   }
 
   Future<List<Map<String, dynamic>>> fetchCommunitySuggestions() async {
+    final currentUser = AppSession.instance.currentUser;
     final rows = await _client
         .from('community_suggestion_feed_v')
         .select()
         .order('created_at', ascending: false);
 
-    return _castRows(rows);
+    final records = _castRows(rows);
+    if (currentUser == null) {
+      return records;
+    }
+
+    final targetedRows = records
+        .where(
+          (row) =>
+              (row['audience_scope']?.toString().toLowerCase() ?? '') ==
+              'selected_residents',
+        )
+        .toList();
+    if (targetedRows.isEmpty) {
+      return records;
+    }
+
+    final targetAudienceRows = await _client
+        .from('community_suggestion_target_residents')
+        .select('suggestion_id')
+        .eq('resident_user_id', currentUser.id);
+    final allowedSuggestionIds = _castRows(targetAudienceRows)
+        .map((row) => row['suggestion_id']?.toString())
+        .whereType<String>()
+        .toSet();
+
+    final visibleRecords = records.where((row) {
+      final audienceScope =
+          row['audience_scope']?.toString().toLowerCase() ?? 'all_residents';
+      if (audienceScope != 'selected_residents') {
+        return true;
+      }
+
+      final suggestionId = row['id']?.toString();
+      final createdBy = row['created_by']?.toString();
+      return (suggestionId != null &&
+              allowedSuggestionIds.contains(suggestionId)) ||
+          createdBy == currentUser.id;
+    }).toList();
+
+    if (visibleRecords.isEmpty) {
+      return visibleRecords;
+    }
+
+    final joinedRows = await _client
+        .from('community_suggestion_members')
+        .select('suggestion_id')
+        .eq('user_id', currentUser.id);
+    final joinedSuggestionIds = _castRows(joinedRows)
+        .map((row) => row['suggestion_id']?.toString())
+        .whereType<String>()
+        .toSet();
+
+    return visibleRecords.map((row) {
+      final next = Map<String, dynamic>.from(row);
+      final suggestionId = next['id']?.toString();
+      final createdBy = next['created_by']?.toString();
+      next['has_joined'] =
+          (suggestionId != null &&
+              joinedSuggestionIds.contains(suggestionId)) ||
+          createdBy == currentUser.id;
+      return next;
+    }).toList();
   }
 
   Future<List<Map<String, dynamic>>> fetchAdminCommunitySuggestions() async {
@@ -311,14 +423,25 @@ class AvenueRepository {
       return false;
     }
 
-    final rows = await _client
+    final membershipRows = await _client
         .from('community_suggestion_members')
         .select('suggestion_id')
         .eq('suggestion_id', suggestionId)
         .eq('user_id', currentUser.id)
         .limit(1);
 
-    return _castRows(rows).isNotEmpty;
+    if (_castRows(membershipRows).isNotEmpty) {
+      return true;
+    }
+
+    final creatorRows = await _client
+        .from('community_suggestions')
+        .select('id')
+        .eq('id', suggestionId)
+        .eq('created_by', currentUser.id)
+        .limit(1);
+
+    return _castRows(creatorRows).isNotEmpty;
   }
 
   Future<Map<String, dynamic>?> joinCommunitySuggestion({
@@ -347,6 +470,7 @@ class AvenueRepository {
     required String summary,
     required String details,
     String audienceScope = 'all_residents',
+    List<String> selectedResidentIds = const [],
     bool pollEnabled = true,
     int targetVotes = 24,
     String? coverImageUrl,
@@ -367,6 +491,7 @@ class AvenueRepository {
         'p_summary': summary.trim(),
         'p_details': details.trim(),
         'p_audience_scope': audienceScope,
+        'p_selected_resident_ids': selectedResidentIds,
         'p_poll_enabled': pollEnabled,
         'p_target_votes': targetVotes,
         'p_cover_image_url': coverImageUrl?.trim(),
@@ -531,6 +656,42 @@ class AvenueRepository {
     return _castRows(rows);
   }
 
+  Future<List<Map<String, dynamic>>> fetchAdminMaintenanceResidentLog() async {
+    final rows = await _client
+        .from('admin_maintenance_resident_log_v')
+        .select()
+        .order('due_date', ascending: true);
+
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchMaintenanceBillsForResident(
+    String residentUserId,
+  ) async {
+    final rows = await _client
+        .from('bills')
+        .select()
+        .eq('user_id', residentUserId)
+        .ilike('category', 'maintenance')
+        .order('due_date', ascending: false)
+        .order('created_at', ascending: false);
+
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchMaintenancePaymentHistoryForResident(
+    String residentUserId,
+  ) async {
+    final rows = await _client
+        .from('payment_activity')
+        .select()
+        .eq('user_id', residentUserId)
+        .ilike('activity_category', 'maintenance')
+        .order('activity_at', ascending: false);
+
+    return _castRows(rows);
+  }
+
   Future<Map<String, dynamic>?> createResident({
     required String email,
     required String fullName,
@@ -577,6 +738,216 @@ class AvenueRepository {
         'p_phone': phone.trim(),
         'p_visitor_kind': visitorKind,
         'p_expected_arrival': expectedArrival.toIso8601String(),
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> createAmenityBooking({
+    required String amenityId,
+    required DateTime bookingDate,
+    required String timeSlot,
+    required int guestCount,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'create_amenity_booking',
+      params: {
+        'p_user_id': currentUser.id,
+        'p_amenity_id': amenityId,
+        'p_booking_date': bookingDate.toIso8601String().split('T').first,
+        'p_time_slot': timeSlot.trim(),
+        'p_guest_count': guestCount,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> payMaintenanceBill({
+    required String billId,
+    String paymentMethod = 'UPI',
+    String? transactionRef,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'pay_maintenance_bill',
+      params: {
+        'p_user_id': currentUser.id,
+        'p_bill_id': billId,
+        'p_payment_method': paymentMethod,
+        'p_transaction_ref': transactionRef,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> createAdminAmenity({
+    required String name,
+    required String category,
+    required String description,
+    required String locationLabel,
+    required String statusLabel,
+    required String availabilityText,
+    required String occupancyNote,
+    required int capacityPercent,
+    required bool bookingRequired,
+    String? imageUrl,
+    String? accessNote,
+    List<String> rules = const [],
+    List<Map<String, dynamic>> timeSlots = const [],
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'create_admin_amenity',
+      params: {
+        'p_admin_user_id': currentUser.id,
+        'p_name': name.trim(),
+        'p_category': category.trim(),
+        'p_description': description.trim(),
+        'p_location_label': locationLabel.trim(),
+        'p_status_label': statusLabel.trim(),
+        'p_availability_text': availabilityText.trim(),
+        'p_occupancy_note': occupancyNote.trim(),
+        'p_capacity_percent': capacityPercent,
+        'p_booking_required': bookingRequired,
+        'p_image_url': imageUrl?.trim(),
+        'p_access_note': accessNote?.trim(),
+        'p_rules': rules,
+        'p_time_slots': timeSlots,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> updateAdminAmenity({
+    required String amenityId,
+    required String name,
+    required String category,
+    required String description,
+    required String locationLabel,
+    required String statusLabel,
+    required String availabilityText,
+    required String occupancyNote,
+    required int capacityPercent,
+    required bool bookingRequired,
+    String? imageUrl,
+    String? accessNote,
+    List<String> rules = const [],
+    List<Map<String, dynamic>> timeSlots = const [],
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'update_admin_amenity',
+      params: {
+        'p_admin_user_id': currentUser.id,
+        'p_amenity_id': amenityId,
+        'p_name': name.trim(),
+        'p_category': category.trim(),
+        'p_description': description.trim(),
+        'p_location_label': locationLabel.trim(),
+        'p_status_label': statusLabel.trim(),
+        'p_availability_text': availabilityText.trim(),
+        'p_occupancy_note': occupancyNote.trim(),
+        'p_capacity_percent': capacityPercent,
+        'p_booking_required': bookingRequired,
+        'p_image_url': imageUrl?.trim(),
+        'p_access_note': accessNote?.trim(),
+        'p_rules': rules,
+        'p_time_slots': timeSlots,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> updateAdminAmenityStatus({
+    required String amenityId,
+    required String statusLabel,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'update_admin_amenity_status',
+      params: {
+        'p_admin_user_id': currentUser.id,
+        'p_amenity_id': amenityId,
+        'p_status_label': statusLabel.trim(),
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> createServiceProvider({
+    required String fullName,
+    required String specialty,
+    required String phone,
+    required String experienceLabel,
+    required String availabilityStatus,
+    String? notes,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'create_admin_service_provider',
+      params: {
+        'p_admin_user_id': currentUser.id,
+        'p_full_name': fullName.trim(),
+        'p_specialty': specialty.trim(),
+        'p_phone': phone.trim(),
+        'p_experience_label': experienceLabel.trim(),
+        'p_availability_status': availabilityStatus.trim(),
+        'p_notes': notes?.trim(),
       },
     );
 
@@ -688,6 +1059,121 @@ class AvenueRepository {
     return Map<String, dynamic>.from(response.first as Map);
   }
 
+  Future<Map<String, dynamic>?> adminMarkMaintenancePaid({
+    required String billId,
+    String? note,
+    DateTime? markPaidOn,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'admin_mark_maintenance_paid',
+      params: {
+        'p_admin_user_id': currentUser.id,
+        'p_bill_id': billId,
+        'p_note': note,
+        'p_mark_paid_on': markPaidOn?.toIso8601String().split('T').first,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> sendMaintenanceAlerts({
+    required List<String> residentUserIds,
+    required String messageTemplate,
+    List<String> channels = const ['push'],
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null || residentUserIds.isEmpty) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'send_maintenance_alerts',
+      params: {
+        'p_admin_user_id': currentUser.id,
+        'p_resident_user_ids': residentUserIds,
+        'p_message_template': messageTemplate,
+        'p_channels': channels,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> fetchAdminMaintenanceNotificationSettings()
+  async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final rows = await _client
+        .from('admin_maintenance_notification_settings')
+        .select()
+        .eq('admin_user_id', currentUser.id)
+        .limit(1);
+    final records = _castRows(rows);
+    if (records.isEmpty) {
+      return null;
+    }
+
+    return records.first;
+  }
+
+  Future<Map<String, dynamic>?> saveAdminMaintenanceNotificationSettings({
+    required bool beforeDueEnabled,
+    required int beforeDueDays,
+    required bool onDueEnabled,
+    required bool followUpEnabled,
+    required String followUpFrequency,
+    required bool weeklyOverdueEnabled,
+    required bool channelPushEnabled,
+    required bool channelEmailEnabled,
+    required bool channelSmsEnabled,
+    required String templateBody,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'upsert_admin_maintenance_notification_settings',
+      params: {
+        'p_admin_user_id': currentUser.id,
+        'p_before_due_enabled': beforeDueEnabled,
+        'p_before_due_days': beforeDueDays,
+        'p_on_due_enabled': onDueEnabled,
+        'p_follow_up_enabled': followUpEnabled,
+        'p_follow_up_frequency': followUpFrequency,
+        'p_weekly_overdue_enabled': weeklyOverdueEnabled,
+        'p_channel_push_enabled': channelPushEnabled,
+        'p_channel_email_enabled': channelEmailEnabled,
+        'p_channel_sms_enabled': channelSmsEnabled,
+        'p_template_body': templateBody,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
   Future<Map<String, dynamic>?> createAnnouncement({
     required String kind,
     required String title,
@@ -771,6 +1257,164 @@ class AvenueRepository {
         .order('logged_at', ascending: false);
 
     return _castRows(rows);
+  }
+
+  Future<Map<String, dynamic>?> fetchGuardTodayAttendance() async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final today = DateTime.now().toIso8601String().split('T').first;
+    final rows = await _client
+        .from('guard_attendance_logs')
+        .select()
+        .eq('guard_user_id', currentUser.id)
+        .eq('attendance_date', today)
+        .limit(1);
+    final records = _castRows(rows);
+    if (records.isEmpty) {
+      return null;
+    }
+
+    return records.first;
+  }
+
+  Future<List<Map<String, dynamic>>> fetchGuardAttendanceHistory() async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return const [];
+    }
+
+    final rows = await _client
+        .from('guard_attendance_logs')
+        .select()
+        .eq('guard_user_id', currentUser.id)
+        .order('attendance_date', ascending: false)
+        .order('created_at', ascending: false)
+        .limit(31);
+
+    return _castRows(rows);
+  }
+
+  Future<Map<String, dynamic>?> setGuardAttendance({
+    required String action,
+    String? notes,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'set_guard_attendance',
+      params: {
+        'p_guard_user_id': currentUser.id,
+        'p_action': action,
+        'p_notes': notes,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchGuardVisitorLogs() async {
+    final visitorRows = await _client
+        .from('visitor_passes')
+        .select()
+        .order('expected_arrival', ascending: false);
+    final records = _castRows(visitorRows);
+
+    if (records.isEmpty) {
+      return records;
+    }
+
+    final residentIds = records
+        .map((row) => row['resident_user_id']?.toString())
+        .whereType<String>()
+        .toSet()
+        .toList();
+
+    if (residentIds.isEmpty) {
+      return records;
+    }
+
+    final residentRows = await _client
+        .from('app_users')
+        .select('id, full_name, unit_number, tower')
+        .inFilter('id', residentIds);
+    final residentsById = {
+      for (final row in _castRows(residentRows))
+        row['id']?.toString() ?? '': row,
+    };
+
+    return records.map((row) {
+      final resident =
+          residentsById[row['resident_user_id']?.toString()] ??
+          const <String, dynamic>{};
+      return {
+        ...row,
+        'resident_name': resident['full_name'],
+        'unit_number': resident['unit_number'],
+        'tower': resident['tower'],
+      };
+    }).toList();
+  }
+
+  Future<Map<String, dynamic>?> checkoutGuardVisitorPass({
+    required String passId,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final passRows = await _client
+        .from('visitor_passes')
+        .select('id, visitor_name, status, resident_user_id')
+        .eq('id', passId)
+        .limit(1);
+    final passes = _castRows(passRows);
+    if (passes.isEmpty) {
+      return null;
+    }
+
+    final pass = passes.first;
+    final status = pass['status']?.toString().trim().toLowerCase() ?? '';
+    if (status == 'checked_out' || status == 'denied') {
+      return pass;
+    }
+
+    final residentRows = await _client
+        .from('app_users')
+        .select('unit_number')
+        .eq('id', pass['resident_user_id'])
+        .limit(1);
+    final unitNumber = _castRows(residentRows).isEmpty
+        ? null
+        : _castRows(residentRows).first['unit_number']?.toString();
+
+    await _client
+        .from('visitor_passes')
+        .update({'status': 'checked_out'})
+        .eq('id', passId);
+
+    await _client.from('guard_duty_logs').insert({
+      'guard_user_id': currentUser.id,
+      'title': 'Visitor checked out',
+      'details':
+          '${pass['visitor_name'] ?? 'Visitor'} has been checked out at the gate.',
+      'related_visitor_name': pass['visitor_name'],
+      'related_unit': unitNumber,
+      'log_status': 'completed',
+      'logged_at': DateTime.now().toIso8601String(),
+    });
+
+    return {...pass, 'status': 'checked_out', 'unit_number': unitNumber};
   }
 
   Future<Map<String, dynamic>?> createGuardVisitorEntry({

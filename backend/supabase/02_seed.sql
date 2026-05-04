@@ -11,6 +11,7 @@ truncate table
   public.bills,
   public.amenity_bookings,
   public.amenities,
+  public.service_providers,
   public.vehicles,
   public.household_members,
   public.app_users
@@ -45,7 +46,7 @@ values
     'active',
     null,
     'https://lh3.googleusercontent.com/aida-public/AB6AXuBg0i9YM5IEGdzLL17BoAjodnNcI3uMuhlrCCaBsSoWkHRuSTvuGGhC3LFb4q5Ebhr6wd0gKAU0tpfQsVa1Ys8kTPY4dwv5W1Rl_zaSIuSjTYx65EmI1873v2bqyYHmUjy10zff8OscnqTSqj6qLPrCX_mFqd5jOt4dcplv9SyfqD-xCFPkQzuakDhkKqvAvyELUbJ6nDQNQZ1YOlcDG4zOTMzbqZJzpihPXVJGtaro8oaY97tXbO0iD3P0D494f5t46VwIZa9jS5-3',
-    'Primary resident testing account for the Avenue360 app.'
+    'Primary resident testing account for the Cove app.'
   ),
   (
     'admin@gmail.com',
@@ -60,7 +61,7 @@ values
     'active',
     'Estate Manager',
     'https://lh3.googleusercontent.com/aida-public/AB6AXuAZdFL4zMKpNZY3_fSbha5C3gXuInFJaXecNCbr8iBFFz3_w2bT1u7sKXRKA_mGeEYUQRsvR6eYozhpVULtvbYT9UoajJMm5eOURoEbprw28WXIA5zbhb5Ox0YHGWo9VHVwLVgRHuFVLggQJLb9hR6m_XYNdwFDr9tpKVicHa-zB3dRt8pemssN2VpGkDJUE_Wkh91T9sEPQPUAyMjsHT_EyPel3i6My0wSuuSYWr8hb2rsuudulKvCjbBKLoNIPvgf9YXQ-CcHEEQ',
-    'Primary admin testing account for Avenue360 operations.'
+    'Primary admin testing account for Cove operations.'
   ),
   (
     'guard@gmail.com',
@@ -180,7 +181,11 @@ insert into public.amenities (
   cta_label,
   image_url,
   available_now,
-  booking_required
+  booking_required,
+  capacity_percent,
+  access_note,
+  rules,
+  sort_order
 )
 values
   (
@@ -195,7 +200,11 @@ values
     'Book Now',
     'https://lh3.googleusercontent.com/aida-public/AB6AXuBxzm-dGnr-qUg3CunB_AYuyZuRG37ek0vFJXPFvgBu9IsZxGmlsT2ZZLza2KHK_VyptCVsa6goNGYiVM5iVQKh2OoXgJynnq17ZycQz0mx8QAYHbEF0hJ_3gItSrmGv3HmW8MqICkRx8gCK72ehyb5pMt1QXRPhq6nN-ZLuoPXiDD3AQhXTveXvWkmKzAO_rxNGKCqQr1Lw2wRnscP3PZDO8GW1hI4UrxhOgefXRQh2dksJSD1hHW8b67QYBbSIpOA0mNo3gLzDq0',
     true,
-    true
+    true,
+    42,
+    'Digital ID required at pool entrance.',
+    array['Carry your resident ID.', 'No glassware near the pool.', 'Cancel at least 2 hours before your slot.'],
+    1
   ),
   (
     'modern-gym',
@@ -209,7 +218,11 @@ values
     'View Details',
     'https://lh3.googleusercontent.com/aida-public/AB6AXuBWTTQ3UiXvD57t3y9l3xUZ6A7KeczByka3Xq2UojS4x44ReWHVyDmubL-CWJdb92iI2_iul9NP715Lo5AEkuYEu5dVcMtl2zeBkEsip6MvgrHMiAPxkZbbklk1MPOkK-KfWusX6tiNrBDemlRUUiOky0JZU0DExSaYFrEpEQ_wOFWUIvuh1QvGxVU74XYTBZ0U9H0Ay5rnnPJkaURiBg_cddNE8CFalkWpo38jzdNFFKtfsxN4kJKY9i7prr1n-dTnHdHtAQgXCWA',
     true,
-    true
+    true,
+    80,
+    'Peak usage between 5 PM and 8 PM.',
+    array['Wipe equipment after use.', 'Sports shoes required.', 'Maximum 60 minute peak-hour session.'],
+    2
   ),
   (
     'rooftop-lounge',
@@ -223,7 +236,46 @@ values
     'Book Now',
     'https://lh3.googleusercontent.com/aida-public/AB6AXuBDq3lh2XEgyajN8zt4b-iBTuyGgfLZ9xixqax5xpr6ARMb_IM08URqgsQP3JJMAkGmCteSoVbiCQxeizU-wbEAdOHx6Py9gwomw7roFtjmjp-e1DLYSHphrozp2e3ONAn6Ydf0L9KPF98xFHcwt8jrotPoIX8WKusFNIR27KVZ6tcLGyY87Qy9Z5mykcaifpD29m4gm9oLN1n7ax8_fiVOek9gGTivFz_CntCiTQq7BXrVqpdz2s1cSb7WdeUQNZ-411uOLfrM9Bk',
     true,
-    true
+    true,
+    25,
+    'Approval required for private events.',
+    array['Noise limits apply after 10 PM.', 'Outside catering requires prior approval.'],
+    3
+  );
+
+insert into public.service_providers (
+  full_name,
+  specialty,
+  phone,
+  experience_label,
+  availability_status,
+  rating,
+  jobs_completed,
+  image_url,
+  notes
+)
+values
+  (
+    'Marcus Thorne',
+    'Electrician',
+    '+1 (555) 012-9938',
+    'Certified Master Electrician • 12 yrs exp.',
+    'available',
+    4.9,
+    184,
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuC8-jrEr6t09tGy9wMO0aspsXA7tT1pRZvKKajKZHuhQUS9BDyMBj89ftbLCqfklXBvcYzNGcOkR2hUy7sSGaaRBjoKfr1SqWHzlaDRW3_04vucVCCZ_K3OixZIrSmU9qAc5nHwgoBqzlK01jJUiQIN2MHOKlzPL145qPf35pK0vQaWz-ci1rKvU2Tiqm3TnvfGnsPpbmaJt3GmHTSbhLGT9vV9QY8wEX8yNaSQNqDC023gsgzsPYmLnOTxh1p2Pngv3dv2Bo1BlQ',
+    'Preferred for electrical complaints and preventive checks.'
+  ),
+  (
+    'Elena Rodriguez',
+    'Plumber',
+    '+1 (555) 098-4421',
+    'High-pressure systems specialist',
+    'busy',
+    4.8,
+    139,
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuB6sjdPffzza9Y9UPGnyFo6Vxn7fhNJAQhtyt1pet6qnVuXOtRSxzKSAZyLQ8ohsmC359Lr6h7MvpPcLLoXT2Ss_6onSJvQ52WueVZ-TqdqgQq52HepgxfV0EeRIPToKFiY3KZaOBg1NNe0R2c1JYpcmcOgN3ePJEOjy0wxu2DMzro-YO4x7Tp1ohRvOUudR3YPaQhxUItMpoXa3m9EMS1iux_THhY3yRPQHG7xzGjili4j4Ne5hNfgmTGrRUqYcVr3SnPJaX3FGg',
+    'Handles plumbing and leakage escalations.'
   );
 
 insert into public.amenity_bookings (user_id, amenity_id, booking_date, time_slot, guest_count, booking_status, booking_fee)
@@ -253,7 +305,7 @@ insert into public.bills (
   last_paid_on,
   action_label
 )
-select id, 'maintenance-q2', 'Quarterly Maintenance', 'Avenue360', 'maintenance', 'due', 'Due in 3 days', 2200, null, current_date + 3, null, 'Pay Now'
+select id, 'maintenance-q2', 'Quarterly Maintenance', 'Cove', 'maintenance', 'due', 'Due in 3 days', 2200, null, current_date + 3, null, 'Pay Now'
 from public.app_users
 where email = 'user@gmail.com';
 

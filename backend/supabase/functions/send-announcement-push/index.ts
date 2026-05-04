@@ -101,7 +101,7 @@ Deno.serve(async (request) => {
                 },
                 android: {
                   notification: {
-                    channel_id: 'avenue360_announcements',
+                    channel_id: 'cove_announcements',
                     sound: 'default',
                   },
                 },
