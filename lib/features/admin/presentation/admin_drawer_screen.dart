@@ -1,5 +1,20 @@
 part of 'admin_screens.dart';
 
+bool _isMaintenancePage(AppPage page) {
+  switch (page) {
+    case AppPage.adminMaintenance:
+    case AppPage.adminMaintenanceResidentLog:
+    case AppPage.adminMaintenanceResidentDetail:
+    case AppPage.adminMaintenanceForcedAlert:
+    case AppPage.adminMaintenanceNotificationSettings:
+    case AppPage.adminMaintenanceExport:
+    case AppPage.adminMaintenanceSecurePayment:
+      return true;
+    default:
+      return false;
+  }
+}
+
 class AdminDrawerScreen extends StatelessWidget {
   const AdminDrawerScreen({super.key, this.currentPage = AppPage.adminDrawer});
 
@@ -168,6 +183,15 @@ class AdminDrawerScreen extends StatelessWidget {
                             onTap: () => _navigateFromDrawer(
                               context,
                               AppPage.adminAmenities,
+                            ),
+                          ),
+                          _AdminDrawerNavItem(
+                            label: 'Maintenance',
+                            icon: Icons.receipt_long_rounded,
+                            selected: _isMaintenancePage(currentPage),
+                            onTap: () => _navigateFromDrawer(
+                              context,
+                              AppPage.adminMaintenance,
                             ),
                           ),
                           _AdminDrawerNavItem(

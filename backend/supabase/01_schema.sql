@@ -384,6 +384,25 @@ create table if not exists public.announcements (
   created_at timestamptz not null default now()
 );
 
+alter table public.notifications
+add column if not exists source_announcement_id uuid references public.announcements(id) on delete set null;
+
+create table if not exists public.admin_maintenance_notification_settings (
+  admin_user_id uuid primary key references public.app_users(id) on delete cascade,
+  before_due_enabled boolean not null default true,
+  before_due_days integer not null default 5,
+  on_due_enabled boolean not null default true,
+  follow_up_enabled boolean not null default true,
+  follow_up_frequency text not null default 'weekly',
+  weekly_overdue_enabled boolean not null default true,
+  channel_push_enabled boolean not null default true,
+  channel_email_enabled boolean not null default true,
+  channel_sms_enabled boolean not null default false,
+  template_body text not null default 'Hi [Resident Name], your maintenance of ₹[Amount] for [Month] is due on [Due Date]. Please tap here to view details and pay online. Thank you!',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 create table if not exists public.community_suggestions (
   id uuid primary key default gen_random_uuid(),
   created_by uuid not null references public.app_users(id) on delete cascade,
@@ -531,6 +550,12 @@ before update on public.guard_attendance_logs
 for each row
 execute function public.set_updated_at();
 
+drop trigger if exists trg_admin_maintenance_notification_settings_updated_at on public.admin_maintenance_notification_settings;
+create trigger trg_admin_maintenance_notification_settings_updated_at
+before update on public.admin_maintenance_notification_settings
+for each row
+execute function public.set_updated_at();
+
 create or replace function public.authenticate_app_user(
   p_email text,
   p_password text,
@@ -644,6 +669,55 @@ select
 from public.complaints complaint_record
 join public.app_users resident on resident.id = complaint_record.user_id
 order by complaint_record.created_at desc;
+
+drop view if exists public.admin_maintenance_resident_log_v;
+
+create or replace view public.admin_maintenance_resident_log_v as
+select
+  bill.id as bill_id,
+  bill.user_id,
+  resident.full_name as resident_name,
+  resident.email as resident_email,
+  resident.phone as resident_phone,
+  resident.unit_number,
+  resident.tower,
+  bill.code,
+  bill.title,
+  bill.category,
+  bill.state,
+  bill.badge_text,
+  bill.amount_due,
+  bill.amount_paid,
+  bill.due_date,
+  bill.last_paid_on,
+  case
+    when bill.state = 'paid' then 'paid'
+    when bill.due_date is not null and bill.due_date < current_date then 'overdue'
+    else 'pending'
+  end as payment_status,
+  case
+    when bill.state = 'paid' or bill.due_date is null or bill.due_date >= current_date then 0
+    else greatest(
+      1,
+      (
+        (extract(year from age(current_date, bill.due_date))::int * 12)
+        + extract(month from age(current_date, bill.due_date))::int
+      )
+    )
+  end as months_overdue,
+  bill.created_at
+from public.bills bill
+join public.app_users resident on resident.id = bill.user_id
+where resident.role = 'resident'
+  and lower(trim(coalesce(bill.category, ''))) = 'maintenance'
+order by
+  case
+    when bill.state = 'paid' then 2
+    when bill.due_date is not null and bill.due_date < current_date then 0
+    else 1
+  end,
+  bill.due_date asc nulls last,
+  bill.created_at desc;
 
 create or replace view public.guard_gate_activity_v as
 select
@@ -798,6 +872,7 @@ grant select on public.resident_directory_v to anon, authenticated;
 grant select on public.admin_dashboard_metrics_v to anon, authenticated;
 grant select on public.admin_amenity_bookings_v to anon, authenticated;
 grant select on public.admin_complaints_v to anon, authenticated;
+grant select on public.admin_maintenance_resident_log_v to anon, authenticated;
 grant select on public.guard_gate_activity_v to anon, authenticated;
 grant select on public.community_suggestion_feed_v to anon, authenticated;
 grant select on public.admin_community_suggestion_feed_v to anon, authenticated;
@@ -820,6 +895,7 @@ alter table public.notifications disable row level security;
 alter table public.visitor_passes disable row level security;
 alter table public.admin_transactions disable row level security;
 alter table public.announcements disable row level security;
+alter table public.admin_maintenance_notification_settings disable row level security;
 alter table public.community_suggestions disable row level security;
 alter table public.community_suggestion_votes disable row level security;
 alter table public.community_suggestion_members disable row level security;

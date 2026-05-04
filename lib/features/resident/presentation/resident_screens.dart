@@ -948,9 +948,10 @@ class HomeScreen extends StatelessWidget {
               .cast<Map<String, dynamic>?>()
               .firstWhere(
                 (bill) =>
-                    bill?['category'] == 'maintenance' ||
-                    bill?['title'] == 'Quarterly Maintenance',
-                orElse: () => bills.isNotEmpty ? bills.first : null,
+                    (bill?['category']?.toString().toLowerCase() ==
+                        'maintenance') &&
+                    (bill?['state']?.toString().toLowerCase() != 'paid'),
+                orElse: () => null,
               );
 
           return _ResidentScrollView(
@@ -958,8 +959,10 @@ class HomeScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _MaintenanceCard(
-                  onPayTap: () => goToPage(context, AppPage.bills),
-                  amount: maintenanceBill?['amount_due']?.toString() ?? '2200',
+                  onPayTap: maintenanceBill == null
+                      ? null
+                      : () => goToPage(context, AppPage.bills),
+                  amount: maintenanceBill?['amount_due']?.toString(),
                   dueDate: maintenanceBill?['due_date']?.toString(),
                 ),
                 const SizedBox(height: 20),
@@ -3683,30 +3686,17 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         builder: (context, _) {
           final rows = controller.rowsNotifier.value;
           final isLoading = controller.isLoadingNotifier.value;
-          final unread = rows.where((row) => row['is_unread'] == true).toList();
-          final earlier = rows
-              .where((row) => row['is_unread'] != true)
-              .toList();
 
           return _ResidentScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'New',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AvenueColors.onSurfaceVariant,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.8,
-                  ),
-                ),
-                const SizedBox(height: 14),
                 if (isLoading && rows.isEmpty)
                   const _DataPlaceholderCard(label: 'Loading notifications...')
-                else if (unread.isEmpty)
-                  const _DataPlaceholderCard(label: 'No unread notifications.')
+                else if (rows.isEmpty)
+                  const _DataPlaceholderCard(label: 'No notifications available right now.')
                 else
-                  ...unread.map(
+                  ...rows.map(
                     (row) => Padding(
                       padding: const EdgeInsets.only(bottom: 14),
                       child: _NotificationDetailCard(
@@ -3722,41 +3712,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         title: row['title'] as String? ?? 'Notification',
                         body: row['body'] as String?,
                         time: _relativeTimeLabel(row['created_at']),
-                        unread: true,
+                        unread: row['is_unread'] == true,
                         actionLabel: row['action_label'] as String?,
                         label: row['badge_label'] as String?,
-                      ),
-                    ),
-                  ),
-                const SizedBox(height: 24),
-                Text(
-                  'Earlier',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AvenueColors.onSurfaceVariant,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.8,
-                  ),
-                ),
-                const SizedBox(height: 14),
-                if (earlier.isEmpty)
-                  const _DataPlaceholderCard(label: 'No older notifications.')
-                else
-                  ...earlier.map(
-                    (row) => Padding(
-                      padding: const EdgeInsets.only(bottom: 14),
-                      child: _ReadNotificationCard(
-                        title: row['title'] as String? ?? 'Notification',
-                        time: _relativeTimeLabel(row['created_at']),
-                        avatarUrl: row['kind'] == 'visitor'
-                            ? row['image_url'] as String? ?? _guestAvatarUrl
-                            : null,
-                        icon: row['kind'] == 'event'
-                            ? Icons.celebration_rounded
-                            : Icons.notifications_none_rounded,
-                        thumbnailUrl: row['kind'] == 'event'
-                            ? row['image_url'] as String? ??
-                                  _noticesThumbImageUrl
-                            : null,
                       ),
                     ),
                   ),
@@ -4230,17 +4188,20 @@ class _DrawerItem extends StatelessWidget {
 class _MaintenanceCard extends StatelessWidget {
   const _MaintenanceCard({
     required this.onPayTap,
-    this.amount = '2200',
+    this.amount,
     this.dueDate,
   });
 
-  final VoidCallback onPayTap;
-  final String amount;
+  final VoidCallback? onPayTap;
+  final String? amount;
   final String? dueDate;
 
   @override
   Widget build(BuildContext context) {
-    final displayAmount = amount.startsWith('₹') ? amount : '₹$amount';
+    final hasDue = amount != null && amount!.trim().isNotEmpty;
+    final displayAmount = hasDue
+        ? (amount!.startsWith('₹') ? amount! : '₹${amount!}')
+        : 'No dues';
 
     return Container(
       padding: const EdgeInsets.all(18),
@@ -4312,13 +4273,19 @@ class _MaintenanceCard extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: AvenueColors.primary,
+                    disabledBackgroundColor: Colors.white.withValues(
+                      alpha: 0.65,
+                    ),
+                    disabledForegroundColor: AvenueColors.primary.withValues(
+                      alpha: 0.7,
+                    ),
                     elevation: 0,
                     shape: const StadiumBorder(),
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     textStyle: Theme.of(context).textTheme.titleMedium
                         ?.copyWith(fontWeight: FontWeight.w800),
                   ),
-                  child: const Text('Pay Now'),
+                  child: Text(hasDue ? 'Pay Now' : 'No Due'),
                 ),
               ),
             ],
@@ -4336,6 +4303,27 @@ class _DataPlaceholderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = label.trim().toLowerCase().startsWith('loading');
+    if (isLoading) {
+      return AvenueCard(
+        radius: 18,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: const [
+            AvenueSkeletonBlock(width: 140, height: 14, radius: 999),
+            SizedBox(height: 14),
+            AvenueSkeletonBlock(
+              width: double.infinity,
+              height: 12,
+              radius: 999,
+            ),
+            SizedBox(height: 10),
+            AvenueSkeletonBlock(width: 220, height: 12, radius: 999),
+          ],
+        ),
+      );
+    }
+
     return AvenueCard(
       radius: 18,
       child: Text(

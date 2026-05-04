@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 
 import '../core/supabase/supabase_bootstrap.dart';
 import '../features/admin/presentation/admin_screens.dart';
+import '../features/admin/presentation/admin_maintenance_screens.dart';
 import '../features/guard/presentation/guard_screen.dart';
 import '../features/login/presentation/login_screen.dart';
 import '../features/resident/presentation/community_screens.dart';
+import '../features/resident/presentation/resident_maintenance_screens.dart';
 import '../features/resident/presentation/resident_screens.dart';
+import '../features/system/presentation/launch_splash_screen.dart';
 import '../features/system/presentation/supabase_setup_screen.dart';
 import '../theme/avenue_theme.dart';
 import 'app_page.dart';
@@ -21,10 +24,20 @@ class AvenueApp extends StatelessWidget {
       title: 'Cove',
       debugShowCheckedModeBanner: false,
       theme: AvenueTheme.light(),
-      initialRoute: supabaseBootstrap.isReady
-          ? AppPage.login.routeName
-          : SupabaseSetupScreen.routeName,
+      initialRoute: LaunchSplashScreen.routeName,
       onGenerateRoute: (settings) {
+        if (settings.name == LaunchSplashScreen.routeName) {
+          final nextRoute = supabaseBootstrap.isReady
+              ? AppPage.login.routeName
+              : SupabaseSetupScreen.routeName;
+          return PageRouteBuilder<void>(
+            settings: settings,
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+            pageBuilder: (_, _, _) => LaunchSplashScreen(nextRoute: nextRoute),
+          );
+        }
+
         if (settings.name == SupabaseSetupScreen.routeName) {
           return PageRouteBuilder<void>(
             settings: settings,
@@ -71,7 +84,24 @@ class AvenueApp extends StatelessWidget {
               case AppPage.notices:
                 return const NoticesScreen();
               case AppPage.bills:
-                return const BillsScreen();
+                return const ResidentMaintenanceDashboardScreen();
+              case AppPage.maintenanceInvoice:
+                final bill = arguments['bill'] is Map
+                    ? Map<String, dynamic>.from(arguments['bill'] as Map)
+                    : const <String, dynamic>{};
+                return ResidentMaintenanceInvoiceScreen(bill: bill);
+              case AppPage.maintenancePay:
+                final bill = arguments['bill'] is Map
+                    ? Map<String, dynamic>.from(arguments['bill'] as Map)
+                    : const <String, dynamic>{};
+                return ResidentMaintenancePayScreen(bill: bill);
+              case AppPage.maintenanceHistory:
+                return const ResidentMaintenanceHistoryScreen();
+              case AppPage.maintenancePaymentSuccess:
+                return ResidentMaintenancePaymentSuccessScreen(
+                  amount: arguments['amount'],
+                  billCode: arguments['billCode']?.toString() ?? '-',
+                );
               case AppPage.complaints:
                 return const ComplaintsScreen();
               case AppPage.createComplaint:
@@ -150,6 +180,33 @@ class AvenueApp extends StatelessWidget {
                 return const AddResidentScreen();
               case AppPage.residentDirectory:
                 return const ResidentDirectoryScreen();
+              case AppPage.adminMaintenance:
+                return const AdminMaintenanceDashboardScreen();
+              case AppPage.adminMaintenanceResidentLog:
+                return const AdminMaintenanceResidentLogScreen();
+              case AppPage.adminMaintenanceResidentDetail:
+                final resident = arguments['resident'] is Map
+                    ? Map<String, dynamic>.from(arguments['resident'] as Map)
+                    : const <String, dynamic>{};
+                return AdminMaintenanceResidentDetailScreen(resident: resident);
+              case AppPage.adminMaintenanceForcedAlert:
+                final preselectedResidentIds =
+                    arguments['preselectedResidentIds'] is List
+                    ? List<String>.from(
+                        (arguments['preselectedResidentIds'] as List).map(
+                          (value) => value.toString(),
+                        ),
+                      )
+                    : const <String>[];
+                return AdminMaintenanceForcedAlertScreen(
+                  preselectedResidentIds: preselectedResidentIds,
+                );
+              case AppPage.adminMaintenanceNotificationSettings:
+                return const AdminMaintenanceNotificationSettingsScreen();
+              case AppPage.adminMaintenanceExport:
+                return const AdminMaintenanceExportOptionsScreen();
+              case AppPage.adminMaintenanceSecurePayment:
+                return const AdminMaintenanceSecurePaymentScreen();
               case AppPage.adminComplaints:
                 return const AdminComplaintsScreen();
               case AppPage.adminComplaintDetail:

@@ -68,6 +68,23 @@ class AvenueRepository {
     return _castRows(rows);
   }
 
+  Future<List<Map<String, dynamic>>> fetchCurrentUserMaintenanceBills() async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return const [];
+    }
+
+    final rows = await _client
+        .from('bills')
+        .select()
+        .eq('user_id', currentUser.id)
+        .ilike('category', 'maintenance')
+        .order('due_date', ascending: true)
+        .order('created_at', ascending: false);
+
+    return _castRows(rows);
+  }
+
   Future<List<Map<String, dynamic>>> fetchAmenities() async {
     final rows = await _client
         .from('amenities')
@@ -639,6 +656,42 @@ class AvenueRepository {
     return _castRows(rows);
   }
 
+  Future<List<Map<String, dynamic>>> fetchAdminMaintenanceResidentLog() async {
+    final rows = await _client
+        .from('admin_maintenance_resident_log_v')
+        .select()
+        .order('due_date', ascending: true);
+
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchMaintenanceBillsForResident(
+    String residentUserId,
+  ) async {
+    final rows = await _client
+        .from('bills')
+        .select()
+        .eq('user_id', residentUserId)
+        .ilike('category', 'maintenance')
+        .order('due_date', ascending: false)
+        .order('created_at', ascending: false);
+
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchMaintenancePaymentHistoryForResident(
+    String residentUserId,
+  ) async {
+    final rows = await _client
+        .from('payment_activity')
+        .select()
+        .eq('user_id', residentUserId)
+        .ilike('activity_category', 'maintenance')
+        .order('activity_at', ascending: false);
+
+    return _castRows(rows);
+  }
+
   Future<Map<String, dynamic>?> createResident({
     required String email,
     required String fullName,
@@ -714,6 +767,33 @@ class AvenueRepository {
         'p_booking_date': bookingDate.toIso8601String().split('T').first,
         'p_time_slot': timeSlot.trim(),
         'p_guest_count': guestCount,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> payMaintenanceBill({
+    required String billId,
+    String paymentMethod = 'UPI',
+    String? transactionRef,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'pay_maintenance_bill',
+      params: {
+        'p_user_id': currentUser.id,
+        'p_bill_id': billId,
+        'p_payment_method': paymentMethod,
+        'p_transaction_ref': transactionRef,
       },
     );
 
@@ -969,6 +1049,121 @@ class AvenueRepository {
         'p_assigned_to': assignedTo?.trim(),
         'p_admin_notes': adminNotes?.trim(),
         'p_resolution_note': resolutionNote?.trim(),
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> adminMarkMaintenancePaid({
+    required String billId,
+    String? note,
+    DateTime? markPaidOn,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'admin_mark_maintenance_paid',
+      params: {
+        'p_admin_user_id': currentUser.id,
+        'p_bill_id': billId,
+        'p_note': note,
+        'p_mark_paid_on': markPaidOn?.toIso8601String().split('T').first,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> sendMaintenanceAlerts({
+    required List<String> residentUserIds,
+    required String messageTemplate,
+    List<String> channels = const ['push'],
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null || residentUserIds.isEmpty) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'send_maintenance_alerts',
+      params: {
+        'p_admin_user_id': currentUser.id,
+        'p_resident_user_ids': residentUserIds,
+        'p_message_template': messageTemplate,
+        'p_channels': channels,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> fetchAdminMaintenanceNotificationSettings()
+  async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final rows = await _client
+        .from('admin_maintenance_notification_settings')
+        .select()
+        .eq('admin_user_id', currentUser.id)
+        .limit(1);
+    final records = _castRows(rows);
+    if (records.isEmpty) {
+      return null;
+    }
+
+    return records.first;
+  }
+
+  Future<Map<String, dynamic>?> saveAdminMaintenanceNotificationSettings({
+    required bool beforeDueEnabled,
+    required int beforeDueDays,
+    required bool onDueEnabled,
+    required bool followUpEnabled,
+    required String followUpFrequency,
+    required bool weeklyOverdueEnabled,
+    required bool channelPushEnabled,
+    required bool channelEmailEnabled,
+    required bool channelSmsEnabled,
+    required String templateBody,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'upsert_admin_maintenance_notification_settings',
+      params: {
+        'p_admin_user_id': currentUser.id,
+        'p_before_due_enabled': beforeDueEnabled,
+        'p_before_due_days': beforeDueDays,
+        'p_on_due_enabled': onDueEnabled,
+        'p_follow_up_enabled': followUpEnabled,
+        'p_follow_up_frequency': followUpFrequency,
+        'p_weekly_overdue_enabled': weeklyOverdueEnabled,
+        'p_channel_push_enabled': channelPushEnabled,
+        'p_channel_email_enabled': channelEmailEnabled,
+        'p_channel_sms_enabled': channelSmsEnabled,
+        'p_template_body': templateBody,
       },
     );
 

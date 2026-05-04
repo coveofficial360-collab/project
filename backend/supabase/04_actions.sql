@@ -22,6 +22,8 @@ as $$
 declare
   v_tower text;
   v_user_id uuid;
+  v_initial_bill_code text;
+  v_initial_due_date date := current_date + 7;
 begin
   v_tower := case
     when p_unit_number is null or btrim(p_unit_number) = '' then null
@@ -59,6 +61,39 @@ begin
     'Resident created from the Cove admin app.'
   )
   returning id into v_user_id;
+
+  v_initial_bill_code := 'maintenance-' || lower(substr(replace(v_user_id::text, '-', ''), 1, 8));
+
+  insert into public.bills (
+    user_id,
+    code,
+    title,
+    provider,
+    category,
+    state,
+    badge_text,
+    amount_due,
+    amount_paid,
+    due_date,
+    last_paid_on,
+    action_label,
+    created_at
+  )
+  values (
+    v_user_id,
+    v_initial_bill_code,
+    'Quarterly Maintenance',
+    'Cove',
+    'maintenance',
+    'due',
+    'Due in 7 days',
+    2200,
+    null,
+    v_initial_due_date,
+    null,
+    'Pay Now',
+    now()
+  );
 
   return query
   select
@@ -890,6 +925,486 @@ begin
     c.assigned_to
   from public.complaints c
   where c.id = p_complaint_id;
+end;
+$$;
+
+create or replace function public.pay_maintenance_bill(
+  p_user_id uuid,
+  p_bill_id uuid,
+  p_payment_method text default null,
+  p_transaction_ref text default null
+)
+returns table (
+  payment_id uuid,
+  bill_id uuid,
+  bill_code text,
+  amount_paid numeric(10, 2),
+  payment_status text,
+  paid_on timestamptz
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_bill record;
+  v_payment_id uuid;
+  v_amount numeric(10, 2);
+  v_paid_on timestamptz := now();
+  v_method text := trim(coalesce(p_payment_method, 'UPI'));
+begin
+  if not exists (
+    select 1
+    from public.app_users resident
+    where resident.id = p_user_id
+      and resident.role = 'resident'
+      and resident.status = 'active'
+  ) then
+    raise exception 'Only an active resident can pay maintenance dues.';
+  end if;
+
+  select
+    bill.id,
+    bill.user_id,
+    bill.code,
+    bill.title,
+    bill.state,
+    bill.amount_due,
+    bill.amount_paid,
+    bill.due_date
+  into v_bill
+  from public.bills bill
+  where bill.id = p_bill_id
+    and bill.user_id = p_user_id
+    and lower(trim(coalesce(bill.category, ''))) = 'maintenance'
+  limit 1;
+
+  if v_bill.id is null then
+    raise exception 'Maintenance bill was not found for this resident.';
+  end if;
+
+  v_amount := coalesce(v_bill.amount_due, v_bill.amount_paid, 0);
+
+  update public.bills bill
+  set
+    state = 'paid',
+    amount_paid = v_amount,
+    amount_due = 0,
+    badge_text = 'Paid',
+    action_label = 'View Receipt',
+    last_paid_on = v_paid_on::date
+  where bill.id = v_bill.id;
+
+  insert into public.payment_activity (
+    user_id,
+    activity_title,
+    activity_category,
+    amount,
+    status,
+    activity_at,
+    created_at
+  )
+  values (
+    p_user_id,
+    coalesce(v_bill.title, 'Maintenance Fee') || ' paid',
+    'maintenance',
+    v_amount,
+    'success',
+    v_paid_on,
+    v_paid_on
+  )
+  returning id into v_payment_id;
+
+  insert into public.admin_transactions (
+    title,
+    subtitle,
+    amount,
+    status,
+    icon_name,
+    icon_bg_hex,
+    created_at
+  )
+  values (
+    'Maintenance Fee Paid',
+    coalesce(v_bill.code, 'Maintenance Payment'),
+    v_amount,
+    'SUCCESS',
+    'receipt_long',
+    '#FFF0C7',
+    v_paid_on
+  );
+
+  insert into public.notifications (
+    user_id,
+    kind,
+    title,
+    body,
+    badge_label,
+    action_label,
+    image_url,
+    is_unread,
+    created_at
+  )
+  values (
+    p_user_id,
+    'payment',
+    'Maintenance payment successful',
+    'Your payment of ₹' || coalesce(v_amount::text, '0') || ' was received via ' || coalesce(nullif(v_method, ''), 'UPI') || '.',
+    'PAID',
+    'VIEW RECEIPT',
+    null,
+    true,
+    v_paid_on
+  );
+
+  return query
+  select
+    v_payment_id,
+    v_bill.id,
+    v_bill.code,
+    v_amount,
+    'success',
+    v_paid_on;
+end;
+$$;
+
+create or replace function public.admin_mark_maintenance_paid(
+  p_admin_user_id uuid,
+  p_bill_id uuid,
+  p_note text default null,
+  p_mark_paid_on date default current_date
+)
+returns table (
+  bill_id uuid,
+  bill_code text,
+  user_id uuid,
+  state public.bill_state,
+  updated_on date
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_admin_name text;
+  v_bill record;
+  v_amount numeric(10, 2);
+  v_paid_at timestamptz := coalesce(p_mark_paid_on::timestamptz, now());
+begin
+  select admin.full_name
+  into v_admin_name
+  from public.app_users admin
+  where admin.id = p_admin_user_id
+    and admin.role = 'admin'
+  limit 1;
+
+  if v_admin_name is null then
+    raise exception 'Only an admin can update maintenance payment status.';
+  end if;
+
+  select
+    bill.id,
+    bill.code,
+    bill.user_id,
+    bill.title,
+    bill.amount_due,
+    bill.amount_paid,
+    resident.full_name as resident_name,
+    resident.unit_number
+  into v_bill
+  from public.bills bill
+  join public.app_users resident on resident.id = bill.user_id
+  where bill.id = p_bill_id
+    and resident.role = 'resident'
+    and lower(trim(coalesce(bill.category, ''))) = 'maintenance'
+  limit 1;
+
+  if v_bill.id is null then
+    raise exception 'Maintenance bill was not found.';
+  end if;
+
+  v_amount := coalesce(v_bill.amount_due, v_bill.amount_paid, 0);
+
+  update public.bills bill
+  set
+    state = 'paid',
+    amount_paid = v_amount,
+    amount_due = 0,
+    badge_text = 'Paid',
+    action_label = 'View Receipt',
+    last_paid_on = coalesce(p_mark_paid_on, current_date)
+  where bill.id = v_bill.id;
+
+  insert into public.payment_activity (
+    user_id,
+    activity_title,
+    activity_category,
+    amount,
+    status,
+    activity_at,
+    created_at
+  )
+  values (
+    v_bill.user_id,
+    coalesce(v_bill.title, 'Maintenance Fee') || ' settled by admin',
+    'maintenance',
+    v_amount,
+    'success',
+    v_paid_at,
+    now()
+  );
+
+  insert into public.admin_transactions (
+    title,
+    subtitle,
+    amount,
+    status,
+    icon_name,
+    icon_bg_hex,
+    created_at
+  )
+  values (
+    'Maintenance Fee Paid',
+    coalesce(v_bill.resident_name, 'Resident') || case
+      when nullif(trim(coalesce(v_bill.unit_number, '')), '') is null then ''
+      else ' • ' || trim(v_bill.unit_number)
+    end,
+    v_amount,
+    'SUCCESS',
+    'receipt_long',
+    '#FFF0C7',
+    now()
+  );
+
+  insert into public.notifications (
+    user_id,
+    kind,
+    title,
+    body,
+    badge_label,
+    action_label,
+    image_url,
+    is_unread,
+    created_at
+  )
+  values (
+    v_bill.user_id,
+    'payment',
+    'Maintenance updated by admin',
+    coalesce(
+      nullif(trim(coalesce(p_note, '')), ''),
+      'Your maintenance payment has been marked as paid by the admin office.'
+    ),
+    'PAID',
+    'VIEW DETAILS',
+    null,
+    true,
+    now()
+  );
+
+  return query
+  select
+    v_bill.id,
+    v_bill.code,
+    v_bill.user_id,
+    'paid'::public.bill_state,
+    coalesce(p_mark_paid_on, current_date);
+end;
+$$;
+
+create or replace function public.send_maintenance_alerts(
+  p_admin_user_id uuid,
+  p_resident_user_ids uuid[],
+  p_message_template text,
+  p_channels text[] default '{push}'
+)
+returns table (
+  alerted_count integer,
+  title text,
+  created_at timestamptz
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_admin_name text;
+  v_created_at timestamptz := now();
+  v_alerted_count integer := 0;
+begin
+  select admin.full_name
+  into v_admin_name
+  from public.app_users admin
+  where admin.id = p_admin_user_id
+    and admin.role = 'admin'
+  limit 1;
+
+  if v_admin_name is null then
+    raise exception 'Only an admin user can send maintenance alerts.';
+  end if;
+
+  if coalesce(array_length(p_resident_user_ids, 1), 0) = 0 then
+    raise exception 'Select at least one resident before sending alerts.';
+  end if;
+
+  if trim(coalesce(p_message_template, '')) = '' then
+    raise exception 'Alert message cannot be empty.';
+  end if;
+
+  insert into public.notifications (
+    user_id,
+    kind,
+    title,
+    body,
+    badge_label,
+    action_label,
+    image_url,
+    is_unread,
+    created_at
+  )
+  select
+    resident.id,
+    'maintenance',
+    'Maintenance payment reminder',
+    replace(
+      replace(
+        replace(
+          replace(
+            p_message_template,
+            '[Resident Name]',
+            resident.full_name
+          ),
+          '[Amount]',
+          coalesce(maintenance_bill.amount_due::text, '0')
+        ),
+        '[Due Date]',
+        coalesce(to_char(maintenance_bill.due_date, 'DD Mon YYYY'), '-')
+      ),
+      '[Month]',
+      upper(coalesce(to_char(maintenance_bill.due_date, 'Mon YYYY'), to_char(current_date, 'Mon YYYY')))
+    ),
+    'REMINDER',
+    'PAY NOW',
+    null,
+    true,
+    v_created_at
+  from public.app_users resident
+  join lateral (
+    select
+      bill.amount_due,
+      bill.due_date,
+      bill.state
+    from public.bills bill
+    where bill.user_id = resident.id
+      and lower(trim(coalesce(bill.category, ''))) = 'maintenance'
+    order by bill.due_date desc nulls last, bill.created_at desc
+    limit 1
+  ) maintenance_bill on true
+  where resident.id = any(p_resident_user_ids)
+    and resident.role = 'resident'
+    and resident.status = 'active'
+    and maintenance_bill.state <> 'paid';
+
+  get diagnostics v_alerted_count = row_count;
+
+  return query
+  select
+    v_alerted_count,
+    'Maintenance payment reminder',
+    v_created_at;
+end;
+$$;
+
+create or replace function public.upsert_admin_maintenance_notification_settings(
+  p_admin_user_id uuid,
+  p_before_due_enabled boolean default true,
+  p_before_due_days integer default 5,
+  p_on_due_enabled boolean default true,
+  p_follow_up_enabled boolean default true,
+  p_follow_up_frequency text default 'weekly',
+  p_weekly_overdue_enabled boolean default true,
+  p_channel_push_enabled boolean default true,
+  p_channel_email_enabled boolean default true,
+  p_channel_sms_enabled boolean default false,
+  p_template_body text default null
+)
+returns table (
+  admin_user_id uuid,
+  before_due_days integer,
+  follow_up_frequency text,
+  channel_sms_enabled boolean,
+  updated_at timestamptz
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not exists (
+    select 1
+    from public.app_users admin
+    where admin.id = p_admin_user_id
+      and admin.role = 'admin'
+  ) then
+    raise exception 'Only an admin user can update notification settings.';
+  end if;
+
+  insert into public.admin_maintenance_notification_settings (
+    admin_user_id,
+    before_due_enabled,
+    before_due_days,
+    on_due_enabled,
+    follow_up_enabled,
+    follow_up_frequency,
+    weekly_overdue_enabled,
+    channel_push_enabled,
+    channel_email_enabled,
+    channel_sms_enabled,
+    template_body,
+    created_at,
+    updated_at
+  )
+  values (
+    p_admin_user_id,
+    coalesce(p_before_due_enabled, true),
+    greatest(1, least(30, coalesce(p_before_due_days, 5))),
+    coalesce(p_on_due_enabled, true),
+    coalesce(p_follow_up_enabled, true),
+    lower(trim(coalesce(p_follow_up_frequency, 'weekly'))),
+    coalesce(p_weekly_overdue_enabled, true),
+    coalesce(p_channel_push_enabled, true),
+    coalesce(p_channel_email_enabled, true),
+    coalesce(p_channel_sms_enabled, false),
+    coalesce(
+      nullif(trim(coalesce(p_template_body, '')), ''),
+      'Hi [Resident Name], your maintenance of ₹[Amount] for [Month] is due on [Due Date]. Please tap here to view details and pay online. Thank you!'
+    ),
+    now(),
+    now()
+  )
+  on conflict on constraint admin_maintenance_notification_settings_pkey
+  do update set
+    before_due_enabled = excluded.before_due_enabled,
+    before_due_days = excluded.before_due_days,
+    on_due_enabled = excluded.on_due_enabled,
+    follow_up_enabled = excluded.follow_up_enabled,
+    follow_up_frequency = excluded.follow_up_frequency,
+    weekly_overdue_enabled = excluded.weekly_overdue_enabled,
+    channel_push_enabled = excluded.channel_push_enabled,
+    channel_email_enabled = excluded.channel_email_enabled,
+    channel_sms_enabled = excluded.channel_sms_enabled,
+    template_body = excluded.template_body,
+    updated_at = now();
+
+  return query
+  select
+    settings.admin_user_id,
+    settings.before_due_days,
+    settings.follow_up_frequency,
+    settings.channel_sms_enabled,
+    settings.updated_at
+  from public.admin_maintenance_notification_settings settings
+  where settings.admin_user_id = p_admin_user_id;
 end;
 $$;
 
@@ -1906,6 +2421,10 @@ grant execute on function public.create_admin_service_provider(uuid, text, text,
 grant execute on function public.create_amenity_booking(uuid, uuid, date, text, integer) to anon, authenticated;
 grant execute on function public.create_resident_complaint(uuid, text, text, text, text, text, text, text, text, text) to anon, authenticated;
 grant execute on function public.update_complaint_admin_status(uuid, uuid, public.complaint_state, text, text, text) to anon, authenticated;
+grant execute on function public.pay_maintenance_bill(uuid, uuid, text, text) to anon, authenticated;
+grant execute on function public.admin_mark_maintenance_paid(uuid, uuid, text, date) to anon, authenticated;
+grant execute on function public.send_maintenance_alerts(uuid, uuid[], text, text[]) to anon, authenticated;
+grant execute on function public.upsert_admin_maintenance_notification_settings(uuid, boolean, integer, boolean, boolean, text, boolean, boolean, boolean, boolean, text) to anon, authenticated;
 grant execute on function public.create_announcement(uuid, public.notice_kind, text, text, text, public.announcement_state, timestamptz) to anon, authenticated;
 grant execute on function public.create_community_suggestion(uuid, text, text, text, text, text, boolean, integer, text, text, text, uuid[]) to anon, authenticated;
 grant execute on function public.review_community_suggestion(uuid, uuid, text) to anon, authenticated;

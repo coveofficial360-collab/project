@@ -325,6 +325,29 @@ class _GuardMessageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = title.trim().toLowerCase().startsWith('loading');
+    if (isLoading) {
+      return _GuardGlassCard(
+        child: const Padding(
+          padding: EdgeInsets.all(22),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AvenueSkeletonBlock(width: 170, height: 16, radius: 999),
+              SizedBox(height: 12),
+              AvenueSkeletonBlock(
+                width: double.infinity,
+                height: 12,
+                radius: 999,
+              ),
+              SizedBox(height: 8),
+              AvenueSkeletonBlock(width: 210, height: 12, radius: 999),
+            ],
+          ),
+        ),
+      );
+    }
+
     return _GuardGlassCard(
       child: Padding(
         padding: const EdgeInsets.all(22),

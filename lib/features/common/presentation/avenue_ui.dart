@@ -779,3 +779,57 @@ class AvenueBottomNavigationBar extends StatelessWidget {
     );
   }
 }
+
+class AvenueSkeletonBlock extends StatefulWidget {
+  const AvenueSkeletonBlock({
+    this.width = double.infinity,
+    required this.height,
+    this.radius = 12,
+    this.margin,
+    super.key,
+  });
+
+  final double width;
+  final double height;
+  final double radius;
+  final EdgeInsetsGeometry? margin;
+
+  @override
+  State<AvenueSkeletonBlock> createState() => _AvenueSkeletonBlockState();
+}
+
+class _AvenueSkeletonBlockState extends State<AvenueSkeletonBlock>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 900),
+  )..repeat(reverse: true);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final baseColor = AvenueColors.surfaceHigh;
+    final highlightColor = AvenueColors.surfaceLow;
+
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        final color = Color.lerp(baseColor, highlightColor, _controller.value)!;
+        return Container(
+          width: widget.width,
+          height: widget.height,
+          margin: widget.margin,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(widget.radius),
+          ),
+        );
+      },
+    );
+  }
+}

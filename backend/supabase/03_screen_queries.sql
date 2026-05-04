@@ -85,6 +85,21 @@ exception
 end $$;
 
 -- Bills and payments
+select
+  code,
+  title,
+  category,
+  state,
+  amount_due,
+  amount_paid,
+  due_date,
+  last_paid_on,
+  badge_text
+from public.bills
+where user_id = (select id from public.app_users where email = 'user@gmail.com')
+  and lower(category) = 'maintenance'
+order by due_date asc nulls last, created_at desc;
+
 select method_name, method_type, masked_value, note, is_primary
 from public.payment_methods
 where user_id = (select id from public.app_users where email = 'user@gmail.com')
@@ -94,6 +109,23 @@ select activity_title, activity_category, amount, status, activity_at
 from public.payment_activity
 where user_id = (select id from public.app_users where email = 'user@gmail.com')
 order by activity_at desc;
+
+-- Resident maintenance pay action
+select *
+from public.pay_maintenance_bill(
+  (select id from public.app_users where email = 'user@gmail.com'),
+  (
+    select id
+    from public.bills
+    where user_id = (select id from public.app_users where email = 'user@gmail.com')
+      and lower(category) = 'maintenance'
+      and state <> 'paid'
+    order by due_date asc nulls last, created_at desc
+    limit 1
+  ),
+  'UPI',
+  'TXN-DEMO-1001'
+);
 
 -- Complaints
 select
@@ -196,6 +228,103 @@ select
   created_at
 from public.admin_complaints_v;
 
+-- Admin maintenance views and actions
+select
+  resident_name,
+  unit_number,
+  code,
+  amount_due,
+  due_date,
+  payment_status,
+  months_overdue
+from public.admin_maintenance_resident_log_v;
+
+do $$
+declare
+  v_admin_id uuid;
+  v_bill_id uuid;
+begin
+  select id
+  into v_admin_id
+  from public.app_users
+  where email = 'admin@gmail.com'
+  limit 1;
+
+  select bill_id
+  into v_bill_id
+  from public.admin_maintenance_resident_log_v
+  where payment_status <> 'paid'
+  order by due_date asc nulls last
+  limit 1;
+
+  if v_bill_id is null then
+    raise notice 'No unpaid maintenance bill found. Skipping admin_mark_maintenance_paid demo call.';
+    return;
+  end if;
+
+  perform *
+  from public.admin_mark_maintenance_paid(
+    v_admin_id,
+    v_bill_id,
+    'Marked paid from maintenance dashboard.',
+    current_date
+  );
+end $$;
+
+do $$
+declare
+  v_admin_id uuid;
+  v_target_resident_ids uuid[];
+begin
+  select id
+  into v_admin_id
+  from public.app_users
+  where email = 'admin@gmail.com'
+  limit 1;
+
+  select array_agg(target_rows.user_id)
+  into v_target_resident_ids
+  from (
+    select user_id
+    from public.admin_maintenance_resident_log_v
+    where payment_status in ('pending', 'overdue')
+    order by due_date asc nulls last
+    limit 3
+  ) target_rows;
+
+  if coalesce(array_length(v_target_resident_ids, 1), 0) = 0 then
+    raise notice 'No pending/overdue residents found. Skipping send_maintenance_alerts demo call.';
+    return;
+  end if;
+
+  perform *
+  from public.send_maintenance_alerts(
+    v_admin_id,
+    v_target_resident_ids,
+    'Hi [Resident Name], your maintenance of ₹[Amount] for [Month] is due on [Due Date]. Please complete payment from the Cove app.',
+    array['push', 'email']
+  );
+end $$;
+
+select *
+from public.upsert_admin_maintenance_notification_settings(
+  (select id from public.app_users where email = 'admin@gmail.com'),
+  true,
+  4,
+  true,
+  true,
+  'weekly',
+  true,
+  true,
+  true,
+  false,
+  'Hi [Resident Name], your maintenance of ₹[Amount] for [Month] is due on [Due Date]. Please pay soon to avoid late reminders.'
+);
+
+select *
+from public.admin_maintenance_notification_settings
+where admin_user_id = (select id from public.app_users where email = 'admin@gmail.com');
+
 -- Admin amenities, booking logs, and services
 select
   code,
@@ -230,8 +359,7 @@ order by created_at desc;
 
 -- Reset demo amenity so this test block can be rerun safely.
 delete from public.amenities
-where name = 'Podcast Studio'
-  and category = 'Entertainment';
+where code = lower(regexp_replace(trim('Podcast Studio'), '[^a-zA-Z0-9]+', '-', 'g'));
 
 select *
 from public.create_admin_amenity(

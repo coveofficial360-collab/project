@@ -2354,6 +2354,38 @@ class _CommunityPlaceholderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = label.trim().toLowerCase().startsWith('loading');
+    if (isLoading) {
+      return AvenueCard(
+        radius: 24,
+        color: AvenueColors.surfaceLow,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: const [
+            AvenueSkeletonBlock(width: 44, height: 44, radius: 22),
+            SizedBox(height: 14),
+            AvenueSkeletonBlock(width: 220, height: 16, radius: 999),
+            SizedBox(height: 10),
+            AvenueSkeletonBlock(
+              width: double.infinity,
+              height: 12,
+              radius: 999,
+            ),
+            SizedBox(height: 8),
+            AvenueSkeletonBlock(width: 210, height: 12, radius: 999),
+            SizedBox(height: 16),
+            AvenueSkeletonBlock(
+              width: double.infinity,
+              height: 10,
+              radius: 999,
+            ),
+            SizedBox(height: 16),
+            AvenueSkeletonBlock(width: 170, height: 40, radius: 999),
+          ],
+        ),
+      );
+    }
+
     return AvenueCard(
       radius: 24,
       color: AvenueColors.surfaceLow,

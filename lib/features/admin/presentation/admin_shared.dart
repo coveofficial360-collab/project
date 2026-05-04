@@ -1707,6 +1707,29 @@ class _AdminEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = label.trim().toLowerCase().startsWith('loading');
+    if (isLoading) {
+      return _AdminGlassCard(
+        child: const Padding(
+          padding: EdgeInsets.all(22),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AvenueSkeletonBlock(width: 160, height: 14, radius: 999),
+              SizedBox(height: 14),
+              AvenueSkeletonBlock(
+                width: double.infinity,
+                height: 12,
+                radius: 999,
+              ),
+              SizedBox(height: 8),
+              AvenueSkeletonBlock(width: 240, height: 12, radius: 999),
+            ],
+          ),
+        ),
+      );
+    }
+
     return _AdminGlassCard(
       child: Padding(
         padding: const EdgeInsets.all(22),

@@ -149,6 +149,13 @@ class AdminDashboardScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       _AdminQuickActionButton(
+                        icon: Icons.receipt_long_rounded,
+                        label: 'Maintenance',
+                        onTap: () =>
+                            goToPage(context, AppPage.adminMaintenance),
+                      ),
+                      const SizedBox(width: 10),
+                      _AdminQuickActionButton(
                         icon: Icons.report_problem_rounded,
                         label: 'Complaints',
                         onTap: () => goToPage(context, AppPage.adminComplaints),
