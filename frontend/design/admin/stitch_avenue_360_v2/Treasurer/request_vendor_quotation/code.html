@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Request Vendor Quotation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#FFFFFF",
+                        "on-primary-fixed-variant": "#004493",
+                        "secondary-fixed": "#FFDDAF",
+                        "secondary-container": "#FDAF0B",
+                        "secondary": "#805600",
+                        "on-surface-variant": "#414754",
+                        "on-background": "#191C1D",
+                        "on-secondary-container": "#694600",
+                        "outline": "#727785",
+                        "on-surface": "#191C1D",
+                        "on-primary-container": "#FFFFFF",
+                        "inverse-surface": "#2E3132",
+                        "error": "#BA1A1A",
+                        "primary-fixed-dim": "#ADC7FF",
+                        "outline-variant": "#C1C6D6",
+                        "tertiary": "#9E4300",
+                        "on-primary": "#FFFFFF",
+                        "background": "#F8F9FA",
+                        "on-primary-fixed": "#001A41",
+                        "on-error": "#FFFFFF",
+                        "on-tertiary": "#FFFFFF",
+                        "on-secondary-fixed": "#281800",
+                        "primary-container": "#1A73E8",
+                        "inverse-primary": "#ADC7FF",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "surface-container-low": "#F3F4F5",
+                        "secondary-fixed-dim": "#FFBA43",
+                        "on-tertiary-container": "#0E0200",
+                        "surface-container-lowest": "#FFFFFF",
+                        "error-container": "#FFDAD6",
+                        "surface-container-high": "#E7E8E9",
+                        "primary-fixed": "#D8E2FF",
+                        "tertiary-fixed-dim": "#FFB691",
+                        "surface-variant": "#E1E3E4",
+                        "on-secondary-fixed-variant": "#614000",
+                        "on-error-container": "#93000A",
+                        "surface-tint": "#005BC0",
+                        "surface-dim": "#D9DADB",
+                        "primary": "#005BBF",
+                        "on-tertiary-fixed": "#341100",
+                        "tertiary-fixed": "#FFDBCB",
+                        "surface-container-highest": "#E1E3E4",
+                        "surface": "#F8F9FA",
+                        "surface-container": "#EDEEEF",
+                        "tertiary-container": "#C55500",
+                        "surface-bright": "#F8F9FA",
+                        "inverse-on-surface": "#F0F1F2"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "3xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-fixed-dim selection:text-on-primary-fixed overflow-x-hidden">
+<!-- TopAppBar Shell (Fixed) -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-6 h-16 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl shadow-[0_12px_32px_rgba(25,28,29,0.06)]">
+<div class="flex items-center gap-4"><button class="material-symbols-outlined text-on-surface hover:bg-slate-100 p-2 rounded-full transition-colors mr-1" data-icon="arrow_back">arrow_back</button>
+<button class="material-symbols-outlined text-on-surface hover:bg-slate-100 p-2 rounded-full transition-colors" data-icon="menu">menu</button>
+<h1 class="text-xl font-extrabold text-slate-900 dark:text-white font-headline tracking-tight">Treasurer Hub</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="material-symbols-outlined text-blue-600 dark:text-blue-400 p-2 rounded-full hover:bg-slate-100 transition-colors" data-icon="notifications">notifications</button>
+</div>
+</header>
+<main class="pt-24 pb-32 px-6 space-y-8 max-w-md mx-auto">
+<!-- Page Title -->
+<header>
+<h2 class="text-3xl font-headline font-extrabold tracking-tight text-on-background">Request Vendor Quotation</h2>
+<p class="text-sm text-on-surface-variant mt-1">Initiate a new procurement cycle for society maintenance.</p>
+</header>
+<!-- Status Cards Bento Grid -->
+<section class="grid grid-cols-2 gap-4">
+<div class="col-span-2 bg-surface-container-lowest p-5 rounded-3xl shadow-sm border border-outline-variant/10">
+<div class="flex justify-between items-center mb-2">
+<span class="text-xs font-label tracking-widest uppercase text-on-surface-variant">Invited Vendors</span>
+<span class="material-symbols-outlined text-primary" data-icon="group">group</span>
+</div>
+<div class="text-3xl font-display font-bold">12</div>
+</div>
+<div class="bg-surface-container-lowest p-5 rounded-3xl shadow-sm border border-outline-variant/10">
+<div class="text-xs font-label tracking-widest uppercase text-on-surface-variant mb-1">Responses</div>
+<div class="text-2xl font-display font-bold text-primary">8</div>
+</div>
+<div class="bg-surface-container-lowest p-5 rounded-3xl shadow-sm border border-outline-variant/10">
+<div class="text-xs font-label tracking-widest uppercase text-on-surface-variant mb-1">Pending</div>
+<div class="text-2xl font-display font-bold text-secondary">4</div>
+</div>
+</section>
+<!-- Service Request Details -->
+<section class="space-y-6">
+<div class="flex items-center gap-2">
+<div class="h-8 w-1 bg-primary rounded-full"></div>
+<h3 class="text-lg font-headline font-bold">Service Request Details</h3>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-3xl shadow-sm space-y-5 border border-outline-variant/10">
+<div class="space-y-1.5">
+<label class="text-xs font-semibold text-on-surface-variant px-1 uppercase tracking-wider">Service Type</label>
+<select class="w-full bg-surface-container-low border-none rounded-2xl p-4 text-sm focus:ring-2 focus:ring-primary">
+<option>Security Services</option>
+<option>Gardening &amp; Landscaping</option>
+<option>Deep Cleaning</option>
+<option>Electrical Maintenance</option>
+<option>Elevator AMC</option>
+</select>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-1.5">
+<label class="text-xs font-semibold text-on-surface-variant px-1 uppercase tracking-wider">Start Date</label>
+<input class="w-full bg-surface-container-low border-none rounded-2xl p-4 text-sm focus:ring-2 focus:ring-primary" type="date" value="2024-06-01"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-xs font-semibold text-on-surface-variant px-1 uppercase tracking-wider">Duration</label>
+<input class="w-full bg-surface-container-low border-none rounded-2xl p-4 text-sm focus:ring-2 focus:ring-primary" placeholder="e.g. 12 Months" type="text"/>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-1.5">
+<label class="text-xs font-semibold text-on-surface-variant px-1 uppercase tracking-wider">Estimated Budget</label>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-on-surface-variant font-bold">$</span>
+<input class="w-full bg-surface-container-low border-none rounded-2xl p-4 pl-8 text-sm focus:ring-2 focus:ring-primary" placeholder="50,000" type="number"/>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="text-xs font-semibold text-on-surface-variant px-1 uppercase tracking-wider">Staff Required</label>
+<input class="w-full bg-surface-container-low border-none rounded-2xl p-4 text-sm focus:ring-2 focus:ring-primary" placeholder="8" type="number"/>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="text-xs font-semibold text-on-surface-variant px-1 uppercase tracking-wider">Special Requirements</label>
+<textarea class="w-full bg-surface-container-low border-none rounded-2xl p-4 text-sm focus:ring-2 focus:ring-primary" placeholder="Detail any specific equipment or certifications needed..." rows="3"></textarea>
+</div>
+<div class="space-y-1.5">
+<label class="text-xs font-semibold text-on-surface-variant px-1 uppercase tracking-wider">Upload Scope Document</label>
+<div class="border-2 border-dashed border-outline-variant rounded-2xl p-8 flex flex-col items-center justify-center text-center gap-2 hover:bg-surface-container-low transition-colors group cursor-pointer">
+<span class="material-symbols-outlined text-primary text-3xl group-hover:scale-110 transition-transform" data-icon="upload_file">upload_file</span>
+<p class="text-sm font-medium">Tap to upload PDF or DOCX</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-widest">Max file size 10MB</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Suggested Best Vendor -->
+<section class="space-y-4">
+<div class="bg-primary-container/10 p-1 rounded-3xl overflow-hidden">
+<div class="bg-primary text-on-primary p-6 rounded-3xl shadow-xl">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined fill-1 text-secondary-container" data-icon="stars" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="text-xs font-bold uppercase tracking-widest">Suggested Best Value Vendor</span>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<h4 class="text-xl font-headline font-bold">SecureGuard Pro</h4>
+<p class="text-sm opacity-90 mt-1">15 years in market • 4.9/5 Rating</p>
+</div>
+<div class="text-right">
+<div class="text-2xl font-display font-black">$42,500</div>
+<div class="text-[10px] uppercase font-bold opacity-75">Quoted Total</div>
+</div>
+</div>
+<div class="mt-6 flex gap-3">
+<button class="flex-1 bg-white text-primary font-bold py-3 rounded-full text-sm shadow-sm active:scale-95 transition-transform">Select This Vendor</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Vendor Selection -->
+<section class="space-y-6">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="h-8 w-1 bg-primary rounded-full"></div>
+<h3 class="text-lg font-headline font-bold">Vendor Selection</h3>
+</div>
+<span class="text-xs font-bold text-primary">View All</span>
+</div>
+<div class="flex gap-4 overflow-x-auto hide-scrollbar -mx-6 px-6">
+<!-- Vendor Card 1 -->
+<div class="min-w-[140px] bg-surface-container-lowest p-4 rounded-3xl border-2 border-primary shadow-sm">
+<div class="w-12 h-12 rounded-full bg-slate-100 mb-3 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a mature security company executive with a trustworthy smile, clean business attire, in a bright corporate office setting with soft daylight and professional aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3PxwcdsOp4-KvV01srpj087lgdy7I5vUP7QXWbYZ4JxFb61ymg_n6DKXMs5U1_7d3fZ1RSiyAxbI_-088I4IZehwx_R4_UNd3HvU98GDsb7a-LbKsrt1FKWSW8_k0wXsNXPTmkrqjIRmXZg46J7KScBYR-vCR7_QWHk8w04sSuAN_l69jC6S8FOUqJIutQpF73Jor7AJ7nVMA5x0d1WS_0lLYMdiA_g7-SMwQZ8MV6GWxF7djcexJkWtkzJjVhwPVjfiVkcdThg"/>
+</div>
+<p class="text-sm font-bold truncate">SecureGuard</p>
+<p class="text-[10px] text-on-surface-variant font-semibold">SELECTED</p>
+<div class="mt-2 flex justify-end">
+<span class="material-symbols-outlined text-primary fill-1" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<!-- Vendor Card 2 -->
+<div class="min-w-[140px] bg-surface-container-lowest p-4 rounded-3xl border border-outline-variant/30 shadow-sm opacity-80">
+<div class="w-12 h-12 rounded-full bg-slate-100 mb-3 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A portrait of a landscaping professional wearing a clean green polo shirt, smiling confidently, with a blurred backdrop of a lush, manicured garden in bright natural morning light." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-Txv0UVz1eMJuqIs99TxEzj0jB1IWja3YFRtJQ3dJVOHbvkkxibBpGZAoKFsuDLf8O96AqJUyk5MOCY5TMf1T7qKDMGvXVCpByG4Jgp2d_fd0BAvcFa-HpyRJgBClLe-3WBx76tDkusGUhmQCVymVXPf8Uo-CPuZ2jgUaI_StTNf8feburHBoYVtCYdpePWLjDbgtOf_JFsBsJpI1sgfKRSjR71bjuU7N5VL1gGhUvFx1LT1If0abY8jZ7d37EIPdi3WP5Y9P2Q"/>
+</div>
+<p class="text-sm font-bold truncate">GreenLeaf Ops</p>
+<p class="text-[10px] text-on-surface-variant">4.2 Rating</p>
+<div class="mt-2 flex justify-end">
+<span class="material-symbols-outlined text-outline-variant" data-icon="add_circle">add_circle</span>
+</div>
+</div>
+<!-- Vendor Card 3 -->
+<div class="min-w-[140px] bg-surface-container-lowest p-4 rounded-3xl border border-outline-variant/30 shadow-sm opacity-80">
+<div class="w-12 h-12 rounded-full bg-slate-100 mb-3 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional profile photo of a facility manager with architectural blueprints in the background, sharp lighting, high-contrast modern photography style, symbolizing expertise and reliability." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDG6kWo-VWGCWTwPhqpIeEeSVVxdzMZgUraTFtlamQU5v8F0Rzvi6qxnplM4RTp7JLlGUlmVSYjQKrdhu8UBAApdWAz3Gihj3i_XxUZbC7RhGTVTg8aOIqR10dkJ2qKObqh5fwTpS2eqcpLF5Bow-v9z6QObe8b1dIv1P1lXzJaZWclhPe1cd0wbyVhzI_-zGYJO4tAM79oAuuOXH9iF36A-7e5YmP58vtCoOpW2JSSVWnkbk4v_wWBKWM4mahbnT8wARXP24MmIQ"/>
+</div>
+<p class="text-sm font-bold truncate">Apex Facility</p>
+<p class="text-[10px] text-on-surface-variant">4.7 Rating</p>
+<div class="mt-2 flex justify-end">
+<span class="material-symbols-outlined text-outline-variant" data-icon="add_circle">add_circle</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Quotation Comparison -->
+<section class="space-y-6">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="h-8 w-1 bg-primary rounded-full"></div>
+<h3 class="text-lg font-headline font-bold">Comparison Table</h3>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant" data-icon="filter_list">filter_list</button>
+</div>
+<div class="space-y-4">
+<!-- Comparison Row 1 -->
+<div class="bg-surface-container-lowest rounded-3xl p-5 shadow-sm border border-outline-variant/10">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h4 class="font-bold text-md">SecureGuard Pro</h4>
+<div class="flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-secondary-container text-xs fill-1" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-[10px] font-bold text-on-surface-variant">4.9 (124 reviews)</span>
+</div>
+</div>
+<div class="text-right">
+<div class="text-lg font-display font-bold text-primary">$42,500</div>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-700">SUBMITTED</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-y-3 pt-4 border-t border-outline-variant/10">
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Experience</p>
+<p class="text-sm font-medium">15 Years</p>
+</div>
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Delivery</p>
+<p class="text-sm font-medium">Immediate</p>
+</div>
+</div>
+</div>
+<!-- Comparison Row 2 -->
+<div class="bg-surface-container-lowest rounded-3xl p-5 shadow-sm border border-outline-variant/10">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h4 class="font-bold text-md">Shield Security</h4>
+<div class="flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-secondary-container text-xs fill-1" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-[10px] font-bold text-on-surface-variant">4.3 (88 reviews)</span>
+</div>
+</div>
+<div class="text-right">
+<div class="text-lg font-display font-bold text-primary">$39,800</div>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 uppercase">Awaiting</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-y-3 pt-4 border-t border-outline-variant/10">
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Experience</p>
+<p class="text-sm font-medium">8 Years</p>
+</div>
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Delivery</p>
+<p class="text-sm font-medium">7 Days</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Primary Actions -->
+<section class="space-y-4 pt-4">
+<button class="w-full bg-primary text-on-primary font-bold py-4 rounded-full shadow-lg shadow-primary/20 active:scale-95 transition-transform flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" data-icon="send">send</span>
+                Send RFQ to Vendors
+            </button>
+<div class="grid grid-cols-2 gap-4">
+<button class="bg-surface-container-high text-on-surface font-bold py-4 rounded-full active:scale-95 transition-transform">Compare</button>
+<button class="bg-surface-container-high text-on-surface font-bold py-4 rounded-full active:scale-95 transition-transform">Select Vendor</button>
+</div>
+<button class="w-full bg-transparent text-error font-bold py-3 rounded-full active:scale-95 transition-transform">Cancel Request</button>
+</section>
+</main>
+<!-- BottomNavBar Shell (Fixed) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 h-20 pb-safe bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl border-t border-slate-200/20 shadow-[0_-8px_24px_rgba(0,0,0,0.04)] rounded-t-3xl">
+<button class="flex flex-col items-center justify-center text-slate-400 px-4 py-1 hover:text-blue-500 transition-all">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-[10px] font-semibold tracking-widest uppercase mt-1">Dashboard</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-blue-50 text-blue-700 rounded-2xl px-4 py-1 active:translate-y-[-2px] duration-200">
+<span class="material-symbols-outlined fill-1" data-icon="account_balance_wallet" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+<span class="text-[10px] font-semibold tracking-widest uppercase mt-1">Ledger</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 px-4 py-1 hover:text-blue-500 transition-all">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="text-[10px] font-semibold tracking-widest uppercase mt-1">Members</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 px-4 py-1 hover:text-blue-500 transition-all">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-[10px] font-semibold tracking-widest uppercase mt-1">Settings</span>
+</button>
+</nav>
+<!-- Floating Action Button - Only if relevant -->
+<button class="fixed bottom-24 right-6 w-14 h-14 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center active:scale-90 transition-transform z-40">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</body></html>

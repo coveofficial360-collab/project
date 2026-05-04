@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Service Directory - Cove Glass</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#FFFFFF",
+                        "on-surface-variant": "#414754",
+                        "on-error-container": "#93000A",
+                        "surface-dim": "#D9DADB",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "on-primary-fixed-variant": "#004493",
+                        "on-primary-fixed": "#001A41",
+                        "outline-variant": "#C1C6D6",
+                        "on-secondary-fixed": "#281800",
+                        "secondary-fixed": "#FFDDAF",
+                        "secondary-container": "#FDAF0B",
+                        "on-secondary-container": "#694600",
+                        "on-surface": "#191C1D",
+                        "surface-container-high": "#E7E8E9",
+                        "on-primary": "#FFFFFF",
+                        "surface-tint": "#005BC0",
+                        "surface-bright": "#F8F9FA",
+                        "primary-fixed-dim": "#ADC7FF",
+                        "tertiary-container": "#C55500",
+                        "tertiary": "#9E4300",
+                        "surface-container-low": "#F3F4F5",
+                        "on-secondary": "#FFFFFF",
+                        "on-error": "#FFFFFF",
+                        "tertiary-fixed-dim": "#FFB691",
+                        "tertiary-fixed": "#FFDBCB",
+                        "on-background": "#191C1D",
+                        "primary": "#005BBF",
+                        "inverse-surface": "#2E3132",
+                        "inverse-primary": "#ADC7FF",
+                        "surface": "#F8F9FA",
+                        "secondary-fixed-dim": "#FFBA43",
+                        "primary-fixed": "#D8E2FF",
+                        "on-tertiary-container": "#0E0200",
+                        "surface-container": "#EDEEEF",
+                        "on-tertiary-fixed": "#341100",
+                        "secondary": "#805600",
+                        "inverse-on-surface": "#F0F1F2",
+                        "error": "#BA1A1A",
+                        "surface-container-lowest": "#FFFFFF",
+                        "on-primary-container": "#FFFFFF",
+                        "background": "#F8F9FA",
+                        "outline": "#727785",
+                        "surface-variant": "#E1E3E4",
+                        "primary-container": "#1A73E8",
+                        "error-container": "#FFDAD6",
+                        "surface-container-highest": "#E1E3E4",
+                        "on-secondary-fixed-variant": "#614000"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            }
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .custom-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased pb-32">
+<!-- TopAppBar -->
+<header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl shadow-sm fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 h-16">
+<div class="flex items-center gap-4">
+<button class="hover:bg-slate-100/50 dark:hover:bg-slate-800/50 transition-colors p-2 rounded-full scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-slate-900">arrow_back</span>
+</button>
+<h1 class="text-lg font-extrabold tracking-tighter text-slate-900 dark:text-slate-50 font-['Plus_Jakarta_Sans']">Service Directory</h1>
+</div>
+<div class="flex items-center gap-3">
+<button class="hover:bg-slate-100/50 dark:hover:bg-slate-800/50 transition-colors p-2 rounded-full">
+<span class="material-symbols-outlined text-slate-900">search</span>
+</button>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-2xl mx-auto">
+<!-- Search Section -->
+<section class="mb-10">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full bg-surface-container-lowest border-none rounded-full py-4 pl-12 pr-6 shadow-sm focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-outline/60 text-sm" placeholder="Search for specialists..." type="text"/>
+</div>
+</section>
+<!-- Bento Grid Categories -->
+<section class="mb-12">
+<div class="flex justify-between items-center mb-6">
+<h2 class="font-headline font-bold text-xl tracking-tight text-on-surface">Categories</h2>
+<button class="text-[10px] uppercase tracking-widest font-bold text-primary hover:opacity-70 transition-opacity active:scale-95" id="view-all-toggle" onclick="toggleCategories()">View All</button>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<!-- Large Featured Category -->
+<div class="col-span-2 relative h-40 rounded-[2rem] overflow-hidden group cursor-pointer shadow-sm">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A clean, professional photograph of a modern home interior being serviced. High-end electrical fixtures are being installed by a specialist with precision tools. The lighting is bright and natural, emphasizing a premium urban sanctuary vibe. The color palette includes soft whites and architectural blues to match the Cove Glass aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCft55XnJeHrgBujNuiMEetkRYLRSmta0IkJypdwMwWfBXOLMO7IWcWcjPwfXYITS7ZjtovTUY_O6K_AKxpA4a_7gfpPJahh4P-h2nGbQI28q0-KjlUi-hVrkG6ZxOuChS-dp4Ri-QtYDvEhfiwz4Vmm3ExkWvYhX4NhGbPAzQM4m9t2dmTGZgGwnNglajHrbBDqNLRhpvMnxDi6iI5AJLunnjuFHYoOz9QLcKzE--hWj2iPLGJcXAv_9CH-dJ2Ur7qEhjY6BoxjA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+<div class="absolute bottom-6 left-6 text-white">
+<p class="text-[10px] uppercase tracking-widest font-bold mb-1 opacity-80">Highly Requested</p>
+<h3 class="text-xl font-bold font-headline">Home Maintenance</h3>
+<p class="text-xs opacity-70">Electrician, Plumber, Carpenter</p>
+</div>
+</div>
+<!-- Small Categories -->
+<div class="bg-primary/5 rounded-[2rem] p-6 group cursor-pointer hover:bg-primary/10 transition-colors border border-outline-variant/15">
+<div class="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center mb-4 text-white">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">local_laundry_service</span>
+</div>
+<h3 class="font-bold text-sm mb-1">Laundry</h3>
+<p class="text-[10px] text-on-surface-variant font-medium">Ironing, Dry Clean</p>
+</div>
+<div class="bg-secondary/5 rounded-[2rem] p-6 group cursor-pointer hover:bg-secondary/10 transition-colors border border-outline-variant/15">
+<div class="w-12 h-12 rounded-2xl bg-secondary flex items-center justify-center mb-4 text-white">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">cleaning_services</span>
+</div>
+<h3 class="font-bold text-sm mb-1">Domestic</h3>
+<p class="text-[10px] text-on-surface-variant font-medium">Housekeeping, Cook</p>
+</div>
+<!-- Additional Categories -->
+<div class="extra-category hidden bg-surface-container-low rounded-[2rem] p-6 group cursor-pointer hover:bg-surface-container-high transition-colors border border-outline-variant/15">
+<div class="w-12 h-12 rounded-2xl bg-tertiary flex items-center justify-center mb-4 text-white">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">yard</span>
+</div>
+<h3 class="font-bold text-sm mb-1">Gardening</h3>
+<p class="text-[10px] text-on-surface-variant font-medium">Landscaping, Lawn</p>
+</div>
+<div class="extra-category hidden bg-surface-container-low rounded-[2rem] p-6 group cursor-pointer hover:bg-surface-container-high transition-colors border border-outline-variant/15">
+<div class="w-12 h-12 rounded-2xl bg-slate-700 flex items-center justify-center mb-4 text-white">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+<h3 class="font-bold text-sm mb-1">Security</h3>
+<p class="text-[10px] text-on-surface-variant font-medium">Monitoring, Guard</p>
+</div>
+<div class="extra-category hidden bg-surface-container-low rounded-[2rem] p-6 group cursor-pointer hover:bg-surface-container-high transition-colors border border-outline-variant/15">
+<div class="w-12 h-12 rounded-2xl bg-orange-400 flex items-center justify-center mb-4 text-white">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">pets</span>
+</div>
+<h3 class="font-bold text-sm mb-1">Pet Care</h3>
+<p class="text-[10px] text-on-surface-variant font-medium">Walking, Grooming</p>
+</div>
+<div class="extra-category hidden bg-surface-container-low rounded-[2rem] p-6 group cursor-pointer hover:bg-surface-container-high transition-colors border border-outline-variant/15">
+<div class="w-12 h-12 rounded-2xl bg-primary-container flex items-center justify-center mb-4 text-white">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">devices</span>
+</div>
+<h3 class="font-bold text-sm mb-1">Tech Support</h3>
+<p class="text-[10px] text-on-surface-variant font-medium">IT, Smart Home</p>
+</div></div>
+</section>
+<!-- Specialist List -->
+<section class="mb-8">
+<div class="flex justify-between items-center mb-6">
+<h2 class="font-headline font-bold text-xl tracking-tight text-on-surface">Top Specialists</h2>
+<div class="flex gap-2">
+<span class="material-symbols-outlined text-outline cursor-pointer hover:text-primary transition-colors">tune</span>
+</div>
+</div>
+<div class="space-y-4">
+<!-- Specialist Card 1 -->
+<div class="glass-card p-5 rounded-[2.5rem] shadow-sm flex items-center gap-5 border border-white/40 hover:translate-y-[-4px] hover:shadow-md transition-all duration-300">
+<div class="relative">
+<img class="w-16 h-16 rounded-3xl object-cover" data-alt="A close-up professional portrait of a smiling male specialist in a clean, branded navy blue uniform. He is standing in a bright, modern minimalist apartment corridor. The lighting is soft and flattering, emphasizing trustworthiness and professionalism. The background is slightly blurred to keep focus on the specialist." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwGMbh5Sy9mee7SsOaktHZmH31QPMewJD8TKaNv0vZgeDbgFDU71WwQHBQN38P3yWk2Y9dJafbjnFsi1ZbJzpiv97-gO6F0elkbVPCuEvy5yF62e7atal3VQ_IF-erLfNgbSqfLi-vZBuKZd5JFUHTXs1WTp7WXtVw57qtgzNCA73t2t56HtlDkz2LrWE2SYrnlSK598qTCzun2PT3BoNjzaNpp6zdkrigreNG9d2zLwS7DFvsnbnQ68DJhTmuY7EuWvCQlH9tzQ"/>
+<div class="absolute -bottom-1 -right-1 bg-green-500 w-4 h-4 rounded-full border-4 border-white"></div>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-0.5">
+<h4 class="font-bold text-on-surface">Marcus Thorne</h4>
+<span class="flex items-center gap-0.5 bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                4.9
+                            </span>
+</div>
+<p class="text-xs text-on-surface-variant font-medium mb-2">Master Electrician • 8 yrs exp</p>
+<div class="flex gap-2">
+<span class="px-2 py-0.5 rounded bg-surface-container text-[10px] font-semibold text-on-surface-variant">Emergency Repair</span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-[10px] font-semibold text-on-surface-variant">Licensed</span>
+</div>
+</div>
+<button class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">call</span>
+</button>
+</div>
+<!-- Specialist Card 2 -->
+<div class="glass-card p-5 rounded-[2.5rem] shadow-sm flex items-center gap-5 border border-white/40 hover:translate-y-[-4px] hover:shadow-md transition-all duration-300">
+<div class="relative">
+<img class="w-16 h-16 rounded-3xl object-cover" data-alt="A professional portrait of a female domestic service specialist with a friendly and composed expression. She is wearing a neat, neutral-colored polo shirt. The setting is a brightly lit, high-end kitchen with marble countertops and glass cabinetry. The overall aesthetic is clean, sophisticated, and reflects an urban sanctuary lifestyle." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMMTM7JiC4jIRAisMNsqZDw2D7Xw19D3drTZj9KXXgEYnBuStucUEEvwgrmWzK1_3iEpS8Bjay9xKfAWs2U-D1I8FJpQXN8d3A9EQbkOnJnfFcaHwkJ8RVTQdlMhlT-ALNwjA-i8lBorOW5-k33eN7Cr1cc5MYLKG_KRst0SLjXC7K9xVZQ6tT63vW5ZXpOqmnxzDwCE4AAGKpxYIp1J3N85xGGP_aqjzp9Rf9oslauFDvNG1fU_azcuMELuyx7iWZzN_FOyibqQ"/>
+<div class="absolute -bottom-1 -right-1 bg-green-500 w-4 h-4 rounded-full border-4 border-white"></div>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-0.5">
+<h4 class="font-bold text-on-surface">Elena Rodriguez</h4>
+<span class="flex items-center gap-0.5 bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                4.8
+                            </span>
+</div>
+<p class="text-xs text-on-surface-variant font-medium mb-2">Private Culinary Specialist</p>
+<div class="flex gap-2">
+<span class="px-2 py-0.5 rounded bg-surface-container text-[10px] font-semibold text-on-surface-variant">Gourmet</span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-[10px] font-semibold text-on-surface-variant">Dietary Expert</span>
+</div>
+</div>
+<button class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">call</span>
+</button>
+</div>
+<!-- Specialist Card 3 -->
+<div class="glass-card p-5 rounded-[2.5rem] shadow-sm flex items-center gap-5 border border-white/40 hover:translate-y-[-4px] hover:shadow-md transition-all duration-300">
+<div class="relative">
+<img class="w-16 h-16 rounded-3xl object-cover" data-alt="A portrait of a male plumbing specialist in a professional gray work shirt. He has a warm, approachable look. The background shows a modern, high-tech utility room with well-organized piping and high-end equipment. The scene is illuminated with clear, natural light, projecting a sense of technical expertise and high-quality service." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDTdHK55g04EjTamJpYgemHR1RtKU_cRY_cUYVEmzryihDBVGa1S3GHFdwmAFak0ilA9KN764o9gvyLv-OpGxaciO9zXLHyUDYbesya25EJm4ukSIF4u7_yUk_TLHVOrlXm4cyYF8BplHeNVb7m4PaL0RsG7eJMMSS960fPCK_ZgR7pZkis-5WlN1GmOUZIkxibRE7N7LjdvMCfmI_elQ-3N0EBXfmOQqggGy5kMXcx0Kvuq-57J8HBykgaO98uB6ibBlHtEhqtw"/>
+<div class="absolute -bottom-1 -right-1 bg-slate-300 w-4 h-4 rounded-full border-4 border-white"></div>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-0.5">
+<h4 class="font-bold text-on-surface">Julian Voss</h4>
+<span class="flex items-center gap-0.5 bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                5.0
+                            </span>
+</div>
+<p class="text-xs text-on-surface-variant font-medium mb-2">Senior Plumber • 12 yrs exp</p>
+<div class="flex gap-2">
+<span class="px-2 py-0.5 rounded bg-surface-container text-[10px] font-semibold text-on-surface-variant">Advanced Piping</span>
+</div>
+</div>
+<button class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">call</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Promotional Banner -->
+</main>
+<!-- BottomNavBar -->
+<nav class="bg-white/90 dark:bg-slate-950/80 backdrop-blur-2xl fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-3 pb-6 border-t border-slate-200/20 dark:border-slate-800/20 shadow-[0_-12px_32px_rgba(25,28,29,0.06)] rounded-t-[32px]">
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-1.5 hover:opacity-80 transition-opacity scale-105 active:scale-95 transition-all duration-200">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest font-bold">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full px-5 py-1.5 hover:opacity-80 transition-opacity scale-105 active:scale-95 transition-all duration-200">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">apartment</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest font-bold">Amenities</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-1.5 hover:opacity-80 transition-opacity scale-105 active:scale-95 transition-all duration-200">
+<span class="material-symbols-outlined mb-1">notifications</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest font-bold">Notices</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-1.5 hover:opacity-80 transition-opacity scale-105 active:scale-95 transition-all duration-200">
+<span class="material-symbols-outlined mb-1">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest font-bold">Profile</span>
+</div>
+</nav>
+<script>
+function toggleCategories() {
+    const extraCategories = document.querySelectorAll('.extra-category');
+    const toggleBtn = document.getElementById('view-all-toggle');
+    const isHidden = extraCategories[0].classList.contains('hidden');
+
+    extraCategories.forEach(cat => {
+        cat.classList.toggle('hidden');
+    });
+
+    if (isHidden) {
+        toggleBtn.textContent = 'Show Less';
+    } else {
+        toggleBtn.textContent = 'View All';
+    }
+}
+</script></body></html>

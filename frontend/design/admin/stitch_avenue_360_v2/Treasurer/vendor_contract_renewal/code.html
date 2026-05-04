@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-low": "#F3F4F5",
+                    "outline": "#727785",
+                    "primary-fixed": "#D8E2FF",
+                    "on-primary-container": "#FFFFFF",
+                    "on-surface-variant": "#414754",
+                    "secondary-fixed-dim": "#FFBA43",
+                    "surface-container": "#EDEEEF",
+                    "on-tertiary": "#FFFFFF",
+                    "on-secondary": "#FFFFFF",
+                    "secondary-fixed": "#FFDDAF",
+                    "on-tertiary-container": "#0E0200",
+                    "tertiary-container": "#C55500",
+                    "error": "#BA1A1A",
+                    "surface": "#F8F9FA",
+                    "primary-container": "#1A73E8",
+                    "on-primary-fixed-variant": "#004493",
+                    "secondary": "#805600",
+                    "on-background": "#191C1D",
+                    "on-secondary-container": "#694600",
+                    "on-primary": "#FFFFFF",
+                    "tertiary-fixed": "#FFDBCB",
+                    "tertiary": "#9E4300",
+                    "surface-variant": "#E1E3E4",
+                    "primary": "#005BBF",
+                    "surface-container-highest": "#E1E3E4",
+                    "on-tertiary-fixed": "#341100",
+                    "outline-variant": "#C1C6D6",
+                    "on-tertiary-fixed-variant": "#783100",
+                    "inverse-primary": "#ADC7FF",
+                    "on-error": "#FFFFFF",
+                    "inverse-surface": "#2E3132",
+                    "background": "#F8F9FA",
+                    "secondary-container": "#FDAF0B",
+                    "surface-dim": "#D9DADB",
+                    "on-surface": "#191C1D",
+                    "on-secondary-fixed-variant": "#614000",
+                    "inverse-on-surface": "#F0F1F2",
+                    "on-secondary-fixed": "#281800",
+                    "surface-bright": "#F8F9FA",
+                    "tertiary-fixed-dim": "#FFB691",
+                    "surface-container-high": "#E7E8E9",
+                    "surface-container-lowest": "#FFFFFF",
+                    "on-primary-fixed": "#001A41",
+                    "error-container": "#FFDAD6",
+                    "primary-fixed-dim": "#ADC7FF",
+                    "on-error-container": "#93000A",
+                    "surface-tint": "#005BC0"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "display": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-header {
+            backdrop-filter: blur(20px);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F9FA;
+        }
+        h1, h2, h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 left-0 flex items-center justify-between px-6 h-16 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl z-40 shadow-[0_12px_32px_rgba(25,28,29,0.06)]">
+<div class="flex items-center gap-3"><button class="mr-1 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors scale-95 active:scale-100 duration-200 flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-600">arrow_back</span>
+</button>
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary font-bold overflow-hidden">
+<img alt="Admin Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a middle-aged man with a friendly expression, wearing a tailored navy blue suit. The background is a blurred high-end office interior with soft architectural lighting, maintaining a clean and modern professional aesthetic that aligns with the Cove Glass design system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRSlDuLjMOP-MOf9KXf4Ipl5eIMoMdCqvghsH9XJ38syQcc7MvbzfayzJwYBgHHZRPCuTlUNjZJxAiTojuBSR0jsDRDlQ0TpiDHQMXq6tF2bl-OZkx0J-9gaBCbyQHfLx7Ey_nTIYTx6EZeqyn-JN4qrr2FNWj7GsTN7vKExW76wWF6auYUBEmGadiwIV2cNSUdXzv-ZxANc7uZNfsEa62Gr5dwpwEubNrSeP9DlVNO2_O4GcqlDSSn5kIrDxyqc_v876sRk1huw"/>
+</div>
+<span class="font-['Plus_Jakarta_Sans'] font-bold text-lg tracking-tight text-on-surface">Treasurer Dashboard</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors scale-95 active:scale-100 duration-200">
+<span class="material-symbols-outlined text-slate-500">notifications</span>
+</button>
+</div>
+</header>
+<!-- NavigationDrawer (Mobile Sidebar Mockup) -->
+<aside class="hidden lg:flex fixed left-0 top-0 bottom-0 flex flex-col p-6 space-y-4 bg-slate-50 dark:bg-slate-950 h-full w-72 z-50">
+<div class="mb-8">
+<span class="text-2xl font-extrabold tracking-tighter text-blue-600">Cove Glass</span>
+</div>
+<div class="space-y-1">
+<div class="flex items-center gap-3 p-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 font-['Plus_Jakarta_Sans'] font-semibold tracking-wide text-sm cursor-pointer transition-all hover:translate-x-1 duration-300">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </div>
+<div class="flex items-center gap-3 p-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 font-['Plus_Jakarta_Sans'] font-semibold tracking-wide text-sm cursor-pointer transition-all hover:translate-x-1 duration-300">
+<span class="material-symbols-outlined">receipt_long</span>
+                Expenses
+            </div>
+<div class="flex items-center gap-3 p-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 font-['Plus_Jakarta_Sans'] font-semibold tracking-wide text-sm cursor-pointer transition-all hover:translate-x-1 duration-300">
+<span class="material-symbols-outlined">insights</span>
+                Analyze
+            </div>
+<div class="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-xl font-['Plus_Jakarta_Sans'] font-semibold tracking-wide text-sm cursor-pointer transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">groups</span>
+                Vendors
+            </div>
+<div class="flex items-center gap-3 p-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 font-['Plus_Jakarta_Sans'] font-semibold tracking-wide text-sm cursor-pointer transition-all hover:translate-x-1 duration-300">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </div>
+</div>
+<div class="mt-auto pt-6 border-t border-outline-variant/30">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="Close-up of a professional man in his 30s with short hair and a neat beard, wearing a crisp white shirt. The background is a bright, airy architectural setting with high-key lighting, emphasizing a clean and premium corporate lifestyle aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwaxIU3fa3Pmnm1mrSkGwTHWMRYD_i4cecC6iS-oGoafKJcXREqUWssRC0m0Po3EAhLRqLtdDDYdOCoC929n4yccegQJd39AIqNeRMCVtJF2wDBUsN_BX0EF_VxQrFpUZ_bhD1lupnWK4FA1he4Hjn8amjlliVqwhaU4jcRpJsa4D0H-jlrtpWr2tzs1Jv5zGtvip7nmm-yG0j-PZGJ6Q2mu0QTs2lruiCNHXMh-Z4PX4qIEs8dwtrstpgCg7XJ-cXOzs7a_xcOQ"/>
+</div>
+<div>
+<div class="text-sm font-bold text-on-surface">Alexander Cove</div>
+<div class="text-xs text-outline">Society Admin</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="pt-20 pb-24 px-4 md:px-8 lg:ml-72 max-w-5xl mx-auto">
+<!-- Header Section -->
+<div class="mb-8">
+<h1 class="text-3xl font-extrabold tracking-tight text-on-surface mb-2">Vendor Contract Renewal</h1>
+<p class="text-on-surface-variant">Review and extend the partnership agreement for facility maintenance services.</p>
+</div>
+<!-- Vendor Summary Card -->
+<section class="bg-surface-container-lowest rounded-3xl p-6 mb-8 shadow-[0_12px_32px_rgba(25,28,29,0.06)] flex flex-col md:flex-row items-center gap-6 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16"></div>
+<div class="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+<div class="flex-grow text-center md:text-left">
+<div class="flex flex-col md:flex-row md:items-center gap-2 mb-1">
+<h2 class="text-xl font-bold">Titan Protection</h2>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary-fixed text-on-primary-fixed-variant w-fit mx-auto md:mx-0">
+                        Security Service
+                    </span>
+</div>
+<div class="flex items-center justify-center md:justify-start gap-4 mt-2">
+<div class="flex items-center text-secondary">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="ml-1 text-sm font-bold">4.8</span>
+<span class="ml-1 text-xs text-outline font-normal">Rating</span>
+</div>
+<div class="h-4 w-px bg-outline-variant"></div>
+<div class="text-sm font-medium text-on-surface-variant">
+                        ID: <span class="font-bold text-on-surface">TP-2024-001</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 md:flex gap-4 w-full md:w-auto">
+<div class="bg-surface-container-low p-4 rounded-2xl flex-1 md:min-w-[140px]">
+<div class="text-[10px] uppercase tracking-widest text-outline font-bold mb-1">Current Charges</div>
+<div class="text-lg font-extrabold text-primary">$4,500</div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-2xl flex-1 md:min-w-[140px]">
+<div class="text-[10px] uppercase tracking-widest text-outline font-bold mb-1">End Date</div>
+<div class="text-lg font-extrabold text-on-surface">Dec 31, 2024</div>
+</div>
+</div>
+</section>
+<!-- Main Renewal Form Sections -->
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+<div class="xl:col-span-2 space-y-8">
+<!-- 1. Current Contract Details -->
+<div class="bg-surface-container-lowest rounded-3xl p-8 shadow-sm">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary">history_edu</span>
+<h3 class="text-lg font-bold">Current Contract Details</h3>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+<div>
+<label class="block text-[10px] uppercase tracking-widest text-outline font-bold mb-2">Start Date</label>
+<div class="text-sm font-semibold p-3 bg-surface rounded-xl text-on-surface-variant">Jan 01, 2024</div>
+</div>
+<div>
+<label class="block text-[10px] uppercase tracking-widest text-outline font-bold mb-2">End Date</label>
+<div class="text-sm font-semibold p-3 bg-surface rounded-xl text-on-surface-variant">Dec 31, 2024</div>
+</div>
+<div>
+<label class="block text-[10px] uppercase tracking-widest text-outline font-bold mb-2">Existing Cost</label>
+<div class="text-sm font-semibold p-3 bg-surface rounded-xl text-on-surface-variant">$4,500 / mo</div>
+</div>
+</div>
+</div>
+<!-- 2. New Contract Details -->
+<div class="bg-surface-container-lowest rounded-3xl p-8 shadow-sm">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary">edit_document</span>
+<h3 class="text-lg font-bold">New Contract Details</h3>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+<div class="space-y-2">
+<label class="block text-[10px] uppercase tracking-widest text-outline font-bold">New Start Date</label>
+<input class="w-full bg-surface border-none rounded-xl focus:ring-2 focus:ring-primary text-sm font-semibold py-3 px-4" type="date" value="2025-01-01"/>
+</div>
+<div class="space-y-2">
+<label class="block text-[10px] uppercase tracking-widest text-outline font-bold">New End Date</label>
+<input class="w-full bg-surface border-none rounded-xl focus:ring-2 focus:ring-primary text-sm font-semibold py-3 px-4" type="date" value="2025-12-31"/>
+</div>
+<div class="space-y-2 sm:col-span-2">
+<label class="block text-[10px] uppercase tracking-widest text-outline font-bold">Revised Monthly Charges</label>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-outline font-bold">$</span>
+<input class="w-full bg-surface border-none rounded-xl focus:ring-2 focus:ring-primary text-sm font-bold py-3 pl-8 pr-4" type="number" value="4800"/>
+</div>
+</div>
+</div>
+<div class="space-y-6">
+<div class="space-y-2">
+<label class="block text-[10px] uppercase tracking-widest text-outline font-bold">New Terms &amp; Conditions</label>
+<textarea class="w-full bg-surface border-none rounded-xl focus:ring-2 focus:ring-primary text-sm p-4 h-32 resize-none" placeholder="Enter updated terms..." rows="4">Contract extension for 12 months with a 6.7% inflation adjustment. Scope remains identical to the 2024 master agreement. Includes emergency response priority for society events.</textarea>
+</div>
+<div class="space-y-2">
+<label class="block text-[10px] uppercase tracking-widest text-outline font-bold">SLA Agreement Notes</label>
+<textarea class="w-full bg-surface border-none rounded-xl focus:ring-2 focus:ring-primary text-sm p-4 h-24 resize-none" placeholder="Enter SLA updates..." rows="3">99.9% uptime for digital logging system. Maximum 15-minute onsite supervisor arrival for critical incidents.</textarea>
+</div>
+</div>
+</div>
+<!-- 3. Performance Review -->
+<div class="bg-surface-container-lowest rounded-3xl p-8 shadow-sm">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary">assessment</span>
+<h3 class="text-lg font-bold">Performance Review</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="space-y-4">
+<div>
+<label class="block text-[10px] uppercase tracking-widest text-outline font-bold mb-2">Service Quality Rating</label>
+<div class="flex gap-1 text-secondary-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star_half</span>
+</div>
+</div>
+<div>
+<label class="block text-[10px] uppercase tracking-widest text-outline font-bold mb-1">Recommendation Status</label>
+<div class="flex items-center gap-2 text-emerald-600 font-bold text-sm">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                    Recommended for renewal
+                                </div>
+</div>
+</div>
+<div>
+<label class="block text-[10px] uppercase tracking-widest text-outline font-bold mb-2">Complaint History</label>
+<div class="p-4 bg-surface rounded-2xl">
+<div class="text-sm font-medium mb-2">2 incidents reported in 2024</div>
+<ul class="text-xs text-on-surface-variant space-y-1 list-disc ml-4">
+<li>Jan 15: Shift handover delay (Resolved)</li>
+<li>Oct 02: Gate sensor malfunction (Replaced)</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Side Panel: Timeline & Workflow -->
+<div class="space-y-8">
+<!-- 4. Approval Workflow -->
+<div class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary">rule</span>
+<h3 class="text-lg font-bold">Approval Workflow</h3>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<span class="text-sm font-bold text-emerald-900">Treasurer Approval</span>
+</div>
+<span class="text-[10px] font-bold text-emerald-600 uppercase">Verified</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-2xl">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-outline-variant/30 text-outline flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">pending</span>
+</div>
+<span class="text-sm font-bold text-on-surface-variant">Secretary Approval</span>
+</div>
+<span class="text-[10px] font-bold text-outline uppercase">Pending</span>
+</div>
+</div>
+</div>
+<!-- Contract History Timeline -->
+<div class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary">timeline</span>
+<h3 class="text-lg font-bold">Contract History</h3>
+</div>
+<div class="space-y-6 relative ml-4">
+<div class="absolute left-0 top-2 bottom-2 w-px bg-outline-variant"></div>
+<div class="relative pl-8">
+<div class="absolute left-[-4px] top-1.5 w-2 h-2 rounded-full bg-primary ring-4 ring-primary/20"></div>
+<div class="text-xs font-bold text-primary mb-1">Renewal 2024</div>
+<div class="text-sm font-bold">$4,500 <span class="font-normal text-outline text-xs">/ month</span></div>
+<div class="text-xs text-on-surface-variant">Jan 01 - Dec 31, 2024</div>
+</div>
+<div class="relative pl-8">
+<div class="absolute left-[-4px] top-1.5 w-2 h-2 rounded-full bg-outline-variant"></div>
+<div class="text-xs font-bold text-on-surface mb-1">Renewal 2023</div>
+<div class="text-sm font-bold">$4,200 <span class="font-normal text-outline text-xs">/ month</span></div>
+<div class="text-xs text-on-surface-variant">Jan 01 - Dec 31, 2023</div>
+</div>
+<div class="relative pl-8">
+<div class="absolute left-[-4px] top-1.5 w-2 h-2 rounded-full bg-outline-variant"></div>
+<div class="text-xs font-bold text-on-surface mb-1">Initial Contract</div>
+<div class="text-sm font-bold">$4,000 <span class="font-normal text-outline text-xs">/ month</span></div>
+<div class="text-xs text-on-surface-variant">Feb 15 - Dec 31, 2022</div>
+</div>
+</div>
+<button class="w-full mt-8 py-3 px-4 text-sm font-bold text-primary bg-primary/5 rounded-xl hover:bg-primary/10 transition-colors">
+                        View Archive Files
+                    </button>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="fixed bottom-0 left-0 right-0 lg:left-72 bg-white/80 backdrop-blur-xl p-4 md:p-6 shadow-[0_-12px_32px_rgba(25,28,29,0.06)] flex flex-col md:flex-row items-center justify-end gap-4 z-40">
+<button class="w-full md:w-auto px-8 py-4 text-slate-500 font-bold text-sm hover:text-on-surface transition-colors">
+                Cancel
+            </button>
+<button class="w-full md:w-auto px-8 py-4 bg-surface-container-high text-on-surface-variant font-bold text-sm rounded-full hover:bg-surface-variant transition-colors">
+                Send for Approval
+            </button>
+<button class="w-full md:w-auto px-10 py-4 bg-primary text-on-primary font-bold text-sm rounded-full shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/40 transition-all transform active:scale-95">
+                Renew Contract
+            </button>
+</div>
+</main>
+<!-- Bottom Nav for Mobile -->
+<nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-2xl px-6 py-3 flex items-center justify-between z-50">
+<div class="flex flex-col items-center gap-1 text-slate-500">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-bold">Home</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-slate-500">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="text-[10px] font-bold">Bills</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-blue-600">
+<div class="bg-blue-50 px-4 py-1 rounded-full flex flex-col items-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">groups</span>
+<span class="text-[10px] font-bold">Vendors</span>
+</div>
+</div>
+<div class="flex flex-col items-center gap-1 text-slate-500">
+<span class="material-symbols-outlined">insights</span>
+<span class="text-[10px] font-bold">Stats</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-slate-500">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-bold">Menu</span>
+</div>
+</nav>
+</body></html>

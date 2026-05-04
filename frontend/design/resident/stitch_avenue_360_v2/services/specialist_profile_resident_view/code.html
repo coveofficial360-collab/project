@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#FFDBCB",
+                    "surface-container-low": "#F3F4F5",
+                    "on-primary-container": "#FFFFFF",
+                    "inverse-primary": "#ADC7FF",
+                    "inverse-on-surface": "#F0F1F2",
+                    "on-tertiary-container": "#0E0200",
+                    "on-secondary-fixed": "#281800",
+                    "background": "#F8F9FA",
+                    "surface-bright": "#F8F9FA",
+                    "on-secondary": "#FFFFFF",
+                    "on-primary-fixed-variant": "#004493",
+                    "on-error": "#FFFFFF",
+                    "inverse-surface": "#2E3132",
+                    "tertiary-container": "#C55500",
+                    "outline": "#727785",
+                    "surface": "#F8F9FA",
+                    "error": "#BA1A1A",
+                    "on-surface-variant": "#414754",
+                    "surface-variant": "#E1E3E4",
+                    "on-error-container": "#93000A",
+                    "on-tertiary-fixed": "#341100",
+                    "tertiary-fixed-dim": "#FFB691",
+                    "primary": "#005BBF",
+                    "outline-variant": "#C1C6D6",
+                    "on-primary-fixed": "#001A41",
+                    "secondary": "#805600",
+                    "on-secondary-container": "#694600",
+                    "on-secondary-fixed-variant": "#614000",
+                    "surface-tint": "#005BC0",
+                    "on-primary": "#FFFFFF",
+                    "on-tertiary-fixed-variant": "#783100",
+                    "surface-container-lowest": "#FFFFFF",
+                    "secondary-fixed": "#FFDDAF",
+                    "on-background": "#191C1D",
+                    "secondary-container": "#FDAF0B",
+                    "on-surface": "#191C1D",
+                    "tertiary": "#9E4300",
+                    "surface-container-highest": "#E1E3E4",
+                    "secondary-fixed-dim": "#FFBA43",
+                    "on-tertiary": "#FFFFFF",
+                    "surface-container-high": "#E7E8E9",
+                    "surface-dim": "#D9DADB",
+                    "primary-container": "#1A73E8",
+                    "surface-container": "#EDEEEF",
+                    "primary-fixed-dim": "#ADC7FF",
+                    "primary-fixed": "#D8E2FF",
+                    "error-container": "#FFDAD6"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "display": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex items-center px-6 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-[0_12px_32px_rgba(25,28,29,0.06)]">
+<button class="mr-4 p-2 rounded-full hover:bg-slate-100/50 transition-colors">
+<span class="material-symbols-outlined text-blue-600 dark:text-blue-400">arrow_back</span>
+</button>
+<h1 class="font-['Plus_Jakarta_Sans'] font-semibold tracking-tight text-slate-900 dark:text-slate-50">Specialist Profile</h1>
+</header>
+<main class="pt-24 pb-12 px-6 max-w-2xl mx-auto">
+<!-- Profile Header Section -->
+<section class="relative mb-8 text-center">
+<div class="relative inline-block">
+<div class="w-32 h-32 rounded-full overflow-hidden mb-4 shadow-[0_12px_32px_rgba(25,28,29,0.12)] bg-surface-container-high mx-auto">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a middle-aged male electrician with a friendly and confident expression. He is wearing a clean, branded navy blue work polo against a soft, out-of-focus urban apartment background. The lighting is bright and natural, reflecting the high-end Cove Glass aesthetic. The overall mood is trustworthy, professional, and accessible." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0yvuXlrLGWEPeKBVGjCO6eN81OPzNCX7wPq32lAUZw7_-TOlvckbxzNUVQdGL6vLDefi3VBtblNTf2qb9sfEeF_TldKyZrZE7d1mmVvRBh_vYP0mOq4xN3OdA-Qdi0UZdAjnuUFeFg_j6TX08RerOajSP2oW8EWZy9A3Hsgzyv4QXDKjtxzAcSXJ65M-ffVm9mjdRnzLtdV7kBZaBQUD6-eFBg2l_2Wx1flnNFy6tegcZ_Jfnh3q-CkTxyyxzDEu2vUtXxHeQgA"/>
+</div>
+<div class="absolute bottom-6 right-0 bg-emerald-500 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full border-4 border-surface shadow-sm">
+                    AVAILABLE
+                </div>
+</div>
+<h2 class="font-headline text-3xl font-extrabold tracking-tight text-on-surface mb-1">Marcus Thorne</h2>
+<p class="text-primary font-medium tracking-wide text-sm mb-3">Electrician &amp; Energy Systems Specialist</p>
+<div class="flex items-center justify-center gap-1.5">
+<div class="flex items-center text-secondary">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-sm font-bold ml-1">4.9/5</span>
+</div>
+<span class="text-outline-variant">•</span>
+<span class="text-on-surface-variant text-xs font-medium tracking-tight">128 verified reviews</span>
+</div>
+</section>
+<!-- Primary Actions -->
+<div class="grid grid-cols-2 gap-4 mb-10">
+<button class="bg-primary text-on-primary py-4 px-6 rounded-full flex items-center justify-center gap-2 shadow-lg shadow-primary/20 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">call</span>
+<span class="font-semibold text-sm">Call Now</span>
+</button>
+<button class="bg-surface-container-lowest text-primary py-4 px-6 rounded-full flex items-center justify-center gap-2 shadow-sm border border-outline-variant/15 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-lg">chat_bubble</span>
+<span class="font-semibold text-sm">Message</span>
+</button>
+</div>
+<!-- Bento Layout Information -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+<!-- About Section -->
+<div class="bg-surface-container-lowest p-6 rounded-3xl shadow-[0_12px_32px_rgba(25,28,29,0.04)] md:col-span-2">
+<h3 class="font-headline text-sm font-bold tracking-widest uppercase text-on-surface-variant mb-4">About Specialist</h3>
+<p class="text-on-surface leading-relaxed text-sm">
+                    Dedicated master electrician with a focus on smart home integration and sustainable electrical architecture. Marcus specializes in complex residential wiring, modern lighting solutions, and critical system diagnostics for high-end properties. Certified by the National Electrical Safety Council.
+                </p>
+</div>
+<!-- Experience Section -->
+<div class="bg-surface-container-lowest p-6 rounded-3xl shadow-[0_12px_32px_rgba(25,28,29,0.04)]">
+<div class="w-10 h-10 rounded-2xl bg-blue-50 flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-blue-600">verified</span>
+</div>
+<h3 class="font-headline text-xs font-bold tracking-widest uppercase text-on-surface-variant mb-2">Expertise</h3>
+<div class="space-y-1">
+<p class="text-on-surface font-bold text-lg leading-tight">12 Years Experience</p>
+<p class="text-on-surface-variant text-xs">Certified Master Electrician</p>
+</div>
+</div>
+<!-- Pricing Section -->
+<div class="bg-surface-container-lowest p-6 rounded-3xl shadow-[0_12px_32px_rgba(25,28,29,0.04)]">
+<div class="w-10 h-10 rounded-2xl bg-orange-50 flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-orange-600">payments</span>
+</div>
+<h3 class="font-headline text-xs font-bold tracking-widest uppercase text-on-surface-variant mb-2">Base Visit Fee</h3>
+<div class="space-y-1">
+<p class="text-on-surface font-bold text-lg leading-tight">₹250.00</p>
+<p class="text-on-surface-variant text-xs">Standard diagnostic call</p>
+</div>
+</div>
+</div>
+<!-- Recent Reviews -->
+<section class="mb-8">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline text-sm font-bold tracking-widest uppercase text-on-surface-variant">Recent Reviews</h3>
+<button class="text-primary text-xs font-bold tracking-tight">VIEW ALL</button>
+</div>
+<div class="space-y-4">
+<!-- Review 1 -->
+<div class="bg-white/40 border border-outline-variant/10 p-5 rounded-3xl backdrop-blur-md">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-high overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A portrait of a young woman with a satisfied expression, representing a resident. She is in a brightly lit, modern apartment kitchen with clean lines and soft lighting. The image captures a sense of relief and home comfort, adhering to the professional and serene visual style of the Cove Glass design system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAS-_ss_t0WGBXTESQ1l1FFKXoW6zrO7VQo9ryeScCQwi7zqim4Uo_2Vr92I015rTiDYVN7NdUNX8ZrszmEQwVx5VAQCyOfZDAisxAlna4Vx9RBOaQXalEPfHCL9tbhnIVpFMxjkXC8jNVuAp2_SvPNAvoAOJ4najcYWxk_VPCiZTfbkWpgUHPJtqdsRhlDH-X3jatLNMswdfxIvWhTJnh7x1r_FPfu23ET6xVL80ptEqLu9Zk7sjfMQlksN6Q_41TTlX2YtLlk9A"/>
+</div>
+<div>
+<p class="text-xs font-bold text-on-surface">Elena Rodriguez</p>
+<p class="text-[10px] text-outline">2 days ago • Resident, Tower B</p>
+</div>
+</div>
+<div class="flex text-secondary gap-0.5">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<p class="text-sm text-on-surface-variant italic leading-snug">"Marcus was incredibly efficient. He fixed our persistent breaker issue within 30 minutes and even checked our smart hub connectivity. Highly recommended!"</p>
+</div>
+<!-- Review 2 -->
+<div class="bg-white/40 border border-outline-variant/10 p-5 rounded-3xl backdrop-blur-md">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-high overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional male resident in his 30s with a neat beard and glasses, looking pleased. He is in a stylish, well-lit study with a minimalist desk and bookshelf in the background. The lighting is warm and balanced, echoing the premium and calm atmosphere of the overall application UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAT1tfYVfR79XbWne-jbQSRoARfyQRQ-_lBTVb4kEP8eH8G4mibK1jmhEtfZSrQNQE2MdRqlKj6Dp_BdzXFQT5d_gDDV4eZSjJlL2_MSsn3VGzQrZpB85PEazRtI7Pe5zPXVXB-kN1kg0jsSIrMFQr9dywrfGWJ1KPO5upl3srX3uipiSYSrzYD0JBv1pMDhLshzVgZwlHR63NEm-SnqWpCIdONsmhp9gum_ueH5_D2MVfPfeJ9AYsreFHAX3kPbsQpHdPRX-4pXA"/>
+</div>
+<div>
+<p class="text-xs font-bold text-on-surface">Julian Vance</p>
+<p class="text-[10px] text-outline">1 week ago • Resident, Penthouse 4</p>
+</div>
+</div>
+<div class="flex text-secondary gap-0.5">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 0;">star</span>
+</div>
+</div>
+<p class="text-sm text-on-surface-variant italic leading-snug">"Very professional approach to the ceiling light installation. He explained the load requirements clearly and left the workspace spotless."</p>
+</div>
+</div>
+</section>
+<!-- Final Booking Action -->
+<div class="mt-12 text-center">
+<button class="w-full bg-on-surface text-surface py-5 px-8 rounded-3xl font-headline font-bold text-lg tracking-tight shadow-xl hover:opacity-90 active:scale-95 transition-all">
+                Schedule Service
+            </button>
+<p class="mt-4 text-[11px] text-outline tracking-wider uppercase">Next Available Slot: Today, 4:00 PM</p>
+</div>
+</main>
+</body></html>

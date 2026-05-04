@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Financial Hub - Expenses Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-header {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-fixed-dim": "#ADC7FF",
+                      "primary-fixed": "#D8E2FF",
+                      "error-container": "#FFDAD6",
+                      "surface-dim": "#D9DADB",
+                      "primary-container": "#1A73E8",
+                      "surface-container": "#EDEEEF",
+                      "surface-container-highest": "#E1E3E4",
+                      "secondary-fixed-dim": "#FFBA43",
+                      "on-tertiary": "#FFFFFF",
+                      "surface-container-high": "#E7E8E9",
+                      "on-background": "#191C1D",
+                      "secondary-container": "#FDAF0B",
+                      "on-surface": "#191C1D",
+                      "tertiary": "#9E4300",
+                      "on-primary": "#FFFFFF",
+                      "on-tertiary-fixed-variant": "#783100",
+                      "surface-container-lowest": "#FFFFFF",
+                      "secondary-fixed": "#FFDDAF",
+                      "surface-tint": "#005BC0",
+                      "on-secondary-container": "#694600",
+                      "on-secondary-fixed-variant": "#614000",
+                      "secondary": "#805600",
+                      "on-error-container": "#93000A",
+                      "on-tertiary-fixed": "#341100",
+                      "tertiary-fixed-dim": "#FFB691",
+                      "primary": "#005BBF",
+                      "outline-variant": "#C1C6D6",
+                      "on-primary-fixed": "#001A41",
+                      "error": "#BA1A1A",
+                      "on-surface-variant": "#414754",
+                      "surface-variant": "#E1E3E4",
+                      "tertiary-container": "#C55500",
+                      "outline": "#727785",
+                      "surface": "#F8F9FA",
+                      "inverse-surface": "#2E3132",
+                      "on-secondary": "#FFFFFF",
+                      "on-primary-fixed-variant": "#004493",
+                      "on-error": "#FFFFFF",
+                      "on-secondary-fixed": "#281800",
+                      "background": "#F8F9FA",
+                      "surface-bright": "#F8F9FA",
+                      "inverse-on-surface": "#F0F1F2",
+                      "on-tertiary-container": "#0E0200",
+                      "tertiary-fixed": "#FFDBCB",
+                      "surface-container-low": "#F3F4F5",
+                      "on-primary-container": "#FFFFFF",
+                      "inverse-primary": "#ADC7FF"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "fontFamily": {
+                      "headline": ["Plus Jakarta Sans"],
+                      "display": ["Plus Jakarta Sans"],
+                      "body": ["Inter"],
+                      "label": ["Inter"]
+              }
+            },
+          }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body antialiased min-h-screen pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl shadow-sm font-plus-jakarta-sans font-bold tracking-tight docked full-width top-0 sticky z-50 flex items-center justify-between px-6 py-4 w-full">
+<div class="flex items-center gap-3"><button class="material-symbols-outlined text-blue-600 dark:text-blue-400 p-2 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-full transition-colors cursor-pointer mr-1">
+    arrow_back
+</button>
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-white overflow-hidden">
+<img alt="Society Logo" class="w-full h-full object-cover" data-alt="A professional high-contrast corporate logo emblem for a high-end financial institution. The design features minimalist geometric shapes with a deep blue and white color scheme. The lighting is soft and architectural, creating a clean light-mode aesthetic that communicates reliability and modern efficiency in a premium gallery-like environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1heFv0qy_HC9Ts8G_UxpyYUFmwVgSHVlvKv01B1HpEFEzKqnwFNYJEjETMl-dTNVlhV5zswfn3EpfUU_rEZvvJtYtS-7xvIRoeAjdAwJDIinDuQ7VA1z5xAe7EN6l4BJLdGCvHMvkmKo6mqiS_1ZWIsxqlsMEgHjJf3bU5tDB8TaUue8HeiZlo4LjKbyKCBlsHOpr4VbOWg06n70goevaJgSLloEpqE7E6esqBopCEz_ldCo-pKoWVmZUw4FCW327kZBfGvsF5A"/>
+</div>
+<span class="text-xl font-bold text-blue-700 dark:text-blue-400">Financial Hub</span>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-slate-500 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors px-3 py-2 rounded-lg" href="#">Overview</a>
+<a class="text-blue-700 dark:text-blue-300 font-semibold hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors px-3 py-2 rounded-lg" href="#">Expenses</a>
+<a class="text-slate-500 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors px-3 py-2 rounded-lg" href="#">Reports</a>
+<a class="text-slate-500 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors px-3 py-2 rounded-lg" href="#">Admin</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-blue-600 dark:text-blue-400 p-2 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-full transition-colors">notifications</button>
+<div class="w-10 h-10 rounded-full border-2 border-primary/10 overflow-hidden hidden md:block">
+<img alt="Treasurer Profile" class="w-full h-full object-cover" data-alt="Close-up professional portrait of a confident male treasurer in a crisp white shirt against a soft-focus architectural background. The lighting is warm and natural, suggesting a bright office interior. The overall aesthetic is clean, editorial, and professional, consistent with a high-end financial dashboard style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHiYw-4_MPfggyJClVeDL-ihluq5EKKOq0jLK93w17B8Jj7aykjKbj50so8XRgBro8owqmRe95ss91cS_tsVs72l5QA5E8umuBo2XPdmpu9NFaqQu8Z97jz8WHJcQPyHbbhdwwJNtolsJUfsvtG28FXindc7K1ViizTmclTXa6Wem1JDiVBE-ypqrT1ZL_Ymq2S8kodnKKXL6FYqmpXtcsoKxGjO0T0J5ToHEWSCG0OV6kQhmkJOfw-mB1XS9CiqK0Cm01IlXhYg"/>
+</div>
+</div>
+</header>
+<div class="flex max-w-[1600px] mx-auto">
+<!-- NavigationDrawer (Sidebar) -->
+<aside class="hidden lg:flex flex-col h-[calc(100vh-72px)] w-80 p-6 gap-2 sticky top-[72px] bg-white dark:bg-slate-950 shadow-2xl rounded-r-3xl">
+<div class="mb-8 flex items-center gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-900">
+<div class="w-12 h-12 rounded-full overflow-hidden">
+<img alt="Treasurer Portrait" class="w-full h-full object-cover" data-alt="Treasurer profile photo showing a friendly professional man in business attire, set against a blurred modern office background with soft lighting. The image maintains a clean, architectural light-mode feel with high-key illumination and a sophisticated blue-tinted atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMPXCXA2BlfPwrfLXybXkR7f9epMosoDzL60fKrjQuKxjTDa-KJEgeSCEIOqiTNqSk6XW3qHvexFAn9XHBGW3Zlbzbf_UKFZwrE9uwhaHG8I4c6aEssZfgsyZP5DFsy6P2nZkyxw3TW_KWNJ-VvmPrVVmDMGolqOO0_ZG4VKg3GwVAWkkMNB-A0xGPsCSKFoIekvGshhRYvkG62D66JB7jNnxJo_SHv55SwukgFG-JR9TocCBs-LD_0alDiDeTUTFYnzWDEgLmsg"/>
+</div>
+<div>
+<p class="font-plus-jakarta-sans text-sm font-bold text-blue-700 dark:text-blue-400">Society Treasurer</p>
+<p class="text-xs text-slate-500">Admin Access • <span class="text-blue-600 font-medium">Premium</span></p>
+</div>
+</div>
+<div class="space-y-1">
+<a class="flex items-center gap-3 p-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all rounded-xl scale-[0.98] duration-150" href="#">
+<span class="material-symbols-outlined">account_balance</span>
+<span class="font-plus-jakarta-sans text-sm">Cash Flow</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all rounded-xl scale-[0.98] duration-150" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-plus-jakarta-sans text-sm">Vendor Registry</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all rounded-xl scale-[0.98] duration-150" href="#">
+<span class="material-symbols-outlined">history_edu</span>
+<span class="font-plus-jakarta-sans text-sm">Audit Logs</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all rounded-xl scale-[0.98] duration-150" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-plus-jakarta-sans text-sm">Member Dues</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all rounded-xl scale-[0.98] duration-150" href="#">
+<span class="material-symbols-outlined">contact_support</span>
+<span class="font-plus-jakarta-sans text-sm">Support</span>
+</a>
+</div>
+<!-- Sidebar Info Panel -->
+<div class="mt-auto pt-6 border-t border-slate-100 dark:border-slate-800">
+<h4 class="text-xs font-bold tracking-widest uppercase text-slate-400 mb-4">Budget Health</h4>
+<div class="p-4 bg-primary-fixed rounded-2xl mb-4">
+<p class="text-xs text-on-primary-fixed-variant font-medium mb-1">Monthly Remaining</p>
+<p class="text-2xl font-bold text-on-primary-fixed">$4,250.00</p>
+<div class="w-full bg-white/30 h-1.5 rounded-full mt-3 overflow-hidden">
+<div class="bg-primary h-full w-[68%]"></div>
+</div>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between items-center text-xs">
+<span class="text-slate-500">Utilities</span>
+<span class="font-bold text-on-surface">32%</span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-slate-500">Maintenance</span>
+<span class="font-bold text-on-surface">24%</span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-slate-500">Security</span>
+<span class="font-bold text-on-surface">18%</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 p-6 md:p-8 lg:p-10 space-y-8 overflow-x-hidden">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h1 class="text-3xl font-extrabold font-headline tracking-tight text-on-surface">Expenses Management</h1>
+<p class="text-on-surface-variant mt-1">Review and approve society expenditures for June 2024.</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-5 py-3 bg-primary text-white rounded-full font-semibold shadow-lg shadow-primary/20 hover:translate-y-[-2px] transition-all">
+<span class="material-symbols-outlined">add</span>
+                        New Expense
+                    </button>
+</div>
+</div>
+<!-- Summary Cards Bento Grid -->
+<section class="grid md:grid-cols-2 xl:grid-cols-4 gap-6 grid-cols-2">
+<div class="bg-surface-container-lowest p-6 rounded-3xl shadow-[0_12px_32px_rgba(25,28,29,0.06)] hover:translate-y-[-4px] transition-transform duration-300 p-5 flex flex-col justify-between min-h-[160px] overflow-hidden"><div class="flex items-center justify-between mb-4">
+<div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">calendar_month</span>
+</div>
+<div class="flex items-center gap-1 text-[10px] text-green-600 font-bold bg-green-50 px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-xs">trending_down</span>
+    4.2%
+  </div>
+</div>
+<div class="space-y-1"><div class="flex flex-col gap-1"><p class="text-on-surface-variant text-[8px] font-bold uppercase tracking-wider">This Month Expense</p><p class="text-lg md:text-xl font-extrabold font-headline text-on-surface tracking-tight leading-none break-all">$12,840.50</p></div></div>
+<p class="mt-3 text-[10px] text-slate-400 font-medium">vs. $13,400.00 last month</p></div>
+<div class="bg-surface-container-lowest p-6 rounded-3xl shadow-[0_12px_32px_rgba(25,28,29,0.06)] hover:translate-y-[-4px] transition-transform duration-300 p-5 flex flex-col justify-between min-h-[160px] overflow-hidden"><div class="flex items-center justify-between mb-4">
+<div class="w-10 h-10 bg-green-50 text-green-600 rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">check_circle</span>
+</div>
+</div>
+<div class="space-y-1"><div class="flex flex-col gap-1"><p class="text-on-surface-variant text-[8px] font-bold uppercase tracking-wider">Approved Expenses</p><p class="text-lg md:text-xl font-extrabold font-headline text-on-surface tracking-tight leading-none break-all">$8,200.00</p></div></div>
+<p class="mt-3 text-[10px] text-slate-400 font-medium">12 Transactions processed</p></div>
+<div class="bg-surface-container-lowest p-6 rounded-3xl shadow-[0_12px_32px_rgba(25,28,29,0.06)] hover:translate-y-[-4px] transition-transform duration-300 p-5 flex flex-col justify-between min-h-[160px] overflow-hidden"><div class="flex items-center justify-between mb-4">
+<div class="w-10 h-10 bg-secondary-fixed-dim text-on-secondary-container rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">pending_actions</span>
+</div>
+<span class="px-2 py-1 bg-secondary-container/10 text-secondary text-[10px] font-bold rounded-full">Action Required</span>
+</div>
+<div class="space-y-1"><div class="flex flex-col gap-1"><p class="text-on-surface-variant text-[8px] font-bold uppercase tracking-wider">Pending Approvals</p><p class="text-lg md:text-xl font-extrabold font-headline text-on-surface tracking-tight leading-none break-all">$4,640.50</p></div></div>
+<p class="mt-3 text-[10px] text-secondary font-bold">5 separate entries</p></div>
+<div class="bg-surface-container-lowest p-6 rounded-3xl shadow-[0_12px_32px_rgba(25,28,29,0.06)] hover:translate-y-[-4px] transition-transform duration-300 p-5 flex flex-col justify-between min-h-[160px] overflow-hidden"><div class="flex items-center justify-between mb-4">
+<div class="w-10 h-10 bg-tertiary-fixed text-tertiary-container rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">bolt</span>
+</div>
+</div>
+<div class="space-y-1"><div class="flex flex-col gap-1"><p class="text-on-surface-variant text-[8px] font-bold uppercase tracking-wider">Highest Category</p><p class="text-lg md:text-xl font-extrabold font-headline text-on-surface tracking-tight leading-none truncate">Electricity</p></div></div>
+<p class="mt-3 text-[10px] text-slate-400 font-medium">$4,200.00 total spend</p></div>
+</section>
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+<!-- Expense Entry Form -->
+<section class="xl:col-span-2 bg-surface-container-lowest p-8 rounded-3xl shadow-[0_12px_32px_rgba(25,28,29,0.06)]">
+<div class="flex items-center justify-between mb-8">
+<h2 class="text-xl font-bold font-headline text-on-surface">Record New Expense</h2>
+<span class="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full uppercase tracking-widest">Entry Form</span>
+</div>
+<form class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-1.5">
+<label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Date</label>
+<input class="w-full bg-surface-container-low border-none rounded-2xl p-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all" type="date"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Category</label>
+<select class="w-full bg-surface-container-low border-none rounded-2xl p-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all">
+<option>Maintenance</option>
+<option>Utilities</option>
+<option>Salaries</option>
+<option>Security</option>
+<option>Office Supplies</option>
+</select>
+</div>
+<div class="space-y-1.5">
+<label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Vendor Name</label>
+<input class="w-full bg-surface-container-low border-none rounded-2xl p-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all" placeholder="e.g. City Power Grid" type="text"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Amount ($)</label>
+<input class="w-full bg-surface-container-low border-none rounded-2xl p-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all" placeholder="0.00" type="number"/>
+</div>
+<div class="md:col-span-2 space-y-1.5">
+<label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Description</label>
+<textarea class="w-full bg-surface-container-low border-none rounded-2xl p-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Brief details about the expenditure..." rows="2"></textarea>
+</div>
+<div class="space-y-1.5">
+<label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Payment Mode</label>
+<div class="flex gap-2">
+<label class="flex-1 cursor-pointer">
+<input class="hidden peer" name="pay_mode" type="radio"/>
+<div class="p-3 text-center rounded-2xl bg-surface-container-low text-sm peer-checked:bg-primary peer-checked:text-white transition-all">Bank</div>
+</label>
+<label class="flex-1 cursor-pointer">
+<input class="hidden peer" name="pay_mode" type="radio"/>
+<div class="p-3 text-center rounded-2xl bg-surface-container-low text-sm peer-checked:bg-primary peer-checked:text-white transition-all">Cash</div>
+</label>
+<label class="flex-1 cursor-pointer">
+<input class="hidden peer" name="pay_mode" type="radio"/>
+<div class="p-3 text-center rounded-2xl bg-surface-container-low text-sm peer-checked:bg-primary peer-checked:text-white transition-all">Cheque</div>
+</label>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Upload Invoice</label>
+<div class="w-full h-[46px] border-2 border-dashed border-outline-variant/30 rounded-2xl flex items-center justify-center gap-2 text-slate-400 hover:bg-slate-50 transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-xl">upload_file</span>
+<span class="text-xs font-medium">Click to select PDF or Image</span>
+</div>
+</div>
+<div class="md:col-span-2 flex justify-end gap-4 pt-4 border-t border-slate-50 mt-2">
+<button class="px-6 py-3 text-sm font-bold text-slate-500 hover:text-on-surface transition-colors" type="reset">Discard</button>
+<button class="px-8 py-3 bg-primary text-white rounded-full font-bold shadow-lg shadow-primary/10 hover:translate-y-[-2px] transition-all" type="submit">Save Expense Entry</button>
+</div>
+</form>
+</section>
+<!-- Filter & Quick Actions Section -->
+<section class="space-y-6">
+<!-- Category Breakdown (Mobile friendly version of info panel) -->
+<div class="bg-surface-container-lowest p-8 rounded-3xl shadow-[0_12px_32px_rgba(25,28,29,0.06)]">
+<h2 class="text-lg font-bold font-headline text-on-surface mb-4">Top Categories</h2>
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-blue-600"></div>
+<span class="text-sm font-medium">Electricity</span>
+</div>
+<span class="text-sm font-bold">$4,200</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-orange-400"></div>
+<span class="text-sm font-medium">Landscaping</span>
+</div>
+<span class="text-sm font-bold">$2,150</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-purple-500"></div>
+<span class="text-sm font-medium">Security Staff</span>
+</div>
+<span class="text-sm font-bold">$1,800</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-green-500"></div>
+<span class="text-sm font-medium">Pool Chemicals</span>
+</div>
+<span class="text-sm font-bold">$940</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Expense Table -->
+<section class="bg-surface-container-lowest rounded-3xl shadow-[0_12px_32px_rgba(25,28,29,0.06)] overflow-hidden">
+<div class="px-8 py-6 border-b border-slate-50 flex flex-col md:flex-row md:items-center justify-between gap-4">
+<h2 class="text-xl font-bold font-headline text-on-surface">Transaction List</h2>
+<div class="flex items-center bg-surface-container-low px-4 py-2 rounded-full">
+<span class="material-symbols-outlined text-slate-400 text-sm">search</span>
+<input class="bg-transparent border-none text-sm focus:ring-0 w-full md:w-64" placeholder="Search by vendor..." type="text"/>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50/50">
+<th class="px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">Date</th>
+<th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">Category</th>
+<th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">Vendor</th>
+<th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">Description</th>
+<th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">Amount</th>
+<th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">Status</th>
+<th class="px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-400 text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-8 py-4 text-sm font-medium">Jun 12, 2024</td>
+<td class="px-4 py-4"><span class="px-2 py-1 bg-blue-50 text-blue-700 text-[10px] font-bold rounded uppercase">Utilities</span></td>
+<td class="px-4 py-4 text-sm font-semibold">City Water Board</td>
+<td class="px-4 py-4 text-sm text-slate-500 max-w-xs truncate">Water bill for main residential block.</td>
+<td class="px-4 py-4 text-sm font-extrabold">$1,240.50</td>
+<td class="px-4 py-4"><span class="px-2 py-1 bg-green-50 text-green-700 text-[10px] font-bold rounded uppercase">Approved</span></td>
+<td class="px-8 py-4 text-right space-x-2">
+<button class="material-symbols-outlined text-slate-400 hover:text-primary transition-colors">visibility</button>
+<button class="material-symbols-outlined text-slate-400 hover:text-primary transition-colors">edit</button>
+<button class="material-symbols-outlined text-slate-400 hover:text-error transition-colors">delete</button>
+</td>
+</tr>
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-8 py-4 text-sm font-medium">Jun 10, 2024</td>
+<td class="px-4 py-4"><span class="px-2 py-1 bg-purple-50 text-purple-700 text-[10px] font-bold rounded uppercase">Maintenance</span></td>
+<td class="px-4 py-4 text-sm font-semibold">Elevator Pros Inc.</td>
+<td class="px-4 py-4 text-sm text-slate-500 max-w-xs truncate">Routine maintenance for Block B lift.</td>
+<td class="px-4 py-4 text-sm font-extrabold">$650.00</td>
+<td class="px-4 py-4"><span class="px-2 py-1 bg-orange-50 text-orange-700 text-[10px] font-bold rounded uppercase">Pending</span></td>
+<td class="px-8 py-4 text-right space-x-2">
+<button class="material-symbols-outlined text-slate-400 hover:text-primary transition-colors">visibility</button>
+<button class="material-symbols-outlined text-slate-400 hover:text-primary transition-colors">edit</button>
+<button class="material-symbols-outlined text-slate-400 hover:text-error transition-colors">delete</button>
+</td>
+</tr>
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-8 py-4 text-sm font-medium">Jun 08, 2024</td>
+<td class="px-4 py-4"><span class="px-2 py-1 bg-orange-50 text-orange-700 text-[10px] font-bold rounded uppercase">Security</span></td>
+<td class="px-4 py-4 text-sm font-semibold">SafeGuard Corp</td>
+<td class="px-4 py-4 text-sm text-slate-500 max-w-xs truncate">Night shift personnel payment.</td>
+<td class="px-4 py-4 text-sm font-extrabold">$2,800.00</td>
+<td class="px-4 py-4"><span class="px-2 py-1 bg-green-50 text-green-700 text-[10px] font-bold rounded uppercase">Approved</span></td>
+<td class="px-8 py-4 text-right space-x-2">
+<button class="material-symbols-outlined text-slate-400 hover:text-primary transition-colors">visibility</button>
+<button class="material-symbols-outlined text-slate-400 hover:text-primary transition-colors">edit</button>
+<button class="material-symbols-outlined text-slate-400 hover:text-error transition-colors">delete</button>
+</td>
+</tr>
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-8 py-4 text-sm font-medium">Jun 05, 2024</td>
+<td class="px-4 py-4"><span class="px-2 py-1 bg-blue-50 text-blue-700 text-[10px] font-bold rounded uppercase">Utilities</span></td>
+<td class="px-4 py-4 text-sm font-semibold">National Grid Gas</td>
+<td class="px-4 py-4 text-sm text-slate-500 max-w-xs truncate">Central heating gas refill.</td>
+<td class="px-4 py-4 text-sm font-extrabold">$890.20</td>
+<td class="px-4 py-4"><span class="px-2 py-1 bg-green-50 text-green-700 text-[10px] font-bold rounded uppercase">Approved</span></td>
+<td class="px-8 py-4 text-right space-x-2">
+<button class="material-symbols-outlined text-slate-400 hover:text-primary transition-colors">visibility</button>
+<button class="material-symbols-outlined text-slate-400 hover:text-primary transition-colors">edit</button>
+<button class="material-symbols-outlined text-slate-400 hover:text-error transition-colors">delete</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-8 py-4 bg-slate-50/30 flex items-center justify-between">
+<p class="text-xs text-slate-500 font-medium">Showing 4 of 32 transactions</p>
+<div class="flex gap-2">
+<button class="px-3 py-1 text-xs font-bold border border-slate-200 rounded-lg hover:bg-white transition-colors">Prev</button>
+<button class="px-3 py-1 text-xs font-bold bg-primary text-white rounded-lg">1</button>
+<button class="px-3 py-1 text-xs font-bold border border-slate-200 rounded-lg hover:bg-white transition-colors">2</button>
+<button class="px-3 py-1 text-xs font-bold border border-slate-200 rounded-lg hover:bg-white transition-colors">Next</button>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- BottomNavBar (Mobile only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl border-t border-blue-50 dark:border-slate-800/50 shadow-[0_-12px_32px_rgba(25,28,29,0.06)] z-50 rounded-t-3xl">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:text-blue-500 transition-transform duration-300" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-inter text-[10px] font-medium tracking-widest uppercase mt-1">Overview</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-200 rounded-full px-5 py-2 translate-y-[-4px] transition-transform duration-300" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">payments</span>
+<span class="font-inter text-[10px] font-medium tracking-widest uppercase mt-1">Expenses</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:text-blue-500 transition-transform duration-300" href="#">
+<span class="material-symbols-outlined">bar_chart</span>
+<span class="font-inter text-[10px] font-medium tracking-widest uppercase mt-1">Reports</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:text-blue-500 transition-transform duration-300" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-inter text-[10px] font-medium tracking-widest uppercase mt-1">Admin</span>
+</a>
+</nav>
+</body></html>
