@@ -168,6 +168,13 @@ class AdminDashboardScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       _AdminQuickActionButton(
+                        icon: Icons.account_balance_wallet_rounded,
+                        label: 'Treasurer',
+                        onTap: () =>
+                            goToPage(context, AppPage.adminTreasurerDashboard),
+                      ),
+                      const SizedBox(width: 10),
+                      _AdminQuickActionButton(
                         icon: Icons.handyman_rounded,
                         label: 'Services',
                         onTap: () => goToPage(context, AppPage.adminServices),

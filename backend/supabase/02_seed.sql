@@ -1,4 +1,10 @@
 truncate table
+  public.vendor_contract_history,
+  public.vendor_quotations,
+  public.vendor_quotation_request_vendors,
+  public.vendor_quotation_requests,
+  public.treasurer_expenses,
+  public.finance_vendors,
   public.guard_duty_logs,
   public.announcements,
   public.admin_transactions,
@@ -251,6 +257,13 @@ insert into public.service_providers (
   availability_status,
   rating,
   jobs_completed,
+  service_category,
+  short_tagline,
+  bio,
+  starting_price,
+  years_experience,
+  skills,
+  is_featured,
   image_url,
   notes
 )
@@ -263,6 +276,13 @@ values
     'available',
     4.9,
     184,
+    'Electrical',
+    'Electrician & Energy Systems Specialist',
+    'Marcus handles preventive electrical checks, emergency outages, smart-switch retrofits, and high-load balancing for larger apartments.',
+    799,
+    12,
+    array['Wiring', 'Load balancing', 'Smart systems'],
+    true,
     'https://lh3.googleusercontent.com/aida-public/AB6AXuC8-jrEr6t09tGy9wMO0aspsXA7tT1pRZvKKajKZHuhQUS9BDyMBj89ftbLCqfklXBvcYzNGcOkR2hUy7sSGaaRBjoKfr1SqWHzlaDRW3_04vucVCCZ_K3OixZIrSmU9qAc5nHwgoBqzlK01jJUiQIN2MHOKlzPL145qPf35pK0vQaWz-ci1rKvU2Tiqm3TnvfGnsPpbmaJt3GmHTSbhLGT9vV9QY8wEX8yNaSQNqDC023gsgzsPYmLnOTxh1p2Pngv3dv2Bo1BlQ',
     'Preferred for electrical complaints and preventive checks.'
   ),
@@ -274,9 +294,373 @@ values
     'busy',
     4.8,
     139,
+    'Plumbing',
+    'Leakage & pressure-line expert',
+    'Elena is best known for fast response on leakage complaints, pressure-balancing fixes, and bathroom fixture replacements.',
+    699,
+    10,
+    array['Pipelines', 'Leak control', 'Fixture replacement'],
+    true,
     'https://lh3.googleusercontent.com/aida-public/AB6AXuB6sjdPffzza9Y9UPGnyFo6Vxn7fhNJAQhtyt1pet6qnVuXOtRSxzKSAZyLQ8ohsmC359Lr6h7MvpPcLLoXT2Ss_6onSJvQ52WueVZ-TqdqgQq52HepgxfV0EeRIPToKFiY3KZaOBg1NNe0R2c1JYpcmcOgN3ePJEOjy0wxu2DMzro-YO4x7Tp1ohRvOUudR3YPaQhxUItMpoXa3m9EMS1iux_THhY3yRPQHG7xzGjili4j4Ne5hNfgmTGrRUqYcVr3SnPJaX3FGg',
     'Handles plumbing and leakage escalations.'
+  ),
+  (
+    'Naina Kapoor',
+    'Private Chef',
+    '+91 98100 88776',
+    'Luxury dining consultant • 8 yrs exp.',
+    'available',
+    4.9,
+    91,
+    'Lifestyle',
+    'Private Culinary Specialist',
+    'Naina curates small-format private dinners, healthy meal plans, and event tasting menus for residents who want at-home hospitality support.',
+    2499,
+    8,
+    array['Meal planning', 'Live dining', 'Event menus'],
+    true,
+    'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=800&q=80',
+    'Popular for private dining, brunch setups, and festive menus.'
+  ),
+  (
+    'Arjun Sethi',
+    'Housekeeping',
+    '+91 98222 55110',
+    'Deep-clean lead • 6 yrs exp.',
+    'available',
+    4.7,
+    127,
+    'Cleaning',
+    'Move-in and deep cleaning support',
+    'Arjun focuses on deep-cleaning, sofa and carpet restoration, and turnover preparation before guest arrivals or move-ins.',
+    1199,
+    6,
+    array['Deep clean', 'Carpet care', 'Move-in prep'],
+    true,
+    'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80',
+    'Highly rated for move-in and post-renovation cleaning jobs.'
   );
+
+insert into public.finance_vendors (
+  company_name,
+  contact_name,
+  phone,
+  email,
+  address,
+  service_type,
+  service_scope,
+  gstin,
+  license_number,
+  monthly_cost,
+  hourly_rate,
+  staff_count,
+  onboarding_status,
+  contract_start_date,
+  contract_end_date,
+  service_agreement_url,
+  service_rating,
+  response_time_hours,
+  is_preferred,
+  notes,
+  created_by
+)
+select
+  vendor_seed.company_name,
+  vendor_seed.contact_name,
+  vendor_seed.phone,
+  vendor_seed.email,
+  vendor_seed.address,
+  vendor_seed.service_type,
+  vendor_seed.service_scope,
+  vendor_seed.gstin,
+  vendor_seed.license_number,
+  vendor_seed.monthly_cost,
+  vendor_seed.hourly_rate,
+  vendor_seed.staff_count,
+  vendor_seed.onboarding_status,
+  vendor_seed.contract_start_date,
+  vendor_seed.contract_end_date,
+  vendor_seed.service_agreement_url,
+  vendor_seed.service_rating,
+  vendor_seed.response_time_hours,
+  vendor_seed.is_preferred,
+  vendor_seed.notes,
+  admin_user.id
+from public.app_users admin_user
+cross join (
+  values
+    (
+      'Titan Protection',
+      'Rohit Malhotra',
+      '+91 98989 34343',
+      'ops@titanprotection.in',
+      'Cyber City, Gurugram',
+      'Security Services',
+      '24/7 society access control and event staffing',
+      '07AABCT1001Z9',
+      'SEC-2025-8801',
+      4800::numeric,
+      650::numeric,
+      12,
+      'active',
+      current_date - 220,
+      current_date + 24,
+      'https://example.com/contracts/titan.pdf',
+      4.7::numeric,
+      2,
+      true,
+      'Current lead security vendor with strongest response SLA.'
+    ),
+    (
+      'Evergreen Landscapes',
+      'Meera Bansal',
+      '+91 97777 12000',
+      'care@evergreen.co',
+      'Noida Extension',
+      'Landscaping',
+      'Garden upkeep, seasonal planting, irrigation checks',
+      '09AABCE2002L1',
+      'LAN-2025-4422',
+      2900::numeric,
+      420::numeric,
+      7,
+      'active',
+      current_date - 180,
+      current_date + 52,
+      'https://example.com/contracts/evergreen.pdf',
+      4.5::numeric,
+      6,
+      false,
+      'Strong seasonal work quality and water-saving plan.'
+    ),
+    (
+      'Sparkle Co.',
+      'Priyansh Arora',
+      '+91 96666 44110',
+      'hello@sparkleco.in',
+      'Sector 62, Noida',
+      'Housekeeping',
+      'Daily housekeeping and periodic deep cleaning',
+      '09AABCS4040D2',
+      'HKG-2025-1190',
+      3600::numeric,
+      350::numeric,
+      10,
+      'active',
+      current_date - 120,
+      current_date + 12,
+      'https://example.com/contracts/sparkle.pdf',
+      4.9::numeric,
+      4,
+      true,
+      'Best resident satisfaction score among cleaning partners.'
+    ),
+    (
+      'Shield Guard',
+      'Amit Saini',
+      '+91 95555 90909',
+      'desk@shieldguard.in',
+      'Dwarka, New Delhi',
+      'Security Services',
+      'Night shift coverage and visitor logging support',
+      '07AABCS9898Q1',
+      'SEC-2025-9988',
+      5200::numeric,
+      700::numeric,
+      11,
+      'active',
+      current_date - 300,
+      current_date - 5,
+      'https://example.com/contracts/shield.pdf',
+      4.2::numeric,
+      3,
+      false,
+      'Contract recently expired and queued for renewal review.'
+    )
+) as vendor_seed(
+  company_name,
+  contact_name,
+  phone,
+  email,
+  address,
+  service_type,
+  service_scope,
+  gstin,
+  license_number,
+  monthly_cost,
+  hourly_rate,
+  staff_count,
+  onboarding_status,
+  contract_start_date,
+  contract_end_date,
+  service_agreement_url,
+  service_rating,
+  response_time_hours,
+  is_preferred,
+  notes
+)
+where admin_user.email = 'admin@gmail.com';
+
+insert into public.treasurer_expenses (
+  expense_date,
+  category,
+  vendor_id,
+  vendor_name,
+  amount,
+  description,
+  payment_mode,
+  receipt_url,
+  approval_status,
+  recorded_by
+)
+select
+  current_date - expense_seed.days_ago,
+  expense_seed.category,
+  vendor.id,
+  vendor.company_name,
+  expense_seed.amount,
+  expense_seed.description,
+  expense_seed.payment_mode,
+  expense_seed.receipt_url,
+  expense_seed.approval_status,
+  admin_user.id
+from public.app_users admin_user
+join (
+  values
+    (3, 'Utilities', 'Titan Protection', 4200::numeric, 'Monthly perimeter and access desk staffing.', 'bank_transfer', 'https://example.com/receipts/titan-may.pdf', 'approved'),
+    (7, 'Maintenance', 'Sparkle Co.', 2150::numeric, 'Common area deep-clean and lobby polish cycle.', 'upi', 'https://example.com/receipts/sparkle-cycle.pdf', 'approved'),
+    (11, 'Landscaping', 'Evergreen Landscapes', 1850::numeric, 'Irrigation repair and planting refresh for south garden.', 'bank_transfer', 'https://example.com/receipts/evergreen-irrigation.pdf', 'approved'),
+    (16, 'Security', 'Shield Guard', 5100::numeric, 'Final invoice before renewal review.', 'cheque', 'https://example.com/receipts/shield-april.pdf', 'pending')
+) as expense_seed(
+  days_ago,
+  category,
+  vendor_company_name,
+  amount,
+  description,
+  payment_mode,
+  receipt_url,
+  approval_status
+) on true
+join public.finance_vendors vendor on vendor.company_name = expense_seed.vendor_company_name
+where admin_user.email = 'admin@gmail.com';
+
+insert into public.vendor_quotation_requests (
+  request_title,
+  service_type,
+  requested_start_date,
+  contract_duration,
+  estimated_budget,
+  staff_required,
+  requirements,
+  status,
+  selected_vendor_id,
+  created_by
+)
+select
+  'North Tower Security Renewal',
+  'Security Services',
+  current_date + 12,
+  '12 Months',
+  50000,
+  8,
+  '24/7 desk coverage, visitor logging, CCTV coordination, and event surge support.',
+  'sent',
+  best_vendor.id,
+  admin_user.id
+from public.app_users admin_user
+join public.finance_vendors best_vendor on best_vendor.company_name = 'Titan Protection'
+where admin_user.email = 'admin@gmail.com';
+
+insert into public.vendor_quotation_request_vendors (request_id, vendor_id)
+select
+  request.id,
+  vendor.id
+from public.vendor_quotation_requests request
+join public.finance_vendors vendor on vendor.company_name in (
+  'Titan Protection',
+  'Shield Guard',
+  'Sparkle Co.'
+)
+where request.request_title = 'North Tower Security Renewal';
+
+insert into public.vendor_quotations (
+  request_id,
+  vendor_id,
+  quoted_amount,
+  contract_term_months,
+  response_time_hours,
+  staff_offered,
+  warranty_note,
+  quote_status,
+  is_best_value
+)
+select
+  request.id,
+  vendor.id,
+  quote_seed.quoted_amount,
+  quote_seed.contract_term_months,
+  quote_seed.response_time_hours,
+  quote_seed.staff_offered,
+  quote_seed.warranty_note,
+  'received',
+  quote_seed.is_best_value
+from public.vendor_quotation_requests request
+join (
+  values
+    ('Titan Protection', 47000::numeric, 12, 2, 10, 'Priority event deployment included.', true),
+    ('Shield Guard', 45500::numeric, 12, 3, 9, 'Night-supervisor add-on billed separately.', false),
+    ('Sparkle Co.', 44200::numeric, 10, 5, 8, 'Cross-trained housekeeping/security hybrid crew.', false)
+) as quote_seed(
+  company_name,
+  quoted_amount,
+  contract_term_months,
+  response_time_hours,
+  staff_offered,
+  warranty_note,
+  is_best_value
+) on true
+join public.finance_vendors vendor on vendor.company_name = quote_seed.company_name
+where request.request_title = 'North Tower Security Renewal';
+
+insert into public.vendor_contract_history (
+  vendor_id,
+  start_date,
+  end_date,
+  monthly_amount,
+  terms_summary,
+  sla_summary,
+  quality_rating,
+  status,
+  renewed_by
+)
+select
+  vendor.id,
+  history_seed.start_date,
+  history_seed.end_date,
+  history_seed.monthly_amount,
+  history_seed.terms_summary,
+  history_seed.sla_summary,
+  history_seed.quality_rating,
+  history_seed.status,
+  admin_user.id
+from public.app_users admin_user
+join (
+  values
+    ('Titan Protection', current_date - 580, current_date - 220, 4300::numeric, 'Initial annual contract for desk security and patrol support.', 'Supervisor on-call within 30 minutes.', 4, 'completed'),
+    ('Titan Protection', current_date - 220, current_date + 24, 4800::numeric, 'Renewed contract with event staffing add-on.', 'Critical incident supervisor arrival within 15 minutes.', 5, 'active'),
+    ('Shield Guard', current_date - 300, current_date - 5, 5200::numeric, 'Interim contract for secondary gate operations.', 'Night supervisor required on weekends.', 3, 'expired')
+) as history_seed(
+  company_name,
+  start_date,
+  end_date,
+  monthly_amount,
+  terms_summary,
+  sla_summary,
+  quality_rating,
+  status
+) on true
+join public.finance_vendors vendor on vendor.company_name = history_seed.company_name
+where admin_user.email = 'admin@gmail.com';
 
 insert into public.amenity_bookings (user_id, amenity_id, booking_date, time_slot, guest_count, booking_status, booking_fee)
 select

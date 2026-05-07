@@ -222,8 +222,137 @@ create table if not exists public.service_providers (
   availability_status text not null default 'available',
   rating numeric(3, 2) not null default 4.8,
   jobs_completed integer not null default 0,
+  service_category text,
+  short_tagline text,
+  bio text,
+  starting_price numeric(10, 2),
+  years_experience integer not null default 0,
+  skills text[] not null default '{}',
+  is_featured boolean not null default true,
   image_url text,
   notes text,
+  created_at timestamptz not null default now()
+);
+
+alter table public.service_providers
+add column if not exists service_category text;
+
+alter table public.service_providers
+add column if not exists short_tagline text;
+
+alter table public.service_providers
+add column if not exists bio text;
+
+alter table public.service_providers
+add column if not exists starting_price numeric(10, 2);
+
+alter table public.service_providers
+add column if not exists years_experience integer not null default 0;
+
+alter table public.service_providers
+add column if not exists skills text[] not null default '{}';
+
+alter table public.service_providers
+add column if not exists is_featured boolean not null default true;
+
+create table if not exists public.finance_vendors (
+  id uuid primary key default gen_random_uuid(),
+  company_name text not null,
+  contact_name text not null,
+  phone text not null,
+  email text,
+  address text,
+  service_type text not null,
+  service_scope text,
+  gstin text,
+  license_number text,
+  monthly_cost numeric(10, 2) not null default 0,
+  hourly_rate numeric(10, 2),
+  staff_count integer not null default 0,
+  onboarding_status text not null default 'active',
+  contract_start_date date,
+  contract_end_date date,
+  service_agreement_url text,
+  service_rating numeric(3, 2) not null default 4.5,
+  response_time_hours integer,
+  is_preferred boolean not null default false,
+  notes text,
+  created_by uuid references public.app_users(id) on delete set null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create unique index if not exists finance_vendors_company_name_uq
+on public.finance_vendors (lower(trim(company_name)));
+
+create table if not exists public.treasurer_expenses (
+  id uuid primary key default gen_random_uuid(),
+  expense_date date not null,
+  category text not null,
+  vendor_id uuid references public.finance_vendors(id) on delete set null,
+  vendor_name text not null,
+  amount numeric(10, 2) not null,
+  description text not null,
+  payment_mode text not null default 'bank_transfer',
+  receipt_url text,
+  approval_status text not null default 'approved',
+  recorded_by uuid not null references public.app_users(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.vendor_quotation_requests (
+  id uuid primary key default gen_random_uuid(),
+  request_title text not null,
+  service_type text not null,
+  requested_start_date date,
+  contract_duration text,
+  estimated_budget numeric(10, 2),
+  staff_required integer,
+  requirements text,
+  status text not null default 'draft',
+  selected_vendor_id uuid references public.finance_vendors(id) on delete set null,
+  created_by uuid not null references public.app_users(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.vendor_quotation_request_vendors (
+  request_id uuid not null references public.vendor_quotation_requests(id) on delete cascade,
+  vendor_id uuid not null references public.finance_vendors(id) on delete cascade,
+  invited_at timestamptz not null default now(),
+  primary key (request_id, vendor_id)
+);
+
+create table if not exists public.vendor_quotations (
+  id uuid primary key default gen_random_uuid(),
+  request_id uuid not null references public.vendor_quotation_requests(id) on delete cascade,
+  vendor_id uuid not null references public.finance_vendors(id) on delete cascade,
+  quoted_amount numeric(10, 2) not null,
+  contract_term_months integer,
+  response_time_hours integer,
+  staff_offered integer,
+  warranty_note text,
+  quote_status text not null default 'received',
+  is_best_value boolean not null default false,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create unique index if not exists vendor_quotations_request_vendor_uq
+on public.vendor_quotations (request_id, vendor_id);
+
+create table if not exists public.vendor_contract_history (
+  id uuid primary key default gen_random_uuid(),
+  vendor_id uuid not null references public.finance_vendors(id) on delete cascade,
+  start_date date not null,
+  end_date date not null,
+  monthly_amount numeric(10, 2) not null,
+  terms_summary text,
+  sla_summary text,
+  quality_rating integer,
+  status text not null default 'active',
+  renewed_by uuid references public.app_users(id) on delete set null,
   created_at timestamptz not null default now()
 );
 
@@ -556,6 +685,30 @@ before update on public.admin_maintenance_notification_settings
 for each row
 execute function public.set_updated_at();
 
+drop trigger if exists trg_finance_vendors_updated_at on public.finance_vendors;
+create trigger trg_finance_vendors_updated_at
+before update on public.finance_vendors
+for each row
+execute function public.set_updated_at();
+
+drop trigger if exists trg_treasurer_expenses_updated_at on public.treasurer_expenses;
+create trigger trg_treasurer_expenses_updated_at
+before update on public.treasurer_expenses
+for each row
+execute function public.set_updated_at();
+
+drop trigger if exists trg_vendor_quotation_requests_updated_at on public.vendor_quotation_requests;
+create trigger trg_vendor_quotation_requests_updated_at
+before update on public.vendor_quotation_requests
+for each row
+execute function public.set_updated_at();
+
+drop trigger if exists trg_vendor_quotations_updated_at on public.vendor_quotations;
+create trigger trg_vendor_quotations_updated_at
+before update on public.vendor_quotations
+for each row
+execute function public.set_updated_at();
+
 create or replace function public.authenticate_app_user(
   p_email text,
   p_password text,
@@ -610,6 +763,161 @@ select
   (select count(*) from public.visitor_passes where status in ('approved', 'expected')) as active_visitor_passes,
   (select count(*) from public.complaints where state in ('in_progress', 'pending')) as open_complaints,
   (select coalesce(sum(amount), 0) from public.admin_transactions where amount > 0) as total_collected;
+
+drop view if exists public.admin_treasurer_dashboard_v;
+
+create or replace view public.admin_treasurer_dashboard_v as
+select
+  (select count(*) from public.finance_vendors) as total_vendors,
+  (
+    select count(*)
+    from public.finance_vendors
+    where coalesce(onboarding_status, 'active') = 'active'
+  ) as active_contracts,
+  (
+    select count(*)
+    from public.finance_vendors
+    where contract_end_date is not null
+      and contract_end_date between current_date and current_date + 30
+  ) as expiring_contracts,
+  (
+    select coalesce(sum(monthly_cost), 0)
+    from public.finance_vendors
+    where coalesce(onboarding_status, 'active') = 'active'
+  ) as vendor_payroll,
+  (
+    select coalesce(sum(amount), 0)
+    from public.treasurer_expenses
+    where date_trunc('month', expense_date::timestamp) = date_trunc('month', now())
+  ) as monthly_expenses,
+  (
+    select coalesce(sum(amount), 0)
+    from public.treasurer_expenses
+    where approval_status = 'approved'
+      and date_trunc('month', expense_date::timestamp) = date_trunc('month', now())
+  ) as approved_expenses;
+
+drop view if exists public.admin_vendor_directory_v;
+
+create or replace view public.admin_vendor_directory_v as
+select
+  vendor.id,
+  vendor.company_name,
+  vendor.contact_name,
+  vendor.phone,
+  vendor.email,
+  vendor.address,
+  vendor.service_type,
+  vendor.service_scope,
+  vendor.gstin,
+  vendor.license_number,
+  vendor.monthly_cost,
+  vendor.hourly_rate,
+  vendor.staff_count,
+  vendor.onboarding_status,
+  vendor.contract_start_date,
+  vendor.contract_end_date,
+  vendor.service_agreement_url,
+  vendor.service_rating,
+  vendor.response_time_hours,
+  vendor.is_preferred,
+  vendor.notes,
+  case
+    when vendor.contract_end_date is null then coalesce(vendor.onboarding_status, 'active')
+    when vendor.contract_end_date < current_date then 'expired'
+    when vendor.contract_end_date <= current_date + 30 then 'renewal_due'
+    else coalesce(vendor.onboarding_status, 'active')
+  end as contract_health,
+  vendor.created_at,
+  vendor.updated_at
+from public.finance_vendors vendor
+order by
+  case
+    when vendor.contract_end_date is not null and vendor.contract_end_date <= current_date + 30 then 0
+    else 1
+  end,
+  vendor.company_name asc;
+
+drop view if exists public.admin_expense_management_v;
+
+create or replace view public.admin_expense_management_v as
+select
+  expense.id,
+  expense.expense_date,
+  expense.category,
+  expense.vendor_id,
+  coalesce(vendor.company_name, expense.vendor_name) as vendor_name,
+  expense.amount,
+  expense.description,
+  expense.payment_mode,
+  expense.receipt_url,
+  expense.approval_status,
+  expense.recorded_by,
+  admin_user.full_name as recorded_by_name,
+  expense.created_at,
+  expense.updated_at
+from public.treasurer_expenses expense
+left join public.finance_vendors vendor on vendor.id = expense.vendor_id
+left join public.app_users admin_user on admin_user.id = expense.recorded_by
+order by expense.expense_date desc, expense.created_at desc;
+
+drop view if exists public.admin_financial_monthly_summary_v;
+
+create or replace view public.admin_financial_monthly_summary_v as
+with income_months as (
+  select
+    date_trunc('month', created_at) as month_bucket,
+    coalesce(sum(case when amount > 0 then amount else 0 end), 0) as income_total
+  from public.admin_transactions
+  group by 1
+),
+expense_months as (
+  select
+    date_trunc('month', expense_date::timestamp) as month_bucket,
+    coalesce(sum(amount), 0) as expense_total
+  from public.treasurer_expenses
+  group by 1
+),
+months as (
+  select month_bucket from income_months
+  union
+  select month_bucket from expense_months
+)
+select
+  months.month_bucket::date as month_bucket,
+  coalesce(income_months.income_total, 0) as income_total,
+  coalesce(expense_months.expense_total, 0) as expense_total,
+  coalesce(income_months.income_total, 0) - coalesce(expense_months.expense_total, 0) as net_total
+from months
+left join income_months on income_months.month_bucket = months.month_bucket
+left join expense_months on expense_months.month_bucket = months.month_bucket
+order by months.month_bucket asc;
+
+drop view if exists public.admin_vendor_comparison_v;
+
+create or replace view public.admin_vendor_comparison_v as
+select
+  vendor.id,
+  vendor.company_name,
+  vendor.service_type,
+  vendor.monthly_cost,
+  vendor.staff_count,
+  vendor.service_rating,
+  vendor.response_time_hours,
+  vendor.is_preferred,
+  vendor.contract_end_date,
+  quote.quoted_amount,
+  quote.contract_term_months,
+  quote.response_time_hours as quoted_response_time_hours,
+  quote.staff_offered,
+  quote.is_best_value,
+  request.id as request_id,
+  request.request_title,
+  request.status as request_status
+from public.finance_vendors vendor
+left join public.vendor_quotations quote on quote.vendor_id = vendor.id
+left join public.vendor_quotation_requests request on request.id = quote.request_id
+order by coalesce(quote.is_best_value, false) desc, vendor.service_rating desc, vendor.company_name asc;
 
 drop view if exists public.admin_amenity_bookings_v;
 
@@ -870,9 +1178,14 @@ grant select, insert, update, delete on all tables in schema public to anon, aut
 grant execute on function public.authenticate_app_user(text, text, public.app_role) to anon, authenticated;
 grant select on public.resident_directory_v to anon, authenticated;
 grant select on public.admin_dashboard_metrics_v to anon, authenticated;
+grant select on public.admin_treasurer_dashboard_v to anon, authenticated;
 grant select on public.admin_amenity_bookings_v to anon, authenticated;
 grant select on public.admin_complaints_v to anon, authenticated;
 grant select on public.admin_maintenance_resident_log_v to anon, authenticated;
+grant select on public.admin_vendor_directory_v to anon, authenticated;
+grant select on public.admin_expense_management_v to anon, authenticated;
+grant select on public.admin_financial_monthly_summary_v to anon, authenticated;
+grant select on public.admin_vendor_comparison_v to anon, authenticated;
 grant select on public.guard_gate_activity_v to anon, authenticated;
 grant select on public.community_suggestion_feed_v to anon, authenticated;
 grant select on public.admin_community_suggestion_feed_v to anon, authenticated;
@@ -886,6 +1199,12 @@ alter table public.amenities disable row level security;
 alter table public.amenity_bookings disable row level security;
 alter table public.amenity_time_slots disable row level security;
 alter table public.service_providers disable row level security;
+alter table public.finance_vendors disable row level security;
+alter table public.treasurer_expenses disable row level security;
+alter table public.vendor_quotation_requests disable row level security;
+alter table public.vendor_quotation_request_vendors disable row level security;
+alter table public.vendor_quotations disable row level security;
+alter table public.vendor_contract_history disable row level security;
 alter table public.bills disable row level security;
 alter table public.payment_methods disable row level security;
 alter table public.payment_activity disable row level security;

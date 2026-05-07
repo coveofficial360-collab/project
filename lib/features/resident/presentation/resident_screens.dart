@@ -8,6 +8,8 @@ import '../../../core/supabase/avenue_repository.dart';
 import '../../../theme/avenue_theme.dart';
 import '../../common/presentation/avenue_ui.dart';
 
+part 'resident_services_screens.dart';
+
 const _residentAvatarUrl =
     'https://lh3.googleusercontent.com/aida-public/AB6AXuCJ6EpMNgN7n9bh8EVIUs7N5SOo5Yl-IMIN9XmH6Yy-5ZQFuibLZUhdy_fSA1wZksMCirCpeAxKY-X3RhGG21edbtajSTdvIKPF-bAU_cgdKsh8O4-U9Ynedpa_iOPQvDGGNY_u9vM9PIETZpc_crPtmFthrBwf51AmmWx8Ymv72rHR1kQRjARNXhFro_rBfoEztKMZBRHWwESolqtAF7ekTFs603tp08kexUAy68IjY7VYyjoJirw5E8Oxqte5m_7dGXGGMAFX3P1e';
 const _drawerAvatarUrl =
@@ -72,7 +74,7 @@ final _visitorNavItems = [
   const AvenueNavItem(
     label: 'SERVICES',
     icon: Icons.grid_view_rounded,
-    page: AppPage.amenities,
+    page: AppPage.residentServices,
   ),
   const AvenueNavItem(
     label: 'PROFILE',
@@ -848,6 +850,18 @@ class ResidentDrawerScreen extends StatelessWidget {
                       selected: currentPage == AppPage.amenities,
                       onTap: () =>
                           _navigateFromDrawer(context, AppPage.amenities),
+                    ),
+                    const SizedBox(height: 8),
+                    _DrawerItem(
+                      label: 'Services',
+                      icon: Icons.grid_view_rounded,
+                      selected:
+                          currentPage == AppPage.residentServices ||
+                          currentPage == AppPage.residentServiceProfile,
+                      onTap: () => _navigateFromDrawer(
+                        context,
+                        AppPage.residentServices,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     _DrawerItem(
@@ -3694,7 +3708,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 if (isLoading && rows.isEmpty)
                   const _DataPlaceholderCard(label: 'Loading notifications...')
                 else if (rows.isEmpty)
-                  const _DataPlaceholderCard(label: 'No notifications available right now.')
+                  const _DataPlaceholderCard(
+                    label: 'No notifications available right now.',
+                  )
                 else
                   ...rows.map(
                     (row) => Padding(
@@ -4186,11 +4202,7 @@ class _DrawerItem extends StatelessWidget {
 }
 
 class _MaintenanceCard extends StatelessWidget {
-  const _MaintenanceCard({
-    required this.onPayTap,
-    this.amount,
-    this.dueDate,
-  });
+  const _MaintenanceCard({required this.onPayTap, this.amount, this.dueDate});
 
   final VoidCallback? onPayTap;
   final String? amount;

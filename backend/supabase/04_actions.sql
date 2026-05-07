@@ -583,6 +583,401 @@ begin
 end;
 $$;
 
+create or replace function public.create_finance_vendor(
+  p_admin_user_id uuid,
+  p_company_name text,
+  p_contact_name text,
+  p_phone text,
+  p_email text default null,
+  p_address text default null,
+  p_service_type text default 'General',
+  p_service_scope text default null,
+  p_gstin text default null,
+  p_license_number text default null,
+  p_monthly_cost numeric default 0,
+  p_hourly_rate numeric default null,
+  p_staff_count integer default 0,
+  p_onboarding_status text default 'active',
+  p_contract_start_date date default null,
+  p_contract_end_date date default null,
+  p_service_agreement_url text default null,
+  p_notes text default null
+)
+returns table (
+  vendor_id uuid,
+  company_name text,
+  service_type text,
+  onboarding_status text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_vendor_id uuid;
+begin
+  if not exists (
+    select 1
+    from public.app_users admin_user
+    where admin_user.id = p_admin_user_id
+      and admin_user.role = 'admin'
+  ) then
+    raise exception 'Only an admin user can create vendors.';
+  end if;
+
+  if exists (
+    select 1
+    from public.finance_vendors vendor
+    where lower(trim(vendor.company_name)) = lower(trim(coalesce(p_company_name, '')))
+  ) then
+    raise exception 'A vendor named "%" already exists. Choose a different name.', trim(coalesce(p_company_name, ''));
+  end if;
+
+  insert into public.finance_vendors (
+    company_name,
+    contact_name,
+    phone,
+    email,
+    address,
+    service_type,
+    service_scope,
+    gstin,
+    license_number,
+    monthly_cost,
+    hourly_rate,
+    staff_count,
+    onboarding_status,
+    contract_start_date,
+    contract_end_date,
+    service_agreement_url,
+    notes,
+    created_by,
+    created_at,
+    updated_at
+  )
+  values (
+    trim(p_company_name),
+    trim(p_contact_name),
+    trim(p_phone),
+    nullif(trim(coalesce(p_email, '')), ''),
+    nullif(trim(coalesce(p_address, '')), ''),
+    trim(coalesce(p_service_type, 'General')),
+    nullif(trim(coalesce(p_service_scope, '')), ''),
+    nullif(trim(coalesce(p_gstin, '')), ''),
+    nullif(trim(coalesce(p_license_number, '')), ''),
+    greatest(coalesce(p_monthly_cost, 0), 0),
+    p_hourly_rate,
+    greatest(coalesce(p_staff_count, 0), 0),
+    lower(trim(coalesce(p_onboarding_status, 'active'))),
+    p_contract_start_date,
+    p_contract_end_date,
+    nullif(trim(coalesce(p_service_agreement_url, '')), ''),
+    nullif(trim(coalesce(p_notes, '')), ''),
+    p_admin_user_id,
+    now(),
+    now()
+  )
+  returning id into v_vendor_id;
+
+  return query
+  select
+    v_vendor_id,
+    trim(p_company_name),
+    trim(coalesce(p_service_type, 'General')),
+    lower(trim(coalesce(p_onboarding_status, 'active')));
+end;
+$$;
+
+create or replace function public.create_treasurer_expense(
+  p_admin_user_id uuid,
+  p_expense_date date,
+  p_category text,
+  p_vendor_id uuid default null,
+  p_vendor_name text default null,
+  p_amount numeric default 0,
+  p_description text default '',
+  p_payment_mode text default 'bank_transfer',
+  p_receipt_url text default null,
+  p_approval_status text default 'approved'
+)
+returns table (
+  expense_id uuid,
+  category text,
+  vendor_name text,
+  amount numeric,
+  approval_status text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_expense_id uuid;
+  v_vendor_name text;
+  v_amount numeric(10, 2) := greatest(coalesce(p_amount, 0), 0);
+begin
+  if not exists (
+    select 1
+    from public.app_users admin_user
+    where admin_user.id = p_admin_user_id
+      and admin_user.role = 'admin'
+  ) then
+    raise exception 'Only an admin user can record expenses.';
+  end if;
+
+  if p_vendor_id is not null then
+    select vendor.company_name
+    into v_vendor_name
+    from public.finance_vendors vendor
+    where vendor.id = p_vendor_id
+    limit 1;
+  end if;
+
+  v_vendor_name := coalesce(
+    nullif(trim(coalesce(v_vendor_name, '')), ''),
+    nullif(trim(coalesce(p_vendor_name, '')), '')
+  );
+
+  if v_vendor_name is null then
+    raise exception 'Select a vendor or provide a vendor name.';
+  end if;
+
+  insert into public.treasurer_expenses (
+    expense_date,
+    category,
+    vendor_id,
+    vendor_name,
+    amount,
+    description,
+    payment_mode,
+    receipt_url,
+    approval_status,
+    recorded_by,
+    created_at,
+    updated_at
+  )
+  values (
+    coalesce(p_expense_date, current_date),
+    trim(coalesce(p_category, 'General')),
+    p_vendor_id,
+    v_vendor_name,
+    v_amount,
+    trim(coalesce(p_description, 'Expense entry')),
+    lower(trim(coalesce(p_payment_mode, 'bank_transfer'))),
+    nullif(trim(coalesce(p_receipt_url, '')), ''),
+    lower(trim(coalesce(p_approval_status, 'approved'))),
+    p_admin_user_id,
+    now(),
+    now()
+  )
+  returning id into v_expense_id;
+
+  insert into public.admin_transactions (
+    title,
+    subtitle,
+    amount,
+    status,
+    icon_name,
+    icon_bg_hex,
+    created_at
+  )
+  values (
+    trim(coalesce(p_category, 'Expense')) || ' Expense',
+    v_vendor_name,
+    -v_amount,
+    upper(trim(coalesce(p_approval_status, 'approved'))),
+    'receipt_long',
+    '#DDEBFF',
+    now()
+  );
+
+  return query
+  select
+    v_expense_id,
+    trim(coalesce(p_category, 'General')),
+    v_vendor_name,
+    v_amount,
+    lower(trim(coalesce(p_approval_status, 'approved')));
+end;
+$$;
+
+create or replace function public.create_vendor_quotation_request(
+  p_admin_user_id uuid,
+  p_request_title text,
+  p_service_type text,
+  p_requested_start_date date default null,
+  p_contract_duration text default null,
+  p_estimated_budget numeric default null,
+  p_staff_required integer default null,
+  p_requirements text default null,
+  p_vendor_ids uuid[] default '{}'
+)
+returns table (
+  request_id uuid,
+  request_title text,
+  invited_count integer,
+  status text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_request_id uuid;
+  v_invited_count integer := 0;
+begin
+  if not exists (
+    select 1
+    from public.app_users admin_user
+    where admin_user.id = p_admin_user_id
+      and admin_user.role = 'admin'
+  ) then
+    raise exception 'Only an admin user can send quotation requests.';
+  end if;
+
+  if coalesce(array_length(p_vendor_ids, 1), 0) = 0 then
+    raise exception 'Select at least one vendor before sending a quotation request.';
+  end if;
+
+  insert into public.vendor_quotation_requests (
+    request_title,
+    service_type,
+    requested_start_date,
+    contract_duration,
+    estimated_budget,
+    staff_required,
+    requirements,
+    status,
+    created_by,
+    created_at,
+    updated_at
+  )
+  values (
+    trim(coalesce(p_request_title, 'Vendor quotation request')),
+    trim(coalesce(p_service_type, 'General')),
+    p_requested_start_date,
+    nullif(trim(coalesce(p_contract_duration, '')), ''),
+    p_estimated_budget,
+    p_staff_required,
+    nullif(trim(coalesce(p_requirements, '')), ''),
+    'sent',
+    p_admin_user_id,
+    now(),
+    now()
+  )
+  returning id into v_request_id;
+
+  insert into public.vendor_quotation_request_vendors (
+    request_id,
+    vendor_id,
+    invited_at
+  )
+  select
+    v_request_id,
+    vendor.id,
+    now()
+  from public.finance_vendors vendor
+  where vendor.id = any(p_vendor_ids);
+
+  get diagnostics v_invited_count = row_count;
+
+  return query
+  select
+    v_request_id,
+    trim(coalesce(p_request_title, 'Vendor quotation request')),
+    v_invited_count,
+    'sent';
+end;
+$$;
+
+create or replace function public.renew_finance_vendor_contract(
+  p_admin_user_id uuid,
+  p_vendor_id uuid,
+  p_start_date date,
+  p_end_date date,
+  p_monthly_amount numeric,
+  p_terms_summary text default null,
+  p_sla_summary text default null,
+  p_quality_rating integer default null
+)
+returns table (
+  vendor_id uuid,
+  company_name text,
+  contract_end_date date,
+  monthly_cost numeric
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_vendor record;
+begin
+  if not exists (
+    select 1
+    from public.app_users admin_user
+    where admin_user.id = p_admin_user_id
+      and admin_user.role = 'admin'
+  ) then
+    raise exception 'Only an admin user can renew vendor contracts.';
+  end if;
+
+  select vendor.id, vendor.company_name
+  into v_vendor
+  from public.finance_vendors vendor
+  where vendor.id = p_vendor_id
+  limit 1;
+
+  if v_vendor.id is null then
+    raise exception 'Vendor was not found.';
+  end if;
+
+  insert into public.vendor_contract_history (
+    vendor_id,
+    start_date,
+    end_date,
+    monthly_amount,
+    terms_summary,
+    sla_summary,
+    quality_rating,
+    status,
+    renewed_by,
+    created_at
+  )
+  values (
+    p_vendor_id,
+    p_start_date,
+    p_end_date,
+    greatest(coalesce(p_monthly_amount, 0), 0),
+    nullif(trim(coalesce(p_terms_summary, '')), ''),
+    nullif(trim(coalesce(p_sla_summary, '')), ''),
+    p_quality_rating,
+    'active',
+    p_admin_user_id,
+    now()
+  );
+
+  update public.finance_vendors vendor
+  set
+    contract_start_date = p_start_date,
+    contract_end_date = p_end_date,
+    monthly_cost = greatest(coalesce(p_monthly_amount, 0), 0),
+    onboarding_status = 'active',
+    service_rating = coalesce(p_quality_rating, vendor.service_rating),
+    updated_at = now()
+  where vendor.id = p_vendor_id;
+
+  return query
+  select
+    vendor.id,
+    vendor.company_name,
+    vendor.contract_end_date,
+    vendor.monthly_cost
+  from public.finance_vendors vendor
+  where vendor.id = p_vendor_id;
+end;
+$$;
+
 drop function if exists public.create_amenity_booking(uuid, uuid, date, text, integer);
 
 create or replace function public.create_amenity_booking(
@@ -2418,6 +2813,10 @@ grant execute on function public.create_admin_amenity(uuid, text, text, text, te
 grant execute on function public.update_admin_amenity(uuid, uuid, text, text, text, text, text, text, text, integer, boolean, text, text, text[], jsonb) to anon, authenticated;
 grant execute on function public.update_admin_amenity_status(uuid, uuid, text) to anon, authenticated;
 grant execute on function public.create_admin_service_provider(uuid, text, text, text, text, text, numeric, integer, text, text) to anon, authenticated;
+grant execute on function public.create_finance_vendor(uuid, text, text, text, text, text, text, text, text, text, numeric, numeric, integer, text, date, date, text, text) to anon, authenticated;
+grant execute on function public.create_treasurer_expense(uuid, date, text, uuid, text, numeric, text, text, text, text) to anon, authenticated;
+grant execute on function public.create_vendor_quotation_request(uuid, text, text, date, text, numeric, integer, text, uuid[]) to anon, authenticated;
+grant execute on function public.renew_finance_vendor_contract(uuid, uuid, date, date, numeric, text, text, integer) to anon, authenticated;
 grant execute on function public.create_amenity_booking(uuid, uuid, date, text, integer) to anon, authenticated;
 grant execute on function public.create_resident_complaint(uuid, text, text, text, text, text, text, text, text, text) to anon, authenticated;
 grant execute on function public.update_complaint_admin_status(uuid, uuid, public.complaint_state, text, text, text) to anon, authenticated;

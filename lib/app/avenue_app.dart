@@ -123,6 +123,12 @@ class AvenueApp extends StatelessWidget {
                       ? settings.arguments! as AppPage
                       : AppPage.home,
                 );
+              case AppPage.residentServices:
+                return const ResidentServicesScreen();
+              case AppPage.residentServiceProfile:
+                return ResidentServiceProfileScreen(
+                  providerId: arguments['providerId']?.toString(),
+                );
               case AppPage.communityFeed:
                 return const CommunityFeedScreen();
               case AppPage.communityShareIdea:
@@ -207,6 +213,24 @@ class AvenueApp extends StatelessWidget {
                 return const AdminMaintenanceExportOptionsScreen();
               case AppPage.adminMaintenanceSecurePayment:
                 return const AdminMaintenanceSecurePaymentScreen();
+              case AppPage.adminTreasurerDashboard:
+                return const AdminTreasurerDashboardScreen();
+              case AppPage.adminTreasurerVendors:
+                return const AdminVendorManagementScreen();
+              case AppPage.adminTreasurerAddVendor:
+                return const AdminAddVendorScreen();
+              case AppPage.adminTreasurerExpenses:
+                return const AdminExpensesManagementScreen();
+              case AppPage.adminTreasurerAnalysis:
+                return const AdminFinancialAnalysisScreen();
+              case AppPage.adminTreasurerQuotationRequest:
+                return const AdminRequestVendorQuotationScreen();
+              case AppPage.adminTreasurerVendorComparison:
+                return const AdminVendorComparisonScreen();
+              case AppPage.adminTreasurerContractRenewal:
+                return AdminVendorContractRenewalScreen(
+                  vendorId: arguments['vendorId']?.toString(),
+                );
               case AppPage.adminComplaints:
                 return const AdminComplaintsScreen();
               case AppPage.adminComplaintDetail:

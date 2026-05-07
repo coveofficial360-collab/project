@@ -16,3 +16,4 @@ part 'admin_resident_directory_screen.dart';
 part 'admin_complaints_screen.dart';
 part 'admin_community_screen.dart';
 part 'admin_amenities_services_screen.dart';
+part 'admin_treasurer_screens.dart';

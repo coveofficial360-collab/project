@@ -151,6 +151,137 @@ class AvenueRepository {
     final rows = await _client
         .from('service_providers')
         .select()
+        .order('is_featured', ascending: false)
+        .order('rating', ascending: false)
+        .order('jobs_completed', ascending: false)
+        .order('created_at', ascending: false);
+
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchResidentServiceProviders() async {
+    final rows = await _client
+        .from('service_providers')
+        .select()
+        .eq('is_featured', true)
+        .order('rating', ascending: false)
+        .order('jobs_completed', ascending: false)
+        .order('created_at', ascending: false);
+
+    return _castRows(rows);
+  }
+
+  Future<Map<String, dynamic>?> fetchResidentServiceProviderById(
+    String providerId,
+  ) async {
+    final rows = await _client
+        .from('service_providers')
+        .select()
+        .eq('id', providerId)
+        .limit(1);
+
+    final records = _castRows(rows);
+    if (records.isEmpty) {
+      return null;
+    }
+
+    return records.first;
+  }
+
+  Future<List<Map<String, dynamic>>> fetchTreasurerDashboardMetrics() async {
+    final rows = await _client
+        .from('admin_treasurer_dashboard_v')
+        .select()
+        .limit(1);
+
+    final records = _castRows(rows);
+    if (records.isEmpty) {
+      return const [];
+    }
+
+    return records;
+  }
+
+  Future<List<Map<String, dynamic>>> fetchFinanceVendors() async {
+    final rows = await _client
+        .from('admin_vendor_directory_v')
+        .select()
+        .order('contract_end_date', ascending: true)
+        .order('company_name', ascending: true);
+
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchTreasurerExpenses() async {
+    final rows = await _client
+        .from('admin_expense_management_v')
+        .select()
+        .order('expense_date', ascending: false)
+        .order('created_at', ascending: false);
+
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchFinancialMonthlySummary() async {
+    final rows = await _client
+        .from('admin_financial_monthly_summary_v')
+        .select()
+        .order('month_bucket', ascending: true);
+
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchVendorComparisonRows() async {
+    final rows = await _client
+        .from('admin_vendor_comparison_v')
+        .select()
+        .order('is_best_value', ascending: false)
+        .order('service_rating', ascending: false);
+
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchVendorContractHistory(
+    String vendorId,
+  ) async {
+    final rows = await _client
+        .from('vendor_contract_history')
+        .select()
+        .eq('vendor_id', vendorId)
+        .order('start_date', ascending: false);
+
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchVendorQuotationRequests() async {
+    final rows = await _client
+        .from('vendor_quotation_requests')
+        .select()
+        .order('created_at', ascending: false);
+
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchRequestInvitedVendors(
+    String requestId,
+  ) async {
+    final rows = await _client
+        .from('vendor_quotation_request_vendors')
+        .select('*, finance_vendors(*)')
+        .eq('request_id', requestId);
+
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchRequestQuotations(
+    String requestId,
+  ) async {
+    final rows = await _client
+        .from('vendor_quotations')
+        .select('*, finance_vendors(*)')
+        .eq('request_id', requestId)
+        .order('is_best_value', ascending: false)
+        .order('quoted_amount', ascending: true)
         .order('created_at', ascending: false);
 
     return _castRows(rows);
@@ -1049,6 +1180,172 @@ class AvenueRepository {
         'p_assigned_to': assignedTo?.trim(),
         'p_admin_notes': adminNotes?.trim(),
         'p_resolution_note': resolutionNote?.trim(),
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> createFinanceVendor({
+    required String companyName,
+    required String contactName,
+    required String phone,
+    String? email,
+    String? address,
+    String serviceType = 'General',
+    String? serviceScope,
+    String? gstin,
+    String? licenseNumber,
+    double monthlyCost = 0,
+    double? hourlyRate,
+    int staffCount = 0,
+    String onboardingStatus = 'active',
+    DateTime? contractStartDate,
+    DateTime? contractEndDate,
+    String? serviceAgreementUrl,
+    String? notes,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'create_finance_vendor',
+      params: {
+        'p_admin_user_id': currentUser.id,
+        'p_company_name': companyName.trim(),
+        'p_contact_name': contactName.trim(),
+        'p_phone': phone.trim(),
+        'p_email': email?.trim(),
+        'p_address': address?.trim(),
+        'p_service_type': serviceType.trim(),
+        'p_service_scope': serviceScope?.trim(),
+        'p_gstin': gstin?.trim(),
+        'p_license_number': licenseNumber?.trim(),
+        'p_monthly_cost': monthlyCost,
+        'p_hourly_rate': hourlyRate,
+        'p_staff_count': staffCount,
+        'p_onboarding_status': onboardingStatus,
+        'p_contract_start_date': contractStartDate?.toIso8601String().split('T').first,
+        'p_contract_end_date': contractEndDate?.toIso8601String().split('T').first,
+        'p_service_agreement_url': serviceAgreementUrl?.trim(),
+        'p_notes': notes?.trim(),
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> createTreasurerExpense({
+    required DateTime expenseDate,
+    required String category,
+    String? vendorId,
+    String? vendorName,
+    required double amount,
+    required String description,
+    String paymentMode = 'bank_transfer',
+    String? receiptUrl,
+    String approvalStatus = 'approved',
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'create_treasurer_expense',
+      params: {
+        'p_admin_user_id': currentUser.id,
+        'p_expense_date': expenseDate.toIso8601String().split('T').first,
+        'p_category': category.trim(),
+        'p_vendor_id': vendorId,
+        'p_vendor_name': vendorName?.trim(),
+        'p_amount': amount,
+        'p_description': description.trim(),
+        'p_payment_mode': paymentMode,
+        'p_receipt_url': receiptUrl?.trim(),
+        'p_approval_status': approvalStatus,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> createVendorQuotationRequest({
+    required String requestTitle,
+    required String serviceType,
+    DateTime? requestedStartDate,
+    String? contractDuration,
+    double? estimatedBudget,
+    int? staffRequired,
+    String? requirements,
+    required List<String> vendorIds,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'create_vendor_quotation_request',
+      params: {
+        'p_admin_user_id': currentUser.id,
+        'p_request_title': requestTitle.trim(),
+        'p_service_type': serviceType.trim(),
+        'p_requested_start_date': requestedStartDate?.toIso8601String().split('T').first,
+        'p_contract_duration': contractDuration?.trim(),
+        'p_estimated_budget': estimatedBudget,
+        'p_staff_required': staffRequired,
+        'p_requirements': requirements?.trim(),
+        'p_vendor_ids': vendorIds,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> renewFinanceVendorContract({
+    required String vendorId,
+    required DateTime startDate,
+    required DateTime endDate,
+    required double monthlyAmount,
+    String? termsSummary,
+    String? slaSummary,
+    int? qualityRating,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'renew_finance_vendor_contract',
+      params: {
+        'p_admin_user_id': currentUser.id,
+        'p_vendor_id': vendorId,
+        'p_start_date': startDate.toIso8601String().split('T').first,
+        'p_end_date': endDate.toIso8601String().split('T').first,
+        'p_monthly_amount': monthlyAmount,
+        'p_terms_summary': termsSummary?.trim(),
+        'p_sla_summary': slaSummary?.trim(),
+        'p_quality_rating': qualityRating,
       },
     );
 

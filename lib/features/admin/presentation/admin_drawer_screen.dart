@@ -15,6 +15,22 @@ bool _isMaintenancePage(AppPage page) {
   }
 }
 
+bool _isTreasurerPage(AppPage page) {
+  switch (page) {
+    case AppPage.adminTreasurerDashboard:
+    case AppPage.adminTreasurerVendors:
+    case AppPage.adminTreasurerAddVendor:
+    case AppPage.adminTreasurerExpenses:
+    case AppPage.adminTreasurerAnalysis:
+    case AppPage.adminTreasurerQuotationRequest:
+    case AppPage.adminTreasurerVendorComparison:
+    case AppPage.adminTreasurerContractRenewal:
+      return true;
+    default:
+      return false;
+  }
+}
+
 class AdminDrawerScreen extends StatelessWidget {
   const AdminDrawerScreen({super.key, this.currentPage = AppPage.adminDrawer});
 
@@ -192,6 +208,15 @@ class AdminDrawerScreen extends StatelessWidget {
                             onTap: () => _navigateFromDrawer(
                               context,
                               AppPage.adminMaintenance,
+                            ),
+                          ),
+                          _AdminDrawerNavItem(
+                            label: 'Treasurer',
+                            icon: Icons.account_balance_wallet_rounded,
+                            selected: _isTreasurerPage(currentPage),
+                            onTap: () => _navigateFromDrawer(
+                              context,
+                              AppPage.adminTreasurerDashboard,
                             ),
                           ),
                           _AdminDrawerNavItem(
