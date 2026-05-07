@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Manage Bills</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-high": "#e7e8e9",
+                    "error": "#ba1a1a",
+                    "outline": "#727785",
+                    "on-primary-container": "#ffffff",
+                    "surface": "#f8f9fa",
+                    "primary-fixed-dim": "#adc7ff",
+                    "primary": "#005bbf",
+                    "primary-container": "#1a73e8",
+                    "tertiary-container": "#c55500",
+                    "inverse-surface": "#2e3132",
+                    "secondary-fixed-dim": "#ffba43",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed": "#ffdbcb",
+                    "surface-container-lowest": "#ffffff",
+                    "on-surface-variant": "#414754",
+                    "on-surface": "#191c1d",
+                    "inverse-primary": "#adc7ff",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed": "#ffddaf",
+                    "outline-variant": "#c1c6d6",
+                    "surface-variant": "#e1e3e4",
+                    "tertiary": "#9e4300",
+                    "on-primary": "#ffffff",
+                    "inverse-on-surface": "#f0f1f2",
+                    "on-secondary": "#ffffff",
+                    "background": "#f8f9fa",
+                    "surface-container": "#edeeef",
+                    "surface-bright": "#f8f9fa",
+                    "on-tertiary-container": "#0e0200",
+                    "on-secondary-fixed-variant": "#614000",
+                    "error-container": "#ffdad6",
+                    "surface-tint": "#005bc0",
+                    "surface-dim": "#d9dadb",
+                    "secondary-container": "#fdaf0b",
+                    "on-secondary-fixed": "#281800",
+                    "surface-container-low": "#f3f4f5",
+                    "secondary": "#805600",
+                    "primary-fixed": "#d8e2ff",
+                    "on-background": "#191c1d",
+                    "surface-container-highest": "#e1e3e4",
+                    "on-primary-fixed-variant": "#004493",
+                    "on-tertiary-fixed": "#341100",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#783100",
+                    "on-secondary-container": "#694600",
+                    "on-primary-fixed": "#001a41",
+                    "tertiary-fixed-dim": "#ffb691"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {},
+            "fontFamily": {
+                    "headline": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "display": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "body": [
+                            "Inter"
+                    ],
+                    "label": [
+                            "Inter"
+                    ]
+            },
+            "fontSize": {}
+    },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased pb-24">
+<!-- Top App Bar -->
+<header class="bg-surface/80 backdrop-blur-xl fixed top-0 w-full z-50 flex justify-between items-center px-4 py-4 max-w-md mx-auto shadow-sm">
+<button class="text-on-surface hover:opacity-80 transition-opacity p-2 -ml-2 active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline font-bold text-xl tracking-tighter text-on-surface absolute left-1/2 -translate-x-1/2">Manage Bills</h1>
+<button class="text-on-surface hover:opacity-80 transition-opacity p-2 -mr-2 active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+</button>
+</header>
+<main class="pt-20 px-4 max-w-md mx-auto space-y-6">
+<!-- Quick Pay Section -->
+<section>
+<h2 class="font-headline font-semibold text-lg tracking-tight mb-3 text-on-surface">Quick Pay</h2>
+<div class="bg-surface-container-lowest rounded-[1rem] p-5 shadow-[0_12px_32px_rgba(25,28,29,0.06)] flex flex-col relative overflow-hidden">
+<div class="flex justify-between items-start mb-4 relative z-10">
+<div>
+<h3 class="font-headline font-bold text-xl text-error mb-1">₹2,200</h3>
+<p class="text-sm text-on-surface-variant font-body">Pending Dues</p>
+<p class="text-xs text-on-surface-variant/70 mt-1">Maintenance + Outstanding</p>
+</div>
+<span class="material-symbols-outlined text-error" data-icon="warning">warning</span>
+</div>
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary-container rounded-[3rem] py-3 font-medium text-sm hover:opacity-90 active:scale-95 transition-all relative z-10">
+                    Pay Now
+                </button>
+</div>
+</section>
+<!-- My Accounts Section -->
+<section>
+<h2 class="font-headline font-semibold text-lg tracking-tight mb-3 text-on-surface">My Accounts</h2>
+<div class="grid grid-cols-1 gap-4">
+<!-- Gas Card -->
+<div class="bg-surface-container-lowest rounded-[1rem] p-4 shadow-[0_12px_32px_rgba(25,28,29,0.06)] flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="bg-surface-container-high w-12 h-12 rounded-full flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="mode_heat">mode_heat</span>
+</div>
+<div>
+<h3 class="font-headline font-medium text-base text-on-surface">Gas</h3>
+<p class="text-xs text-on-surface-variant mb-1">Indraprastha Gas</p>
+<p class="text-sm font-semibold text-error">₹850 <span class="text-xs font-normal text-error/80 ml-1">Due in 5 days</span></p>
+</div>
+</div>
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary-container rounded-[3rem] px-4 py-2 font-medium text-xs hover:opacity-90 active:scale-95 transition-all">
+                        Pay Now
+                    </button>
+</div>
+<!-- Electricity Card -->
+<div class="bg-surface-container-lowest rounded-[1rem] p-4 shadow-[0_12px_32px_rgba(25,28,29,0.06)] flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="bg-surface-container-high w-12 h-12 rounded-full flex items-center justify-center text-secondary-container">
+<span class="material-symbols-outlined" data-icon="bolt">bolt</span>
+</div>
+<div>
+<h3 class="font-headline font-medium text-base text-on-surface">Electricity</h3>
+<p class="text-xs text-on-surface-variant mb-1">BSES Yamuna</p>
+<p class="text-sm font-semibold text-on-surface-variant">Last paid: 02 Jun</p>
+</div>
+</div>
+</div>
+<!-- Water Card -->
+<div class="bg-surface-container-lowest rounded-[1rem] p-4 shadow-[0_12px_32px_rgba(25,28,29,0.06)] flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="bg-surface-container-high w-12 h-12 rounded-full flex items-center justify-center text-primary-fixed-dim">
+<span class="material-symbols-outlined" data-icon="water_drop">water_drop</span>
+</div>
+<div>
+<h3 class="font-headline font-medium text-base text-on-surface">Water</h3>
+<p class="text-xs text-on-surface-variant mb-1">DJB</p>
+<p class="text-sm font-semibold text-error">₹320 <span class="text-xs font-normal text-error/80 ml-1">Due today</span></p>
+</div>
+</div>
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary-container rounded-[3rem] px-4 py-2 font-medium text-xs hover:opacity-90 active:scale-95 transition-all">
+                        Pay Now
+                    </button>
+</div>
+<!-- Garbage Card -->
+<div class="bg-surface-container-lowest rounded-[1rem] p-4 shadow-[0_12px_32px_rgba(25,28,29,0.06)] flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="bg-surface-container-high w-12 h-12 rounded-full flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</div>
+<div>
+<h3 class="font-headline font-medium text-base text-on-surface">Garbage</h3>
+<p class="text-xs text-on-surface-variant mb-1">MCD Garbage</p>
+<p class="text-sm font-semibold text-error">₹200 <span class="text-xs font-normal text-error/80 ml-1">Due in 3 days</span></p>
+</div>
+</div>
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary-container rounded-[3rem] px-4 py-2 font-medium text-xs hover:opacity-90 active:scale-95 transition-all">
+                        Pay Now
+                    </button>
+</div>
+</div>
+</section>
+<!-- Recent Activity Section -->
+<section class="mb-8">
+<div class="flex justify-between items-end mb-3">
+<h2 class="font-headline font-semibold text-lg tracking-tight text-on-surface">Recent Activity</h2>
+<a class="text-sm font-medium text-primary hover:underline flex items-center" href="#">View All <span class="material-symbols-outlined text-[16px]" data-icon="chevron_right">chevron_right</span></a>
+</div>
+<div class="bg-surface-container-lowest rounded-[1rem] p-2 shadow-[0_12px_32px_rgba(25,28,29,0.06)]">
+<!-- Activity Row 1 -->
+<div class="flex items-center justify-between p-3">
+<div class="flex items-center gap-3">
+<div class="bg-surface-container-low w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" data-icon="mode_heat">mode_heat</span>
+</div>
+<div>
+<p class="font-medium text-sm text-on-surface">Gas Bill Paid</p>
+<p class="text-xs text-on-surface-variant">Today, 10:45 AM</p>
+</div>
+</div>
+<span class="text-sm font-medium text-on-surface">-₹850</span>
+</div>
+<div class="h-px bg-surface-container mx-3"></div>
+<!-- Activity Row 2 -->
+<div class="flex items-center justify-between p-3">
+<div class="flex items-center gap-3">
+<div class="bg-surface-container-low w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" data-icon="bolt">bolt</span>
+</div>
+<div>
+<p class="font-medium text-sm text-on-surface">Electricity Bill Paid</p>
+<p class="text-xs text-on-surface-variant">02 Jun, 09:30 AM</p>
+</div>
+</div>
+<span class="text-sm font-medium text-on-surface">-₹1,280</span>
+</div>
+<div class="h-px bg-surface-container mx-3"></div>
+<!-- Activity Row 3 -->
+<div class="flex items-center justify-between p-3">
+<div class="flex items-center gap-3">
+<div class="bg-surface-container-low w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" data-icon="apartment">apartment</span>
+</div>
+<div>
+<p class="font-medium text-sm text-on-surface">Maintenance Paid</p>
+<p class="text-xs text-on-surface-variant">28 May, 04:15 PM</p>
+</div>
+</div>
+<span class="text-sm font-medium text-on-surface">-₹2,000</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Contextual FAB - Since this is a Bills management screen, adding a new bill/account aligns perfectly -->
+<button class="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-br from-primary to-primary-container rounded-full flex items-center justify-center shadow-[0_12px_32px_rgba(25,28,29,0.15)] text-on-primary-container hover:opacity-90 active:scale-90 transition-all z-50">
+<span class="material-symbols-outlined text-2xl" data-icon="add">add</span>
+</button>
+</body></html>

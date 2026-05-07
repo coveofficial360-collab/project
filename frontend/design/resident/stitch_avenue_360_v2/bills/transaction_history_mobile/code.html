@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Transaction History - Cove</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#e7e8e9",
+                        "error": "#ba1a1a",
+                        "outline": "#727785",
+                        "on-primary-container": "#ffffff",
+                        "surface": "#f8f9fa",
+                        "primary-fixed-dim": "#adc7ff",
+                        "primary": "#005bbf",
+                        "primary-container": "#1a73e8",
+                        "tertiary-container": "#c55500",
+                        "inverse-surface": "#2e3132",
+                        "secondary-fixed-dim": "#ffba43",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#ffdbcb",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#414754",
+                        "on-surface": "#191c1d",
+                        "inverse-primary": "#adc7ff",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed": "#ffddaf",
+                        "outline-variant": "#c1c6d6",
+                        "surface-variant": "#e1e3e4",
+                        "tertiary": "#9e4300",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-secondary": "#ffffff",
+                        "background": "#f8f9fa",
+                        "surface-container": "#edeeef",
+                        "surface-bright": "#f8f9fa",
+                        "on-tertiary-container": "#0e0200",
+                        "on-secondary-fixed-variant": "#614000",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#005bc0",
+                        "surface-dim": "#d9dadb",
+                        "secondary-container": "#fdaf0b",
+                        "on-secondary-fixed": "#281800",
+                        "surface-container-low": "#f3f4f5",
+                        "secondary": "#805600",
+                        "primary-fixed": "#d8e2ff",
+                        "on-background": "#191c1d",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-primary-fixed-variant": "#004493",
+                        "on-tertiary-fixed": "#341100",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "on-secondary-container": "#694600",
+                        "on-primary-fixed": "#001a41",
+                        "tertiary-fixed-dim": "#ffb691"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa; /* surface */
+            color: #191c1d; /* on-surface */
+            -webkit-font-smoothing: antialiased;
+        }
+        h1, h2, h3, h4, h5, h6, .font-headline, .font-display {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        
+        /* Hide scrollbar for horizontal scroll areas */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased min-h-screen pb-6">
+<!-- Top App Bar (Custom for sub-page per rules: NO global nav shell because this is a transactional/history sub-page with a back button) -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl flex items-center justify-between px-4 py-4 md:px-6">
+<button aria-label="Go back" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors text-on-surface">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+</button>
+<h1 class="font-headline font-bold text-headline-sm tracking-tight text-on-surface flex-1 text-center truncate px-2">Transaction History</h1>
+<button aria-label="Filter transactions" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors text-on-surface">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">filter_list</span>
+</button>
+</header>
+<!-- Main Content Area -->
+<main class="pt-20 px-4 md:px-6 max-w-screen-md mx-auto space-y-6">
+<!-- Summary Section -->
+<section class="bg-surface-container-low rounded-xl p-6 relative overflow-hidden">
+<!-- Decorative gradient orb -->
+<div class="absolute -right-8 -top-8 w-32 h-32 bg-gradient-to-br from-primary to-primary-container rounded-full opacity-10 blur-2xl"></div>
+<div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<h2 class="font-label text-xs font-medium tracking-wide uppercase text-on-surface-variant mb-1">Total Spent This Year</h2>
+<p class="font-display font-extrabold text-4xl tracking-tighter text-on-surface">₹45,280</p>
+</div>
+<div class="flex flex-col items-start md:items-end">
+<div class="flex items-center gap-2 mb-1">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<span class="font-body text-sm text-on-surface-variant">Maintenance: ₹26,400</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-secondary-container"></div>
+<span class="font-body text-sm text-on-surface-variant">Utilities: ₹18,880</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Filter Chips -->
+<section class="flex overflow-x-auto no-scrollbar gap-3 pb-2 -mx-4 px-4 md:mx-0 md:px-0">
+<!-- Selected Chip -->
+<button class="whitespace-nowrap px-4 py-2 rounded-xl font-label text-sm font-medium transition-all bg-primary text-on-primary border border-transparent shadow-[0_4px_12px_rgba(0,91,191,0.2)]">
+                All
+            </button>
+<!-- Unselected Chips -->
+<button class="whitespace-nowrap px-4 py-2 rounded-xl font-label text-sm font-medium transition-all bg-transparent text-on-surface-variant border border-outline-variant/50 hover:bg-surface-variant/50">
+                Paid
+            </button>
+<button class="whitespace-nowrap px-4 py-2 rounded-xl font-label text-sm font-medium transition-all bg-transparent text-on-surface-variant border border-outline-variant/50 hover:bg-surface-variant/50">
+                Unpaid
+            </button>
+<button class="whitespace-nowrap px-4 py-2 rounded-xl font-label text-sm font-medium transition-all bg-transparent text-on-surface-variant border border-outline-variant/50 hover:bg-surface-variant/50">
+                Gas
+            </button>
+<button class="whitespace-nowrap px-4 py-2 rounded-xl font-label text-sm font-medium transition-all bg-transparent text-on-surface-variant border border-outline-variant/50 hover:bg-surface-variant/50">
+                Electricity
+            </button>
+<button class="whitespace-nowrap px-4 py-2 rounded-xl font-label text-sm font-medium transition-all bg-transparent text-on-surface-variant border border-outline-variant/50 hover:bg-surface-variant/50">
+                Maintenance
+            </button>
+</section>
+<!-- Transactions List -->
+<section class="space-y-8 pb-12">
+<!-- Month Group: June 2025 -->
+<div class="space-y-4">
+<h3 class="font-headline font-semibold text-lg tracking-tight text-on-surface">June 2025</h3>
+<div class="flex flex-col gap-3">
+<!-- Transaction Item 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-4 flex items-center justify-between group transition-colors hover:bg-surface-container-low/50">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+</div>
+<div>
+<h4 class="font-headline font-medium text-base text-on-surface mb-0.5">Indraprastha Gas</h4>
+<div class="flex items-center gap-2 font-body text-sm text-on-surface-variant">
+<span>20 Jun</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span>Utility</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-display font-semibold text-lg text-on-surface mb-1">₹850</span>
+<span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary font-label text-[10px] font-bold uppercase tracking-wider">Paid</span>
+</div>
+</div>
+<!-- Transaction Item 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-4 flex items-center justify-between group transition-colors hover:bg-surface-container-low/50">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-secondary-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<div>
+<h4 class="font-headline font-medium text-base text-on-surface mb-0.5">BSES Yamuna</h4>
+<div class="flex items-center gap-2 font-body text-sm text-on-surface-variant">
+<span>02 Jun</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span>Utility</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-display font-semibold text-lg text-on-surface mb-1">₹1,280</span>
+<span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary font-label text-[10px] font-bold uppercase tracking-wider">Paid</span>
+</div>
+</div>
+<!-- Transaction Item 3 -->
+<div class="bg-surface-container-lowest rounded-xl p-4 flex items-center justify-between group transition-colors hover:bg-surface-container-low/50">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home_work</span>
+</div>
+<div>
+<h4 class="font-headline font-medium text-base text-on-surface mb-0.5">June Maintenance</h4>
+<div class="flex items-center gap-2 font-body text-sm text-on-surface-variant">
+<span>01 Jun</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span>Society Dues</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-display font-semibold text-lg text-on-surface mb-1">₹2,200</span>
+<span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary font-label text-[10px] font-bold uppercase tracking-wider">Paid</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Month Group: May 2025 -->
+<div class="space-y-4">
+<h3 class="font-headline font-semibold text-lg tracking-tight text-on-surface">May 2025</h3>
+<div class="flex flex-col gap-3">
+<!-- Transaction Item 4 (Unpaid) -->
+<div class="bg-surface-container-lowest rounded-xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 group border border-error/20 relative overflow-hidden">
+<!-- Unpaid indicator strip -->
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-error"></div>
+<div class="flex items-center gap-4 ml-1">
+<div class="w-12 h-12 rounded-full bg-error-container flex items-center justify-center text-error">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">delete</span>
+</div>
+<div>
+<h4 class="font-headline font-medium text-base text-on-surface mb-0.5">MCD Garbage</h4>
+<div class="flex items-center gap-2 font-body text-sm text-on-surface-variant">
+<span>15 May</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span>Utility</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between md:flex-col md:items-end w-full md:w-auto ml-1 md:ml-0 mt-2 md:mt-0">
+<div class="flex flex-col md:items-end">
+<span class="font-display font-semibold text-lg text-on-surface mb-1">₹200</span>
+<span class="px-2 py-0.5 rounded-full bg-error/10 text-error font-label text-[10px] font-bold uppercase tracking-wider inline-block">Unpaid</span>
+</div>
+<a class="font-label text-sm font-semibold text-primary hover:text-primary-container transition-colors md:mt-2 underline decoration-2 underline-offset-4" href="#">Pay Now</a>
+</div>
+</div>
+</div>
+</div>
+<!-- End of List Indicator -->
+<div class="py-8 flex justify-center">
+<span class="font-body text-sm text-on-surface-variant">End of recent history</span>
+</div>
+</section>
+</main>
+</body></html>

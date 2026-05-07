@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Receipt Detail - Cove</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@200..400,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-high": "#e7e8e9",
+                      "error": "#ba1a1a",
+                      "outline": "#727785",
+                      "on-primary-container": "#ffffff",
+                      "surface": "#f8f9fa",
+                      "primary-fixed-dim": "#adc7ff",
+                      "primary": "#005bbf",
+                      "primary-container": "#1a73e8",
+                      "tertiary-container": "#c55500",
+                      "inverse-surface": "#2e3132",
+                      "secondary-fixed-dim": "#ffba43",
+                      "on-error": "#ffffff",
+                      "tertiary-fixed": "#ffdbcb",
+                      "surface-container-lowest": "#ffffff",
+                      "on-surface-variant": "#414754",
+                      "on-surface": "#191c1d",
+                      "inverse-primary": "#adc7ff",
+                      "on-error-container": "#93000a",
+                      "secondary-fixed": "#ffddaf",
+                      "outline-variant": "#c1c6d6",
+                      "surface-variant": "#e1e3e4",
+                      "tertiary": "#9e4300",
+                      "on-primary": "#ffffff",
+                      "inverse-on-surface": "#f0f1f2",
+                      "on-secondary": "#ffffff",
+                      "background": "#f8f9fa",
+                      "surface-container": "#edeeef",
+                      "surface-bright": "#f8f9fa",
+                      "on-tertiary-container": "#0e0200",
+                      "on-secondary-fixed-variant": "#614000",
+                      "error-container": "#ffdad6",
+                      "surface-tint": "#005bc0",
+                      "surface-dim": "#d9dadb",
+                      "secondary-container": "#fdaf0b",
+                      "on-secondary-fixed": "#281800",
+                      "surface-container-low": "#f3f4f5",
+                      "secondary": "#805600",
+                      "primary-fixed": "#d8e2ff",
+                      "on-background": "#191c1d",
+                      "surface-container-highest": "#e1e3e4",
+                      "on-primary-fixed-variant": "#004493",
+                      "on-tertiary-fixed": "#341100",
+                      "on-tertiary": "#ffffff",
+                      "on-tertiary-fixed-variant": "#783100",
+                      "on-secondary-container": "#694600",
+                      "on-primary-fixed": "#001a41",
+                      "tertiary-fixed-dim": "#ffb691"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {},
+              "fontFamily": {
+                      "headline": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "display": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "body": [
+                              "Inter"
+                      ],
+                      "label": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {}
+      },
+          },
+        }
+      </script>
+<style>
+        .ghost-border {
+            border: 1px solid rgba(193, 198, 214, 0.15); /* outline-variant at 15% */
+        }
+        .soft-shadow {
+            box-shadow: 0 12px 32px rgba(25, 28, 29, 0.06);
+        }
+      </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body antialiased min-h-screen flex flex-col items-center">
+<!-- Mobile Container -->
+<div class="w-full max-w-[480px] bg-surface min-h-screen relative shadow-2xl flex flex-col">
+<!-- Top App Bar (Task-focused, so standard nav is suppressed as per rules) -->
+<header class="bg-surface/80 backdrop-blur-xl fixed top-0 w-full max-w-[480px] z-50 flex justify-between items-center px-4 py-4">
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-surface-variant rounded-full transition-colors active:scale-95 text-on-surface">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">arrow_back</span>
+</button>
+<h1 class="font-headline font-bold text-xl tracking-tight text-on-surface">Receipt</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-surface-variant rounded-full transition-colors active:scale-95 text-on-surface">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">share</span>
+</button>
+<button class="p-2 hover:bg-surface-variant rounded-full transition-colors active:scale-95 text-on-surface">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">download</span>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow pt-24 pb-32 px-4 flex flex-col gap-6">
+<!-- Document Style Receipt Card -->
+<div class="bg-surface-container-lowest rounded-xl p-6 soft-shadow relative overflow-hidden flex flex-col gap-6">
+<!-- Header -->
+<div class="flex flex-col items-center text-center gap-1 border-b border-surface-variant pb-6 ghost-border">
+<h2 class="font-headline font-bold text-lg tracking-tight text-primary">COVE BILLS PAYMENT</h2>
+<p class="font-body text-sm text-on-surface-variant">Vasant Vihar Society</p>
+<div class="mt-2 inline-flex items-center justify-center bg-primary-fixed/30 text-primary-fixed font-label text-[10px] tracking-wide uppercase px-3 py-1 rounded-full">
+                        Payment Receipt
+                    </div>
+</div>
+<!-- Meta Info -->
+<div class="flex justify-between items-start gap-4 pb-6 ghost-border border-b border-surface-variant">
+<div class="flex flex-col gap-1">
+<span class="font-label text-xs tracking-wide uppercase text-on-surface-variant">Receipt No</span>
+<span class="font-body text-sm font-medium">RCP-2025-06-00312</span>
+</div>
+<div class="flex flex-col gap-1 text-right">
+<span class="font-label text-xs tracking-wide uppercase text-on-surface-variant">Date</span>
+<span class="font-body text-sm font-medium">20 June 2025</span>
+</div>
+</div>
+<!-- Payer Info -->
+<div class="flex flex-col gap-1 pb-6 ghost-border border-b border-surface-variant">
+<span class="font-label text-xs tracking-wide uppercase text-on-surface-variant">Paid By</span>
+<span class="font-body text-base font-medium">Rahul Sharma</span>
+</div>
+<!-- Bill Details -->
+<div class="flex flex-col gap-4 pb-6 ghost-border border-b border-surface-variant">
+<div class="flex flex-col gap-1">
+<span class="font-label text-xs tracking-wide uppercase text-on-surface-variant">Bill Type</span>
+<span class="font-body text-sm font-medium">Gas - Indraprastha Gas</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-label text-xs tracking-wide uppercase text-on-surface-variant">Consumer ID</span>
+<span class="font-body text-sm font-medium">IGL9876543210</span>
+</div>
+</div>
+<!-- Breakdown -->
+<div class="flex flex-col gap-3 pb-6 ghost-border border-b border-surface-variant">
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant">Amount</span>
+<span class="font-medium">₹850</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant">Convenience Fee</span>
+<span class="font-medium">₹0</span>
+</div>
+</div>
+<!-- Total & Status -->
+<div class="flex justify-between items-end pt-2">
+<div class="flex flex-col gap-1">
+<span class="font-label text-xs tracking-wide uppercase text-on-surface-variant">Total Paid</span>
+<span class="font-headline font-bold text-2xl text-on-surface">₹850</span>
+</div>
+<div class="inline-flex items-center gap-1 bg-primary/10 text-primary px-3 py-1.5 rounded-lg font-label text-xs tracking-wide uppercase font-semibold">
+<span>PAID</span>
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'wght' 600;">check</span>
+</div>
+</div>
+<!-- Decorative edge to look like a receipt -->
+<div class="absolute bottom-0 left-0 w-full h-2 flex justify-between space-x-1 px-1 translate-y-1">
+<div class="w-3 h-3 rounded-full bg-surface"></div>
+<div class="w-3 h-3 rounded-full bg-surface"></div>
+<div class="w-3 h-3 rounded-full bg-surface"></div>
+<div class="w-3 h-3 rounded-full bg-surface"></div>
+<div class="w-3 h-3 rounded-full bg-surface"></div>
+<div class="w-3 h-3 rounded-full bg-surface"></div>
+<div class="w-3 h-3 rounded-full bg-surface"></div>
+<div class="w-3 h-3 rounded-full bg-surface"></div>
+<div class="w-3 h-3 rounded-full bg-surface"></div>
+<div class="w-3 h-3 rounded-full bg-surface"></div>
+<div class="w-3 h-3 rounded-full bg-surface"></div>
+</div>
+</div>
+</main>
+<!-- Fixed Bottom Actions -->
+<div class="fixed bottom-0 w-full max-w-[480px] bg-surface-container-lowest p-4 pb-8 soft-shadow rounded-t-xl z-40 flex flex-col gap-3">
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary-container rounded-xl py-3.5 px-6 font-headline font-semibold text-center transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 400;">download</span>
+                Download Receipt
+            </button>
+<button class="w-full bg-transparent text-primary ghost-border rounded-xl py-3.5 px-6 font-headline font-semibold text-center transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 400;">share</span>
+                Share Receipt
+            </button>
+</div>
+</div>
+</body></html>

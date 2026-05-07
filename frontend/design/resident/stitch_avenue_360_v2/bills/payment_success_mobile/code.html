@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Payment Success - Cove</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#e7e8e9",
+                        "error": "#ba1a1a",
+                        "outline": "#727785",
+                        "on-primary-container": "#ffffff",
+                        "surface": "#f8f9fa",
+                        "primary-fixed-dim": "#adc7ff",
+                        "primary": "#005bbf",
+                        "primary-container": "#1a73e8",
+                        "tertiary-container": "#c55500",
+                        "inverse-surface": "#2e3132",
+                        "secondary-fixed-dim": "#ffba43",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#ffdbcb",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#414754",
+                        "on-surface": "#191c1d",
+                        "inverse-primary": "#adc7ff",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed": "#ffddaf",
+                        "outline-variant": "#c1c6d6",
+                        "surface-variant": "#e1e3e4",
+                        "tertiary": "#9e4300",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-secondary": "#ffffff",
+                        "background": "#f8f9fa",
+                        "surface-container": "#edeeef",
+                        "surface-bright": "#f8f9fa",
+                        "on-tertiary-container": "#0e0200",
+                        "on-secondary-fixed-variant": "#614000",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#005bc0",
+                        "surface-dim": "#d9dadb",
+                        "secondary-container": "#fdaf0b",
+                        "on-secondary-fixed": "#281800",
+                        "surface-container-low": "#f3f4f5",
+                        "secondary": "#805600",
+                        "primary-fixed": "#d8e2ff",
+                        "on-background": "#191c1d",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-primary-fixed-variant": "#004493",
+                        "on-tertiary-fixed": "#341100",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "on-secondary-container": "#694600",
+                        "on-primary-fixed": "#001a41",
+                        "tertiary-fixed-dim": "#ffb691"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .fill-icon {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body antialiased min-h-screen flex flex-col justify-center max-w-md mx-auto md:max-w-none md:bg-surface-container-low md:items-center">
+<!-- Mobile Container (Center aligned on desktop) -->
+<div class="flex-1 flex flex-col bg-surface md:bg-surface-container-lowest md:max-w-md md:w-full md:min-h-[800px] md:h-auto md:my-8 md:rounded-xl md:shadow-[0_12px_32px_rgba(25,28,29,0.06)] md:overflow-hidden relative">
+<!-- Decorative Background Elements -->
+<div class="absolute top-0 left-0 w-full h-64 bg-gradient-to-br from-primary-fixed/30 to-surface pointer-events-none -z-10"></div>
+<main class="flex-1 flex flex-col items-center justify-center p-6 space-y-8 z-10">
+<!-- Success Animation/Icon Area -->
+<div class="flex flex-col items-center text-center space-y-4">
+<div class="w-24 h-24 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mb-2 shadow-[0_12px_32px_rgba(25,28,29,0.06)] relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-emerald-400 to-emerald-600 opacity-20"></div>
+<span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-6xl fill-icon relative z-10" data-icon="check_circle">check_circle</span>
+</div>
+<h1 class="font-headline text-3xl font-bold tracking-tight text-on-surface">Payment Successful!</h1>
+<p class="font-body text-base text-on-surface-variant leading-relaxed">
+                    ₹2,200 paid for August 2025
+                </p>
+</div>
+<!-- Transaction Details Card -->
+<div class="w-full bg-surface-container-lowest rounded-[1rem] p-6 shadow-[0_12px_32px_rgba(25,28,29,0.06)] flex flex-col space-y-5">
+<div class="flex justify-between items-center border-b border-surface-variant pb-4">
+<span class="font-body text-sm text-on-surface-variant">Transaction ID</span>
+<span class="font-headline text-sm font-semibold text-on-surface">TXN-2025-08-00423</span>
+</div>
+<div class="flex justify-between items-center border-b border-surface-variant pb-4">
+<span class="font-body text-sm text-on-surface-variant">Date &amp; Time</span>
+<span class="font-headline text-sm font-semibold text-on-surface">01 Aug 2025, 10:32 AM</span>
+</div>
+<div class="flex justify-between items-center border-b border-surface-variant pb-4">
+<span class="font-body text-sm text-on-surface-variant">Method</span>
+<span class="font-headline text-sm font-semibold text-on-surface">UPI</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-body text-sm text-on-surface-variant">Status</span>
+<div class="bg-emerald-100 dark:bg-emerald-900/20 px-3 py-1 rounded-full flex items-center space-x-1">
+<span class="material-symbols-outlined text-[14px] text-emerald-700 dark:text-emerald-400 fill-icon" data-icon="check_circle">check_circle</span>
+<span class="font-label text-xs uppercase tracking-wide text-emerald-700 dark:text-emerald-400 font-semibold">Success</span>
+</div>
+</div>
+</div>
+<!-- Email Notification Note -->
+<div class="flex items-center space-x-2 text-on-surface-variant bg-surface-container-low px-4 py-3 rounded-lg w-full justify-center">
+<span class="material-symbols-outlined text-[18px]" data-icon="mail">mail</span>
+<span class="font-body text-sm">Receipt sent to your registered email</span>
+</div>
+</main>
+<!-- Bottom Action Buttons -->
+<div class="p-6 bg-surface-container-lowest/80 backdrop-blur-xl border-t border-outline-variant/15 w-full space-y-3 z-10 md:rounded-b-xl">
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary-container rounded-xl py-4 font-headline font-semibold text-base shadow-[0_4px_14px_rgba(0,91,191,0.25)] hover:opacity-90 transition-opacity active:scale-95 flex items-center justify-center space-x-2">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+<span>Download Receipt</span>
+</button>
+<button class="w-full bg-transparent border border-outline-variant/30 text-primary rounded-xl py-4 font-headline font-semibold text-base hover:bg-surface-container-low transition-colors active:scale-95">
+                Back to Maintenance
+            </button>
+</div>
+</div>
+</body></html>
