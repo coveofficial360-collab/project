@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Listings - Cove Glass Marketplace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary": "#FFFFFF",
+                    "on-primary-container": "#FFFFFF",
+                    "primary-container": "#1A73E8",
+                    "on-secondary-container": "#694600",
+                    "tertiary-container": "#C55500",
+                    "outline": "#727785",
+                    "primary": "#005BBF",
+                    "on-secondary-fixed-variant": "#614000",
+                    "on-error-container": "#93000A",
+                    "on-surface-variant": "#414754",
+                    "on-primary-fixed": "#001A41",
+                    "on-secondary": "#FFFFFF",
+                    "error-container": "#FFDAD6",
+                    "surface-tint": "#005BC0",
+                    "on-secondary-fixed": "#281800",
+                    "on-primary": "#FFFFFF",
+                    "tertiary": "#9E4300",
+                    "surface-container-low": "#F3F4F5",
+                    "inverse-surface": "#2E3132",
+                    "on-surface": "#191C1D",
+                    "surface-variant": "#E1E3E4",
+                    "on-tertiary-fixed": "#341100",
+                    "secondary-fixed": "#FFDDAF",
+                    "on-background": "#191C1D",
+                    "tertiary-fixed": "#FFDBCB",
+                    "surface-container-lowest": "#FFFFFF",
+                    "surface": "#F8F9FA",
+                    "surface-dim": "#D9DADB",
+                    "inverse-primary": "#ADC7FF",
+                    "background": "#F8F9FA",
+                    "secondary-container": "#FDAF0B",
+                    "on-tertiary-fixed-variant": "#783100",
+                    "primary-fixed-dim": "#ADC7FF",
+                    "outline-variant": "#C1C6D6",
+                    "surface-container-highest": "#E1E3E4",
+                    "secondary-fixed-dim": "#FFBA43",
+                    "secondary": "#805600",
+                    "on-error": "#FFFFFF",
+                    "surface-container": "#EDEEEF",
+                    "surface-container-high": "#E7E8E9",
+                    "on-primary-fixed-variant": "#004493",
+                    "primary-fixed": "#D8E2FF",
+                    "on-tertiary-container": "#0E0200",
+                    "surface-bright": "#F8F9FA",
+                    "error": "#BA1A1A",
+                    "tertiary-fixed-dim": "#FFB691",
+                    "inverse-on-surface": "#F0F1F2"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "display": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8F9FA; }
+        .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-effect { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl fixed top-0 w-full z-50 bg-surface-container-lowest dark:bg-surface-dim shadow-sm flex justify-between items-center px-6 h-16 w-full">
+<div class="flex items-center gap-4">
+<button class="hover:bg-surface-container dark:hover:bg-surface-container-highest transition-colors p-2 rounded-full active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim">arrow_back</span>
+</button>
+<h1 class="font-headline font-bold text-xl text-on-surface dark:text-on-surface-variant">My Listings</h1>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container overflow-hidden ring-2 ring-white shadow-sm">
+<img alt="Resident Profile" class="w-full h-full object-cover" data-alt="A professional studio headshot of a young adult with a friendly expression, set against a clean, neutral background. The lighting is soft and even, emphasizing a high-end, premium aesthetic consistent with a modern design system. The overall mood is approachable and polished, representing a resident profile avatar." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyISa-E-14Eq0v0M-B4kWqTG61r7nzOhdzkGFnLPvvCVVREqOvhIDhHCSEZ-1Zn0cccrOVOJx1WBihCbAK9-ChHylZCIfstZiffYJQsDohzzhtiYFW8COv3J2nLSrUoqaKhI_JJJTUoeGiM2Gg_VXPvXASPsOc-1tqnMY7tuXRNZ_dH6bENCzPaNcCfVpchfKlJ8QGO9fIY0Gte7QIY8dAUcxEFjguNQJoytxLOt5vVjg4rz8faKogZeFQF3pY_1GhKs2Y7nvTPA"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-24 px-6 max-w-5xl mx-auto">
+<!-- Top Action Section -->
+<section class="mb-10">
+<div class="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-primary to-primary-container p-8 shadow-xl">
+<div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+<div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+<div>
+<h2 class="font-headline font-extrabold text-3xl text-white tracking-tight mb-2">Grow your shop.</h2>
+<p class="text-white/80 font-body text-sm max-w-md">Reach your neighbors instantly. List everything from vintage furniture to high-end electronics in just a few clicks.</p>
+</div>
+<button class="bg-white text-primary font-headline font-bold px-8 py-4 rounded-full flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform whitespace-nowrap">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+                        Add New Listing
+                    </button>
+</div>
+</div>
+</section>
+<!-- Stats Grid (Bento Style) -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+<div class="bg-surface-container-lowest p-4 rounded-3xl shadow-sm">
+<span class="text-outline text-[10px] uppercase tracking-widest font-label block mb-1">Total Sales</span>
+<span class="font-headline font-bold text-2xl text-on-surface">$1,240</span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-3xl shadow-sm">
+<span class="text-outline text-[10px] uppercase tracking-widest font-label block mb-1">Active Items</span>
+<span class="font-headline font-bold text-2xl text-on-surface">3</span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-3xl shadow-sm">
+<span class="text-outline text-[10px] uppercase tracking-widest font-label block mb-1">Sold Items</span>
+<span class="font-headline font-bold text-2xl text-on-surface">12</span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-3xl shadow-sm">
+<span class="text-outline text-[10px] uppercase tracking-widest font-label block mb-1">Views (7d)</span>
+<span class="font-headline font-bold text-2xl text-on-surface">342</span>
+</div>
+</div>
+<!-- Listings Section -->
+<div class="space-y-6">
+<h3 class="font-headline font-bold text-lg text-on-surface mb-4 px-2">Manage Items</h3>
+<!-- Card 1: Custom Keychron Q1 -->
+<div class="bg-surface-container-lowest rounded-[1.5rem] shadow-sm hover:shadow-md transition-shadow group overflow-hidden border border-outline-variant/10">
+<div class="flex flex-col md:flex-row">
+<div class="w-full md:w-48 h-48 relative">
+<img alt="Custom Keychron Q1" class="w-full h-full object-cover" data-alt="A professional, close-up photograph of a custom Keychron Q1 mechanical keyboard with premium PBT keycaps. The keyboard is placed on a clean, dark grey desk mat with soft aesthetic lighting from the side, creating gentle shadows. The style is minimalist and high-tech, fitting a luxury marketplace listing for a modern tech enthusiast." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB76qhfp36dGRSj7KUmOyOcz4C6nYQ9-LRrggWdPaqdxbup2CmIqOn7a-sfnHfUwBOmIbnd_1IxisZN9AXL7ZgvFTVyFSt2DMSHgtixO_xRDAOscZa3XRgKdm6Rf17Fa1fGu1X7m7BVcnhbsQVURCtFe-iOh8xxpWgvhoR4uML6Hnp0fenezinesDre2z_8H0tqpNfrHV5ECZg6NX_5ohiJ7L4ufMFkXlP5rs_r7X9OCwvsFdJKTyYkgM0FSw5yRev46R_vtA7Zrg"/>
+<div class="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase text-primary">
+                            Active
+                        </div>
+</div>
+<div class="flex-1 p-6 flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-headline font-bold text-xl text-on-surface mb-1">Custom Keychron Q1</h4>
+<span class="text-primary font-headline font-extrabold text-2xl tracking-tight">$140</span>
+</div>
+<div class="flex gap-2">
+<button class="w-10 h-10 rounded-full flex items-center justify-center bg-surface-container-low text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center bg-error-container/20 text-error hover:bg-error-container/40 transition-colors">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+<div class="mt-6 flex flex-wrap gap-3">
+<button class="flex-1 md:flex-none px-6 py-2.5 bg-primary text-white rounded-full font-headline font-bold text-sm active:scale-95 transition-transform flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+                                Mark as Sold
+                            </button>
+<button class="flex-1 md:flex-none px-6 py-2.5 border border-outline-variant text-on-surface-variant rounded-full font-headline font-bold text-sm hover:bg-surface-container-low transition-colors">
+                                Boost Listing
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 2: Designer Chair -->
+<div class="bg-surface-container-lowest rounded-[1.5rem] shadow-sm hover:shadow-md transition-shadow group overflow-hidden border border-outline-variant/10 opacity-75 grayscale-[0.5]">
+<div class="flex flex-col md:flex-row">
+<div class="w-full md:w-48 h-48 relative">
+<img alt="Designer Chair" class="w-full h-full object-cover" data-alt="A sleek, modern designer lounge chair with wooden accents and leather upholstery set in a bright, sunlit architectural apartment. The lighting is warm and natural, casting soft geometric shadows on a polished concrete floor. The image conveys high-end interior design and a sophisticated urban lifestyle atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaoKaAAeOPFrOlL0LwlrbZDu_LaxjmgbO758MCLBBpqnI93Q35BAkcE_KBEYFqHv88hojSTFkg-vkMB92aUjQ4fUvKKyaTcOPMiQMOxsk50WKY6w84jnOpaUrFYqB1yWW0oofgAx3bHjFolBFXhFcZLJv7S2ublU9i4e6xGBzD0K9HRFRsTGtZYey7jGjN8NGvQu5q89z6VQfEKE1tHy0xL2c03_OdXyzr4qngIYno8ToBf3dU5uvawfsnYDe2_YzKQeF20N_qmw"/>
+<div class="absolute top-3 left-3 bg-slate-900/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase text-white">
+                            Sold
+                        </div>
+</div>
+<div class="flex-1 p-6 flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-headline font-bold text-xl text-on-surface mb-1">Eames Style Lounge Chair</h4>
+<span class="text-outline font-headline font-extrabold text-2xl tracking-tight">$450</span>
+</div>
+<div class="flex gap-2">
+<button class="w-10 h-10 rounded-full flex items-center justify-center bg-surface-container-low text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</div>
+<div class="mt-6">
+<span class="text-on-surface-variant text-sm flex items-center gap-2 italic">
+<span class="material-symbols-outlined text-[18px] text-primary" style="font-variation-settings: 'FILL' 1;">celebration</span>
+                                Sold to Alex Johnson on Oct 12
+                            </span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 3: Dumbbells -->
+<div class="bg-surface-container-lowest rounded-[1.5rem] shadow-sm hover:shadow-md transition-shadow group overflow-hidden border border-outline-variant/10">
+<div class="flex flex-col md:flex-row">
+<div class="w-full md:w-48 h-48 relative">
+<img alt="Dumbbell Set" class="w-full h-full object-cover" data-alt="A set of professional adjustable dumbbells on a sleek home gym rack. The environment is clean and modern, featuring industrial textures like exposed brick and metal. The lighting is focused and dramatic, highlighting the metallic texture and heavy-duty build of the fitness equipment in a high-quality light-mode setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdQKLJVLPgqFejKnXqk6IjS9kFeTGGZyIGVLAOP3gSIf1HtZIGgRlDNEgr1gfxwXZP5go2jTxnN799Qc6U7ECyZEs3RJhHhKUcfhrynZ5EKxDXh-CknwAaF_OgBOIUpPOt4Y7ZEfLfHPKaotEgQgac4Vf5d3D3nrTXQBtLsF4AdMQdUjkqK9sM3ve7vlycKzHfz_zmWURx2uL8aCANlbVIwBtuPSZ44dpI4TAqg8bDLxD99PW7Ab-TFwe_HjKGaxUPqIX4aCPEdA"/>
+<div class="absolute top-3 left-3 bg-error/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase text-white">
+                            Expired
+                        </div>
+</div>
+<div class="flex-1 p-6 flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-headline font-bold text-xl text-on-surface mb-1">Bowflex Adjustable Dumbbells</h4>
+<span class="text-primary font-headline font-extrabold text-2xl tracking-tight">$290</span>
+</div>
+<div class="flex gap-2">
+<button class="w-10 h-10 rounded-full flex items-center justify-center bg-surface-container-low text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center bg-error-container/20 text-error hover:bg-error-container/40 transition-colors">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+<div class="mt-6 flex flex-wrap gap-3">
+<button class="flex-1 md:flex-none px-6 py-2.5 bg-secondary text-white rounded-full font-headline font-bold text-sm active:scale-95 transition-transform flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">refresh</span>
+                                Relist Item
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-4 pt-2 z-50 bg-surface-container-lowest dark:bg-surface-dim shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-5 py-1 hover:opacity-80 transition-opacity active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-label text-[10px] tracking-widest uppercase">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary-fixed-dim text-on-primary-container dark:text-on-primary-fixed rounded-full px-5 py-1 hover:opacity-80 transition-opacity active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">sell</span>
+<span class="font-label text-[10px] tracking-widest uppercase">Listings</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-5 py-1 hover:opacity-80 transition-opacity active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1">chat</span>
+<span class="font-label text-[10px] tracking-widest uppercase">Messages</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-5 py-1 hover:opacity-80 transition-opacity active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1">person</span>
+<span class="font-label text-[10px] tracking-widest uppercase">Profile</span>
+</a>
+</nav>
+</body></html>

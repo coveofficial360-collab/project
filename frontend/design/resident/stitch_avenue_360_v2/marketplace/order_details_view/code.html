@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Order Details - Marketplace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#F8F9FA",
+                        "tertiary": "#9E4300",
+                        "on-secondary-fixed-variant": "#614000",
+                        "surface-dim": "#D9DADB",
+                        "surface": "#F8F9FA",
+                        "inverse-on-surface": "#F0F1F2",
+                        "on-background": "#191C1D",
+                        "surface-container": "#EDEEEF",
+                        "surface-variant": "#E1E3E4",
+                        "surface-container-high": "#E7E8E9",
+                        "secondary-fixed-dim": "#FFBA43",
+                        "secondary-container": "#FDAF0B",
+                        "surface-container-lowest": "#FFFFFF",
+                        "outline": "#727785",
+                        "surface-container-low": "#F3F4F5",
+                        "on-error-container": "#93000A",
+                        "on-primary-fixed": "#001A41",
+                        "primary": "#005BBF",
+                        "inverse-primary": "#ADC7FF",
+                        "primary-container": "#1A73E8",
+                        "surface-container-highest": "#E1E3E4",
+                        "on-secondary-fixed": "#281800",
+                        "secondary-fixed": "#FFDDAF",
+                        "surface-tint": "#005BC0",
+                        "on-tertiary-container": "#0E0200",
+                        "on-secondary": "#FFFFFF",
+                        "on-primary-container": "#FFFFFF",
+                        "tertiary-container": "#C55500",
+                        "error": "#BA1A1A",
+                        "on-surface": "#191C1D",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "tertiary-fixed-dim": "#FFB691",
+                        "secondary": "#805600",
+                        "error-container": "#FFDAD6",
+                        "on-surface-variant": "#414754",
+                        "primary-fixed": "#D8E2FF",
+                        "on-primary": "#FFFFFF",
+                        "primary-fixed-dim": "#ADC7FF",
+                        "outline-variant": "#C1C6D6",
+                        "on-primary-fixed-variant": "#004493",
+                        "tertiary-fixed": "#FFDBCB",
+                        "on-tertiary": "#FFFFFF",
+                        "on-secondary-container": "#694600",
+                        "background": "#F8F9FA",
+                        "on-error": "#FFFFFF",
+                        "inverse-surface": "#2E3132",
+                        "on-tertiary-fixed": "#341100"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-effect {
+            backdrop-filter: blur(24px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F9FA;
+            color: #191C1D;
+        }
+        h1, h2, h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar Component -->
+<header class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-xl shadow-sm">
+<div class="flex justify-between items-center px-6 h-16 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-4">
+<button class="active:scale-95 transition-transform p-2 hover:bg-surface-container-high/50 rounded-full">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<div class="flex flex-col">
+<span class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant">Transaction ID</span>
+<h1 class="font-headline text-lg font-bold tracking-tight text-primary">ORD-8829-XP</h1>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="active:scale-95 transition-transform p-2 hover:bg-surface-container-high/50 rounded-full">
+<span class="material-symbols-outlined text-on-surface-variant">search</span>
+</button>
+<button class="active:scale-95 transition-transform p-2 hover:bg-surface-container-high/50 rounded-full">
+<span class="material-symbols-outlined text-on-surface-variant">more_vert</span>
+</button>
+</div>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-2xl mx-auto space-y-6">
+<!-- Product Spotlight Section -->
+<section class="bg-surface-container-lowest rounded-3xl p-4 shadow-sm border border-outline-variant/15 flex gap-5 items-center">
+<div class="relative w-28 h-28 rounded-2xl overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="A professional studio photograph of high-end over-ear headphones with a matte black finish, resting on a clean white reflective surface. The lighting is soft and cinematic, highlighting the elegant curves and premium textures of the product. The background is a soft gradient of architectural blues and crisp whites, echoing a modern marketplace aesthetic. The overall mood is sophisticated, premium, and calm." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmz_xhlZ-qSoUsppPcJioN4UA0BTuRGx29ZVOStmGrMQB4zPBh0q69A0RL--eRo50OHIV1AvYd49KXrw7q5IQFT04HhZ8QTjwAAU2GJFu-PAfpfrl-hIyS0zZ5J9uvqd6B_UlwzSa75iTQHvqpwiSw8uYJ-1EFbcj2vYU03KAonfO-sjHy7zSsFOYOBxj4futywXdvAu2-bZGGlsMUMxcH8YVt8Mk4nIpNRlpfq2SkKmZcy1S6VltGjf1MnYVO2l8VpqOfow3bbQ"/>
+</div>
+<div class="flex flex-col flex-1 justify-between py-1">
+<div>
+<div class="flex justify-between items-start">
+<span class="font-label text-[10px] tracking-widest uppercase text-primary font-bold">Electronics</span>
+<div class="bg-secondary-fixed text-on-secondary-fixed px-3 py-1 rounded-full text-[10px] font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+                            SHIPPED
+                        </div>
+</div>
+<h2 class="font-headline text-xl font-bold tracking-tight mt-1">Acoustic Pro-X Wireless</h2>
+<p class="text-on-surface-variant text-sm mt-0.5">Titanium Grey • 1 Unit</p>
+</div>
+<div class="mt-2 text-primary font-headline text-lg font-extrabold tracking-tight">
+                    $349.00
+                </div>
+</div>
+</section>
+<!-- Bento Layout: Details & Payment -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- User Info Card -->
+<section class="bg-surface-container-low rounded-3xl p-6 space-y-4 hover:shadow-md transition-all duration-300">
+<h3 class="font-label text-[11px] tracking-widest uppercase text-on-surface-variant font-bold">Merchant Information</h3>
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold overflow-hidden border-2 border-surface-container-lowest">
+<img class="w-full h-full object-cover" data-alt="A professional portrait of a male seller in his late 30s with a friendly expression, wearing a clean linen shirt. The lighting is warm and natural, suggesting a high-end lifestyle context. The background is slightly blurred with soft bokeh and architectural lines, maintaining a clean and trustworthy marketplace vibe. The color palette is dominated by neutral tones and soft blues." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEZYKgtXmaUvHp19LeGj3kp13GblaRaHvLDnb7p3QLCCbtqWZNT_ZKMxTgse1lLBEC8UtQtMyrTDVBfeaIONfKM4vOxyPrMrZjCuh5ta_XKphYzFw5H6yPDE42iz1LwMQqTHeYyoICvrSHmUqB4GzlaLfEo7ageWpjHEFzRQR_hJi1hlzOqxm4S77jsAXWh0RpEGLclW-wk57hhFfiZqME6W81IEDjq-KqKwuCArO_TUu7THWa0Qp4j25EW1zABG_iz2eMpiDonQ"/>
+</div>
+<div>
+<p class="font-bold text-sm">Alex Rivers</p>
+<p class="text-xs text-on-surface-variant">Premier Resident • ★ 4.9</p>
+</div>
+</div>
+<div class="pt-2">
+<p class="font-label text-[10px] text-on-surface-variant uppercase tracking-wider">Pickup Location</p>
+<p class="text-xs mt-1 text-on-surface font-medium leading-relaxed">Cove Residences, North Tower<br/>Unit 402, Seattle, WA</p>
+</div>
+</section>
+<!-- Transaction Summary -->
+<section class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm border border-outline-variant/15 space-y-3">
+<h3 class="font-label text-[11px] tracking-widest uppercase text-on-surface-variant font-bold">Order Summary</h3>
+<div class="space-y-2">
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Subtotal</span>
+<span>$349.00</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Platform Fee (2%)</span>
+<span>$6.98</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Shipping</span>
+<span class="text-tertiary">FREE</span>
+</div>
+<div class="pt-3 mt-1 border-t border-dashed border-outline-variant/30 flex justify-between items-baseline">
+<span class="font-bold">Total</span>
+<span class="text-primary font-headline text-2xl font-extrabold">$355.98</span>
+</div>
+</div>
+</section>
+</div>
+<!-- Vertical Timeline -->
+<section class="bg-surface-container-lowest rounded-3xl p-8 shadow-sm border border-outline-variant/15">
+<h3 class="font-label text-[11px] tracking-widest uppercase text-on-surface-variant font-bold mb-8">Delivery Timeline</h3>
+<div class="space-y-0 relative">
+<!-- Vertical Line -->
+<div class="absolute left-[15px] top-2 bottom-2 w-0.5 bg-surface-container-high"></div>
+<!-- Status Item 1 (Past) -->
+<div class="relative flex gap-6 pb-10">
+<div class="z-10 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white ring-4 ring-surface-container-lowest">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div class="flex flex-col">
+<p class="font-bold text-sm">Ordered</p>
+<p class="text-xs text-on-surface-variant">Nov 12, 2023 • 10:24 AM</p>
+</div>
+</div>
+<!-- Status Item 2 (Past) -->
+<div class="relative flex gap-6 pb-10">
+<div class="z-10 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white ring-4 ring-surface-container-lowest">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">payments</span>
+</div>
+<div class="flex flex-col">
+<p class="font-bold text-sm">Payment Confirmed</p>
+<p class="text-xs text-on-surface-variant">Nov 12, 2023 • 10:26 AM</p>
+</div>
+</div>
+<!-- Status Item 3 (Current) -->
+<div class="relative flex gap-6 pb-10">
+<div class="z-10 w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-white ring-8 ring-primary-container/10">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+</div>
+<div class="flex flex-col">
+<p class="font-bold text-sm text-primary">Shipped</p>
+<p class="text-xs text-on-surface-variant">Nov 14, 2023 • 02:15 PM</p>
+<div class="mt-2 p-3 bg-surface-container rounded-xl text-[11px] border border-outline-variant/10 text-on-surface-variant">
+                            Carrier: Global Express<br/>
+                            Tracking: GE-99120-XCV
+                        </div>
+</div>
+</div>
+<!-- Status Item 4 (Future) -->
+<div class="relative flex gap-6">
+<div class="z-10 w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant ring-4 ring-surface-container-lowest">
+<span class="material-symbols-outlined text-[18px]">package_2</span>
+</div>
+<div class="flex flex-col opacity-50">
+<p class="font-bold text-sm">Delivered</p>
+<p class="text-xs text-on-surface-variant">Expected by Nov 16</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Actions Container -->
+<div class="fixed bottom-0 w-full z-50 glass-effect p-6">
+<div class="max-w-2xl mx-auto flex gap-4">
+<button class="flex-1 flex items-center justify-center gap-2 h-14 rounded-full border-2 border-primary text-primary font-bold active:scale-95 transition-all hover:bg-primary/5">
+<span class="material-symbols-outlined">chat_bubble</span>
+                Contact
+            </button>
+<button class="flex-1 flex items-center justify-center gap-2 h-14 rounded-full bg-primary text-white font-bold active:scale-95 transition-all shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">description</span>
+                Download Receipt
+            </button>
+</div>
+</div>
+</body></html>

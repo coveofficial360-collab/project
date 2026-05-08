@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Checkout - Cove Marketplace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000A",
+                        "tertiary-container": "#C55500",
+                        "tertiary-fixed-dim": "#FFB691",
+                        "on-tertiary-container": "#0E0200",
+                        "on-primary-container": "#FFFFFF",
+                        "on-secondary-container": "#694600",
+                        "surface-container-high": "#E7E8E9",
+                        "surface-container-lowest": "#FFFFFF",
+                        "on-primary-fixed-variant": "#004493",
+                        "on-background": "#191C1D",
+                        "primary-container": "#1A73E8",
+                        "surface-tint": "#005BC0",
+                        "surface-dim": "#D9DADB",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "on-surface-variant": "#414754",
+                        "primary": "#005BBF",
+                        "inverse-surface": "#2E3132",
+                        "surface-container": "#EDEEEF",
+                        "on-secondary": "#FFFFFF",
+                        "on-tertiary-fixed": "#341100",
+                        "tertiary": "#9E4300",
+                        "secondary": "#805600",
+                        "on-primary": "#FFFFFF",
+                        "tertiary-fixed": "#FFDBCB",
+                        "primary-fixed": "#D8E2FF",
+                        "surface-variant": "#E1E3E4",
+                        "on-surface": "#191C1D",
+                        "surface-container-highest": "#E1E3E4",
+                        "on-error": "#FFFFFF",
+                        "on-secondary-fixed": "#281800",
+                        "secondary-fixed-dim": "#FFBA43",
+                        "on-tertiary": "#FFFFFF",
+                        "error": "#BA1A1A",
+                        "on-secondary-fixed-variant": "#614000",
+                        "surface-bright": "#F8F9FA",
+                        "on-primary-fixed": "#001A41",
+                        "surface": "#F8F9FA",
+                        "primary-fixed-dim": "#ADC7FF",
+                        "error-container": "#FFDAD6",
+                        "surface-container-low": "#F3F4F5",
+                        "outline-variant": "#C1C6D6",
+                        "outline": "#727785",
+                        "background": "#F8F9FA",
+                        "inverse-on-surface": "#F0F1F2",
+                        "secondary-container": "#FDAF0B",
+                        "secondary-fixed": "#FFDDAF",
+                        "inverse-primary": "#ADC7FF"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-effect { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/90 dark:bg-slate-100/50 backdrop-blur-xl shadow-sm flex items-center justify-between px-6 h-16 w-full">
+<div class="flex items-center gap-4">
+<button class="hover:bg-surface-container-high/50 transition-colors active:scale-95 transition-transform p-2 rounded-full">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim">arrow_back</span>
+</button>
+<h1 class="font-headline text-headline-sm tracking-tight font-bold text-on-surface dark:text-on-surface-variant">Checkout</h1>
+</div>
+<button class="hover:bg-surface-container-high/50 transition-colors active:scale-95 transition-transform p-2 rounded-full">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim">help_outline</span>
+</button>
+</header>
+<main class="pt-20 px-6 max-w-2xl mx-auto space-y-8">
+<!-- Cart Section -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<h2 class="font-headline text-lg font-bold tracking-tight text-on-surface">Your Cart</h2>
+<span class="font-label text-xs tracking-widest uppercase text-outline">3 ITEMS</span>
+</div>
+<!-- Item 1: Headphones -->
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-outline-variant/10 flex items-center gap-4 group hover:-translate-y-1 transition-all duration-300">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container-low">
+<img class="w-full h-full object-cover" data-alt="A pair of sleek, high-end elite noise-cancelling headphones in matte black finish, resting on a polished white marble surface. The lighting is soft and diffused, highlighting the premium metallic textures and leather ear cushions. The overall aesthetic is clean, modern, and high-tech, fitting the light-mode UI with a sophisticated architectural blue color palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDg8WI57_LrYzbpXHa8XpKKGzT5QX8urMSbjkgxqQlqSrv295c8XCTrrVO3uSp5Xjuegqc_xvgvIEDBXbzRtg3WvZYy5-3Gj6tDLMFrJmtaZJ0OsX37ElU5c54t1l1tf32dyP5un0_uYUiKtXAGbzsuEY6JkGGHGzfntn3nPWydzbilEjjaNF_t7xE5mMVxPq40-hZko5IqwCsyeJ9V5xsf_foHuGviKYGdpNIxWykwuh-og0PKMU9yT00IYRQCyBkmFEF9KEOt0g"/>
+</div>
+<div class="flex-grow space-y-1">
+<h3 class="font-headline text-sm font-semibold text-on-surface leading-tight">Elite Noise-Cancelling Headphones</h3>
+<p class="text-primary font-bold">$299.00</p>
+<div class="flex items-center gap-3 pt-1">
+<button class="w-8 h-8 rounded-full border border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high active:scale-90 transition-all">
+<span class="material-symbols-outlined text-sm">remove</span>
+</button>
+<span class="font-bold text-sm">1</span>
+<button class="w-8 h-8 rounded-full border border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high active:scale-90 transition-all">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Item 2: Bananas -->
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-outline-variant/10 flex items-center gap-4 group hover:-translate-y-1 transition-all duration-300">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container-low">
+<img class="w-full h-full object-cover" data-alt="A vibrant bunch of fresh organic bananas with a bright yellow skin, arranged artistically on a clean white kitchen counter. The scene is bathed in natural morning sunlight, creating a fresh and healthy atmosphere. The style is minimalist and editorial, using a high-key light mode look that emphasizes purity and quality within the property management marketplace app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6itu12yGNhLRaUuo8Z7uhk91a8gTo0bgtE_NJBgqLgbyHCSdvMCr7S0BLLjI-mrJks3ICpwdLVNS5oJHQQjS9Vs9vF5ucMxlhI2GekHlelG-CQEroYMAY8ns_JIwqkc8K93ZQ0n_-j_hmqqMdYgbEpZJS0aHUaDNdo6d_Wr0TbRVsplgZmnj2ZpxfFSg8DGbT-rQ7EUlUC21N-Ytmx5AaKny_G9z7e6rzWDSLbsWYgFQN2VXrzMMhXbhHdXlAaZ2yaF5N1IkvJw"/>
+</div>
+<div class="flex-grow space-y-1">
+<h3 class="font-headline text-sm font-semibold text-on-surface leading-tight">Organic Bananas</h3>
+<p class="text-primary font-bold">$2.50</p>
+<div class="flex items-center gap-3 pt-1">
+<button class="w-8 h-8 rounded-full border border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high active:scale-90 transition-all">
+<span class="material-symbols-outlined text-sm">remove</span>
+</button>
+<span class="font-bold text-sm">1</span>
+<button class="w-8 h-8 rounded-full border border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high active:scale-90 transition-all">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Item 3: Milk -->
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-outline-variant/10 flex items-center gap-4 group hover:-translate-y-1 transition-all duration-300">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container-low">
+<img class="w-full h-full object-cover" data-alt="A glass bottle of fresh whole milk with condensation droplets on the surface, positioned against a soft-focus architectural background of a modern kitchen. The lighting is crisp and bright, conveying a sense of freshness and premium quality. The composition is clean and balanced, adhering to the Cove Glass design philosophy of breathable and calm urban sanctuary aesthetics." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmwSSA6-chKcZPv2amH2gbPjc9wi02EHmwlvqytfhM_nnrMnKm84qnLU4S2qJ0o8GAvxwY-8VT83r-SVQeJ6ZU6BUGMlqLjzhZL8mr_AUaIzCFnDroT8E312ON7DYxMVJAZYoy9BsuSj_cOB-aighKh-MXlR7uG2oq09SN_em8CgylL8P0JUQY7epO7BP-RjoIGfAmAoPHZ5_3bqZqQXZZJUvNYPGM_lcVTyjsMYepZMiF-OF9ew2RQZf2NlS6KkRx_NQpXK-hPQ"/>
+</div>
+<div class="flex-grow space-y-1">
+<h3 class="font-headline text-sm font-semibold text-on-surface leading-tight">Whole Milk</h3>
+<p class="text-primary font-bold">$3.25</p>
+<div class="flex items-center gap-3 pt-1">
+<button class="w-8 h-8 rounded-full border border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high active:scale-90 transition-all">
+<span class="material-symbols-outlined text-sm">remove</span>
+</button>
+<span class="font-bold text-sm">1</span>
+<button class="w-8 h-8 rounded-full border border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high active:scale-90 transition-all">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Delivery Address -->
+<section class="space-y-3">
+<h2 class="font-headline text-lg font-bold tracking-tight text-on-surface">Delivery Address</h2>
+<div class="bg-surface-container-low p-5 rounded-2xl flex items-start gap-4 border border-outline-variant/10">
+<div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+<div class="flex-grow">
+<p class="font-bold text-on-surface">Cove Society Residence</p>
+<p class="text-sm text-on-surface-variant leading-relaxed">Flat B-204, Tower A, Cove Society</p>
+</div>
+<button class="text-primary font-headline text-sm font-bold tracking-tight hover:underline">Change</button>
+</div>
+</section>
+<!-- Payment Method -->
+<section class="space-y-3">
+<h2 class="font-headline text-lg font-bold tracking-tight text-on-surface">Payment Method</h2>
+<div class="grid grid-cols-2 gap-3 p-1.5 bg-surface-container-low rounded-full">
+<button class="flex items-center justify-center gap-2 py-3 rounded-full bg-white shadow-sm border border-outline-variant/10 text-primary font-bold text-sm active:scale-95 transition-all">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">payments</span>
+                    Cash on Delivery
+                </button>
+<button class="flex items-center justify-center gap-2 py-3 rounded-full text-on-surface-variant font-medium text-sm hover:bg-surface-container-high active:scale-95 transition-all">
+<span class="material-symbols-outlined text-sm">credit_card</span>
+                    Online Payment
+                </button>
+</div>
+</section>
+<!-- Order Summary -->
+<section class="bg-surface-container-low p-6 rounded-2xl space-y-4">
+<div class="flex justify-between items-center text-on-surface-variant text-sm">
+<span>Subtotal</span>
+<span class="font-medium">$304.75</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant text-sm">
+<span>Delivery Fee</span>
+<span class="font-medium">$5.00</span>
+</div>
+<div class="h-px bg-outline-variant/20 w-full"></div>
+<div class="flex justify-between items-center text-on-surface">
+<span class="font-headline font-bold text-lg">Total</span>
+<span class="font-display font-extrabold text-2xl tracking-tighter text-primary">$309.75</span>
+</div>
+</section>
+</main>
+<!-- Fixed Footer Action -->
+<div class="fixed bottom-0 left-0 w-full z-50 bg-white/90 dark:bg-slate-100/50 backdrop-blur-xl px-6 py-6 shadow-[0_-12px_32px_rgba(25,28,29,0.06)] rounded-t-xl">
+<button class="w-full bg-primary text-on-primary font-headline font-bold py-4 rounded-full flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-primary/20">
+            Place Order
+            <span class="material-symbols-outlined text-xl">arrow_forward</span>
+</button>
+</div>
+<!-- BottomNavBar for Mobile Shell Integrity -->
+<nav class="hidden md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe bg-white/90 dark:bg-slate-100/50 backdrop-blur-xl shadow-[0_-12px_32px_rgba(25,28,29,0.06)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-outline hover:text-primary transition-all active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined">storefront</span>
+<span class="font-label text-[10px] tracking-widest uppercase">Shop</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline hover:text-primary transition-all active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label text-[10px] tracking-widest uppercase">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shopping_cart</span>
+<span class="font-label text-[10px] tracking-widest uppercase">Cart</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline hover:text-primary transition-all active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label text-[10px] tracking-widest uppercase">Profile</span>
+</a>
+</nav>
+</body></html>

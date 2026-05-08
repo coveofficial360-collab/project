@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cove Marketplace | Resident Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-dim": "#D9DADB",
+                        "on-error": "#FFFFFF",
+                        "tertiary-fixed": "#FFDBCB",
+                        "primary": "#005BBF",
+                        "surface-container-highest": "#E1E3E4",
+                        "inverse-surface": "#2E3132",
+                        "tertiary-container": "#C55500",
+                        "secondary-fixed-dim": "#FFBA43",
+                        "background": "#F8F9FA",
+                        "surface-container-low": "#F3F4F5",
+                        "surface-container-lowest": "#FFFFFF",
+                        "surface-container": "#EDEEEF",
+                        "outline": "#727785",
+                        "on-primary-fixed": "#001A41",
+                        "secondary-fixed": "#FFDDAF",
+                        "on-tertiary-fixed": "#341100",
+                        "on-background": "#191C1D",
+                        "inverse-primary": "#ADC7FF",
+                        "primary-fixed-dim": "#ADC7FF",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "on-error-container": "#93000A",
+                        "surface": "#F8F9FA",
+                        "inverse-on-surface": "#F0F1F2",
+                        "primary-container": "#1A73E8",
+                        "on-secondary": "#FFFFFF",
+                        "primary-fixed": "#D8E2FF",
+                        "outline-variant": "#C1C6D6",
+                        "on-surface-variant": "#414754",
+                        "error": "#BA1A1A",
+                        "on-primary": "#FFFFFF",
+                        "on-tertiary": "#FFFFFF",
+                        "tertiary-fixed-dim": "#FFB691",
+                        "secondary-container": "#FDAF0B",
+                        "on-primary-container": "#FFFFFF",
+                        "on-surface": "#191C1D",
+                        "surface-container-high": "#E7E8E9",
+                        "surface-variant": "#E1E3E4",
+                        "surface-bright": "#F8F9FA",
+                        "on-secondary-fixed-variant": "#614000",
+                        "on-primary-fixed-variant": "#004493",
+                        "on-tertiary-container": "#0E0200",
+                        "on-secondary-fixed": "#281800",
+                        "on-secondary-container": "#694600",
+                        "error-container": "#FFDAD6",
+                        "tertiary": "#9E4300",
+                        "surface-tint": "#005BC0",
+                        "secondary": "#805600"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface-bright/90 backdrop-blur-xl shadow-sm flex items-center justify-between px-6 h-16 w-full">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer active:scale-95 transition-transform duration-200">menu</span>
+<h1 class="font-headline font-bold text-primary text-xl tracking-tight">Cove Marketplace</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:bg-surface-container-high/50 p-2 rounded-full transition-colors">search</span>
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center overflow-hidden">
+<img alt="Alex Rivers" src="https://lh3.googleusercontent.com/aida-public/AB6AXuClYbv0jgtvH2IyJogkwnwCqzrSORBhYYvXhD-iNXJO7RvQfDuAvA_GlfCLx8tGztbCxXdn9FcV-RUJRB7HWmJSGKmjMk4xj00H8cIQkQLrKiTwgbq1GGrmUdWw-57jPsKoDhoEatSVbvDWBYn7kjaibfLgOuwyovD9u7CdgbOxRRRiLRcX5-EpJo_Hp3Y6kBEOf9AsYz-pqpyj418SJ-oENxy1hOzJ7xk890atqiEqTYyEoyoehXW0XJr2jQrYYZVNN1Aasdr98g"/>
+</div>
+</div>
+</header>
+<!-- NavigationDrawer (Hidden on mobile, visible on desktop) -->
+<aside class="hidden lg:flex h-screen w-80 fixed left-0 top-0 z-40 bg-surface flex-col gap-2 p-6 shadow-xl pt-24">
+<div class="flex items-center gap-4 mb-8 px-2">
+<div class="w-12 h-12 rounded-2xl bg-surface-container-high overflow-hidden">
+<img alt="Resident Profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1u8gsbYdMLZPUpRjoDIj8E9kuZxneJxlqV6AEPpxYPMXEBQGr1nn5lsvhOu-lDf27v1SrE5M5UkTG3ns1WH_ssySKwBdnl0S-6cbiv2WcjjY-CVNfIGlDKrsI3IiOZtsuicX0XSUk8k58b7PPnWaqxGHfC1l0jGlwKQQceOcJw-viOLVCV8lOoinUh2mOpxmJcyPuikov3gy_phBrWod7fSeTozSPgVRLtGstrlzOTvJYuPOkXrG2VumAHYJGH_IJ9GuBme7f4Q"/>
+</div>
+<div>
+<p class="font-headline font-bold text-on-surface">Alex Rivers</p>
+<p class="text-xs text-on-surface-variant">B-102, Ocean Heights</p>
+<span class="text-[10px] tracking-widest uppercase font-medium text-primary mt-1 block">Verified Resident</span>
+</div>
+</div>
+<nav class="space-y-1">
+<a class="bg-primary-container text-on-primary-container rounded-xl font-bold flex items-center gap-4 px-4 py-3" href="#">
+<span class="material-symbols-outlined active-icon" style="font-variation-settings: 'FILL' 1;">storefront</span>
+<span class="font-body text-label-sm tracking-widest uppercase">Marketplace</span>
+</a>
+<a class="text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high px-4 py-3 rounded-xl transition-all flex items-center gap-4" href="#">
+<span class="material-symbols-outlined">local_mall</span>
+<span class="font-body text-label-sm tracking-widest uppercase">Local Stores</span>
+</a>
+<a class="text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high px-4 py-3 rounded-xl transition-all flex items-center gap-4" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-body text-label-sm tracking-widest uppercase">My Listings</span>
+</a>
+<a class="text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high px-4 py-3 rounded-xl transition-all flex items-center gap-4" href="#">
+<span class="material-symbols-outlined">notifications_active</span>
+<span class="font-body text-label-sm tracking-widest uppercase">Society Alerts</span>
+</a>
+<div class="pt-4 mt-4 border-t border-outline-variant/15">
+<a class="text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high px-4 py-3 rounded-xl transition-all flex items-center gap-4" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body text-label-sm tracking-widest uppercase">Settings</span>
+</a>
+</div>
+</nav>
+</aside>
+<!-- Main Content -->
+<main class="lg:ml-80 pt-20 pb-28 px-4 md:px-8 max-w-7xl mx-auto">
+<!-- Search & Toggle Area -->
+<section class="mt-4 mb-8">
+<div class="flex flex-col md:flex-row gap-4 items-center bg-surface-container-lowest p-2 rounded-3xl shadow-sm border border-outline-variant/10">
+<div class="relative flex-grow w-full">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-transparent border-none focus:ring-0 pl-12 py-3 text-on-surface" placeholder="Search for items or stores near Ocean Heights..." type="text"/>
+</div>
+<div class="flex bg-surface-container-low p-1 rounded-2xl w-full md:w-auto">
+<button class="flex-1 md:w-28 py-2 px-4 rounded-xl bg-white shadow-sm text-primary font-bold text-sm">Items</button>
+<button class="flex-1 md:w-28 py-2 px-4 rounded-xl text-on-surface-variant font-medium text-sm">Stores</button>
+</div>
+</div>
+</section>
+<!-- Quick Actions Grid -->
+<section class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+<button class="flex flex-col items-center justify-center gap-3 p-6 glass-card rounded-[2rem] shadow-sm border border-white hover:-translate-y-1 transition-all group" onclick="document.getElementById('sell-modal').classList.remove('hidden')">
+<div class="w-12 h-12 rounded-full bg-primary-container/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+</div>
+<span class="font-headline font-bold text-on-surface text-sm">Sell Item</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-3 p-6 glass-card rounded-[2rem] shadow-sm border border-white hover:-translate-y-1 transition-all group">
+<div class="w-12 h-12 rounded-full bg-secondary-container/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">shopping_bag</span>
+</div>
+<span class="font-headline font-bold text-on-surface text-sm">Buy Items</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-3 p-6 glass-card rounded-[2rem] shadow-sm border border-white hover:-translate-y-1 transition-all group">
+<div class="w-12 h-12 rounded-full bg-tertiary-container/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+</div>
+<span class="font-headline font-bold text-on-surface text-sm">My Orders</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-3 p-6 glass-card rounded-[2rem] shadow-sm border border-white hover:-translate-y-1 transition-all group">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-on-surface-variant" style="font-variation-settings: 'FILL' 1;">list_alt</span>
+</div>
+<span class="font-headline font-bold text-on-surface text-sm">My Listings</span>
+</button>
+</section>
+<!-- Featured Listings (Horizontal Scroll) -->
+<section class="mb-10 overflow-hidden">
+<div class="flex justify-between items-end mb-6">
+<div>
+<span class="text-[10px] tracking-widest uppercase font-bold text-primary">Resident Exclusive</span>
+<h2 class="text-2xl font-headline font-extrabold tracking-tight text-on-surface">Featured Listings</h2>
+</div>
+<button class="text-primary font-bold text-sm flex items-center gap-1 hover:gap-2 transition-all">View All <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+</div>
+<div class="flex gap-6 overflow-x-auto pb-6 scrollbar-hide snap-x">
+<!-- Property Listing Card -->
+<div class="min-w-[300px] md:min-w-[400px] snap-start glass-card rounded-3xl overflow-hidden shadow-sm border border-white/50 group">
+<div class="relative h-48 w-full overflow-hidden">
+<img alt="Modern Apartment" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpY9_2fGqK9z_YqYkS2B-rD_f4B7M-p7v7h8X9i0jL-mN1O2P3Q4R5S6T7U8V9W0X1Y2Z3A4B5C6D7E8F9G0H1I2J3K4L5M6N7O8P9Q0R1S2T3U4V5W6X7Y8Z9A0B1C2D3E4F5G6H7I8J9K0L1M2N3O4P5Q6R7S8T9U0V1W2X3Y4Z5A6B7C8D9E0F1G2H3I4J5K6L7M8N9O0P1Q2R3S4T5U6V7W8X9Y0Z1A2B3C4D5E6F7G8H9I0J1K2L3M4N5O6P7Q8R9S0T1U2V3W4X5Y6Z7A8B9C0D1E2F3G4H5I6J7K8L9M0N1O2P3Q4R5S6T7U8V9W0X1Y2Z3A4B5C6D7E8F9G0H"/>
+<div class="absolute top-4 left-4 bg-tertiary/90 backdrop-blur-md text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">New Rental</div>
+</div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline font-bold text-lg text-on-surface">Modern 2 BHK Apartment</h3>
+<span class="text-primary font-extrabold text-lg">$3,200/mo</span>
+</div>
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">location_on</span>
+<span class="text-xs text-on-surface-variant font-medium">Tower B • Ocean Heights</span>
+</div>
+<button class="w-full bg-primary text-white py-3 rounded-2xl font-bold text-sm hover:shadow-lg hover:shadow-primary/20 active:scale-95 transition-all">View Details</button>
+</div>
+</div>
+<!-- Card 1 -->
+<div class="min-w-[300px] md:min-w-[400px] snap-start glass-card rounded-3xl overflow-hidden shadow-sm border border-white/50 group">
+<div class="relative h-48 w-full overflow-hidden">
+<img alt="Mechanical Keyboard" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwkqvw45UHeQgy3I-ZFAp2nkwlEkrPX17pxGCvTKKbZeXunaLwcRfP4oUISnj2Ob5FUFglPf0jYiC-Bxhu3c5JFfKKrb5dtLEajctxXvFpWKYxaInw9EMhLbSoWoy-6nzArPCMZeA5YX95R9Pjoz52V5KtTKGZKRYGEd-fP9Wpc2Xx2PO5_8JbUazdqePVwFhxwiOixOSi6NilVVvC4iGyM9OOMk3VyFdP9CSbEDlUoTmazW8EcmbK0REutHrKkbUncEbed_iU_g"/>
+<div class="absolute top-4 left-4 bg-primary/90 backdrop-blur-md text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Top Rated</div>
+</div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline font-bold text-lg text-on-surface">Custom Keychron Q1</h3>
+<span class="text-primary font-extrabold text-lg">$140</span>
+</div>
+<div class="flex items-center gap-2 mb-4">
+<div class="w-6 h-6 rounded-full bg-surface-container-high overflow-hidden">
+<img alt="Seller" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBteh6cM-ik2iNqNGVpSFX5gKAC3oIg3vBnSAMwisB0bOmSD92N2bfyWeFbIuNvPnj_m--GQ80h0ptQ59N_S80s68qhA63jlVQ9kgXcCpIiD5cavb7zY2kt6oL6A0Ly3tTrpagzx222R5vRKJg08UjSMs2CB1Q09prZqWRXDAjtqIJRH4FeXfQDv1twmnl6NR7FA7-sUgTiGByY-Mp1XEb2Skrax4Opg_8zRpqRnZMrzRwSUlqsejwu0jO274pE2PK8aM8n1cQ0vQ"/>
+</div>
+<span class="text-xs text-on-surface-variant font-medium">Listed by Sarah M. • Block C</span>
+</div>
+<button class="w-full bg-primary text-white py-3 rounded-2xl font-bold text-sm hover:shadow-lg hover:shadow-primary/20 active:scale-95 transition-all">Interested</button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="min-w-[300px] md:min-w-[400px] snap-start glass-card rounded-3xl overflow-hidden shadow-sm border border-white/50 group">
+<div class="relative h-48 w-full overflow-hidden">
+<img alt="Velvet Armchair" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1uSWYzlKef5LN1baCDBxTYYc0jyfYXVBqEBOXB-qG93EklZv_O9KyFzNEa9h9Xv0PlwU2DD1x7LlCeW39T8ij_sgmKFoC8GOa8RoX37vEeeuE-iX-5CiD4MdkRchupffSNOc-KaTYWkgQrlFmwn-KdlLxLV3TuqahIj_a97jZwwY7vYxAWKt6uxwS4bMIKvYU03dqfW-bIFOIGV93GQkZz8mXbEginaEwtDQIooVq_Uwo9Tt_HrsIXeJyN7Aax9yQKGX0hGjl5w"/>
+<div class="absolute top-4 left-4 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Like New</div>
+</div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline font-bold text-lg text-on-surface">Emerald Velvet Chair</h3>
+<span class="text-primary font-extrabold text-lg">$285</span>
+</div>
+<div class="flex items-center gap-2 mb-4">
+<div class="w-6 h-6 rounded-full bg-surface-container-high overflow-hidden">
+<img alt="Seller" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYrC_GDCdQvLGTWM2qNm9qqegkyHWQNZTQDts4UFphJJqkfUgseabdF2auzuKyDznp1BfVYdjETmrhgmk5s3yRp9mcI5ijSKlC65FeKGm_qWRzfCeBcSTUbc21wHqW0gMLMsIWI3JqKzxMN5HEJ7rLAfckjTgMQ2fpWIZ0NqEYIo9oi6DiE-txQdPz49Y6hzhX_OKpawI0Ks0Sh9rs3zXPm_HTc8T5ToAG-di-jLLb_p_IyItT7YLHLVpKkt5inaYh8cokxBgLBw"/>
+</div>
+<span class="text-xs text-on-surface-variant font-medium">Listed by David K. • Block A</span>
+</div>
+<button class="w-full bg-primary text-white py-3 rounded-2xl font-bold text-sm hover:shadow-lg hover:shadow-primary/20 active:scale-95 transition-all">Interested</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Categories Pill Chips -->
+<section class="mb-10">
+<div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+<button class="px-6 py-2 rounded-full bg-primary text-white text-xs font-bold whitespace-nowrap shadow-md">All Items</button>
+<button class="px-6 py-2 rounded-full bg-white border border-outline-variant/15 text-on-surface-variant text-xs font-bold whitespace-nowrap hover:bg-surface-container transition-colors">Electronics</button>
+<button class="px-6 py-2 rounded-full bg-white border border-outline-variant/15 text-on-surface-variant text-xs font-bold whitespace-nowrap hover:bg-surface-container transition-colors">Furniture</button>
+<button class="px-6 py-2 rounded-full bg-white border border-outline-variant/15 text-on-surface-variant text-xs font-bold whitespace-nowrap hover:bg-surface-container transition-colors">Appliances</button>
+<button class="px-6 py-2 rounded-full bg-white border border-outline-variant/15 text-on-surface-variant text-xs font-bold whitespace-nowrap hover:bg-surface-container transition-colors">Books</button>
+<button class="px-6 py-2 rounded-full bg-white border border-outline-variant/15 text-on-surface-variant text-xs font-bold whitespace-nowrap hover:bg-surface-container transition-colors">Fashion</button>
+<button class="px-6 py-2 rounded-full bg-white border border-outline-variant/15 text-on-surface-variant text-xs font-bold whitespace-nowrap hover:bg-surface-container transition-colors">Fitness</button>
+</div>
+</section>
+<!-- Recently Added (Grid) -->
+<section class="mb-14">
+<h2 class="text-xl font-headline font-bold tracking-tight text-on-surface mb-6">Recently Added</h2>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+<!-- Property Listing Grid Item -->
+<div class="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-sm border border-outline-variant/10 hover:shadow-lg transition-all group">
+<div class="h-40 overflow-hidden relative">
+<img alt="Studio" class="w-full h-full object-cover group-hover:scale-110 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9_P2Q3R4S5T6U7V8W9X0Y1Z2A3B4C5D6E7F8G9H0I1J2K3L4M5N6O7P8Q9R0S1T2U3V4W5X6Y7Z8A9B0C1D2E3F4G5H6I7J8K9L0M1N2O3P4Q5R6S7T8U9V0W1X2Y3Z4A5B6C7D8E9F0G1H2I3J4K5L6M"/>
+<div class="absolute bottom-2 left-2 bg-black/50 backdrop-blur-sm text-white px-2 py-0.5 rounded-lg text-[9px] font-bold">Block C</div>
+</div>
+<div class="p-4">
+<p class="text-xs font-bold text-primary mb-1">$1,850/mo</p>
+<h4 class="font-headline font-bold text-sm text-on-surface line-clamp-1 mb-3">Luxury Studio</h4>
+<div class="flex justify-between items-center">
+<span class="text-[10px] text-on-surface-variant">Just Now</span>
+<span class="material-symbols-outlined text-primary text-sm cursor-pointer">favorite</span>
+</div>
+</div>
+</div>
+<!-- Item 1 -->
+<div class="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-sm border border-outline-variant/10 hover:shadow-lg transition-all group">
+<div class="h-40 overflow-hidden relative">
+<img alt="Ceramic Mugs" class="w-full h-full object-cover group-hover:scale-110 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5xG2WNUnrE8FtIvi81cFFnSIh0ocjp6wQCwJ0_SPzPROdUAqeAJ1k82v3l-8SkI7xfjhl3j8t3vxbrQ5K1P-KuqgBxxBE9JRxZWhtwJih7c_Tyr54EAUahkcPHVPr_SHai2tkTuGZNkwkchYOxlW9VDPGGL_Klyhhi_u9x1ca3m4JvBPF1R5VcbxkMYtzXmhRjADLZlYnY9gb1ML9n-oe3UjMK5qvOExpTL3cAJEhI99NrLHs2sL79YIVoNvoIdEoO762e2M0rA"/>
+</div>
+<div class="p-4">
+<p class="text-xs font-bold text-primary mb-1">$25</p>
+<h4 class="font-headline font-bold text-sm text-on-surface line-clamp-1 mb-3">Ceramic Coffee Set</h4>
+<div class="flex justify-between items-center">
+<span class="text-[10px] text-on-surface-variant">2 hours ago</span>
+<span class="material-symbols-outlined text-primary text-sm cursor-pointer">favorite</span>
+</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-sm border border-outline-variant/10 hover:shadow-lg transition-all group">
+<div class="h-40 overflow-hidden relative">
+<img alt="Sneakers" class="w-full h-full object-cover group-hover:scale-110 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUFBEOMD3zPgDweP_tM3-9fT0JoJInD1fxcGKgk-Cjhi0gcdzfMeZekYf0Si6vDrH6HhRyGHbv8v69sEI-lElRpQQUuMytsZJLB-dtcQFmOfHtWwMX4cMNmoo-cXFivw998EFfFa9JXfn9TjbUCnKPd4Bcyp40L_l-SLmBeJ9V44fMV-GD1OU1N-6LLrHch2YREkoOw0kFnAzLqMyRHdqm0jp-1Mg6QftYGU6m_SgKiT3UYWFUp4ZAybeDd8zlp0PlYpkmGl8F4w"/>
+</div>
+<div class="p-4">
+<p class="text-xs font-bold text-primary mb-1">$65</p>
+<h4 class="font-headline font-bold text-sm text-on-surface line-clamp-1 mb-3">Limited Edition Sneakers</h4>
+<div class="flex justify-between items-center">
+<span class="text-[10px] text-on-surface-variant">4 hours ago</span>
+<span class="material-symbols-outlined text-primary text-sm cursor-pointer">favorite</span>
+</div>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-sm border border-outline-variant/10 hover:shadow-lg transition-all group">
+<div class="h-40 overflow-hidden relative">
+<img alt="Watch" class="w-full h-full object-cover group-hover:scale-110 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNN6hYfuqX0Mju1EjDTyuDwqRnqBXvRO-_31RIOGAA4wYGcvNgK20svLdb7G8XLSUVUZ8yfK6t2qDfrs-VMUg6IsxKPXvHQKB1ddmRs3mnWrDks_uPs7H2cdow4a18LRUlhre0Xe_zhj-PsJoZHy9lIQmQfJNGgQuC2iumQ1lzoKVdjoX0DXQ-zs5XWg-IXb5krawKwAWp-P3H-JnhPew1iBQrkpAZdC2c2VIKv9i61DKvkY6-Qir_iUbxU3J92Xirayq7bfL-hQ"/>
+</div>
+<div class="p-4">
+<p class="text-xs font-bold text-primary mb-1">$110</p>
+<h4 class="font-headline font-bold text-sm text-on-surface line-clamp-1 mb-3">Series X Smartwatch</h4>
+<div class="flex justify-between items-center">
+<span class="text-[10px] text-on-surface-variant">Yesterday</span>
+<span class="material-symbols-outlined text-primary text-sm cursor-pointer">favorite</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Nearby Stores (Carousel) -->
+<section class="mb-14">
+<div class="flex justify-between items-end mb-6">
+<div>
+<span class="text-[10px] tracking-widest uppercase font-bold text-secondary">Local Services</span>
+<h2 class="text-2xl font-headline font-extrabold tracking-tight text-on-surface">Nearby Stores</h2>
+</div>
+<button class="text-secondary font-bold text-sm flex items-center gap-1">View Map <span class="material-symbols-outlined text-sm">map</span></button>
+</div>
+<div class="flex gap-6 overflow-x-auto pb-4 scrollbar-hide snap-x">
+<!-- Store 1 -->
+<div class="min-w-[280px] snap-start glass-card p-6 rounded-[2.5rem] shadow-sm border border-white hover:shadow-xl transition-all">
+<div class="flex items-start justify-between mb-6">
+<div class="w-16 h-16 rounded-2xl bg-secondary-container/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-3xl" style="font-variation-settings: 'FILL' 1;">grocery</span>
+</div>
+<div class="flex items-center gap-1 bg-surface-container-low px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-secondary text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-[10px] font-bold">4.8</span>
+</div>
+</div>
+<h3 class="font-headline font-bold text-lg text-on-surface mb-1">Cove Fresh Market</h3>
+<p class="text-xs text-on-surface-variant mb-6">Premium Grocery &amp; Organic</p>
+<button class="w-full bg-primary text-white py-3 rounded-2xl font-bold text-sm hover:shadow-lg transition-all">Shop Now</button>
+</div>
+<!-- Store 2 -->
+<div class="min-w-[280px] snap-start glass-card p-6 rounded-[2.5rem] shadow-sm border border-white hover:shadow-xl transition-all">
+<div class="flex items-start justify-between mb-6">
+<div class="w-16 h-16 rounded-2xl bg-primary-container/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">medication</span>
+</div>
+<div class="flex items-center gap-1 bg-surface-container-low px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-secondary text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-[10px] font-bold">4.5</span>
+</div>
+</div>
+<h3 class="font-headline font-bold text-lg text-on-surface mb-1">Ocean Pharmacy</h3>
+<p class="text-xs text-on-surface-variant mb-6">Healthcare &amp; Wellness</p>
+<button class="w-full bg-primary text-white py-3 rounded-2xl font-bold text-sm hover:shadow-lg transition-all">Shop Now</button>
+</div>
+<!-- Store 3 -->
+<div class="min-w-[280px] snap-start glass-card p-6 rounded-[2.5rem] shadow-sm border border-white hover:shadow-xl transition-all">
+<div class="flex items-start justify-between mb-6">
+<div class="w-16 h-16 rounded-2xl bg-tertiary-container/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-3xl" style="font-variation-settings: 'FILL' 1;">bakery_dining</span>
+</div>
+<div class="flex items-center gap-1 bg-surface-container-low px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-secondary text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-[10px] font-bold">4.9</span>
+</div>
+</div>
+<h3 class="font-headline font-bold text-lg text-on-surface mb-1">The Daily Crust</h3>
+<p class="text-xs text-on-surface-variant mb-6">Bakery &amp; Patisserie</p>
+<button class="w-full bg-primary text-white py-3 rounded-2xl font-bold text-sm hover:shadow-lg transition-all">Shop Now</button>
+</div>
+</div>
+</section>
+<!-- Trending Section -->
+<section class="mb-14">
+<h2 class="text-2xl font-headline font-extrabold tracking-tight text-on-surface mb-6">Trending Now</h2>
+<div class="flex flex-col lg:flex-row gap-8">
+<!-- Popular in Community -->
+<div class="flex-1">
+<h3 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-4">Community Faves</h3>
+<div class="space-y-4">
+<div class="flex items-center gap-4 bg-white p-3 rounded-2xl border border-outline-variant/10">
+<div class="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0">
+<img alt="Headphones" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiEHh9EvTtJhjBKwAxsPhCez8cuAZmm4MdbprkZgfSK_9BOcg-dgjxvPK-oGoIbEwuR0oZMMMqNm1zsyzPs8MrlC8lJBULvpCJkgaeo-qNc7QhAGQV__sHPCysXEgHb0Ad65CBxIiPtstcwcV-u4AbAKcymKUsuJpQ_GPqrcM_tbYnq8zQRM8eJTMyyQuJ2g2xkUu9-IChpPF8fOZeyugApErN3fx2-k_gB42nT6z7xc7W-bJSyk9b_2tUUD6LnCpQtmIzHHiwTA"/>
+</div>
+<div class="flex-grow">
+<p class="font-bold text-sm text-on-surface">Noise Cancelling Pro</p>
+<p class="text-xs text-on-surface-variant">8 neighbors interested</p>
+</div>
+<span class="text-primary font-bold">$180</span>
+</div>
+<div class="flex items-center gap-4 bg-white p-3 rounded-2xl border border-outline-variant/10">
+<div class="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0">
+<img alt="Burger" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNywMVjJZgkeOlD-_7eABRJpge2mtyAR3LI6bCBV34KDi1QOOV2s2Ox7lBxlEzjUUCdZgEXvnyWmbmpiDwurjqZPOpmv2iJU_yQ9OWaVioD-UuGcdwKaabtzW0ew00oPEObrUIqwCoT5H-jiMHr9FBBTKsz9aJEhe1HL4KXxm1FdhsPQh-ilZ7zx4MR935CUJP-99BVVvA3PJrqj2QDkVx4xiSeI5-IezDaSsX_pw2J7o-vcqJlLTEzK4cLiNaEi2-NP2q4hkSlg"/>
+</div>
+<div class="flex-grow">
+<p class="font-bold text-sm text-on-surface">Gourmet Burger Kit</p>
+<p class="text-xs text-on-surface-variant">Trending in Groceries</p>
+</div>
+<span class="text-primary font-bold">$12</span>
+</div>
+</div>
+</div>
+<!-- Top Rated Stores -->
+<div class="flex-1">
+<h3 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-4">Best Sellers</h3>
+<div class="space-y-4">
+<div class="flex items-center gap-4 bg-white p-3 rounded-2xl border border-outline-variant/10">
+<div class="w-14 h-14 rounded-xl bg-primary-container/5 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary">coffee</span>
+</div>
+<div class="flex-grow">
+<p class="font-bold text-sm text-on-surface">Dark Roast Beans</p>
+<p class="text-xs text-on-surface-variant">Sold by Cove Fresh Market</p>
+</div>
+<span class="text-primary font-bold">$16</span>
+</div>
+<div class="flex items-center gap-4 bg-white p-3 rounded-2xl border border-outline-variant/10">
+<div class="w-14 h-14 rounded-xl bg-tertiary-container/5 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-tertiary">local_florist</span>
+</div>
+<div class="flex-grow">
+<p class="font-bold text-sm text-on-surface">Weekly Bloom Box</p>
+<p class="text-xs text-on-surface-variant">Sold by Bloom &amp; Stem</p>
+</div>
+<span class="text-primary font-bold">$24</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Recent Orders -->
+<section class="mb-8">
+<h2 class="text-lg font-headline font-bold text-on-surface mb-4">Recent Orders</h2>
+<div class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm border border-outline-variant/10">
+<div class="flex flex-col gap-6">
+<div class="flex justify-between items-center">
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">shopping_cart</span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Organic Milk &amp; Eggs</p>
+<p class="text-[10px] text-on-surface-variant">Cove Fresh Market • Delivered</p>
+</div>
+</div>
+<span class="text-xs font-bold text-primary">$14.50</span>
+</div>
+<div class="h-px bg-outline-variant/10"></div>
+<div class="flex justify-between items-center">
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">person</span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Standing Desk</p>
+<p class="text-[10px] text-on-surface-variant">Sold by Kevin (Block D) • Completed</p>
+</div>
+</div>
+<span class="text-xs font-bold text-primary">$210.00</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Visible on mobile, hidden on desktop) -->
+<!-- Sell Options Bottom Sheet -->
+<div class="fixed inset-0 z-[100] hidden" id="sell-modal">
+<!-- Backdrop -->
+<div class="absolute inset-0 bg-on-background/20 backdrop-blur-sm" onclick="document.getElementById('sell-modal').classList.add('hidden')"></div>
+<!-- Bottom Sheet Content -->
+<div class="absolute bottom-0 w-full bg-surface-container-lowest rounded-t-[2.5rem] shadow-2xl p-8 pb-12 animate-in slide-in-from-bottom duration-300">
+<div class="w-12 h-1.5 bg-surface-variant rounded-full mx-auto mb-8"></div>
+<h3 class="font-headline font-extrabold text-2xl text-on-surface mb-8 text-center">What would you like to sell?</h3>
+<div class="grid gap-4 max-w-md mx-auto">
+<button class="flex items-center gap-6 p-6 bg-white border border-outline-variant/10 rounded-3xl hover:bg-surface-container-low transition-all group">
+<div class="w-14 h-14 rounded-2xl bg-primary-container/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+</div>
+<div class="text-left">
+<p class="font-headline font-bold text-on-surface">Sell Item</p>
+<p class="text-xs text-on-surface-variant">Electronics, furniture, books, etc.</p>
+</div>
+</button>
+<button class="flex items-center gap-6 p-6 bg-white border border-outline-variant/10 rounded-3xl hover:bg-surface-container-low transition-all group">
+<div class="w-14 h-14 rounded-2xl bg-tertiary-container/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-tertiary text-3xl" style="font-variation-settings: 'FILL' 1;">home_work</span>
+</div>
+<div class="text-left">
+<p class="font-headline font-bold text-on-surface">Sell / Rent Property</p>
+<p class="text-xs text-on-surface-variant">List your apartment or parking spot</p>
+</div>
+</button>
+<button class="mt-4 w-full py-4 text-on-surface-variant font-bold text-sm uppercase tracking-widest hover:text-on-surface transition-colors" onclick="document.getElementById('sell-modal').classList.add('hidden')">
+                Cancel
+            </button>
+</div>
+</div>
+</div>
+</body></html>

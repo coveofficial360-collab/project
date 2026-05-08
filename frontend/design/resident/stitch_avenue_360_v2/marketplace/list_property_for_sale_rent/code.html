@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>List Property - Cove Marketplace</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#FFDBCB",
+                        "surface-variant": "#E1E3E4",
+                        "surface-container-high": "#E7E8E9",
+                        "on-secondary-container": "#694600",
+                        "tertiary": "#9E4300",
+                        "secondary-fixed-dim": "#FFBA43",
+                        "surface-container-lowest": "#FFFFFF",
+                        "secondary": "#805600",
+                        "surface-dim": "#D9DADB",
+                        "on-tertiary": "#FFFFFF",
+                        "surface-tint": "#005BC0",
+                        "tertiary-fixed-dim": "#FFB691",
+                        "secondary-container": "#FDAF0B",
+                        "on-error-container": "#93000A",
+                        "surface-bright": "#F8F9FA",
+                        "on-secondary-fixed": "#281800",
+                        "primary-fixed": "#D8E2FF",
+                        "surface-container": "#EDEEEF",
+                        "background": "#F8F9FA",
+                        "surface-container-low": "#F3F4F5",
+                        "outline": "#727785",
+                        "on-primary": "#FFFFFF",
+                        "primary-container": "#1A73E8",
+                        "inverse-primary": "#ADC7FF",
+                        "on-error": "#FFFFFF",
+                        "tertiary-container": "#C55500",
+                        "on-primary-container": "#FFFFFF",
+                        "primary-fixed-dim": "#ADC7FF",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "on-tertiary-fixed": "#341100",
+                        "on-secondary": "#FFFFFF",
+                        "error-container": "#FFDAD6",
+                        "inverse-on-surface": "#F0F1F2",
+                        "outline-variant": "#C1C6D6",
+                        "inverse-surface": "#2E3132",
+                        "on-primary-fixed-variant": "#004493",
+                        "on-background": "#191C1D",
+                        "secondary-fixed": "#FFDDAF",
+                        "surface": "#F8F9FA",
+                        "surface-container-highest": "#E1E3E4",
+                        "on-surface": "#191C1D",
+                        "on-surface-variant": "#414754",
+                        "primary": "#005BBF",
+                        "on-tertiary-container": "#0E0200",
+                        "on-secondary-fixed-variant": "#614000",
+                        "on-primary-fixed": "#001A41",
+                        "error": "#BA1A1A"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-header {
+            background: rgba(248, 249, 250, 0.9);
+            backdrop-filter: blur(12px);
+        }
+        .scale-down-interaction:active {
+            transform: scale(0.96);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* Custom styles for selects to match design */
+        .custom-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23414754'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1.25rem;
+        }
+    </style>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- Top AppBar -->
+<header class="fixed top-0 w-full z-50 glass-header shadow-sm h-16 flex items-center justify-between px-6">
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high/50 transition-colors active:scale-95">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-headline font-bold text-primary text-xl tracking-tight">List Property</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high/50 transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">help_outline</span>
+</button>
+</header>
+<main class="pt-20 pb-28 px-6 max-w-md mx-auto">
+<!-- Progress Indicator -->
+<div class="mb-8">
+<div class="flex justify-between items-center mb-2">
+<span class="font-label text-[10px] tracking-widest uppercase font-bold text-primary">Property Information</span>
+<span class="font-label text-[10px] tracking-widest uppercase text-on-surface-variant">Step 1 of 2</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full w-1/2 bg-primary-container rounded-full"></div>
+</div>
+</div>
+<!-- Listing Type Toggle (Fixed Segmented Control) -->
+<div class="mb-8">
+<div class="bg-surface-container-low p-1.5 rounded-xl flex gap-1 shadow-inner">
+<button class="flex-1 py-3 px-4 rounded-lg bg-primary-container text-on-primary shadow-md font-bold text-label-sm flex items-center justify-center gap-2 transition-all active:scale-95">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">sell</span>
+                For Sale
+            </button>
+<button class="flex-1 py-3 px-4 rounded-lg text-on-surface-variant font-medium text-label-sm flex items-center justify-center gap-2 hover:bg-surface-container-high transition-all active:scale-95">
+<span class="material-symbols-outlined text-[20px]">calendar_today</span>
+                For Rent
+            </button>
+</div>
+</div>
+<!-- Image Upload Area (Preserved exactly) -->
+<section class="mb-8">
+<label class="block font-label text-[10px] tracking-widest uppercase font-bold text-on-surface-variant mb-3 px-1">Photos</label>
+<div class="relative group h-48 rounded-2xl bg-surface-container-low border-2 border-dashed border-outline-variant/30 flex flex-col items-center justify-center gap-3 overflow-hidden transition-all hover:border-primary/50">
+<div class="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity">
+<img class="w-full h-full object-cover" data-alt="A high-end architectural interior of a modern apartment with soft evening sunlight streaming through large floor-to-ceiling windows. The room is styled with minimalist furniture, light wood textures, and premium fabrics, reflecting a luxury urban sanctuary vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0xIRMUhUYaPQSmDDst45lkYcK6oBAirKkpDAF68Az1fHM-i1Zl_j3Dxw1Fm2KQf-rHLg47WB2RMeJcbKd2g4t5kFMiasdtZ6-BCsvjUDifbBjVyGaoLxp-0r9poJiJgqqvur_IobNhZfYfV7DmOFOXWb01MK70HET-_J_5MZYjkXbDQFBW5mWIMATBvH1lfz30PFGf87S49XMWH3ULl4sr-ao38406EDoX6QU3MFg4gdoQSXBJLO9lxbtgoyPTL_VxoKtrknLWA"/>
+</div>
+<div class="z-10 flex flex-col items-center">
+<div class="w-12 h-12 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center shadow-lg mb-2">
+<span class="material-symbols-outlined">add_a_photo</span>
+</div>
+<span class="text-label-sm font-semibold text-on-surface">Add Property Photos</span>
+<span class="text-[11px] text-on-surface-variant mt-1">Up to 10 photos • Max 5MB each</span>
+</div>
+</div>
+</section>
+<!-- Details Form -->
+<div class="space-y-6">
+<!-- Unit & Type Grid (Fixed Dropdown) -->
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-2">
+<label class="block font-label text-[10px] tracking-widest uppercase font-bold text-on-surface-variant px-1">Unit Number</label>
+<div class="h-14 bg-surface-container-lowest border border-outline-variant/20 rounded-xl px-4 flex items-center shadow-sm focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all">
+<input class="w-full bg-transparent border-none focus:ring-0 text-on-surface placeholder:text-outline/50 font-medium" placeholder="e.g. B-102" type="text"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="block font-label text-[10px] tracking-widest uppercase font-bold text-on-surface-variant px-1">Property Type</label>
+<div class="relative h-14 bg-surface-container-lowest border border-outline-variant/20 rounded-xl shadow-sm focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all">
+<select class="custom-select w-full h-full bg-transparent border-none focus:ring-0 text-on-surface font-medium px-4 appearance-none">
+<option>Apartment</option>
+<option>Villa</option>
+<option>Studio</option>
+<option>Penthouse</option>
+</select>
+</div>
+</div>
+</div>
+<!-- Configuration & Area Grid (Fixed Dropdown) -->
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-2">
+<label class="block font-label text-[10px] tracking-widest uppercase font-bold text-on-surface-variant px-1">Configuration</label>
+<div class="relative h-14 bg-surface-container-lowest border border-outline-variant/20 rounded-xl shadow-sm focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all">
+<select class="custom-select w-full h-full bg-transparent border-none focus:ring-0 text-on-surface font-medium px-4 appearance-none">
+<option>3 BHK</option>
+<option>1 BHK</option>
+<option>2 BHK</option>
+<option>4 BHK</option>
+<option>4+ BHK</option>
+</select>
+</div>
+</div>
+<div class="space-y-2">
+<label class="block font-label text-[10px] tracking-widest uppercase font-bold text-on-surface-variant px-1">Area (Sq. Ft.)</label>
+<div class="h-14 bg-surface-container-lowest border border-outline-variant/20 rounded-xl px-4 flex items-center shadow-sm focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all">
+<input class="w-full bg-transparent border-none focus:ring-0 text-on-surface placeholder:text-outline/50 font-medium" placeholder="1250" type="number"/>
+</div>
+</div>
+</div>
+<!-- Pricing (Preserved exactly) -->
+<div class="space-y-2">
+<label class="block font-label text-[10px] tracking-widest uppercase font-bold text-on-surface-variant px-1">Expected Price</label>
+<div class="h-14 bg-surface-container-lowest border border-outline-variant/20 rounded-xl px-4 flex items-center shadow-sm focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all">
+<span class="text-on-surface-variant font-bold mr-3">$</span>
+<input class="w-full bg-transparent border-none focus:ring-0 text-on-surface font-headline font-bold text-lg" placeholder="1,200,000" type="text"/>
+</div>
+</div>
+<!-- Maintenance Checkboxes -->
+<div class="flex gap-6 px-1">
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="w-6 h-6 rounded-md border-2 border-primary-container flex items-center justify-center transition-all bg-primary-container shadow-sm">
+<span class="material-symbols-outlined text-on-primary text-[16px] font-bold">check</span>
+</div>
+<span class="text-on-surface font-semibold text-sm">Included</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="w-6 h-6 rounded-md border-2 border-outline-variant flex items-center justify-center transition-all group-hover:border-primary/50 bg-surface-container-lowest shadow-inner"></div>
+<span class="text-on-surface-variant font-medium text-sm">Extra Charges</span>
+</label>
+</div>
+<!-- Amenities Multi-select Chips (Fixed Toggleable States) -->
+<div class="space-y-3">
+<label class="block font-label text-[10px] tracking-widest uppercase font-bold text-on-surface-variant px-1">Amenities</label>
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 rounded-full bg-primary-container text-on-primary text-xs font-bold shadow-md shadow-primary/20 transition-all active:scale-95">
+                    Furnished
+                </button>
+<button class="px-4 py-2 rounded-full border border-outline-variant bg-surface-container-low text-on-surface-variant text-xs font-medium hover:border-primary/40 transition-all active:scale-95">
+                    Parking
+                </button>
+<button class="px-4 py-2 rounded-full border border-outline-variant bg-surface-container-low text-on-surface-variant text-xs font-medium hover:border-primary/40 transition-all active:scale-95">
+                    Balcony
+                </button>
+<button class="px-4 py-2 rounded-full border border-outline-variant bg-surface-container-low text-on-surface-variant text-xs font-medium hover:border-primary/40 transition-all active:scale-95">
+                    Garden Facing
+                </button>
+<button class="px-4 py-2 rounded-full border border-outline-variant bg-surface-container-low text-on-surface-variant text-xs font-medium hover:border-primary/40 transition-all active:scale-95">
+                    Pet Friendly
+                </button>
+</div>
+</div>
+<!-- Description -->
+<div class="space-y-2">
+<label class="block font-label text-[10px] tracking-widest uppercase font-bold text-on-surface-variant px-1">Property Highlights</label>
+<div class="bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-4 shadow-sm focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all">
+<textarea class="w-full bg-transparent border-none focus:ring-0 text-on-surface placeholder:text-outline/50 text-sm leading-relaxed" placeholder="Mention features like natural lighting, proximity to clubhouse, recent renovations..." rows="4"></textarea>
+</div>
+</div>
+</div>
+</main>
+<!-- Fixed Footer Action -->
+<footer class="fixed bottom-0 w-full glass-header p-6 z-50 border-t border-outline-variant/10">
+<div class="max-w-md mx-auto flex items-center justify-between gap-4">
+<div class="flex-1">
+<p class="text-[10px] tracking-widest uppercase font-bold text-on-surface-variant mb-0.5">EST. VALUE</p>
+<p class="font-headline font-extrabold text-xl text-primary">$1,200,000</p>
+</div>
+<button class="flex-[1.5] bg-primary-container text-on-primary py-4 rounded-xl font-bold shadow-xl shadow-primary/25 flex items-center justify-center gap-2 transition-all active:scale-95 hover:bg-primary/90">
+            Post Listing
+            <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</button>
+</div>
+</footer>
+<nav class="hidden">
+</nav>
+</body></html>

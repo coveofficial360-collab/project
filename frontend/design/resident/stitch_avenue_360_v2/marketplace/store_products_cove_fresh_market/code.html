@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cove Fresh Market - Store Products</title>
+<!-- Fonts & Icons -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface": "#F8F9FA",
+                    "on-surface": "#191C1D",
+                    "on-secondary": "#FFFFFF",
+                    "primary-container": "#1A73E8",
+                    "on-tertiary-fixed-variant": "#783100",
+                    "on-primary": "#FFFFFF",
+                    "on-primary-fixed-variant": "#004493",
+                    "surface-dim": "#D9DADB",
+                    "surface-container-lowest": "#FFFFFF",
+                    "surface-container-low": "#F3F4F5",
+                    "secondary-fixed": "#FFDDAF",
+                    "tertiary": "#9E4300",
+                    "primary-fixed": "#D8E2FF",
+                    "on-tertiary": "#FFFFFF",
+                    "inverse-surface": "#2E3132",
+                    "on-primary-container": "#FFFFFF",
+                    "inverse-on-surface": "#F0F1F2",
+                    "on-primary-fixed": "#001A41",
+                    "on-secondary-fixed-variant": "#614000",
+                    "surface-container-high": "#E7E8E9",
+                    "inverse-primary": "#ADC7FF",
+                    "primary": "#005BBF",
+                    "on-secondary-fixed": "#281800",
+                    "primary-fixed-dim": "#ADC7FF",
+                    "tertiary-fixed-dim": "#FFB691",
+                    "tertiary-fixed": "#FFDBCB",
+                    "surface-tint": "#005BC0",
+                    "error": "#BA1A1A",
+                    "secondary-fixed-dim": "#FFBA43",
+                    "surface-container": "#EDEEEF",
+                    "surface-bright": "#F8F9FA",
+                    "on-error": "#FFFFFF",
+                    "on-tertiary-container": "#0E0200",
+                    "on-secondary-container": "#694600",
+                    "error-container": "#FFDAD6",
+                    "on-tertiary-fixed": "#341100",
+                    "on-error-container": "#93000A",
+                    "surface-container-highest": "#E1E3E4",
+                    "secondary-container": "#FDAF0B",
+                    "on-surface-variant": "#414754",
+                    "surface-variant": "#E1E3E4",
+                    "on-background": "#191C1D",
+                    "background": "#F8F9FA",
+                    "tertiary-container": "#C55500",
+                    "outline-variant": "#C1C6D6",
+                    "secondary": "#805600",
+                    "outline": "#727785"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "display": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+        }
+        .filled-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F9FA;
+        }
+        .font-headline {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .glass-header {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        .custom-shadow {
+            shadow: 0 12px 32px rgba(25, 28, 29, 0.06);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-surface antialiased pb-24">
+<!-- Top Navigation Bar (Shared Component Strategy) -->
+<nav class="fixed top-0 left-0 w-full z-50 bg-white/90 dark:bg-on-surface/90 backdrop-blur-xl shadow-sm">
+<div class="flex justify-between items-center h-16 px-6 max-w-full">
+<button class="hover:bg-surface-container-low/50 transition-colors p-2 rounded-full active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-headline text-xl font-extrabold text-on-surface tracking-tight">Cove Marketplace</h1>
+<div class="relative">
+<button class="hover:bg-surface-container-low/50 transition-colors p-2 rounded-full active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined text-primary">shopping_cart</span>
+</button>
+<span class="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold h-5 w-5 flex items-center justify-center rounded-full border-2 border-white">3</span>
+</div>
+</div>
+</nav>
+<!-- Hero Banner Section -->
+<header class="relative mt-16 h-64 w-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A lush and vibrant grocery store aisle filled with organized wooden crates of fresh organic vegetables and fruits. The lighting is warm and natural, suggesting an early morning boutique market atmosphere. The color palette is dominated by deep forest greens, earthy browns, and pops of citrus orange and tomato red. The style is premium and artisanal, reflecting the high-end Cove Fresh Market identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcWS2YEMVoZnJM4PDoH1kSkU9op3MvIk4uZOvt9bRYfv6A1TJXXdfLA3dpeq6HN-YQvPf9kmA3LRRJC8YGDun5Dgj3nnQfwh9z497H2ku4wZPcw82jOxVW9JGFuYI8ZmXf_iSJPhny8VXv0NW2CTyqLjaqFTnVBXMD2lq-3VQcibCB7DYAdT1LUaVAThcxUSr7zm5HGB9Sb-plVTbACdbnRs1JAD8X__LoB3q7laokcY-KPDZKOlffSfmBDFW5k6cyxN4FJXMejw"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-end p-6">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<span class="bg-primary px-3 py-1 rounded-full text-white text-[10px] font-bold tracking-widest uppercase">Grocery &amp; Fresh Produce</span>
+<div class="flex items-center gap-1 bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-lg border border-white/30">
+<span class="material-symbols-outlined text-secondary-container text-sm filled-icon" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-white text-xs font-bold">4.8</span>
+</div>
+</div>
+<h2 class="text-white font-headline text-3xl font-extrabold tracking-tight">Cove Fresh Market</h2>
+</div>
+</div>
+</header>
+<!-- Filter Section -->
+<section class="sticky top-16 z-40 bg-surface/80 backdrop-blur-md py-4">
+<div class="flex items-center gap-3 px-6 overflow-x-auto no-scrollbar">
+<button class="flex items-center gap-2 bg-white border border-outline-variant/30 px-4 py-2.5 rounded-full shadow-sm hover:bg-surface-container-low transition-colors whitespace-nowrap">
+<span class="text-sm font-semibold text-on-surface">Price</span>
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+<div class="h-8 w-px bg-outline-variant/30 mx-1"></div>
+<button class="bg-primary text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-md shadow-primary/20 whitespace-nowrap">All</button>
+<button class="bg-white text-on-surface-variant border border-outline-variant/30 px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-surface-container-low transition-colors whitespace-nowrap">Vegetables</button>
+<button class="bg-white text-on-surface-variant border border-outline-variant/30 px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-surface-container-low transition-colors whitespace-nowrap">Fruits</button>
+<button class="bg-white text-on-surface-variant border border-outline-variant/30 px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-surface-container-low transition-colors whitespace-nowrap">Dairy</button>
+<button class="bg-white text-on-surface-variant border border-outline-variant/30 px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-surface-container-low transition-colors whitespace-nowrap">Snacks</button>
+</div>
+</section>
+<!-- Product Grid Content -->
+<main class="px-6 py-4 grid grid-cols-2 gap-4">
+<!-- Product Card 1 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0_12px_32px_rgba(25,28,29,0.06)] hover:-translate-y-1 transition-all duration-300">
+<div class="h-40 overflow-hidden relative">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A bunch of bright yellow organic bananas resting on a rustic wooden surface with soft side lighting. The scene is crisp and clean with a focus on the natural texture of the fruit peels. The background is a soft, blurred off-white, maintaining a minimalist and high-end grocery aesthetic consistent with the Cove Glass design system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9SHg5dUFO74UrlgkRtDVciLql70Tp2n8SdhclgQKW-teT86_dQNH_Lfa9_4hRAdGo-TBgP6SK9HD8epfK0QbZJthddKflJnROUHEBveBrd7Sm7Oe8cX4GQ-DbFvLxZG7uMCV0PRV8W_zf6Xfsvq6l5tGwJgcofhGBp-lj6biixfH-d73hzDg3I_z44YKo3jNkSCDWXxSDk5FgaGa9NPjtbnURM8cIGlWyp5Ff2TV0Tx8ZbtCPGU3x90RXwliF9mhxRk2Wuz-adQ"/>
+<div class="absolute top-2 right-2">
+<button class="bg-white/80 backdrop-blur-md p-1.5 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-on-surface-variant text-lg">favorite</span>
+</button>
+</div>
+</div>
+<div class="p-4 flex flex-col gap-2">
+<h3 class="text-on-surface font-semibold text-sm leading-tight">Organic Bananas (Bunch)</h3>
+<div class="flex justify-between items-center mt-1">
+<span class="text-primary font-bold text-lg">$2.50</span>
+<button class="bg-primary text-white p-2 rounded-full active:scale-90 transition-transform shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0_12px_32px_rgba(25,28,29,0.06)] hover:-translate-y-1 transition-all duration-300">
+<div class="h-40 overflow-hidden relative">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A classic glass bottle of fresh whole milk with condensation on the exterior, placed on a light marble countertop. The lighting is bright and clean, creating a refreshing and wholesome mood. The image emphasizes purity and quality with a neutral color palette of whites and soft grays, fitting the architectural sanctuary style of Cove." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZPTW2CvsH9uRxdFM0Hqdt75wWBD-LEzaZnkvyLRqBee_U5AmDSaQnIXPbogQwrddvgXhJxc3M_iCJGPCqzdkkFXrtOELklMSlmR3FOkgAnRBb9Iar7vFN9QheShzNoIsRKAFwq6XY_Gc8LFu0O9poebvMCF81AOFqvOH9uF1NAFT7anrsJ97j4xfEvzrGkcvDgDqfEJ9EX4SwDA6IaOPWtb9xZFQdkMej3fpaIM8dS-VnmSususDgvToHM-MG759cJLnUsdhc6g"/>
+<div class="absolute top-2 right-2">
+<button class="bg-white/80 backdrop-blur-md p-1.5 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-on-surface-variant text-lg">favorite</span>
+</button>
+</div>
+</div>
+<div class="p-4 flex flex-col gap-2">
+<h3 class="text-on-surface font-semibold text-sm leading-tight">Whole Milk (1L)</h3>
+<div class="flex justify-between items-center mt-1">
+<span class="text-primary font-bold text-lg">$3.25</span>
+<button class="bg-primary text-white p-2 rounded-full active:scale-90 transition-transform shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0_12px_32px_rgba(25,28,29,0.06)] hover:-translate-y-1 transition-all duration-300">
+<div class="h-40 overflow-hidden relative">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Two ripe, halved avocados showing their creamy green interior and smooth pit, set against a soft slate-colored background. The image has a rich, editorial quality with high contrast and sharp detail. The lighting is professional and diffuse, highlighting the fresh texture and vibrant healthy greens of the fruit." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDklu4lFyKDciTG_yyWLaqdGFfO6leihmj2MkgLevZOG2frX3sfVn52BtRnK7CLQdgvMzfdD5JgQI595gTiCZG_OOc7-fEbD6axWeQaDZBVICgg_Z_qpPlB1FdRNEV5aOuLngMo25NMTUJUh0P9iio-1239fSykd15-5p6Gz8SkqQMcjnZ4tg1x3u-iGAJP69myIhHKNXWCbN-0Q8neaA6gN8W-T360uYn2WsOCrB75c4MkSsLNdLPuXE2vzGm08ZsC-WhbJ_xrhw"/>
+<div class="absolute top-2 right-2">
+<button class="bg-white/80 backdrop-blur-md p-1.5 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-on-surface-variant text-lg">favorite</span>
+</button>
+</div>
+</div>
+<div class="p-4 flex flex-col gap-2">
+<h3 class="text-on-surface font-semibold text-sm leading-tight">Hass Avocado (Each)</h3>
+<div class="flex justify-between items-center mt-1">
+<span class="text-primary font-bold text-lg">$1.80</span>
+<button class="bg-primary text-white p-2 rounded-full active:scale-90 transition-transform shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 4 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0_12px_32px_rgba(25,28,29,0.06)] hover:-translate-y-1 transition-all duration-300">
+<div class="h-40 overflow-hidden relative">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A loaf of artisanal sourdough bread, freshly baked with a golden-brown crispy crust and a light dusting of flour. It sits on a linen towel in a bright, modern kitchen setting. The image feels warm and inviting, using a palette of golden ochre and soft whites to convey freshness and quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzUwl8O18gmlXnyXe_NGysd-Dq4gV1JcidGd6UGD-sXnG-mWM12cQnIeIKG3To55PDpSrltqFdb1m9NbC_B_9CdBgVHnhhWVT5ZkUXVgL-AA2OOcNKjyEsE2KH5LiZGzRrXkaQXu7qPsU5poHn9stymGMcU1O54iw3lIrKXthQ_zDJmEJbESTN9WerYgMq6DvAShKqcPgfsO0udIPwcPhKdWhDC4WLlkJqHZKSZwUurB2Yr3wgku-OcFyD_dMzc2HtHFRVxxJ15g"/>
+<div class="absolute top-2 right-2">
+<button class="bg-white/80 backdrop-blur-md p-1.5 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-on-surface-variant text-lg">favorite</span>
+</button>
+</div>
+</div>
+<div class="p-4 flex flex-col gap-2">
+<h3 class="text-on-surface font-semibold text-sm leading-tight">Fresh Sourdough</h3>
+<div class="flex justify-between items-center mt-1">
+<span class="text-primary font-bold text-lg">$5.50</span>
+<button class="bg-primary text-white p-2 rounded-full active:scale-90 transition-transform shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 5 (Bento Style Expansion) -->
+<div class="col-span-2 group bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0_12px_32px_rgba(25,28,29,0.06)] hover:-translate-y-1 transition-all duration-300 flex items-center">
+<div class="w-1/3 h-32 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A cluster of organic vine-ripened tomatoes, deep red and still attached to a green leafy stem. The lighting is bright and high-key, emphasizing the glossy texture of the skin. The image is set against a clean, white architectural background to align with the urban sanctuary design theme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD752nFLzemaw34l80LbvyS_m_F5gBY0TFmKvds-XvIimOS-1NgXR453LuRlUuVzV4fdumzNVEapd3STgR9Z5j4pY-S_K39vY6LrrZ06a2yZ2ju3A2NcbgBN5i49_HCQYmcfevnip6_YMsy6pyeLXgfZbck38y5nTxYShT8mGchGzlCYhweQdGz3ka6nNtFfI3btr0os4lyuGphN12dtr5KJUYIepdVO28XZPUViz-00ozYswLh5IOMB9mRRYbNKRlUmDq7Kzoaxw"/>
+</div>
+<div class="p-4 flex-1 flex flex-col justify-between h-full">
+<div>
+<span class="text-[10px] font-bold tracking-widest text-secondary uppercase mb-1 block">Weekly Special</span>
+<h3 class="text-on-surface font-semibold text-base leading-tight">Vine Ripened Tomatoes</h3>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-baseline gap-1">
+<span class="text-primary font-bold text-lg">$3.99</span>
+<span class="text-on-surface-variant text-xs line-through">$5.50</span>
+</div>
+<button class="bg-primary text-white px-4 py-1.5 rounded-full text-xs font-bold active:scale-90 transition-transform">
+                        Add to Cart
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Shared Component Strategy) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 pb-safe bg-white/90 dark:bg-on-surface/90 backdrop-blur-2xl shadow-[0_-12px_32px_rgba(25,28,29,0.06)]">
+<div class="flex justify-around items-center h-20 px-4">
+<!-- Home -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-dim hover:opacity-80 transition-opacity active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-label text-[10px] uppercase tracking-widest font-semibold">Home</span>
+</button>
+<!-- Buy (Active State) -->
+<button class="flex flex-col items-center justify-center bg-primary-container/20 dark:bg-primary-container text-primary dark:text-on-primary-container rounded-full px-6 py-1.5 hover:opacity-80 transition-opacity active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined mb-1 filled-icon" style="font-variation-settings: 'FILL' 1;">shopping_bag</span>
+<span class="font-label text-[10px] uppercase tracking-widest font-semibold">Buy</span>
+</button>
+<!-- Sell -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-dim hover:opacity-80 transition-opacity active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined mb-1">storefront</span>
+<span class="font-label text-[10px] uppercase tracking-widest font-semibold">Sell</span>
+</button>
+<!-- Activity -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-dim hover:opacity-80 transition-opacity active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined mb-1">receipt_long</span>
+<span class="font-label text-[10px] uppercase tracking-widest font-semibold">Activity</span>
+</button>
+</div>
+</nav>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</body></html>

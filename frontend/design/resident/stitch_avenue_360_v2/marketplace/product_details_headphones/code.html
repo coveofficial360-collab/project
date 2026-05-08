@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-container": "#0E0200",
+                    "surface-tint": "#005BC0",
+                    "primary": "#005BBF",
+                    "surface-container-lowest": "#FFFFFF",
+                    "surface-dim": "#D9DADB",
+                    "primary-fixed": "#D8E2FF",
+                    "surface-bright": "#F8F9FA",
+                    "on-tertiary": "#FFFFFF",
+                    "error": "#BA1A1A",
+                    "tertiary-container": "#C55500",
+                    "surface-variant": "#E1E3E4",
+                    "on-error-container": "#93000A",
+                    "secondary-container": "#FDAF0B",
+                    "on-error": "#FFFFFF",
+                    "secondary-fixed": "#FFDDAF",
+                    "inverse-surface": "#2E3132",
+                    "inverse-on-surface": "#F0F1F2",
+                    "on-surface-variant": "#414754",
+                    "on-secondary": "#FFFFFF",
+                    "tertiary-fixed": "#FFDBCB",
+                    "surface-container-low": "#F3F4F5",
+                    "surface": "#F8F9FA",
+                    "secondary-fixed-dim": "#FFBA43",
+                    "on-tertiary-fixed": "#341100",
+                    "surface-container-high": "#E7E8E9",
+                    "on-primary-fixed-variant": "#004493",
+                    "on-secondary-fixed": "#281800",
+                    "on-secondary-container": "#694600",
+                    "outline": "#727785",
+                    "on-primary": "#FFFFFF",
+                    "background": "#F8F9FA",
+                    "surface-container": "#EDEEEF",
+                    "on-tertiary-fixed-variant": "#783100",
+                    "tertiary": "#9E4300",
+                    "on-primary-fixed": "#001A41",
+                    "surface-container-highest": "#E1E3E4",
+                    "secondary": "#805600",
+                    "on-background": "#191C1D",
+                    "tertiary-fixed-dim": "#FFB691",
+                    "on-secondary-fixed-variant": "#614000",
+                    "primary-fixed-dim": "#ADC7FF",
+                    "primary-container": "#1A73E8",
+                    "inverse-primary": "#ADC7FF",
+                    "outline-variant": "#C1C6D6",
+                    "on-primary-container": "#FFFFFF",
+                    "on-surface": "#191C1D",
+                    "error-container": "#FFDAD6"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "display": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-background antialiased pb-32">
+<!-- Top Navigation Bar (Contextual Back/Save) -->
+<header class="fixed top-0 left-0 right-0 z-50 h-16 flex items-center justify-between px-4 glass-header">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-surface-container active:scale-95 transition-all text-on-surface">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div class="flex gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-surface-container active:scale-95 transition-all text-on-surface">
+<span class="material-symbols-outlined">share</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-surface-container active:scale-95 transition-all text-error">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">favorite</span>
+</button>
+</div>
+</header>
+<main class="max-w-screen-md mx-auto">
+<!-- Image Gallery / Hero -->
+<section class="relative w-full aspect-square md:aspect-video bg-surface-container-highest overflow-hidden">
+<img alt="Elite Noise-Cancelling Headphones" class="w-full h-full object-cover" data-alt="Professional studio photograph of sleek, matte black noise-cancelling headphones resting on a minimalist concrete surface. The lighting is soft and cinematic, highlighting the premium texture of the leather ear cups and the metallic headband. The background is a clean, bright architectural environment with subtle shadows, embodying a high-end SaaS marketplace aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7q8yNSf34bBGlRkO6ejlrY1XZ4PzYVl7bnWmfbwhlLuLKI8qCFPcGaF2c8sFx-S6HPZXOgfeC911n5L88Bzb8vgivuRq3Pzz6W9XI3kjPWNDebQWApLfrx_gAfnbuYMyDGG2zHSO-zBAMCA6x2gX4U8bm4bwPIMAzLB2mI0yfNfu2peJwLIqVuCoL-GzzW7kI2P3Gnjy3HotzwrnOCULmowfjHQ2LFvSG8atJRdxL1D6Y74tocVun3RaF-som37e6woFH_f-CYw"/>
+<div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<div class="w-2 h-2 rounded-full bg-white/50"></div>
+<div class="w-2 h-2 rounded-full bg-white/50"></div>
+</div>
+</section>
+<!-- Product Info Section -->
+<section class="p-6 bg-surface-container-lowest">
+<div class="flex flex-col gap-2 mb-6">
+<div class="flex items-center gap-2">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label text-[10px] uppercase tracking-widest font-bold">New</span>
+<span class="text-on-surface-variant font-label text-xs uppercase tracking-widest">Electronics</span>
+</div>
+<h1 class="font-headline text-headline-sm md:text-3xl font-extrabold text-on-surface tracking-tight">Elite Noise-Cancelling Headphones</h1>
+<p class="font-headline text-2xl font-bold text-primary">$299</p>
+</div>
+<!-- Description -->
+<div class="space-y-4 mb-8">
+<h2 class="font-headline text-lg font-bold text-on-surface">Description</h2>
+<p class="text-on-surface-variant leading-relaxed text-sm md:text-base">
+                    Experience unparalleled sound quality with the Elite Series. These headphones feature industry-leading Active Noise Cancellation (ANC) that adapts to your environment in real-time. Designed for travelers and professionals alike, the ergonomic memory foam ear cups ensure premium comfort for all-day wear.
+                </p>
+<ul class="grid grid-cols-1 md:grid-cols-2 gap-3">
+<li class="flex items-center gap-2 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
+                        Up to 40-hour battery life
+                    </li>
+<li class="flex items-center gap-2 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
+                        Fast Charging (10 mins = 5 hrs)
+                    </li>
+<li class="flex items-center gap-2 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
+                        Multipoint connection support
+                    </li>
+<li class="flex items-center gap-2 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
+                        Premium travel case included
+                    </li>
+</ul>
+</div>
+<!-- Seller Profile Card -->
+<div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/15 flex items-center justify-between mb-8">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-sm">
+<img alt="Alex Rivers" class="w-full h-full object-cover" data-alt="A professional headshot of a friendly man named Alex Rivers with a warm smile, set against a blurred urban background. The lighting is bright and natural, suggesting a trustworthy and approachable community member. The image has a clean, high-resolution finish consistent with a premium marketplace design system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZiBTQa-4KQOd9FtHkzvqmhfi1y_CyGM-1-phYJ-OEPKmRqLiMJ3G3uWRW7Id2-oZ1H848cCPLUEnb5r4quGbqPGSkvD-4zwtpy0ftRkTFVXTDHO3sH9gUa3lZO3rHGbWite9W21WYAeowawa4-8k1YVwM8aB61pYn1Pbn9dYO3CZ2lojYnHopid4qeWIi4YFIcBOGiD_eyScVALMKcvmyzhBL7xWt9l521T7qjvaawaBTl0oqC6xM_-Tl47iwx4O9lZPjFSsU9A"/>
+</div>
+<div>
+<p class="font-headline font-bold text-on-surface">Alex Rivers</p>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-sm font-bold text-on-surface">4.9</span>
+<span class="text-xs text-on-surface-variant ml-1">(124 reviews)</span>
+</div>
+</div>
+</div>
+<button class="px-4 py-2 rounded-full bg-white border border-outline-variant text-sm font-bold text-primary hover:bg-surface-container transition-colors">
+                    View Profile
+                </button>
+</div>
+<!-- Specifications Grid -->
+<div class="mb-8">
+<h2 class="font-headline text-lg font-bold text-on-surface mb-4">Specifications</h2>
+<div class="grid grid-cols-2 gap-4">
+<div class="p-3 rounded-lg bg-surface-container-low">
+<p class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant mb-1">Connectivity</p>
+<p class="text-sm font-semibold text-on-surface">Bluetooth 5.2</p>
+</div>
+<div class="p-3 rounded-lg bg-surface-container-low">
+<p class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant mb-1">Weight</p>
+<p class="text-sm font-semibold text-on-surface">250g</p>
+</div>
+<div class="p-3 rounded-lg bg-surface-container-low">
+<p class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant mb-1">Color</p>
+<p class="text-sm font-semibold text-on-surface">Matte Black</p>
+</div>
+<div class="p-3 rounded-lg bg-surface-container-low">
+<p class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant mb-1">Warranty</p>
+<p class="text-sm font-semibold text-on-surface">1 Year Limited</p>
+</div>
+</div>
+</div>
+<!-- Safety/Policy -->
+<div class="p-4 rounded-xl bg-primary-fixed/30 border border-primary-fixed-dim/30 flex gap-3 mb-4">
+<span class="material-symbols-outlined text-primary">security</span>
+<div>
+<h3 class="text-sm font-bold text-on-primary-fixed">Community Protection</h3>
+<p class="text-xs text-on-primary-fixed-variant mt-1 leading-relaxed">
+                        This transaction is protected by our Community Marketplace Guidelines. All items are verified for quality. Return within 48 hours if the condition doesn't match the description.
+                    </p>
+</div>
+</div>
+</section>
+</main>
+<!-- Fixed Bottom Action Bar -->
+<footer class="fixed bottom-0 left-0 right-0 z-50 glass-header border-t-0 p-4 pb-8 flex items-center justify-center">
+<div class="max-w-screen-md w-full flex gap-3">
+<button class="flex-1 flex items-center justify-center gap-2 h-14 rounded-full bg-surface-container-highest text-on-surface font-bold hover:bg-surface-variant active:scale-95 transition-all">
+<span class="material-symbols-outlined">chat</span>
+                Contact Seller
+            </button>
+<button class="flex-[1.5] flex items-center justify-center gap-2 h-14 rounded-full bg-primary text-on-primary font-bold shadow-lg hover:shadow-xl active:scale-95 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shopping_bag</span>
+                Interested
+            </button>
+</div>
+</footer>
+</body></html>

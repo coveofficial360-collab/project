@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Orders - Cove Glass Marketplace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#005BBF",
+                    "on-secondary-fixed": "#281800",
+                    "on-tertiary-fixed": "#341100",
+                    "surface-dim": "#D9DADB",
+                    "on-secondary": "#FFFFFF",
+                    "on-surface": "#191C1D",
+                    "primary-container": "#1A73E8",
+                    "surface-container-high": "#E7E8E9",
+                    "surface-tint": "#005BC0",
+                    "on-tertiary": "#FFFFFF",
+                    "background": "#F8F9FA",
+                    "surface-container-lowest": "#FFFFFF",
+                    "tertiary-fixed": "#FFDBCB",
+                    "on-primary-container": "#FFFFFF",
+                    "on-secondary-container": "#694600",
+                    "inverse-surface": "#2E3132",
+                    "on-surface-variant": "#414754",
+                    "surface-container": "#EDEEEF",
+                    "surface": "#F8F9FA",
+                    "inverse-on-surface": "#F0F1F2",
+                    "error-container": "#FFDAD6",
+                    "outline-variant": "#C1C6D6",
+                    "primary-fixed-dim": "#ADC7FF",
+                    "error": "#BA1A1A",
+                    "secondary-fixed-dim": "#FFBA43",
+                    "on-background": "#191C1D",
+                    "on-error-container": "#93000A",
+                    "tertiary": "#9E4300",
+                    "secondary-fixed": "#FFDDAF",
+                    "surface-container-highest": "#E1E3E4",
+                    "surface-bright": "#F8F9FA",
+                    "on-tertiary-container": "#0E0200",
+                    "outline": "#727785",
+                    "on-secondary-fixed-variant": "#614000",
+                    "secondary-container": "#FDAF0B",
+                    "on-tertiary-fixed-variant": "#783100",
+                    "primary-fixed": "#D8E2FF",
+                    "tertiary-fixed-dim": "#FFB691",
+                    "on-error": "#FFFFFF",
+                    "tertiary-container": "#C55500",
+                    "on-primary-fixed-variant": "#004493",
+                    "surface-container-low": "#F3F4F5",
+                    "secondary": "#805600",
+                    "on-primary": "#FFFFFF",
+                    "on-primary-fixed": "#001A41",
+                    "surface-variant": "#E1E3E4",
+                    "inverse-primary": "#ADC7FF"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "display": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-panel {
+            backdrop-filter: blur(24px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl shadow-sm">
+<div class="flex justify-between items-center w-full px-6 py-4 max-w-screen-xl mx-auto">
+<div class="flex items-center gap-4">
+<button class="active:scale-95 duration-200 hover:bg-surface-container-high/50 p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-headline text-headline font-bold tracking-tight text-primary dark:text-primary-fixed-dim text-xl">Orders</h1>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container shadow-sm active:scale-95 duration-200 cursor-pointer">
+<img alt="Profile" class="w-full h-full object-cover" data-alt="A professional studio portrait of a young male professional with a friendly expression. The lighting is high-key and bright, fitting a light-mode UI aesthetic. The background is a soft, blurred neutral office environment with subtle hints of corporate blue, maintaining a clean and premium editorial feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWbUSRRyIRfZRYS7l_OIZEaJ6VQ7j3I9q0Y8RS4CusPGv15FpgN0-7dalvKtux_sw3TZpwJ2vOYmZe30NH761LEld5CF_tau7tGoytWyqDib5VLEcRcGpMD8spLEzkwHHuTnCUnuEGetcF-zejNDAi3AQh0quWzPmlR0KRdsbMAZLRPi2ZTdAmv1mFMmux9yFj5kpY02R77wa8wn4jnLJiIXsdvQ0V_9egHBBM21WGO7B1gi3w-PeaqMWOMlhEq9JKol3gNHsmpg"/>
+</div>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-screen-xl mx-auto">
+<!-- Tabs -->
+<div class="flex p-1 bg-surface-container rounded-full mb-8 max-w-md mx-auto shadow-sm">
+<button class="flex-1 py-2.5 px-4 rounded-full text-sm font-semibold transition-all duration-200 bg-white text-primary shadow-sm">Purchases</button>
+<button class="flex-1 py-2.5 px-4 rounded-full text-sm font-semibold transition-all duration-200 text-on-surface-variant hover:text-primary">Store Orders</button>
+</div>
+<!-- Section Title & Filter -->
+<div class="flex justify-between items-end mb-6">
+<div>
+<p class="text-[10px] uppercase tracking-widest text-outline font-bold mb-1">Recent Activity</p>
+<h2 class="text-2xl font-bold tracking-tight">Active Purchases</h2>
+</div>
+<button class="flex items-center gap-2 text-primary font-semibold text-sm hover:bg-primary/5 px-3 py-1.5 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-lg">filter_list</span>
+                Filter
+            </button>
+</div>
+<!-- Order Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Card 1: Delivered -->
+<div class="bg-surface-container-lowest rounded-3xl p-6 shadow-[0_12px_32px_rgba(25,28,29,0.06)] border border-outline-variant/15 hover:-translate-y-1 transition-all duration-300 group">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-2xl bg-primary/5 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">keyboard</span>
+</div>
+<div>
+<h3 class="font-semibold text-on-surface group-hover:text-primary transition-colors">Custom Keychron Q1</h3>
+<p class="text-xs text-outline font-medium">#ORD-7721 • Oct 28, 2024</p>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-green-100 text-green-700">Delivered</span>
+</div>
+<div class="flex justify-between items-center py-4 border-y border-outline-variant/10 mb-6">
+<span class="text-sm text-on-surface-variant">Total Amount</span>
+<span class="text-xl font-display font-bold text-on-surface">$140.00</span>
+</div>
+<div class="flex gap-3">
+<button class="flex-1 py-3 rounded-full border border-outline-variant text-sm font-bold text-on-surface hover:bg-surface-container transition-colors active:scale-95 duration-150">View Details</button>
+<button class="flex-1 py-3 rounded-full bg-primary text-white text-sm font-bold shadow-lg shadow-primary/20 hover:brightness-110 transition-all active:scale-95 duration-150">Track Order</button>
+</div>
+</div>
+<!-- Card 2: Pending -->
+<div class="bg-surface-container-lowest rounded-3xl p-6 shadow-[0_12px_32px_rgba(25,28,29,0.06)] border border-outline-variant/15 hover:-translate-y-1 transition-all duration-300 group">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-2xl bg-secondary-container/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">eco</span>
+</div>
+<div>
+<h3 class="font-semibold text-on-surface group-hover:text-primary transition-colors">Organic Monstera Plant</h3>
+<p class="text-xs text-outline font-medium">#ORD-8932 • Oct 30, 2024</p>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-yellow-100 text-yellow-700">Pending</span>
+</div>
+<div class="flex justify-between items-center py-4 border-y border-outline-variant/10 mb-6">
+<span class="text-sm text-on-surface-variant">Total Amount</span>
+<span class="text-xl font-display font-bold text-on-surface">$45.00</span>
+</div>
+<div class="flex gap-3">
+<button class="flex-1 py-3 rounded-full border border-outline-variant text-sm font-bold text-on-surface hover:bg-surface-container transition-colors active:scale-95 duration-150">View Details</button>
+<button class="flex-1 py-3 rounded-full bg-primary text-white text-sm font-bold shadow-lg shadow-primary/20 hover:brightness-110 transition-all active:scale-95 duration-150">Track Order</button>
+</div>
+</div>
+<!-- Card 3: Cancelled -->
+<div class="bg-surface-container-lowest rounded-3xl p-6 shadow-[0_12px_32px_rgba(25,28,29,0.06)] border border-outline-variant/15 hover:-translate-y-1 transition-all duration-300 group">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-2xl bg-error-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-error">headphones</span>
+</div>
+<div>
+<h3 class="font-semibold text-on-surface group-hover:text-primary transition-colors">Sony WH-1000XM5</h3>
+<p class="text-xs text-outline font-medium">#ORD-6610 • Oct 25, 2024</p>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-red-100 text-red-700">Cancelled</span>
+</div>
+<div class="flex justify-between items-center py-4 border-y border-outline-variant/10 mb-6">
+<span class="text-sm text-on-surface-variant">Refund Amount</span>
+<span class="text-xl font-display font-bold text-on-surface">$299.00</span>
+</div>
+<div class="flex gap-3">
+<button class="w-full py-3 rounded-full border border-outline-variant text-sm font-bold text-on-surface hover:bg-surface-container transition-colors active:scale-95 duration-150">View Resolution</button>
+</div>
+</div>
+<!-- Card 4: Store Example Layout (Hidden context item) -->
+<div class="bg-surface-container-low/40 rounded-3xl p-6 border-2 border-dashed border-outline-variant flex flex-col items-center justify-center text-center opacity-70">
+<div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-outline text-3xl">add_shopping_cart</span>
+</div>
+<h3 class="font-headline font-bold text-outline">Ready for more?</h3>
+<p class="text-sm text-outline px-6">Explore community creations and local store offerings.</p>
+<button class="mt-4 text-primary font-bold text-sm tracking-wide uppercase">Shop Market</button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl flex justify-around items-center px-4 pb-6 pt-3 shadow-[0_-4px_20px_rgba(25,28,29,0.04)]">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-5 py-2 hover:text-primary dark:hover:text-primary-fixed-dim transition-all active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label text-[10px] font-medium tracking-widest uppercase mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-5 py-2 hover:text-primary dark:hover:text-primary-fixed-dim transition-all active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined">storefront</span>
+<span class="font-label text-[10px] font-medium tracking-widest uppercase mt-1">Market</span>
+</a>
+<!-- Active Tab: Orders (as per requirement mapping to 'Activity' concept) -->
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-full px-5 py-2 active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined active-icon">receipt_long</span>
+<span class="font-label text-[10px] font-medium tracking-widest uppercase mt-1">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-5 py-2 hover:text-primary dark:hover:text-primary-fixed-dim transition-all active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label text-[10px] font-medium tracking-widest uppercase mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

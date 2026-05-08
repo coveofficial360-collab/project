@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Order Logistics Tracker - Cove Glass</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#F8F9FA",
+                        "tertiary": "#9E4300",
+                        "on-secondary-fixed-variant": "#614000",
+                        "surface-dim": "#D9DADB",
+                        "surface": "#F8F9FA",
+                        "inverse-on-surface": "#F0F1F2",
+                        "on-background": "#191C1D",
+                        "surface-container": "#EDEEEF",
+                        "surface-variant": "#E1E3E4",
+                        "surface-container-high": "#E7E8E9",
+                        "secondary-fixed-dim": "#FFBA43",
+                        "secondary-container": "#FDAF0B",
+                        "surface-container-lowest": "#FFFFFF",
+                        "outline": "#727785",
+                        "surface-container-low": "#F3F4F5",
+                        "on-error-container": "#93000A",
+                        "on-primary-fixed": "#001A41",
+                        "primary": "#005BBF",
+                        "inverse-primary": "#ADC7FF",
+                        "primary-container": "#1A73E8",
+                        "surface-container-highest": "#E1E3E4",
+                        "on-secondary-fixed": "#281800",
+                        "secondary-fixed": "#FFDDAF",
+                        "surface-tint": "#005BC0",
+                        "on-tertiary-container": "#0E0200",
+                        "on-secondary": "#FFFFFF",
+                        "on-primary-container": "#FFFFFF",
+                        "tertiary-container": "#C55500",
+                        "error": "#BA1A1A",
+                        "on-surface": "#191C1D",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "tertiary-fixed-dim": "#FFB691",
+                        "secondary": "#805600",
+                        "error-container": "#FFDAD6",
+                        "on-surface-variant": "#414754",
+                        "primary-fixed": "#D8E2FF",
+                        "on-primary": "#FFFFFF",
+                        "primary-fixed-dim": "#ADC7FF",
+                        "outline-variant": "#C1C6D6",
+                        "on-primary-fixed-variant": "#004493",
+                        "tertiary-fixed": "#FFDBCB",
+                        "on-tertiary": "#FFFFFF",
+                        "on-secondary-container": "#694600",
+                        "background": "#F8F9FA",
+                        "on-error": "#FFFFFF",
+                        "inverse-surface": "#2E3132",
+                        "on-tertiary-fixed": "#341100"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/90 dark:bg-surface-dim/90 backdrop-blur-xl shadow-sm">
+<div class="flex justify-between items-center px-6 h-16 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-4">
+<button class="active:scale-95 transition-transform text-primary dark:text-inverse-primary">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-headline text-headline font-bold tracking-tight text-primary dark:text-inverse-primary">Order Status</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="hover:bg-surface-container-high/50 transition-all duration-200 p-2 rounded-full active:scale-95">
+<span class="material-symbols-outlined text-primary" data-icon="search">search</span>
+</button>
+</div>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-2xl mx-auto space-y-8">
+<!-- Order Summary Card -->
+<section class="relative overflow-hidden bg-surface-container-lowest rounded-3xl p-6 shadow-[0_12px_32px_rgba(25,28,29,0.06)] border border-outline-variant/10">
+<div class="flex justify-between items-start mb-6">
+<div>
+<span class="font-label text-[10px] tracking-widest uppercase text-on-surface-variant mb-1 block">Tracking Number</span>
+<h2 class="text-xl font-bold text-on-surface tracking-tight">CV-992034881</h2>
+</div>
+<div class="bg-primary-container/10 px-4 py-1.5 rounded-full">
+<span class="text-primary font-bold text-xs">IN TRANSIT</span>
+</div>
+</div>
+<div class="flex items-center gap-4 mb-6">
+<div class="w-16 h-16 rounded-2xl overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A premium red designer sneaker photographed in a studio with soft volumetric lighting and a clean white background. The image is captured with a high-end editorial aesthetic, emphasizing textures and clean lines consistent with a luxury marketplace interface. The lighting creates subtle reflections on the shoe's material, evoking a sense of modern elegance and craftsmanship." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXABP-8yu0X5qDCZglR0TIsK2EUd6uLAQTT2jyKQO41p60MyyGWMoFLz21mWbUReK_JmYKMk9O0U3kJXnYIK0ARNjmjPNsew5qj8vWzNAhQetgE8ZjN-0UhOkKX2m0mLNCY6DdS7R040LR7Fsou6EiE4HYCyNz1nrk5NtyJs25RiV_0Wl13q4RIQ7_khg910W2kyhpvckAhSp04KucrUKZE__LevYil4p_wb5Xr6k7b-IZEjjcw6HSZ0KMTuVVF3xoHiWDMPs9-g"/>
+</div>
+<div>
+<h3 class="font-bold text-on-surface">Precision Runner X1</h3>
+<p class="text-sm text-on-surface-variant">Size: 10.5 • Color: Heritage Red</p>
+<p class="text-sm font-semibold text-primary mt-1">$128.00</p>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 pt-6 border-t border-outline-variant/10">
+<div>
+<span class="font-label text-[10px] tracking-widest uppercase text-on-surface-variant block">Estimated Delivery</span>
+<p class="text-sm font-medium text-on-surface mt-1">Oct 28, 2023</p>
+</div>
+<div>
+<span class="font-label text-[10px] tracking-widest uppercase text-on-surface-variant block">Courier</span>
+<p class="text-sm font-medium text-on-surface mt-1">Global Express</p>
+</div>
+</div>
+</section>
+<!-- Vertical Timeline Log -->
+<section class="space-y-2">
+<h3 class="font-headline text-lg font-bold text-on-surface px-1 mb-6">Tracking Activity</h3>
+<div class="relative space-y-0">
+<!-- Status Item: Active/Current -->
+<div class="relative pl-10 pb-10">
+<div class="absolute left-[11px] top-2 bottom-0 w-[2px] bg-outline-variant/30"></div>
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-primary-container flex items-center justify-center z-10 shadow-sm shadow-primary/20">
+<span class="material-symbols-outlined text-[14px] text-on-primary-container" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+</div>
+<div>
+<p class="text-on-surface font-bold text-base">Out for Delivery</p>
+<p class="text-xs font-medium text-primary mt-0.5">Oct 27, 2023 • 08:45 AM</p>
+<p class="text-sm text-on-surface-variant mt-2 leading-relaxed">Package is with the local courier and will be delivered by end of day to your registered address.</p>
+</div>
+</div>
+<!-- Status Item -->
+<div class="relative pl-10 pb-10">
+<div class="absolute left-[11px] top-0 bottom-0 w-[2px] bg-outline-variant/30"></div>
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+</div>
+<div>
+<p class="text-on-surface font-semibold text-base">Arrived at Distribution Center</p>
+<p class="text-xs font-medium text-on-surface-variant mt-0.5">Oct 26, 2023 • 11:20 PM</p>
+<p class="text-sm text-on-surface-variant mt-1">Regional Sorting Facility, North District</p>
+</div>
+</div>
+<!-- Status Item -->
+<div class="relative pl-10 pb-10">
+<div class="absolute left-[11px] top-0 bottom-0 w-[2px] bg-outline-variant/30"></div>
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant">flight_takeoff</span>
+</div>
+<div>
+<p class="text-on-surface font-semibold text-base">Departed International Hub</p>
+<p class="text-xs font-medium text-on-surface-variant mt-0.5">Oct 25, 2023 • 04:15 PM</p>
+<p class="text-sm text-on-surface-variant mt-1">Hong Kong International Logistics Port</p>
+</div>
+</div>
+<!-- Status Item -->
+<div class="relative pl-10 pb-10">
+<div class="absolute left-[11px] top-0 bottom-0 w-[2px] bg-outline-variant/30"></div>
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant">check_circle</span>
+</div>
+<div>
+<p class="text-on-surface font-semibold text-base">Order Processed &amp; Packaged</p>
+<p class="text-xs font-medium text-on-surface-variant mt-0.5">Oct 24, 2023 • 02:30 PM</p>
+<p class="text-sm text-on-surface-variant mt-1">Seller warehouse has confirmed and ready for dispatch.</p>
+</div>
+</div>
+<!-- Status Item: End -->
+<div class="relative pl-10">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant">receipt_long</span>
+</div>
+<div>
+<p class="text-on-surface font-semibold text-base">Order Placed</p>
+<p class="text-xs font-medium text-on-surface-variant mt-0.5">Oct 24, 2023 • 09:12 AM</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Help Section (Asymmetric Glass Card) -->
+<section class="mt-12 bg-secondary-fixed/30 rounded-3xl p-6 backdrop-blur-md flex items-center justify-between">
+<div class="max-w-[70%]">
+<h4 class="font-bold text-on-secondary-fixed leading-tight">Need help with this order?</h4>
+<p class="text-xs text-on-secondary-fixed-variant mt-1">Contact our 24/7 concierge for tracking issues or returns.</p>
+</div>
+<button class="w-12 h-12 bg-secondary-container text-on-secondary-container rounded-full flex items-center justify-center shadow-md active:scale-90 transition-transform">
+<span class="material-symbols-outlined">support_agent</span>
+</button>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl bg-white/90 dark:bg-surface-dim/90 backdrop-blur-2xl shadow-[0_-12px_32px_rgba(25,28,29,0.06)]">
+<div class="flex justify-around items-center w-full px-4 pt-3 pb-8">
+<div class="flex flex-col items-center justify-center text-on-surface-variant opacity-70 hover:opacity-100 active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label text-[10px] tracking-widest uppercase mt-1">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-5 py-1.5 transition-all active:scale-90">
+<span class="material-symbols-outlined" data-icon="receipt_long" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+<span class="font-label text-[10px] tracking-widest uppercase mt-0.5">Orders</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant opacity-70 hover:opacity-100 active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-label text-[10px] tracking-widest uppercase mt-1">Messages</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant opacity-70 hover:opacity-100 active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label text-[10px] tracking-widest uppercase mt-1">Profile</span>
+</div>
+</div>
+</nav>
+</body></html>

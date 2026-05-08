@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Store Orders - Marketplace</title>
+<!-- Google Fonts: Plus Jakarta Sans & Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#FFFFFF",
+                        "on-secondary-container": "#694600",
+                        "on-primary-container": "#FFFFFF",
+                        "secondary": "#805600",
+                        "on-background": "#191C1D",
+                        "surface-bright": "#F8F9FA",
+                        "primary-container": "#1A73E8",
+                        "tertiary": "#9E4300",
+                        "tertiary-fixed": "#FFDBCB",
+                        "on-secondary-fixed-variant": "#614000",
+                        "on-tertiary": "#FFFFFF",
+                        "error": "#BA1A1A",
+                        "on-secondary": "#FFFFFF",
+                        "inverse-surface": "#2E3132",
+                        "surface-container-high": "#E7E8E9",
+                        "surface-tint": "#005BC0",
+                        "surface-container-highest": "#E1E3E4",
+                        "primary-fixed": "#D8E2FF",
+                        "on-tertiary-container": "#0E0200",
+                        "secondary-container": "#FDAF0B",
+                        "outline-variant": "#C1C6D6",
+                        "primary-fixed-dim": "#ADC7FF",
+                        "on-surface-variant": "#414754",
+                        "on-secondary-fixed": "#281800",
+                        "tertiary-container": "#C55500",
+                        "surface": "#F8F9FA",
+                        "surface-dim": "#D9DADB",
+                        "on-primary": "#FFFFFF",
+                        "error-container": "#FFDAD6",
+                        "background": "#F8F9FA",
+                        "on-primary-fixed-variant": "#004493",
+                        "surface-container": "#EDEEEF",
+                        "primary": "#005BBF",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "inverse-on-surface": "#F0F1F2",
+                        "secondary-fixed-dim": "#FFBA43",
+                        "surface-variant": "#E1E3E4",
+                        "secondary-fixed": "#FFDDAF",
+                        "on-error-container": "#93000A",
+                        "on-tertiary-fixed": "#341100",
+                        "inverse-primary": "#ADC7FF",
+                        "on-primary-fixed": "#001A41",
+                        "surface-container-lowest": "#FFFFFF",
+                        "outline": "#727785",
+                        "surface-container-low": "#F3F4F5",
+                        "tertiary-fixed-dim": "#FFB691",
+                        "on-surface": "#191C1D"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen">
+<!-- Top AppBar -->
+<header class="bg-surface/90 dark:bg-surface-dim/90 backdrop-blur-xl docked full-width top-0 z-50 shadow-sm flex justify-between items-center w-full px-6 py-4 sticky">
+<div class="flex items-center gap-4">
+<button class="p-2 -ml-2 rounded-full hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-on-surface">arrow_back</span>
+</button>
+<h1 class="font-headline text-headline-md tracking-tight font-bold text-on-surface dark:text-inverse-on-surface">Orders</h1>
+</div>
+<div class="flex items-center gap-3">
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-high">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A professional close-up portrait of a young man with a friendly expression, set against a blurred modern interior background. The lighting is soft and high-key, aligning with a premium light-mode UI aesthetic. The color palette features neutral tones with subtle architectural shadows, conveying a sense of urban sophistication and sanctuary." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsc_FluCZNxlQnSHXyb-bWrx1oQKIbX0dUswjt7KIK_PdYbrse8VfoRU9LYpAhGKDGry0z_qcgAlI1Z54UGnraRFjYzoTmQNUn6eh-6oszs_tSK89ODdlRQzsINzBuwduos6yUrC9xshJ0SG63CAA_W73_W95nAQPjXQtQXCxP5-NZO5L6TwBE4jipNw6CKPRj_9QPMR9S9QQ-VM6y0_FFppeuI8spttWetturzNcAsMsbScP3XXmwY3TzmsIOJ_elzuqz-Le36A"/>
+</div>
+</div>
+</header>
+<main class="px-6 pb-32">
+<!-- Segmented Control Tabs -->
+<div class="mt-4 mb-8 bg-surface-container-low p-1.5 rounded-full flex items-center">
+<button class="flex-1 py-2 text-label-sm font-label tracking-widest uppercase text-on-surface-variant rounded-full hover:bg-surface-container-high/50 transition-all">
+                Purchases
+            </button>
+<button class="flex-1 py-2 text-label-sm font-label tracking-widest uppercase bg-primary text-on-primary shadow-sm rounded-full font-bold transition-all">
+                Store Orders
+            </button>
+</div>
+<!-- Orders List (Bento-inspired Cards) -->
+<section class="flex flex-col gap-6">
+<!-- Order Card 1: Processing -->
+<div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm hover:shadow-md transition-all border border-outline-variant/15">
+<div class="flex justify-between items-start mb-4">
+<div class="flex gap-4">
+<div class="w-14 h-14 rounded-xl overflow-hidden bg-surface-container-low flex items-center justify-center">
+<img alt="Green Grocers" class="w-full h-full object-cover" data-alt="A vibrant and crisp overhead shot of fresh organic vegetables including green kale, bright red tomatoes, and orange carrots arranged neatly on a wooden texture. The image has high-key natural lighting and a fresh, clean aesthetic that fits a premium grocery store branding. The colors are saturated and inviting, representing health and quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEyfYPV8mMCV0SVmGnrVc1XVhYuhoFPIJBG1hMVaPcEbMT30h7XoVvNhNRLfeXyN-WMcgc_kQ5knrrUsUYDR5hHSLswZNPwLtvfKZTX9jbBzwPS3yYofgafma_IVT5kKv8D-KXEWWAF0FAO_9ETJEi-ewDFhuPsZkEH383nKCJ0HRvpr7daxJBQrk-E07xdGcYXgGgK-3j-Qffg4waGbkCzvusa6JF2joYr8DzgZ3W_dhwf8bB0IPXlvjk-InynQXIH89x5YByNQ"/>
+</div>
+<div>
+<h3 class="font-headline font-bold text-on-surface">Fresh Organic Produce</h3>
+<p class="text-label-sm text-on-surface-variant mt-0.5">Green Grocers</p>
+</div>
+</div>
+<span class="bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold tracking-widest uppercase px-2 py-1 rounded-full">
+                        Processing
+                    </span>
+</div>
+<div class="flex justify-between items-center py-3 border-y border-outline-variant/10">
+<div>
+<p class="text-[10px] text-on-surface-variant tracking-widest uppercase font-medium">Order ID</p>
+<p class="text-body-md font-bold text-on-surface">#ORD-8821</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-on-surface-variant tracking-widest uppercase font-medium">Oct 31, 2024</p>
+<p class="text-body-md font-bold text-primary">$42.50</p>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-3 mt-4">
+<button class="py-2.5 px-4 rounded-full border border-outline text-label-sm font-bold text-on-surface hover:bg-surface-container-low transition-colors">
+                        View Details
+                    </button>
+<button class="py-2.5 px-4 rounded-full bg-primary text-on-primary text-label-sm font-bold shadow-sm hover:opacity-90 transition-opacity">
+                        Track Order
+                    </button>
+</div>
+</div>
+<!-- Order Card 2: Out for Delivery -->
+<div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm hover:shadow-md transition-all border border-outline-variant/15">
+<div class="flex justify-between items-start mb-4">
+<div class="flex gap-4">
+<div class="w-14 h-14 rounded-xl overflow-hidden bg-surface-container-low flex items-center justify-center">
+<img alt="Urban Brew" class="w-full h-full object-cover" data-alt="A minimalist and stylish macro shot of dark roasted coffee beans in a clean, white ceramic container. The lighting is soft and cinematic, highlighting the rich textures and oily sheen of the beans. The background is a soft-focus urban kitchen scene in light-mode colors, conveying a premium artisanal coffee experience. The mood is calm and sophisticated." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2-UNZB1LbhKPlN2_KMbsYg-qQ3CnK5n2tknvR7i6vj7z8jcLSNz5vOv34j9skWnYkudBYdVZt9q-v_NYzbM4WLdiXOQSuWgiFneCfm-2Nd58jikJb8B9mqKJNpJ6-KYLMBBeGmPNtjpwd-KfDi27HfUjEkoCv043fb58qE4VYKE6fllHsPBpHlPV4fHsOUA5EPA3nR1VNPrD8QhntnP6t96z5Ru1HSAph0uESkLyZ8pQdagNUJ-iqAsl33dqRw1LwQNo0npfVXw"/>
+</div>
+<div>
+<h3 class="font-headline font-bold text-on-surface">Artisanal Coffee Beans</h3>
+<p class="text-label-sm text-on-surface-variant mt-0.5">Urban Brew</p>
+</div>
+</div>
+<span class="bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-bold tracking-widest uppercase px-2 py-1 rounded-full">
+                        Out for Delivery
+                    </span>
+</div>
+<div class="flex justify-between items-center py-3 border-y border-outline-variant/10">
+<div>
+<p class="text-[10px] text-on-surface-variant tracking-widest uppercase font-medium">Order ID</p>
+<p class="text-body-md font-bold text-on-surface">#ORD-8944</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-on-surface-variant tracking-widest uppercase font-medium">Nov 02, 2024</p>
+<p class="text-body-md font-bold text-primary">$28.00</p>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-3 mt-4">
+<button class="py-2.5 px-4 rounded-full border border-outline text-label-sm font-bold text-on-surface hover:bg-surface-container-low transition-colors">
+                        View Details
+                    </button>
+<button class="py-2.5 px-4 rounded-full bg-primary text-on-primary text-label-sm font-bold shadow-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+                        Track Order
+                    </button>
+</div>
+</div>
+<!-- Order Card 3: Delivered -->
+<div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm hover:shadow-md transition-all border border-outline-variant/15 opacity-90">
+<div class="flex justify-between items-start mb-4">
+<div class="flex gap-4">
+<div class="w-14 h-14 rounded-xl overflow-hidden bg-surface-container-low flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl">bakery_dining</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-on-surface">Morning Pastry Box</h3>
+<p class="text-label-sm text-on-surface-variant mt-0.5">Rise &amp; Bake</p>
+</div>
+</div>
+<span class="bg-surface-container-high text-on-surface-variant text-[10px] font-bold tracking-widest uppercase px-2 py-1 rounded-full">
+                        Delivered
+                    </span>
+</div>
+<div class="flex justify-between items-center py-3 border-y border-outline-variant/10">
+<div>
+<p class="text-[10px] text-on-surface-variant tracking-widest uppercase font-medium">Order ID</p>
+<p class="text-body-md font-bold text-on-surface">#ORD-8712</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-on-surface-variant tracking-widest uppercase font-medium">Oct 28, 2024</p>
+<p class="text-body-md font-bold text-primary">$19.50</p>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-3 mt-4">
+<button class="col-span-2 py-2.5 px-4 rounded-full border border-outline text-label-sm font-bold text-on-surface hover:bg-surface-container-low transition-colors">
+                        Reorder Items
+                    </button>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-3 pb-safe bg-white/90 dark:bg-surface-container-lowest/90 backdrop-blur-2xl z-50 rounded-t-xl shadow-[0_-4px_12px_0_rgba(25,28,29,0.04)]">
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-high/50 transition-all">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label text-[10px] tracking-widest uppercase mt-1">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-high/50 transition-all">
+<span class="material-symbols-outlined">storefront</span>
+<span class="font-label text-[10px] tracking-widest uppercase mt-1">Market</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-high/50 transition-all">
+<span class="material-symbols-outlined">home_repair_service</span>
+<span class="font-label text-[10px] tracking-widest uppercase mt-1">Services</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 scale-90 transition-all duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+<span class="font-label text-[10px] tracking-widest uppercase mt-1 font-bold">Orders</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-high/50 transition-all">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label text-[10px] tracking-widest uppercase mt-1">Profile</span>
+</button>
+</nav>
+</body></html>

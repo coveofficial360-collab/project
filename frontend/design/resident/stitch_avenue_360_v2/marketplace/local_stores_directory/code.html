@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cove Market - Local Stores</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#FFFFFF",
+                        "secondary-container": "#FDAF0B",
+                        "primary-container": "#1A73E8",
+                        "on-secondary-fixed-variant": "#614000",
+                        "on-tertiary-container": "#0E0200",
+                        "surface-container-lowest": "#FFFFFF",
+                        "on-primary-fixed": "#001A41",
+                        "on-primary-container": "#FFFFFF",
+                        "surface": "#F8F9FA",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "error-container": "#FFDAD6",
+                        "surface-variant": "#E1E3E4",
+                        "outline": "#727785",
+                        "on-primary-fixed-variant": "#004493",
+                        "surface-container-low": "#F3F4F5",
+                        "secondary": "#805600",
+                        "tertiary": "#9E4300",
+                        "on-secondary-container": "#694600",
+                        "surface-bright": "#F8F9FA",
+                        "tertiary-container": "#C55500",
+                        "on-surface-variant": "#414754",
+                        "background": "#F8F9FA",
+                        "on-primary": "#FFFFFF",
+                        "secondary-fixed": "#FFDDAF",
+                        "secondary-fixed-dim": "#FFBA43",
+                        "on-tertiary": "#FFFFFF",
+                        "on-error-container": "#93000A",
+                        "on-secondary-fixed": "#281800",
+                        "primary-fixed-dim": "#ADC7FF",
+                        "surface-tint": "#005BC0",
+                        "primary-fixed": "#D8E2FF",
+                        "inverse-surface": "#2E3132",
+                        "on-background": "#191C1D",
+                        "surface-container-highest": "#E1E3E4",
+                        "primary": "#005BBF",
+                        "outline-variant": "#C1C6D6",
+                        "on-secondary": "#FFFFFF",
+                        "tertiary-fixed": "#FFDBCB",
+                        "inverse-primary": "#ADC7FF",
+                        "on-tertiary-fixed": "#341100",
+                        "error": "#BA1A1A",
+                        "surface-container": "#EDEEEF",
+                        "inverse-on-surface": "#F0F1F2",
+                        "on-surface": "#191C1D",
+                        "tertiary-fixed-dim": "#FFB691",
+                        "surface-dim": "#D9DADB",
+                        "surface-container-high": "#E7E8E9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-slate-100/50 dark:bg-slate-900/50 backdrop-blur-xl shadow-sm">
+<div class="flex items-center justify-between px-6 py-4 w-full">
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant/30 transition-colors">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-headline text-xl font-bold text-primary tracking-tight">Local Stores</h1>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/10">
+<img alt="Resident Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a smiling young man in a modern workspace environment. The lighting is soft and natural, emphasizing a clean and premium aesthetic. He has a friendly and approachable expression, wearing a minimalist navy blue sweater. The background is a gently blurred contemporary office with hints of architectural glass and greenery." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCi36-tkOXcipzQlbD84PVYsccF-BZaGtQDTDTQB1AuCpWjISbWbT7Y0w_5ZSLzr3RgS_qCpfeq_D0DGxMtKDHODYmlzQ2CUs_fzlSDuBsvap7R6oChwr_pdO8xsknOHFqztrwHGjz4jDYKWZqBO6UfQuRzvDMN2fK4C5oeUTNii2zWL03zUf7jt7VJ_E52EynUEd5zkhzDrmLevhDwRfE8F8XlSJQXcb7pgsNHeTJ_dLwzhyo0kVOSMmAp7PNsV4ATYx-i5ynalA"/>
+</div>
+</div>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-2xl mx-auto">
+<!-- Search and Filters Section -->
+<section class="mb-8 space-y-6">
+<div class="relative group">
+<div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">search</span>
+</div>
+<input class="w-full pl-12 pr-4 py-4 bg-surface-container-lowest border-none rounded-2xl shadow-sm focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-outline/60 text-sm font-medium" placeholder="Search for stores, pharmacy, or groceries..." type="text"/>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
+<button class="px-5 py-2 bg-primary text-on-primary rounded-full text-xs font-semibold tracking-wide whitespace-nowrap shadow-md shadow-primary/20">All</button>
+<button class="px-5 py-2 bg-surface-container-lowest text-on-surface-variant border border-outline-variant/30 rounded-full text-xs font-semibold tracking-wide whitespace-nowrap hover:bg-surface-variant/30 transition-colors">Grocery</button>
+<button class="px-5 py-2 bg-surface-container-lowest text-on-surface-variant border border-outline-variant/30 rounded-full text-xs font-semibold tracking-wide whitespace-nowrap hover:bg-surface-variant/30 transition-colors">Dairy</button>
+<button class="px-5 py-2 bg-surface-container-lowest text-on-surface-variant border border-outline-variant/30 rounded-full text-xs font-semibold tracking-wide whitespace-nowrap hover:bg-surface-variant/30 transition-colors">Pharmacy</button>
+<button class="px-5 py-2 bg-surface-container-lowest text-on-surface-variant border border-outline-variant/30 rounded-full text-xs font-semibold tracking-wide whitespace-nowrap hover:bg-surface-variant/30 transition-colors">General Store</button>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-[10px] font-bold text-outline uppercase tracking-widest mr-2">Ratings</span>
+<button class="flex items-center gap-1.5 px-4 py-1.5 bg-surface-container-low text-on-surface-variant rounded-full text-[11px] font-bold border border-outline-variant/20">
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">star</span> 4.0+
+                    </button>
+<button class="flex items-center gap-1.5 px-4 py-1.5 bg-surface-container-low text-on-surface-variant rounded-full text-[11px] font-bold border border-outline-variant/20">
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">star</span> 4.5+
+                    </button>
+</div>
+</div>
+</section>
+<!-- Store List -->
+<div class="space-y-4">
+<!-- Store Card 1 -->
+<article class="group bg-surface-container-lowest p-5 rounded-[2rem] shadow-[0_12px_32px_rgba(25,28,29,0.04)] hover:-translate-y-1 transition-all duration-300">
+<div class="flex gap-5">
+<div class="w-20 h-20 rounded-2xl bg-primary-fixed/30 flex items-center justify-center overflow-hidden flex-shrink-0">
+<img alt="Store Logo" class="w-full h-full object-cover" data-alt="A high-end organic grocery store interior with artisanal wooden shelves stocked with fresh, vibrant vegetables and premium bottled products. The lighting is warm and cinematic, emphasizing texture and freshness. The scene is clean, modern, and high-contrast, fitting a luxury lifestyle aesthetic with a palette of deep greens and natural wood tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC65_5vU49I6tW8ZT3N5aDxfjos1ZWQpwWkZwy9rkYMGGyg7hT7yd-kCB7Cdf-ljT9Ekl5Fo7rjNwuXM68-kSolw3YRJ8GqwEsYxpNnh_RpuLrLQM7NW0En1bh9EfQ6lNb1we5eB7S6sXIIr-2YV94q3j3njH1iv_NZBloVFxGeGClpjGopmK-fEheuCAhkkX95e1Zrpmr9M4PVSMcDG7M0v1fGZVMCgdZOPKy5fSKE_ECW4BJyrxFarY7XGaLicKCMIYy8In3EHg"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-headline font-bold text-lg text-on-surface group-hover:text-primary transition-colors">Cove Fresh Market</h3>
+<div class="flex items-center gap-1 bg-secondary-fixed/30 px-2 py-0.5 rounded-lg">
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold text-on-secondary-fixed">4.8</span>
+</div>
+</div>
+<p class="text-[11px] font-bold text-primary uppercase tracking-widest mb-3">Grocery &amp; Fresh Produce</p>
+<div class="flex items-center gap-4 text-on-surface-variant/70 text-xs">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-base">near_me</span>
+                                0.5 km away
+                            </div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-base">location_on</span>
+                                Next to Main Gate
+                            </div>
+</div>
+</div>
+</div>
+<div class="mt-5">
+<button class="w-full py-3.5 bg-primary text-on-primary rounded-full font-bold text-sm shadow-lg shadow-primary/20 active:scale-[0.98] transition-transform">
+                        Shop Now
+                    </button>
+</div>
+</article>
+<!-- Store Card 2 -->
+<article class="group bg-surface-container-lowest p-5 rounded-[2rem] shadow-[0_12px_32px_rgba(25,28,29,0.04)] hover:-translate-y-1 transition-all duration-300">
+<div class="flex gap-5">
+<div class="w-20 h-20 rounded-2xl bg-tertiary-fixed/30 flex items-center justify-center overflow-hidden flex-shrink-0">
+<img alt="Store Logo" class="w-full h-full object-cover" data-alt="A sleek, futuristic pharmacy interior with minimalist white shelving and soft blue LED accent lighting. The environment looks clinical yet luxurious, featuring glass surfaces and organized medical supplies. The overall atmosphere is sterile, bright, and technologically advanced, using a palette of crisp whites and architectural blues." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfh4Z61VEYgT5gBRHmQIPtB7xG_OK-0yLgiqw5K2UEZQowgzy20ROYPWD1dajWtT69k90t0_KCGCaIpZhbLagOpR3pu9ZJ5wonW0lrFrC6lYI0ljT54Rjejx1PiAWdyVBSiusdQdeX1n2yDVsBEr0sJMoFru81yCYTHdP5FElbHaqPLCIqdf_tTiJf6eYQrreVpJmfQDPu441P6vrDiYfTnNONTosQ0U_vkPJvs7zBWp2_H62Yqd6i586YWxdn0a3_CKi5VQs8Vg"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-headline font-bold text-lg text-on-surface group-hover:text-primary transition-colors">HealthFirst Pharmacy</h3>
+<div class="flex items-center gap-1 bg-secondary-fixed/30 px-2 py-0.5 rounded-lg">
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold text-on-secondary-fixed">4.9</span>
+</div>
+</div>
+<p class="text-[11px] font-bold text-tertiary uppercase tracking-widest mb-3">Healthcare &amp; Wellness</p>
+<div class="flex items-center gap-4 text-on-surface-variant/70 text-xs">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-base">near_me</span>
+                                1.2 km away
+                            </div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-base">location_on</span>
+                                Block C Corner
+                            </div>
+</div>
+</div>
+</div>
+<div class="mt-5">
+<button class="w-full py-3.5 bg-primary text-on-primary rounded-full font-bold text-sm shadow-lg shadow-primary/20 active:scale-[0.98] transition-transform">
+                        Shop Now
+                    </button>
+</div>
+</article>
+<!-- Store Card 3 -->
+<article class="group bg-surface-container-lowest p-5 rounded-[2rem] shadow-[0_12px_32px_rgba(25,28,29,0.04)] hover:-translate-y-1 transition-all duration-300">
+<div class="flex gap-5">
+<div class="w-20 h-20 rounded-2xl bg-secondary-fixed/30 flex items-center justify-center overflow-hidden flex-shrink-0">
+<img alt="Store Logo" class="w-full h-full object-cover" data-alt="A modern general store with a clean, boutique aesthetic. The shop features organized displays of high-quality household goods and daily essentials under bright, even lighting. The interior design is minimalist with light wood accents and a spacious layout, conveying a premium and orderly shopping experience within an urban sanctuary setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAW-bcDj8Gmm531_LuinCgcuEKt9z-RwqjnXfmHhwCLP7OCl4oYa4X2cjrPBJocqmZykbUeImgpxI-bnXctdu9vPt7H3EpfhaJc7jt6VQhh4eqOrTV26D4Y54o0Jxf6XMMiXvz3LwZOEEj9ptitmQaslDLn2pLfOFfQiaGIZ21NWBWqQuxK4AJHIMYbqE1ve9M5fpdtPjGsfBH5eiGYBaFI6cHJeQj-LrOBYSoUvct8k32MmKQM5MHIfXUiBXjlFGGK3U-FGy7n4g"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-headline font-bold text-lg text-on-surface group-hover:text-primary transition-colors">The Urban Pantry</h3>
+<div class="flex items-center gap-1 bg-secondary-fixed/30 px-2 py-0.5 rounded-lg">
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold text-on-secondary-fixed">4.6</span>
+</div>
+</div>
+<p class="text-[11px] font-bold text-secondary uppercase tracking-widest mb-3">General Store</p>
+<div class="flex items-center gap-4 text-on-surface-variant/70 text-xs">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-base">near_me</span>
+                                0.2 km away
+                            </div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-base">location_on</span>
+                                Clubhouse Ground Floor
+                            </div>
+</div>
+</div>
+</div>
+<div class="mt-5">
+<button class="w-full py-3.5 bg-primary text-on-primary rounded-full font-bold text-sm shadow-lg shadow-primary/20 active:scale-[0.98] transition-transform">
+                        Shop Now
+                    </button>
+</div>
+</article>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe bg-white/90 dark:bg-on-background/90 backdrop-blur-2xl shadow-[0_-12px_32px_rgba(25,28,29,0.06)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:bg-surface-variant/30 transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label text-xs tracking-widest uppercase font-medium mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container/20 text-primary rounded-full px-5 py-2 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shopping_bag</span>
+<span class="font-label text-xs tracking-widest uppercase font-medium mt-1">Buy</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:bg-surface-variant/30 transition-colors" href="#">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="font-label text-xs tracking-widest uppercase font-medium mt-1">Sell</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:bg-surface-variant/30 transition-colors" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label text-xs tracking-widest uppercase font-medium mt-1">Activity</span>
+</a>
+</nav>
+</body></html>
