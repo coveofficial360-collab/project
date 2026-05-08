@@ -1,4 +1,9 @@
 truncate table
+  public.marketplace_order_items,
+  public.marketplace_orders,
+  public.marketplace_listings,
+  public.marketplace_products,
+  public.marketplace_stores,
   public.vendor_contract_history,
   public.vendor_quotations,
   public.vendor_quotation_request_vendors,
@@ -737,6 +742,252 @@ insert into public.payment_activity (user_id, activity_title, activity_category,
 select id, 'DJB', 'Water', -650, 'PAID', now() - interval '30 days'
 from public.app_users
 where email = 'user@gmail.com';
+
+insert into public.marketplace_stores (
+  name,
+  category,
+  description,
+  location_label,
+  contact_phone,
+  rating,
+  open_status,
+  delivery_note,
+  banner_url
+)
+values
+  (
+    'Cove Fresh Market',
+    'Groceries',
+    'Daily essentials, fresh produce, and pantry items for resident delivery.',
+    'Tower A Lobby',
+    '+91 90000 22110',
+    4.9,
+    'open',
+    'Delivery slots available 9 AM to 9 PM',
+    'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=80'
+  ),
+  (
+    'Urban Nest',
+    'Home Decor',
+    'Decor, lighting, and lifestyle products curated for modern homes.',
+    'Retail Row, Level 1',
+    '+91 90000 22111',
+    4.7,
+    'open',
+    'Same-day handoff for nearby towers',
+    'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=80'
+  ),
+  (
+    'Lift & Go',
+    'Mobility',
+    'Mobility scooters, cycle gear, and compact transport accessories.',
+    'Tower C Service Bay',
+    '+91 90000 22112',
+    4.6,
+    'open',
+    'Pickup from service desk',
+    'https://images.unsplash.com/photo-1525104698734-6200f6c220e8?auto=format&fit=crop&w=1200&q=80'
+  );
+
+insert into public.marketplace_products (
+  store_id,
+  title,
+  category,
+  price,
+  original_price,
+  condition_label,
+  description,
+  seller_name,
+  seller_phone,
+  image_url,
+  stock_count,
+  status,
+  featured
+)
+select store.id,
+  product_seed.title,
+  product_seed.category,
+  product_seed.price,
+  product_seed.original_price,
+  product_seed.condition_label,
+  product_seed.description,
+  product_seed.seller_name,
+  product_seed.seller_phone,
+  product_seed.image_url,
+  product_seed.stock_count,
+  product_seed.status,
+  product_seed.featured
+from (
+  values
+    ('Cove Fresh Market', 'Organic Bananas', 'Groceries', 79::numeric, 99::numeric, 'Fresh', 'Crisp organic bananas sold in a bunch.', 'Cove Fresh Market', '+91 90000 22110', 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=900&q=80', 24, 'available', true),
+    ('Cove Fresh Market', 'Whole Milk', 'Dairy', 65::numeric, 72::numeric, 'Chilled', 'Farm fresh whole milk in 1L packs.', 'Cove Fresh Market', '+91 90000 22110', 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=900&q=80', 18, 'available', true),
+    ('Urban Nest', 'Minimalist Copper Lamp', 'Home Decor', 1299::numeric, 1799::numeric, 'New', 'Warm copper lamp for desks and bedside tables.', 'Urban Nest', '+91 90000 22111', 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80', 8, 'available', true),
+    ('Urban Nest', 'Emerald Velvet Sofa', 'Furniture', 24999::numeric, 28999::numeric, 'Like New', '3-seater velvet sofa with a deep green finish.', 'Urban Nest', '+91 90000 22111', 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=900&q=80', 3, 'available', true),
+    ('Lift & Go', 'Pro Tablet 12.9" - 256GB', 'Electronics', 44999::numeric, 53999::numeric, 'Open Box', 'Tablet with stylus support and 256GB storage.', 'Lift & Go', '+91 90000 22112', 'https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&w=900&q=80', 5, 'available', false),
+    ('Lift & Go', 'Noise-Cancelling Headphones', 'Electronics', 14999::numeric, 18999::numeric, 'Good', 'Premium over-ear headphones with ANC.', 'Lift & Go', '+91 90000 22112', 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=80', 7, 'available', false)
+) as product_seed (
+  store_name,
+  title,
+  category,
+  price,
+  original_price,
+  condition_label,
+  description,
+  seller_name,
+  seller_phone,
+  image_url,
+  stock_count,
+  status,
+  featured
+)
+join public.marketplace_stores store
+  on lower(trim(store.name)) = lower(trim(product_seed.store_name));
+
+insert into public.marketplace_listings (
+  user_id,
+  listing_type,
+  title,
+  category,
+  price,
+  location_label,
+  description,
+  bedrooms,
+  bathrooms,
+  area_sqft,
+  condition_label,
+  image_url,
+  status,
+  is_featured,
+  contact_phone
+)
+select
+  resident.id,
+  listing_seed.listing_type,
+  listing_seed.title,
+  listing_seed.category,
+  listing_seed.price,
+  listing_seed.location_label,
+  listing_seed.description,
+  listing_seed.bedrooms,
+  listing_seed.bathrooms,
+  listing_seed.area_sqft,
+  listing_seed.condition_label,
+  listing_seed.image_url,
+  listing_seed.status,
+  listing_seed.is_featured,
+  listing_seed.contact_phone
+from public.app_users resident
+cross join (
+  values
+    ('sell', 'Sony WH-1000XM4 Wireless Headphones', 'Electronics', 18999::numeric, 'Tower B, 12th Floor', 'Excellent condition, barely used, with box and charger.', null, null, null, 'Like New', 'https://images.unsplash.com/photo-1518441902117-f0a45a3d7c2d?auto=format&fit=crop&w=900&q=80', 'published', true, '+91 98765 43210'),
+    ('rent', '2BHK Apartment Near Clubhouse', 'Property', 38000::numeric, 'Tower D, 8th Floor', 'Bright apartment available for 11-month lease.', 2, 2, 1140, 'Good', 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=900&q=80', 'published', true, '+91 98765 43211'),
+    ('sell', 'Oak Study Desk', 'Furniture', 7999::numeric, 'Tower A, 5th Floor', 'Study desk with drawers and cable pass-through.', null, null, null, 'Good', 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=900&q=80', 'published', false, '+91 98765 43212')
+) as listing_seed (
+  listing_type,
+  title,
+  category,
+  price,
+  location_label,
+  description,
+  bedrooms,
+  bathrooms,
+  area_sqft,
+  condition_label,
+  image_url,
+  status,
+  is_featured,
+  contact_phone
+)
+where resident.email = 'user@gmail.com';
+
+insert into public.marketplace_orders (
+  order_code,
+  user_id,
+  store_id,
+  order_type,
+  status,
+  payment_status,
+  subtotal,
+  delivery_fee,
+  tax_amount,
+  total_amount,
+  delivery_address,
+  contact_phone,
+  delivery_slot,
+  placed_at
+)
+select
+  order_seed.order_code,
+  resident.id,
+  store.id,
+  'purchase',
+  order_seed.status,
+  order_seed.payment_status,
+  order_seed.subtotal,
+  order_seed.delivery_fee,
+  order_seed.tax_amount,
+  order_seed.total_amount,
+  order_seed.delivery_address,
+  order_seed.contact_phone,
+  order_seed.delivery_slot,
+  order_seed.placed_at
+from public.app_users resident
+cross join (
+  values
+    ('ORD-240501-A1', 'Cove Fresh Market', 'delivered', 'paid', 284, 0, 14, 298, 'Tower A, 1204', '+91 90000 22101', 'Today, 7 PM', now() - interval '2 days'),
+    ('ORD-240503-B2', 'Urban Nest', 'processing', 'paid', 1299, 49, 67, 1415, 'Tower B, 904', '+91 90000 22102', 'Tomorrow, 11 AM', now() - interval '8 hours')
+) as order_seed (
+  order_code,
+  store_name,
+  status,
+  payment_status,
+  subtotal,
+  delivery_fee,
+  tax_amount,
+  total_amount,
+  delivery_address,
+  contact_phone,
+  delivery_slot,
+  placed_at
+)
+join public.marketplace_stores store
+  on lower(trim(store.name)) = lower(trim(order_seed.store_name))
+where resident.email = 'user@gmail.com';
+
+insert into public.marketplace_order_items (
+  order_id,
+  product_id,
+  title,
+  quantity,
+  unit_price,
+  line_total,
+  image_url
+)
+select
+  ord.id,
+  product.id,
+  product.title,
+  item_seed.quantity,
+  item_seed.unit_price,
+  item_seed.line_total,
+  product.image_url
+from (
+  values
+    ('ORD-240501-A1', 'Organic Bananas', 2, 79::numeric, 158::numeric),
+    ('ORD-240501-A1', 'Whole Milk', 2, 65::numeric, 130::numeric),
+    ('ORD-240503-B2', 'Minimalist Copper Lamp', 1, 1299::numeric, 1299::numeric)
+) as item_seed (
+  order_code,
+  product_title,
+  quantity,
+  unit_price,
+  line_total
+)
+join public.marketplace_orders ord
+  on ord.order_code = item_seed.order_code
+join public.marketplace_products product
+  on lower(trim(product.title)) = lower(trim(item_seed.product_title))
+;
 
 insert into public.complaints (
   user_id,

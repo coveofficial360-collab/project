@@ -328,6 +328,102 @@ class AvenueRepository {
     return _castRows(rows);
   }
 
+  Future<List<Map<String, dynamic>>> fetchMarketplaceStores() async {
+    final rows = await _client
+        .from('resident_marketplace_stores_v')
+        .select()
+        .order('rating', ascending: false)
+        .order('name', ascending: true);
+
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchMarketplaceProducts() async {
+    final rows = await _client
+        .from('resident_marketplace_products_v')
+        .select()
+        .order('featured', ascending: false)
+        .order('created_at', ascending: false);
+
+    return _castRows(rows);
+  }
+
+  Future<Map<String, dynamic>?> fetchMarketplaceProductById(
+    String productId,
+  ) async {
+    final rows = await _client
+        .from('resident_marketplace_products_v')
+        .select()
+        .eq('id', productId)
+        .limit(1);
+
+    final records = _castRows(rows);
+    if (records.isEmpty) {
+      return null;
+    }
+
+    return records.first;
+  }
+
+  Future<List<Map<String, dynamic>>> fetchMarketplaceListings() async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return const [];
+    }
+
+    final rows = await _client
+        .from('resident_marketplace_listings_v')
+        .select()
+        .eq('user_id', currentUser.id)
+        .order('created_at', ascending: false);
+
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchMarketplaceOrders() async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return const [];
+    }
+
+    final rows = await _client
+        .from('resident_marketplace_orders_v')
+        .select()
+        .eq('user_id', currentUser.id)
+        .order('placed_at', ascending: false);
+
+    return _castRows(rows);
+  }
+
+  Future<Map<String, dynamic>?> fetchMarketplaceOrderById(
+    String orderId,
+  ) async {
+    final rows = await _client
+        .from('resident_marketplace_orders_v')
+        .select()
+        .eq('id', orderId)
+        .limit(1);
+
+    final records = _castRows(rows);
+    if (records.isEmpty) {
+      return null;
+    }
+
+    return records.first;
+  }
+
+  Future<List<Map<String, dynamic>>> fetchMarketplaceOrderItems(
+    String orderId,
+  ) async {
+    final rows = await _client
+        .from('resident_marketplace_order_items_v')
+        .select()
+        .eq('order_id', orderId)
+        .order('created_at', ascending: true);
+
+    return _castRows(rows);
+  }
+
   Future<List<Map<String, dynamic>>> fetchCurrentUserComplaints() async {
     final currentUser = AppSession.instance.currentUser;
     if (currentUser == null) {
@@ -935,6 +1031,33 @@ class AvenueRepository {
     return Map<String, dynamic>.from(response.first as Map);
   }
 
+  Future<Map<String, dynamic>?> payBill({
+    required String billId,
+    String paymentMethod = 'UPI',
+    String? transactionRef,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'pay_bill',
+      params: {
+        'p_user_id': currentUser.id,
+        'p_bill_id': billId,
+        'p_payment_method': paymentMethod,
+        'p_transaction_ref': transactionRef,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
   Future<Map<String, dynamic>?> createAdminAmenity({
     required String name,
     required String category,
@@ -1089,6 +1212,86 @@ class AvenueRepository {
     return Map<String, dynamic>.from(response.first as Map);
   }
 
+  Future<Map<String, dynamic>?> createMarketplaceListing({
+    required String listingType,
+    required String title,
+    required String category,
+    required double price,
+    String? locationLabel,
+    String? description,
+    int? bedrooms,
+    int? bathrooms,
+    int? areaSqft,
+    String? conditionLabel,
+    String? imageUrl,
+    String? contactPhone,
+    bool isFeatured = false,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'create_marketplace_listing',
+      params: {
+        'p_user_id': currentUser.id,
+        'p_listing_type': listingType,
+        'p_title': title,
+        'p_category': category,
+        'p_price': price,
+        'p_location_label': locationLabel?.trim(),
+        'p_description': description?.trim(),
+        'p_bedrooms': bedrooms,
+        'p_bathrooms': bathrooms,
+        'p_area_sqft': areaSqft,
+        'p_condition_label': conditionLabel?.trim(),
+        'p_image_url': imageUrl?.trim(),
+        'p_contact_phone': contactPhone?.trim(),
+        'p_is_featured': isFeatured,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> placeMarketplaceOrder({
+    required List<String> productIds,
+    required String deliveryAddress,
+    required String contactPhone,
+    String? deliverySlot,
+    String paymentStatus = 'paid',
+    String? storeId,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'place_marketplace_order',
+      params: {
+        'p_user_id': currentUser.id,
+        'p_product_ids': productIds,
+        'p_delivery_address': deliveryAddress.trim(),
+        'p_contact_phone': contactPhone.trim(),
+        'p_delivery_slot': deliverySlot?.trim(),
+        'p_payment_status': paymentStatus,
+        'p_store_id': storeId,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
   Future<Map<String, dynamic>?> createComplaint({
     required String category,
     required String title,
@@ -1231,8 +1434,14 @@ class AvenueRepository {
         'p_hourly_rate': hourlyRate,
         'p_staff_count': staffCount,
         'p_onboarding_status': onboardingStatus,
-        'p_contract_start_date': contractStartDate?.toIso8601String().split('T').first,
-        'p_contract_end_date': contractEndDate?.toIso8601String().split('T').first,
+        'p_contract_start_date': contractStartDate
+            ?.toIso8601String()
+            .split('T')
+            .first,
+        'p_contract_end_date': contractEndDate
+            ?.toIso8601String()
+            .split('T')
+            .first,
         'p_service_agreement_url': serviceAgreementUrl?.trim(),
         'p_notes': notes?.trim(),
       },
@@ -1305,7 +1514,10 @@ class AvenueRepository {
         'p_admin_user_id': currentUser.id,
         'p_request_title': requestTitle.trim(),
         'p_service_type': serviceType.trim(),
-        'p_requested_start_date': requestedStartDate?.toIso8601String().split('T').first,
+        'p_requested_start_date': requestedStartDate
+            ?.toIso8601String()
+            .split('T')
+            .first,
         'p_contract_duration': contractDuration?.trim(),
         'p_estimated_budget': estimatedBudget,
         'p_staff_required': staffRequired,
@@ -1410,8 +1622,8 @@ class AvenueRepository {
     return Map<String, dynamic>.from(response.first as Map);
   }
 
-  Future<Map<String, dynamic>?> fetchAdminMaintenanceNotificationSettings()
-  async {
+  Future<Map<String, dynamic>?>
+  fetchAdminMaintenanceNotificationSettings() async {
     final currentUser = AppSession.instance.currentUser;
     if (currentUser == null) {
       return null;

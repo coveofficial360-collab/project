@@ -395,6 +395,99 @@ create table if not exists public.payment_activity (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.marketplace_stores (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  category text not null,
+  description text,
+  location_label text,
+  contact_phone text,
+  rating numeric(3, 2) not null default 4.8,
+  open_status text not null default 'open',
+  delivery_note text,
+  banner_url text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create unique index if not exists marketplace_stores_name_uq
+on public.marketplace_stores (lower(trim(name)));
+
+create table if not exists public.marketplace_products (
+  id uuid primary key default gen_random_uuid(),
+  store_id uuid references public.marketplace_stores(id) on delete set null,
+  title text not null,
+  category text not null,
+  price numeric(10, 2) not null,
+  original_price numeric(10, 2),
+  condition_label text,
+  description text,
+  seller_name text,
+  seller_phone text,
+  image_url text,
+  stock_count integer not null default 1,
+  status text not null default 'available',
+  featured boolean not null default false,
+  created_by uuid references public.app_users(id) on delete set null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.marketplace_listings (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.app_users(id) on delete cascade,
+  listing_type text not null,
+  title text not null,
+  category text not null,
+  price numeric(10, 2) not null,
+  location_label text,
+  description text,
+  bedrooms integer,
+  bathrooms integer,
+  area_sqft integer,
+  condition_label text,
+  image_url text,
+  status text not null default 'draft',
+  is_featured boolean not null default false,
+  contact_phone text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.marketplace_orders (
+  id uuid primary key default gen_random_uuid(),
+  order_code text not null unique,
+  user_id uuid not null references public.app_users(id) on delete cascade,
+  store_id uuid references public.marketplace_stores(id) on delete set null,
+  order_type text not null default 'purchase',
+  status text not null default 'placed',
+  payment_status text not null default 'pending',
+  subtotal numeric(10, 2) not null default 0,
+  delivery_fee numeric(10, 2) not null default 0,
+  tax_amount numeric(10, 2) not null default 0,
+  total_amount numeric(10, 2) not null default 0,
+  delivery_address text,
+  contact_phone text,
+  delivery_slot text,
+  placed_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.marketplace_order_items (
+  id uuid primary key default gen_random_uuid(),
+  order_id uuid not null references public.marketplace_orders(id) on delete cascade,
+  product_id uuid references public.marketplace_products(id) on delete set null,
+  title text not null,
+  quantity integer not null default 1,
+  unit_price numeric(10, 2) not null default 0,
+  line_total numeric(10, 2) not null default 0,
+  image_url text,
+  created_at timestamptz not null default now()
+);
+
+create unique index if not exists marketplace_orders_code_uq
+on public.marketplace_orders (order_code);
+
 create table if not exists public.complaints (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references public.app_users(id) on delete cascade,
@@ -709,6 +802,30 @@ before update on public.vendor_quotations
 for each row
 execute function public.set_updated_at();
 
+drop trigger if exists trg_marketplace_stores_updated_at on public.marketplace_stores;
+create trigger trg_marketplace_stores_updated_at
+before update on public.marketplace_stores
+for each row
+execute function public.set_updated_at();
+
+drop trigger if exists trg_marketplace_products_updated_at on public.marketplace_products;
+create trigger trg_marketplace_products_updated_at
+before update on public.marketplace_products
+for each row
+execute function public.set_updated_at();
+
+drop trigger if exists trg_marketplace_listings_updated_at on public.marketplace_listings;
+create trigger trg_marketplace_listings_updated_at
+before update on public.marketplace_listings
+for each row
+execute function public.set_updated_at();
+
+drop trigger if exists trg_marketplace_orders_updated_at on public.marketplace_orders;
+create trigger trg_marketplace_orders_updated_at
+before update on public.marketplace_orders
+for each row
+execute function public.set_updated_at();
+
 create or replace function public.authenticate_app_user(
   p_email text,
   p_password text,
@@ -918,6 +1035,124 @@ from public.finance_vendors vendor
 left join public.vendor_quotations quote on quote.vendor_id = vendor.id
 left join public.vendor_quotation_requests request on request.id = quote.request_id
 order by coalesce(quote.is_best_value, false) desc, vendor.service_rating desc, vendor.company_name asc;
+
+drop view if exists public.resident_marketplace_stores_v;
+
+create or replace view public.resident_marketplace_stores_v as
+select
+  store.id,
+  store.name,
+  store.category,
+  store.description,
+  store.location_label,
+  store.contact_phone,
+  store.rating,
+  store.open_status,
+  store.delivery_note,
+  store.banner_url,
+  store.created_at,
+  store.updated_at
+from public.marketplace_stores store
+order by store.rating desc, store.name asc;
+
+drop view if exists public.resident_marketplace_products_v;
+
+create or replace view public.resident_marketplace_products_v as
+select
+  product.id,
+  product.store_id,
+  store.name as store_name,
+  store.category as store_category,
+  product.title,
+  product.category,
+  product.price,
+  product.original_price,
+  product.condition_label,
+  product.description,
+  product.seller_name,
+  product.seller_phone,
+  product.image_url,
+  product.stock_count,
+  product.status,
+  product.featured,
+  product.created_at,
+  product.updated_at
+from public.marketplace_products product
+left join public.marketplace_stores store on store.id = product.store_id
+order by product.featured desc, product.created_at desc;
+
+drop view if exists public.resident_marketplace_listings_v;
+
+create or replace view public.resident_marketplace_listings_v as
+select
+  listing.id,
+  listing.user_id,
+  resident.full_name as resident_name,
+  resident.unit_number,
+  listing.listing_type,
+  listing.title,
+  listing.category,
+  listing.price,
+  listing.location_label,
+  listing.description,
+  listing.bedrooms,
+  listing.bathrooms,
+  listing.area_sqft,
+  listing.condition_label,
+  listing.image_url,
+  listing.status,
+  listing.is_featured,
+  listing.contact_phone,
+  listing.created_at,
+  listing.updated_at
+from public.marketplace_listings listing
+join public.app_users resident on resident.id = listing.user_id
+order by listing.created_at desc;
+
+drop view if exists public.resident_marketplace_orders_v;
+
+create or replace view public.resident_marketplace_orders_v as
+select
+  ord.id,
+  ord.order_code,
+  ord.user_id,
+  resident.full_name as resident_name,
+  ord.store_id,
+  store.name as store_name,
+  ord.order_type,
+  ord.status,
+  ord.payment_status,
+  ord.subtotal,
+  ord.delivery_fee,
+  ord.tax_amount,
+  ord.total_amount,
+  ord.delivery_address,
+  ord.contact_phone,
+  ord.delivery_slot,
+  ord.placed_at,
+  ord.updated_at
+from public.marketplace_orders ord
+join public.app_users resident on resident.id = ord.user_id
+left join public.marketplace_stores store on store.id = ord.store_id
+order by ord.placed_at desc;
+
+drop view if exists public.resident_marketplace_order_items_v;
+
+create or replace view public.resident_marketplace_order_items_v as
+select
+  item.id,
+  item.order_id,
+  item.product_id,
+  product.title as product_title,
+  item.title,
+  item.quantity,
+  item.unit_price,
+  item.line_total,
+  item.image_url,
+  item.created_at
+from public.marketplace_order_items item
+left join public.marketplace_products product on product.id = item.product_id
+order by item.created_at asc;
 
 drop view if exists public.admin_amenity_bookings_v;
 
@@ -1186,6 +1421,11 @@ grant select on public.admin_vendor_directory_v to anon, authenticated;
 grant select on public.admin_expense_management_v to anon, authenticated;
 grant select on public.admin_financial_monthly_summary_v to anon, authenticated;
 grant select on public.admin_vendor_comparison_v to anon, authenticated;
+grant select on public.resident_marketplace_stores_v to anon, authenticated;
+grant select on public.resident_marketplace_products_v to anon, authenticated;
+grant select on public.resident_marketplace_listings_v to anon, authenticated;
+grant select on public.resident_marketplace_orders_v to anon, authenticated;
+grant select on public.resident_marketplace_order_items_v to anon, authenticated;
 grant select on public.guard_gate_activity_v to anon, authenticated;
 grant select on public.community_suggestion_feed_v to anon, authenticated;
 grant select on public.admin_community_suggestion_feed_v to anon, authenticated;
@@ -1199,6 +1439,11 @@ alter table public.amenities disable row level security;
 alter table public.amenity_bookings disable row level security;
 alter table public.amenity_time_slots disable row level security;
 alter table public.service_providers disable row level security;
+alter table public.marketplace_stores disable row level security;
+alter table public.marketplace_products disable row level security;
+alter table public.marketplace_listings disable row level security;
+alter table public.marketplace_orders disable row level security;
+alter table public.marketplace_order_items disable row level security;
 alter table public.finance_vendors disable row level security;
 alter table public.treasurer_expenses disable row level security;
 alter table public.vendor_quotation_requests disable row level security;

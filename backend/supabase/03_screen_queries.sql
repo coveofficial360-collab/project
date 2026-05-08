@@ -111,21 +111,73 @@ where user_id = (select id from public.app_users where email = 'user@gmail.com')
 order by activity_at desc;
 
 -- Resident maintenance pay action
-select *
-from public.pay_maintenance_bill(
-  (select id from public.app_users where email = 'user@gmail.com'),
-  (
-    select id
-    from public.bills
-    where user_id = (select id from public.app_users where email = 'user@gmail.com')
-      and lower(category) = 'maintenance'
-      and state <> 'paid'
-    order by due_date asc nulls last, created_at desc
-    limit 1
-  ),
-  'UPI',
-  'TXN-DEMO-1001'
-);
+do $$
+declare
+  v_user_id uuid;
+  v_bill_id uuid;
+begin
+  select id
+  into v_user_id
+  from public.app_users
+  where email = 'user@gmail.com'
+  limit 1;
+
+  select id
+  into v_bill_id
+  from public.bills
+  where user_id = v_user_id
+    and lower(category) = 'maintenance'
+    and state <> 'paid'
+  order by due_date asc nulls last, created_at desc
+  limit 1;
+
+  if v_bill_id is null then
+    raise notice 'No unpaid maintenance bill found. Skipping pay_maintenance_bill demo call.';
+    return;
+  end if;
+
+  perform *
+  from public.pay_maintenance_bill(
+    v_user_id,
+    v_bill_id,
+    'UPI',
+    'TXN-DEMO-1001'
+  );
+end $$;
+
+-- Resident generic bill quick pay action
+do $$
+declare
+  v_user_id uuid;
+  v_bill_id uuid;
+begin
+  select id
+  into v_user_id
+  from public.app_users
+  where email = 'user@gmail.com'
+  limit 1;
+
+  select id
+  into v_bill_id
+  from public.bills
+  where user_id = v_user_id
+    and state <> 'paid'
+  order by due_date asc nulls last, created_at desc
+  limit 1;
+
+  if v_bill_id is null then
+    raise notice 'No unpaid bill found. Skipping pay_bill demo call.';
+    return;
+  end if;
+
+  perform *
+  from public.pay_bill(
+    v_user_id,
+    v_bill_id,
+    'UPI',
+    'TXN-BILL-DEMO-1001'
+  );
+end $$;
 
 -- Complaints
 select
@@ -324,6 +376,120 @@ from public.upsert_admin_maintenance_notification_settings(
 select *
 from public.admin_maintenance_notification_settings
 where admin_user_id = (select id from public.app_users where email = 'admin@gmail.com');
+
+-- Resident marketplace screens
+select *
+from public.resident_marketplace_stores_v
+order by rating desc, name asc;
+
+select *
+from public.resident_marketplace_products_v
+order by featured desc, created_at desc;
+
+select *
+from public.resident_marketplace_listings_v
+where user_id = (select id from public.app_users where email = 'user@gmail.com')
+order by created_at desc;
+
+select *
+from public.resident_marketplace_orders_v
+where user_id = (select id from public.app_users where email = 'user@gmail.com')
+order by placed_at desc;
+
+select *
+from public.resident_marketplace_order_items_v
+where order_id in (
+  select id
+  from public.marketplace_orders
+  where user_id = (select id from public.app_users where email = 'user@gmail.com')
+  order by placed_at desc
+  limit 1
+);
+
+do $$
+begin
+  if exists (
+    select 1
+    from public.marketplace_listings
+    where user_id = (select id from public.app_users where email = 'user@gmail.com')
+      and lower(trim(title)) = lower(trim('Balcony Folding Chair'))
+  ) then
+    raise notice 'Balcony Folding Chair listing already exists. Skipping create_marketplace_listing demo call.';
+    return;
+  end if;
+
+  perform *
+  from public.create_marketplace_listing(
+    (select id from public.app_users where email = 'user@gmail.com'),
+    'sell',
+    'Balcony Folding Chair',
+    'Furniture',
+    1999,
+    'Tower A, 1204',
+    'Lightly used balcony chair set, in excellent condition.',
+    null,
+    null,
+    null,
+    'Like New',
+    null,
+    '+91 90000 22101',
+    true
+  );
+end $$;
+
+do $$
+declare
+  v_user_id uuid;
+  v_product_ids uuid[];
+begin
+  select id
+  into v_user_id
+  from public.app_users
+  where email = 'user@gmail.com'
+  limit 1;
+
+  select array_agg(product.id order by product.created_at asc)
+  into v_product_ids
+  from (
+    select product.id, product.created_at
+    from public.marketplace_products product
+    where product.status = 'available'
+      and product.stock_count > 0
+    order by product.featured desc, product.created_at asc
+    limit 2
+  ) product;
+
+  if coalesce(array_length(v_product_ids, 1), 0) = 0 then
+    raise notice 'No available marketplace products found. Skipping place_marketplace_order demo call.';
+    return;
+  end if;
+
+  if exists (
+    select 1
+    from public.marketplace_orders
+    where user_id = v_user_id
+      and placed_at::date = current_date
+  ) then
+    raise notice 'Marketplace order already created today. Skipping place_marketplace_order demo call.';
+    return;
+  end if;
+
+  perform *
+  from public.place_marketplace_order(
+    v_user_id,
+    v_product_ids,
+    'Tower A, 1204',
+    '+91 90000 22101',
+    'Today, 7 PM',
+    'paid',
+    (
+      select store_id
+      from public.marketplace_products
+      where id = v_product_ids[1]
+      limit 1
+    )
+  );
+end $$;
 
 -- Treasurer dashboard, vendors, expenses, and quotations
 select * from public.admin_treasurer_dashboard_v;
@@ -526,6 +692,8 @@ delete from public.amenities
 where code = lower(regexp_replace(trim('Podcast Studio'), '[^a-zA-Z0-9]+', '-', 'g'));
 
 do $$
+declare
+  v_admin_id uuid;
 begin
   if exists (
     select 1
@@ -536,9 +704,15 @@ begin
     return;
   end if;
 
+  select id
+  into v_admin_id
+  from public.app_users
+  where email = 'admin@gmail.com'
+  limit 1;
+
   perform *
   from public.create_admin_amenity(
-    (select id from public.app_users where email = 'admin@gmail.com'),
+    v_admin_id,
     'Podcast Studio',
     'Entertainment',
     'Sound-treated studio for resident recordings and calls.',
@@ -555,7 +729,7 @@ begin
       jsonb_build_object('start_time', '09:00', 'end_time', '11:00', 'capacity', 10),
       jsonb_build_object('start_time', '17:00', 'end_time', '19:00', 'capacity', 12)
     )
-  );
+);
 end $$;
 
 select
@@ -581,6 +755,8 @@ where full_name = 'Priya Nair'
   and specialty = 'Housekeeping';
 
 do $$
+declare
+  v_admin_id uuid;
 begin
   if exists (
     select 1
@@ -592,9 +768,15 @@ begin
     return;
   end if;
 
+  select id
+  into v_admin_id
+  from public.app_users
+  where email = 'admin@gmail.com'
+  limit 1;
+
   perform *
   from public.create_admin_service_provider(
-    (select id from public.app_users where email = 'admin@gmail.com'),
+    v_admin_id,
     'Priya Nair',
     'Housekeeping',
     '+91 90000 12345',

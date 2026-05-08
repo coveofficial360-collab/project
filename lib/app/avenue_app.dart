@@ -85,6 +85,25 @@ class AvenueApp extends StatelessWidget {
                 return const NoticesScreen();
               case AppPage.bills:
                 return const ResidentMaintenanceDashboardScreen();
+              case AppPage.billQuickPay:
+                return const BillQuickPayScreen();
+              case AppPage.billPayment:
+                return BillPaymentScreen(
+                  bill: arguments['bill'] is Map
+                      ? Map<String, dynamic>.from(arguments['bill'] as Map)
+                      : null,
+                );
+              case AppPage.billReceipt:
+                return BillReceiptScreen(
+                  billCode: arguments['billCode']?.toString(),
+                );
+              case AppPage.billTransactionHistory:
+                return const BillTransactionHistoryScreen();
+              case AppPage.billPaymentSuccess:
+                return BillPaymentSuccessScreen(
+                  amount: arguments['amount'],
+                  billCode: arguments['billCode']?.toString(),
+                );
               case AppPage.maintenanceInvoice:
                 final bill = arguments['bill'] is Map
                     ? Map<String, dynamic>.from(arguments['bill'] as Map)
@@ -128,6 +147,45 @@ class AvenueApp extends StatelessWidget {
               case AppPage.residentServiceProfile:
                 return ResidentServiceProfileScreen(
                   providerId: arguments['providerId']?.toString(),
+                );
+              case AppPage.marketplaceHome:
+                return const MarketplaceHomeScreen();
+              case AppPage.marketplaceProductDetails:
+                return MarketplaceProductDetailsScreen(
+                  productId: arguments['productId']?.toString(),
+                );
+              case AppPage.marketplaceCartCheckout:
+                final productIds = arguments['productIds'] is List
+                    ? List<String>.from(
+                        (arguments['productIds'] as List).map(
+                          (value) => value.toString(),
+                        ),
+                      )
+                    : const <String>[];
+                return MarketplaceCartCheckoutScreen(productIds: productIds);
+              case AppPage.marketplaceListProperty:
+                return const MarketplaceListPropertyScreen();
+              case AppPage.marketplaceStores:
+                return const MarketplaceStoresScreen();
+              case AppPage.marketplaceMyListings:
+                return const MarketplaceMyListingsScreen();
+              case AppPage.marketplaceMyOrders:
+                return const MarketplaceMyOrdersScreen();
+              case AppPage.marketplaceOrderDetails:
+                return MarketplaceOrderDetailsScreen(
+                  orderId: arguments['orderId']?.toString(),
+                );
+              case AppPage.marketplaceOrderHistory:
+                return const MarketplaceOrderHistoryScreen();
+              case AppPage.marketplaceSellItem:
+                return const MarketplaceSellItemScreen();
+              case AppPage.marketplaceStoreProducts:
+                return MarketplaceStoreProductsScreen(
+                  storeId: arguments['storeId']?.toString(),
+                );
+              case AppPage.marketplaceStoreOrders:
+                return MarketplaceStoreOrdersScreen(
+                  storeId: arguments['storeId']?.toString(),
                 );
               case AppPage.communityFeed:
                 return const CommunityFeedScreen();

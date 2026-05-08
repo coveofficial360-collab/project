@@ -122,9 +122,8 @@ class ResidentMaintenanceDashboardScreen extends StatelessWidget {
                     children: [
                       Text(
                         'Payment Information',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w800,
-                        ),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w800),
                       ),
                       const SizedBox(height: 12),
                       _InfoRow(
@@ -147,9 +146,8 @@ class ResidentMaintenanceDashboardScreen extends StatelessWidget {
                 const SizedBox(height: 18),
                 AvenueSectionHeader(
                   title: 'Recent Payments',
-                  actionLabel: 'View All',
-                  onActionTap: () =>
-                      goToPage(context, AppPage.maintenanceHistory),
+                  actionLabel: 'All Bills',
+                  onActionTap: () => goToPage(context, AppPage.billQuickPay),
                 ),
                 const SizedBox(height: 10),
                 if (snapshot.connectionState != ConnectionState.done &&
@@ -164,62 +162,70 @@ class ResidentMaintenanceDashboardScreen extends StatelessWidget {
                     child: Text('No maintenance payments yet.'),
                   )
                 else
-                  ...maintenanceActivity.take(3).map(
-                    (row) => Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: AvenueCard(
-                        radius: 18,
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: const Color(0x14005BBF),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: const Icon(
-                                Icons.check_circle_rounded,
-                                color: AvenueColors.primary,
-                                size: 22,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    (row['activity_title'] as String?) ??
-                                        'Maintenance Payment',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context).textTheme.bodyLarge
-                                        ?.copyWith(fontWeight: FontWeight.w700),
+                  ...maintenanceActivity
+                      .take(3)
+                      .map(
+                        (row) => Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: AvenueCard(
+                            radius: 18,
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0x14005BBF),
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    _dateTimeLabel(row['activity_at']),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
-                                        ?.copyWith(
-                                          color: AvenueColors.onSurfaceVariant,
-                                        ),
+                                  child: const Icon(
+                                    Icons.check_circle_rounded,
+                                    color: AvenueColors.primary,
+                                    size: 22,
                                   ),
-                                ],
-                              ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        (row['activity_title'] as String?) ??
+                                            'Maintenance Payment',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        _dateTimeLabel(row['activity_at']),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                              color:
+                                                  AvenueColors.onSurfaceVariant,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Text(
+                                  _currencyLabel(row['amount']),
+                                  style: Theme.of(context).textTheme.titleMedium
+                                      ?.copyWith(fontWeight: FontWeight.w800),
+                                ),
+                              ],
                             ),
-                            Text(
-                              _currencyLabel(row['amount']),
-                              style: Theme.of(context).textTheme.titleMedium
-                                  ?.copyWith(fontWeight: FontWeight.w800),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                  ),
               ],
             ),
           );
@@ -284,17 +290,29 @@ class ResidentMaintenanceInvoiceScreen extends StatelessWidget {
             children: [
               Text(
                 'Cove RWA',
-                style: Theme.of(
-                  context,
-                ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900),
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w900,
+                ),
               ),
               const SizedBox(height: 8),
               _StatusChip(label: isPaid ? 'Paid' : 'Pending', paid: isPaid),
               const SizedBox(height: 14),
-              _InfoRow(label: 'Invoice No', value: billRow['code']?.toString() ?? '-'),
-              _InfoRow(label: 'Bill Title', value: billRow['title']?.toString() ?? '-'),
-              _InfoRow(label: 'Due Date', value: _dateLabel(billRow['due_date'])),
-              _InfoRow(label: 'Amount', value: _currencyLabel(billRow['amount_due'])),
+              _InfoRow(
+                label: 'Invoice No',
+                value: billRow['code']?.toString() ?? '-',
+              ),
+              _InfoRow(
+                label: 'Bill Title',
+                value: billRow['title']?.toString() ?? '-',
+              ),
+              _InfoRow(
+                label: 'Due Date',
+                value: _dateLabel(billRow['due_date']),
+              ),
+              _InfoRow(
+                label: 'Amount',
+                value: _currencyLabel(billRow['amount_due']),
+              ),
               _InfoRow(
                 label: 'Paid On',
                 value: _dateLabel(billRow['last_paid_on']),
@@ -680,9 +698,9 @@ class ResidentMaintenancePaymentSuccessScreen extends StatelessWidget {
                 const SizedBox(height: 14),
                 Text(
                   'Payment Successful!',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w900),
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -696,18 +714,22 @@ class ResidentMaintenancePaymentSuccessScreen extends StatelessWidget {
                 const SizedBox(height: 18),
                 AvenuePrimaryButton(
                   label: 'View Payment History',
-                  onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(
-                    AppPage.maintenanceHistory.routeName,
-                    (route) => route.settings.name == AppPage.home.routeName,
-                  ),
+                  onPressed: () =>
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        AppPage.maintenanceHistory.routeName,
+                        (route) =>
+                            route.settings.name == AppPage.home.routeName,
+                      ),
                 ),
                 const SizedBox(height: 10),
                 AvenueSecondaryButton(
                   label: 'Back to Maintenance',
-                  onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(
-                    AppPage.bills.routeName,
-                    (route) => route.settings.name == AppPage.home.routeName,
-                  ),
+                  onPressed: () =>
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        AppPage.bills.routeName,
+                        (route) =>
+                            route.settings.name == AppPage.home.routeName,
+                      ),
                 ),
               ],
             ),
@@ -727,7 +749,9 @@ class _ResidentMaintenanceData {
   final List<Map<String, dynamic>> maintenanceBills;
   final List<Map<String, dynamic>> maintenanceActivity;
 
-  static Future<_ResidentMaintenanceData> load(AvenueRepository repository) async {
+  static Future<_ResidentMaintenanceData> load(
+    AvenueRepository repository,
+  ) async {
     final results = await Future.wait([
       repository.fetchCurrentUserMaintenanceBills(),
       repository.fetchCurrentUserPaymentActivity(),
@@ -763,9 +787,9 @@ class _InfoRow extends StatelessWidget {
         children: [
           Text(
             label,
-            style: Theme.of(
-              context,
-            ).textTheme.bodySmall?.copyWith(color: AvenueColors.onSurfaceVariant),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: AvenueColors.onSurfaceVariant,
+            ),
           ),
           const Spacer(),
           Text(
@@ -880,7 +904,9 @@ String _currencyLabel(dynamic amount) {
       : double.tryParse(amount?.toString() ?? '') ?? 0;
   final absolute = number.abs();
   final isWhole = absolute == absolute.roundToDouble();
-  final value = isWhole ? absolute.toStringAsFixed(0) : absolute.toStringAsFixed(2);
+  final value = isWhole
+      ? absolute.toStringAsFixed(0)
+      : absolute.toStringAsFixed(2);
   return '₹$value';
 }
 

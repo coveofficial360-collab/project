@@ -9,6 +9,7 @@ import '../../../theme/avenue_theme.dart';
 import '../../common/presentation/avenue_ui.dart';
 
 part 'resident_services_screens.dart';
+part 'resident_bills_marketplace_screens.dart';
 
 const _residentAvatarUrl =
     'https://lh3.googleusercontent.com/aida-public/AB6AXuCJ6EpMNgN7n9bh8EVIUs7N5SOo5Yl-IMIN9XmH6Yy-5ZQFuibLZUhdy_fSA1wZksMCirCpeAxKY-X3RhGG21edbtajSTdvIKPF-bAU_cgdKsh8O4-U9Ynedpa_iOPQvDGGNY_u9vM9PIETZpc_crPtmFthrBwf51AmmWx8Ymv72rHR1kQRjARNXhFro_rBfoEztKMZBRHWwESolqtAF7ekTFs603tp08kexUAy68IjY7VYyjoJirw5E8Oxqte5m_7dGXGGMAFX3P1e';
@@ -732,6 +733,20 @@ class ResidentDrawerScreen extends StatelessWidget {
       currentPage == AppPage.communityMeetingDetail ||
       currentPage == AppPage.communitySupport;
 
+  bool get _isMarketplaceSection =>
+      currentPage == AppPage.marketplaceHome ||
+      currentPage == AppPage.marketplaceProductDetails ||
+      currentPage == AppPage.marketplaceCartCheckout ||
+      currentPage == AppPage.marketplaceListProperty ||
+      currentPage == AppPage.marketplaceStores ||
+      currentPage == AppPage.marketplaceMyListings ||
+      currentPage == AppPage.marketplaceMyOrders ||
+      currentPage == AppPage.marketplaceOrderDetails ||
+      currentPage == AppPage.marketplaceOrderHistory ||
+      currentPage == AppPage.marketplaceSellItem ||
+      currentPage == AppPage.marketplaceStoreProducts ||
+      currentPage == AppPage.marketplaceStoreOrders;
+
   void _navigateFromDrawer(BuildContext context, AppPage targetPage) {
     Navigator.of(context).pop();
     if (targetPage == currentPage) {
@@ -862,6 +877,14 @@ class ResidentDrawerScreen extends StatelessWidget {
                         context,
                         AppPage.residentServices,
                       ),
+                    ),
+                    const SizedBox(height: 8),
+                    _DrawerItem(
+                      label: 'Marketplace',
+                      icon: Icons.storefront_outlined,
+                      selected: _isMarketplaceSection,
+                      onTap: () =>
+                          _navigateFromDrawer(context, AppPage.marketplaceHome),
                     ),
                     const SizedBox(height: 8),
                     _DrawerItem(

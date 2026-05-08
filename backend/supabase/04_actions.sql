@@ -1463,6 +1463,409 @@ begin
 end;
 $$;
 
+create or replace function public.pay_bill(
+  p_user_id uuid,
+  p_bill_id uuid,
+  p_payment_method text default null,
+  p_transaction_ref text default null
+)
+returns table (
+  payment_id uuid,
+  bill_id uuid,
+  bill_code text,
+  amount_paid numeric(10, 2),
+  payment_status text,
+  paid_on timestamptz
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_bill record;
+  v_payment_id uuid;
+  v_amount numeric(10, 2);
+  v_paid_on timestamptz := now();
+  v_method text := trim(coalesce(p_payment_method, 'UPI'));
+begin
+  if not exists (
+    select 1
+    from public.app_users resident
+    where resident.id = p_user_id
+      and resident.role = 'resident'
+      and resident.status = 'active'
+  ) then
+    raise exception 'Only an active resident can pay bills.';
+  end if;
+
+  select
+    bill.id,
+    bill.user_id,
+    bill.code,
+    bill.title,
+    bill.state,
+    bill.category,
+    bill.amount_due,
+    bill.amount_paid,
+    bill.due_date
+  into v_bill
+  from public.bills bill
+  where bill.id = p_bill_id
+    and bill.user_id = p_user_id
+  limit 1;
+
+  if v_bill.id is null then
+    raise exception 'Bill was not found for this resident.';
+  end if;
+
+  if lower(v_bill.state::text) = 'paid' then
+    raise exception 'This bill is already paid.';
+  end if;
+
+  v_amount := coalesce(v_bill.amount_due, v_bill.amount_paid, 0);
+
+  update public.bills bill
+  set
+    state = 'paid',
+    amount_paid = v_amount,
+    amount_due = 0,
+    badge_text = 'Paid',
+    action_label = 'View Receipt',
+    last_paid_on = v_paid_on::date
+  where bill.id = v_bill.id;
+
+  insert into public.payment_activity (
+    user_id,
+    activity_title,
+    activity_category,
+    amount,
+    status,
+    activity_at,
+    created_at
+  )
+  values (
+    p_user_id,
+    coalesce(v_bill.title, 'Bill Payment') || ' paid',
+    coalesce(v_bill.category, 'bill'),
+    v_amount,
+    'success',
+    v_paid_on,
+    v_paid_on
+  )
+  returning id into v_payment_id;
+
+  insert into public.admin_transactions (
+    title,
+    subtitle,
+    amount,
+    status,
+    icon_name,
+    icon_bg_hex,
+    created_at
+  )
+  values (
+    'Bill Payment Received',
+    coalesce(v_bill.code, 'Bill Payment'),
+    v_amount,
+    'SUCCESS',
+    'receipt_long',
+    '#FFF0C7',
+    v_paid_on
+  );
+
+  insert into public.notifications (
+    user_id,
+    kind,
+    title,
+    body,
+    badge_label,
+    action_label,
+    image_url,
+    is_unread,
+    created_at
+  )
+  values (
+    p_user_id,
+    'payment',
+    'Bill payment successful',
+    'Your payment of ₹' || coalesce(v_amount::text, '0') || ' was received via ' || coalesce(nullif(v_method, ''), 'UPI') || '.',
+    'PAID',
+    'VIEW RECEIPT',
+    null,
+    true,
+    v_paid_on
+  );
+
+  return query
+  select
+    v_payment_id,
+    v_bill.id,
+    v_bill.code,
+    v_amount,
+    'success',
+    v_paid_on;
+end;
+$$;
+
+create or replace function public.create_marketplace_listing(
+  p_user_id uuid,
+  p_listing_type text,
+  p_title text,
+  p_category text,
+  p_price numeric,
+  p_location_label text default null,
+  p_description text default null,
+  p_bedrooms integer default null,
+  p_bathrooms integer default null,
+  p_area_sqft integer default null,
+  p_condition_label text default null,
+  p_image_url text default null,
+  p_contact_phone text default null,
+  p_is_featured boolean default false
+)
+returns table (
+  listing_id uuid,
+  title text,
+  listing_type text,
+  price numeric,
+  status text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_listing_id uuid;
+begin
+  if not exists (
+    select 1
+    from public.app_users resident
+    where resident.id = p_user_id
+      and resident.status = 'active'
+  ) then
+    raise exception 'Only an active resident can create marketplace listings.';
+  end if;
+
+  insert into public.marketplace_listings (
+    user_id,
+    listing_type,
+    title,
+    category,
+    price,
+    location_label,
+    description,
+    bedrooms,
+    bathrooms,
+    area_sqft,
+    condition_label,
+    image_url,
+    status,
+    is_featured,
+    contact_phone,
+    created_at,
+    updated_at
+  )
+  values (
+    p_user_id,
+    lower(trim(coalesce(p_listing_type, 'sell'))),
+    trim(coalesce(p_title, 'Marketplace Listing')),
+    trim(coalesce(p_category, 'General')),
+    greatest(coalesce(p_price, 0), 0),
+    nullif(trim(coalesce(p_location_label, '')), ''),
+    nullif(trim(coalesce(p_description, '')), ''),
+    p_bedrooms,
+    p_bathrooms,
+    p_area_sqft,
+    nullif(trim(coalesce(p_condition_label, '')), ''),
+    nullif(trim(coalesce(p_image_url, '')), ''),
+    'published',
+    coalesce(p_is_featured, false),
+    nullif(trim(coalesce(p_contact_phone, '')), ''),
+    now(),
+    now()
+  )
+  returning id into v_listing_id;
+
+  return query
+  select
+    v_listing_id,
+    trim(coalesce(p_title, 'Marketplace Listing')),
+    lower(trim(coalesce(p_listing_type, 'sell'))),
+    greatest(coalesce(p_price, 0), 0),
+    'published';
+end;
+$$;
+
+create or replace function public.place_marketplace_order(
+  p_user_id uuid,
+  p_product_ids uuid[],
+  p_delivery_address text,
+  p_contact_phone text,
+  p_delivery_slot text default null,
+  p_payment_status text default 'paid',
+  p_store_id uuid default null
+)
+returns table (
+  order_id uuid,
+  order_code text,
+  total_amount numeric,
+  status text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_order_id uuid;
+  v_order_code text;
+  v_subtotal numeric(10, 2) := 0;
+  v_total numeric(10, 2) := 0;
+begin
+  if not exists (
+    select 1
+    from public.app_users resident
+    where resident.id = p_user_id
+      and resident.status = 'active'
+  ) then
+    raise exception 'Only an active resident can place marketplace orders.';
+  end if;
+
+  if coalesce(array_length(p_product_ids, 1), 0) = 0 then
+    raise exception 'Select at least one product before checking out.';
+  end if;
+
+  select
+    coalesce(sum(product.price), 0),
+    coalesce(sum(product.price), 0)
+  into v_subtotal, v_total
+  from public.marketplace_products product
+  where product.id = any(p_product_ids)
+    and product.status = 'available';
+
+  if v_total <= 0 then
+    raise exception 'Unable to calculate order total for the selected products.';
+  end if;
+
+  v_order_code := upper(
+    'ORD-' || to_char(now(), 'YYMMDD') || '-' || substr(replace(gen_random_uuid()::text, '-', ''), 1, 6)
+  );
+
+  insert into public.marketplace_orders (
+    order_code,
+    user_id,
+    store_id,
+    order_type,
+    status,
+    payment_status,
+    subtotal,
+    delivery_fee,
+    tax_amount,
+    total_amount,
+    delivery_address,
+    contact_phone,
+    delivery_slot,
+    placed_at,
+    updated_at
+  )
+  values (
+    v_order_code,
+    p_user_id,
+    p_store_id,
+    'purchase',
+    'placed',
+    lower(trim(coalesce(p_payment_status, 'paid'))),
+    v_subtotal,
+    case when v_subtotal >= 1500 then 0 else 49 end,
+    round(v_subtotal * 0.05, 2),
+    v_subtotal + case when v_subtotal >= 1500 then 0 else 49 end + round(v_subtotal * 0.05, 2),
+    trim(coalesce(p_delivery_address, '')),
+    trim(coalesce(p_contact_phone, '')),
+    nullif(trim(coalesce(p_delivery_slot, '')), ''),
+    now(),
+    now()
+  )
+  returning id, total_amount into v_order_id, v_total;
+
+  insert into public.marketplace_order_items (
+    order_id,
+    product_id,
+    title,
+    quantity,
+    unit_price,
+    line_total,
+    image_url,
+    created_at
+  )
+  select
+    v_order_id,
+    product.id,
+    product.title,
+    1,
+    product.price,
+    product.price,
+    product.image_url,
+    now()
+  from public.marketplace_products product
+  where product.id = any(p_product_ids);
+
+  update public.marketplace_products product
+  set
+    stock_count = greatest(product.stock_count - 1, 0),
+    status = case when product.stock_count <= 1 then 'sold_out' else product.status end,
+    updated_at = now()
+  where product.id = any(p_product_ids);
+
+  insert into public.payment_activity (
+    user_id,
+    activity_title,
+    activity_category,
+    amount,
+    status,
+    activity_at,
+    created_at
+  )
+  values (
+    p_user_id,
+    'Marketplace order ' || v_order_code,
+    'marketplace',
+    v_total,
+    case when lower(trim(coalesce(p_payment_status, 'paid'))) = 'paid' then 'success' else 'pending' end,
+    now(),
+    now()
+  );
+
+  insert into public.notifications (
+    user_id,
+    kind,
+    title,
+    body,
+    badge_label,
+    action_label,
+    image_url,
+    is_unread,
+    created_at
+  )
+  values (
+    p_user_id,
+    'marketplace',
+    'Order placed',
+    'Your marketplace order ' || v_order_code || ' is confirmed and being processed.',
+    'ORDERED',
+    'VIEW ORDER',
+    null,
+    true,
+    now()
+  );
+
+  return query
+  select
+    v_order_id,
+    v_order_code,
+    v_total,
+    'placed';
+end;
+$$;
+
 create or replace function public.admin_mark_maintenance_paid(
   p_admin_user_id uuid,
   p_bill_id uuid,
@@ -2817,6 +3220,9 @@ grant execute on function public.create_finance_vendor(uuid, text, text, text, t
 grant execute on function public.create_treasurer_expense(uuid, date, text, uuid, text, numeric, text, text, text, text) to anon, authenticated;
 grant execute on function public.create_vendor_quotation_request(uuid, text, text, date, text, numeric, integer, text, uuid[]) to anon, authenticated;
 grant execute on function public.renew_finance_vendor_contract(uuid, uuid, date, date, numeric, text, text, integer) to anon, authenticated;
+grant execute on function public.pay_bill(uuid, uuid, text, text) to anon, authenticated;
+grant execute on function public.create_marketplace_listing(uuid, text, text, text, numeric, text, text, integer, integer, integer, text, text, text, boolean) to anon, authenticated;
+grant execute on function public.place_marketplace_order(uuid, uuid[], text, text, text, text, uuid) to anon, authenticated;
 grant execute on function public.create_amenity_booking(uuid, uuid, date, text, integer) to anon, authenticated;
 grant execute on function public.create_resident_complaint(uuid, text, text, text, text, text, text, text, text, text) to anon, authenticated;
 grant execute on function public.update_complaint_admin_status(uuid, uuid, public.complaint_state, text, text, text) to anon, authenticated;
