@@ -17,3 +17,8 @@ part 'admin_complaints_screen.dart';
 part 'admin_community_screen.dart';
 part 'admin_amenities_services_screen.dart';
 part 'admin_treasurer_screens.dart';
+part 'admin_treasurer_overview_screens.dart';
+part 'admin_treasurer_finance_screens.dart';
+part 'admin_maintenance_screens.dart';
+part 'admin_maintenance_core_screens.dart';
+part 'admin_maintenance_tools_screens.dart';
