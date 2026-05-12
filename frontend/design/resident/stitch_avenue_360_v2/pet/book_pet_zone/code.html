@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cove Pets - Book Zone</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#414754",
+                        "surface": "#F8F9FA",
+                        "primary-fixed": "#D8E2FF",
+                        "on-tertiary-container": "#0E0200",
+                        "surface-container-highest": "#E1E3E4",
+                        "inverse-primary": "#ADC7FF",
+                        "outline-variant": "#C1C6D6",
+                        "background": "#F8F9FA",
+                        "outline": "#727785",
+                        "inverse-surface": "#2E3132",
+                        "inverse-on-surface": "#F0F1F2",
+                        "primary": "#005BBF",
+                        "on-secondary-fixed-variant": "#614000",
+                        "on-secondary-container": "#694600",
+                        "error": "#BA1A1A",
+                        "surface-tint": "#005BC0",
+                        "surface-container-low": "#F3F4F5",
+                        "on-secondary": "#FFFFFF",
+                        "on-primary": "#FFFFFF",
+                        "on-error": "#FFFFFF",
+                        "on-background": "#191C1D",
+                        "tertiary-fixed": "#FFDBCB",
+                        "surface-container": "#EDEEEF",
+                        "secondary-fixed": "#FFDDAF",
+                        "on-tertiary": "#FFFFFF",
+                        "secondary": "#805600",
+                        "on-primary-fixed": "#001A41",
+                        "primary-fixed-dim": "#ADC7FF",
+                        "surface-bright": "#F8F9FA",
+                        "secondary-container": "#FDAF0B",
+                        "on-tertiary-fixed": "#341100",
+                        "primary-container": "#1A73E8",
+                        "on-primary-fixed-variant": "#004493",
+                        "tertiary-fixed-dim": "#FFB691",
+                        "error-container": "#FFDAD6",
+                        "tertiary-container": "#C55500",
+                        "surface-container-high": "#E7E8E9",
+                        "on-secondary-fixed": "#281800",
+                        "on-surface": "#191C1D",
+                        "tertiary": "#9E4300",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "surface-dim": "#D9DADB",
+                        "secondary-fixed-dim": "#FFBA43",
+                        "surface-container-lowest": "#FFFFFF",
+                        "on-primary-container": "#FFFFFF",
+                        "on-error-container": "#93000A",
+                        "surface-variant": "#E1E3E4"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-xl shadow-sm h-16 flex justify-between items-center px-6">
+<div class="flex items-center gap-3">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-high/50 p-2 rounded-full transition-colors active:scale-95">arrow_back</button>
+<span class="font-headline text-xl font-bold text-primary tracking-tighter">Cove Pets</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary" data-icon="notifications">notifications</span>
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center overflow-hidden border border-outline-variant/30">
+<img alt="Resident Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a friendly middle-aged man with short brown hair, wearing a clean white linen shirt. The background is a soft-focus urban loft environment with natural light pouring in from a large window. The aesthetic is clean, bright, and modern, matching a high-end property management app's user profile style. Soft daylight illuminates his face, creating a welcoming and trustworthy appearance." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7BLyzMoMatRhE5gCQvbFEsK2neQ7FThdh-5cSuAMupOs1iQRaBe2Kxgokav8FOpcinEKmaQsIAh3jrHZQweFSo-KE3DskKNwNtYlKlYUEBd9t-SpQwIFIuALEHlE56gOTya9DxAD0jPetGw74NNHWA_5FxKra0vP5kQZqVqcOnyANkFF4O10J70pPjpeQRD_VqVk9pDH2N9rtav98a1GY7_KTkp_AMoVvCq9VQ7dMupvjJrPquOKPPhjznDf7IZ1wpLJyK0z75Q"/>
+</div>
+</div>
+</header>
+<main class="max-w-screen-xl mx-auto px-6 pt-24 space-y-8">
+<!-- Header Section -->
+<section>
+<h1 class="font-headline text-3xl font-extrabold tracking-tight text-on-surface">Book Zone</h1>
+<p class="text-on-surface-variant mt-1">Reserve a private moment for your furry friends.</p>
+</section>
+<!-- Select Date: Horizontal Strip -->
+<section class="space-y-4">
+<div class="flex justify-between items-end">
+<h2 class="text-lg font-bold font-headline tracking-tight">Select Date</h2>
+<span class="text-xs font-bold text-primary uppercase tracking-widest">October 2023</span>
+</div>
+<div class="flex gap-3 overflow-x-auto pb-2 hide-scrollbar">
+<div class="flex-shrink-0 w-16 h-20 rounded-2xl bg-surface-container-lowest flex flex-col items-center justify-center shadow-sm hover:translate-y-[-2px] transition-transform cursor-pointer">
+<span class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant">Mon</span>
+<span class="text-xl font-bold">12</span>
+</div>
+<div class="flex-shrink-0 w-16 h-20 rounded-2xl bg-primary text-on-primary flex flex-col items-center justify-center shadow-md hover:translate-y-[-2px] transition-transform cursor-pointer">
+<span class="text-[10px] uppercase font-bold tracking-widest opacity-80">Tue</span>
+<span class="text-xl font-bold">13</span>
+</div>
+<div class="flex-shrink-0 w-16 h-20 rounded-2xl bg-surface-container-lowest flex flex-col items-center justify-center shadow-sm hover:translate-y-[-2px] transition-transform cursor-pointer">
+<span class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant">Wed</span>
+<span class="text-xl font-bold">14</span>
+</div>
+<div class="flex-shrink-0 w-16 h-20 rounded-2xl bg-surface-container-lowest flex flex-col items-center justify-center shadow-sm hover:translate-y-[-2px] transition-transform cursor-pointer">
+<span class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant">Thu</span>
+<span class="text-xl font-bold">15</span>
+</div>
+<div class="flex-shrink-0 w-16 h-20 rounded-2xl bg-surface-container-lowest flex flex-col items-center justify-center shadow-sm hover:translate-y-[-2px] transition-transform cursor-pointer">
+<span class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant">Fri</span>
+<span class="text-xl font-bold">16</span>
+</div>
+<div class="flex-shrink-0 w-16 h-20 rounded-2xl bg-surface-container-lowest flex flex-col items-center justify-center shadow-sm hover:translate-y-[-2px] transition-transform cursor-pointer">
+<span class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant">Sat</span>
+<span class="text-xl font-bold">17</span>
+</div>
+</div>
+</section>
+<!-- Select Zone: Visual Cards (Bento-style Grid) -->
+<section class="space-y-4">
+<h2 class="text-lg font-bold font-headline tracking-tight">Select Zone</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Zone 1 -->
+<div class="group relative overflow-hidden rounded-3xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer">
+<div class="h-48 overflow-hidden">
+<img alt="Central Play Area" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A lush green lawn within a modern urban residential complex, featuring high-quality wooden benches and neatly trimmed hedges. Two energetic dogs are running across the grass in the distance. The lighting is golden hour sunshine, casting soft, long shadows and creating a peaceful yet playful atmosphere. The overall aesthetic is clean, premium, and well-maintained, fitting a luxury property's pet-friendly amenities." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3cRQrRpXt0T7FH_ejt1VOR1MybSDUELJLQ_PZpQK8v7x0aWDzQY4jWEOfguN8coyg7O2Wq53OZDvi2XMp7gPp0TOUw7yQd5IHWGYgveYZsEUfXczHvu13Bt0agDXPZ_hCyO6HBB2kfYO2dCAKjkLelTnWTcbap_Cj9GQ1ayvQXbiE3cxOuyJbaizQM-GQHd1auOPUV3X9z3XbZqdM1Yoy8lUKXwpSwWFF2eqaZdU0hui0jmlmjenxAKpTGZOAbTw2zvYG_-eCMA"/>
+</div>
+<div class="p-5">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-bold text-on-surface">Central Play Area</h3>
+<p class="text-xs text-on-surface-variant">Large open turf for running</p>
+</div>
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Zone 2 -->
+<div class="group relative overflow-hidden rounded-3xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer border-2 border-transparent hover:border-primary/20">
+<div class="h-48 overflow-hidden">
+<img alt="Agility Park" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A specialized pet agility course featuring colorful wooden hurdles, a blue tunnel, and a weave pole set against a backdrop of clean gray gravel and modern architectural lines. The lighting is bright and even, highlighting the vibrant colors of the equipment. The scene is professional and athletic, suggesting a top-tier training facility for pets in a sophisticated urban sanctuary environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDoVHPaK76joGXqArjrlju09srA1H8zbKKTbaomaf9RHYjj0DgD5HE1ZROigJpyaFU4mzxczYcCC98rGijksqZf6iq_aREZhbl39wOmoxvmL__8aRBCdJcVAMN9hJMelMF5MAiCJ2YJPTvOoM8REcHUsY9dPq_gFIwCk5f8wLmsE4bzhRIaN-xNvqJRHCLkFyYX5-0Nh4lRwz7NY2cUKa7sUzFjLqQf0b_oBrL49XEIcH_DmQpoRKrHJo1X9oJDns22CAsCoRl-Zg"/>
+</div>
+<div class="p-5">
+<h3 class="font-bold text-on-surface">Agility Park</h3>
+<p class="text-xs text-on-surface-variant">Obstacles &amp; training gear</p>
+</div>
+</div>
+<!-- Zone 3 -->
+<div class="group relative overflow-hidden rounded-3xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer">
+<div class="h-48 overflow-hidden">
+<img alt="Splash Pool" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A modern, shallow pet splash pool with sparkling clear water and small fountain jets bubbling up. The pool deck is made of non-slip, premium light-colored stone. In the background, modern glass buildings reflect the clear blue sky. The atmosphere is refreshing and summery, with soft teal and white tones dominating the palette, emphasizing a luxurious and clean pet-friendly lifestyle." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjpzC4cjQyGSl0Q7VMkVKRImkc5_8aQK57xCh1lvNje_iXo0QHLn0ALRwqdbTnqdKpXDHZVXQVLg_8CIauqbaknepKDaQOOyebtqlIZ5HxdEmJvmOXGBqdF_fK3zaCpLdM4XzwfaYKq8x9Dnd-HiCOFcFNFkxHmaL3LM0qVZJzQ85f0_1j2KCtmrpu2kvMiaulbmiy9rrnKcMNkMeIcwjPNm_1KHv-Wn5SP_L4ldizQ5iLADDpxps4_wXT7nTO6LEDpDoS394M7Q"/>
+</div>
+<div class="p-5">
+<h3 class="font-bold text-on-surface">Splash Pool</h3>
+<p class="text-xs text-on-surface-variant">Water fun for hot days</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Time Slot & Number of Pets -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Select Time Slot -->
+<div class="lg:col-span-2 space-y-4">
+<h2 class="text-lg font-bold font-headline tracking-tight">Select Time Slot</h2>
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+<button class="py-4 px-3 rounded-2xl bg-surface-container-lowest shadow-sm text-sm font-semibold hover:bg-primary-container hover:text-on-primary-container transition-colors active:scale-95">08:00 - 09:30</button>
+<button class="py-4 px-3 rounded-2xl bg-primary-container text-on-primary-container shadow-sm text-sm font-bold border-2 border-primary/20 active:scale-95">10:00 - 11:30</button>
+<button class="py-4 px-3 rounded-2xl bg-surface-container-lowest shadow-sm text-sm font-semibold opacity-40 cursor-not-allowed">12:00 - 13:30</button>
+<button class="py-4 px-3 rounded-2xl bg-surface-container-lowest shadow-sm text-sm font-semibold hover:bg-primary-container transition-colors active:scale-95">14:00 - 15:30</button>
+<button class="py-4 px-3 rounded-2xl bg-surface-container-lowest shadow-sm text-sm font-semibold hover:bg-primary-container transition-colors active:scale-95">16:00 - 17:30</button>
+<button class="py-4 px-3 rounded-2xl bg-surface-container-lowest shadow-sm text-sm font-semibold hover:bg-primary-container transition-colors active:scale-95">18:00 - 19:30</button>
+</div>
+</div>
+<!-- Number of Pets -->
+<div class="space-y-4">
+<h2 class="text-lg font-bold font-headline tracking-tight">Number of Pets</h2>
+<div class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm flex items-center justify-between">
+<button class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center hover:bg-surface-container-high transition-colors active:scale-90">
+<span class="material-symbols-outlined">remove</span>
+</button>
+<div class="text-center">
+<span class="text-3xl font-extrabold font-display">2</span>
+<p class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">Pets</p>
+</div>
+<button class="w-12 h-12 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center hover:bg-primary transition-colors active:scale-90">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<!-- Guidelines info box -->
+<div class="bg-tertiary-fixed/30 rounded-3xl p-5 border border-tertiary-fixed-dim/20 space-y-3">
+<div class="flex items-center gap-2 text-tertiary">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">info</span>
+<span class="text-xs font-bold uppercase tracking-widest">Booking Guidelines</span>
+</div>
+<ul class="text-xs space-y-2 text-on-tertiary-fixed">
+<li class="flex gap-2">
+<span class="material-symbols-outlined text-[14px] mt-0.5">check_circle</span>
+                            Maximum 3 pets per resident session.
+                        </li>
+<li class="flex gap-2">
+<span class="material-symbols-outlined text-[14px] mt-0.5">check_circle</span>
+                            Please clean up after your pet immediately.
+                        </li>
+</ul>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation and Action Shell -->
+<div class="fixed bottom-0 left-0 w-full z-50">
+<!-- Floating Action Overlay -->
+<div class="bg-white/80 backdrop-blur-2xl px-6 py-6 border-t border-outline-variant/10 shadow-[0_-8px_32px_rgba(0,0,0,0.05)]">
+<div class="max-w-screen-xl mx-auto flex items-center justify-between gap-4">
+<button class="flex-1 py-4 px-6 rounded-full bg-surface-container-high text-on-surface font-bold text-sm transition-transform active:scale-95">Back</button>
+<button class="flex-[2] py-4 px-6 rounded-full bg-primary text-on-primary font-bold text-sm shadow-lg shadow-primary/20 transition-all hover:brightness-110 active:scale-95">Confirm Booking</button>
+</div>
+</div>
+<!-- BottomNavBar (Mocked from JSON Logic - Parks is Active) -->
+<nav class="bg-white/90 backdrop-blur-2xl flex justify-around items-center px-4 pb-6 pt-3 shadow-[0_-4px_24px_rgba(25,28,29,0.04)] rounded-t-xl">
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all active:scale-90">
+<span class="material-symbols-outlined">pets</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-bold mt-1">Feed</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all active:scale-90">
+<span class="material-symbols-outlined">storefront</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-bold mt-1">Services</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all active:scale-90">
+<span class="material-symbols-outlined">vaccines</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-bold mt-1">Health</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-5 py-1.5 active:scale-90">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">park</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-bold mt-1">Parks</span>
+</div>
+</nav>
+</div>
+</body></html>

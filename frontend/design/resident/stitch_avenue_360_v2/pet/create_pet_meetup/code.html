@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Create Pet Meetup - Cove Pets</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#414754",
+                        "surface": "#F8F9FA",
+                        "primary-fixed": "#D8E2FF",
+                        "on-tertiary-container": "#0E0200",
+                        "surface-container-highest": "#E1E3E4",
+                        "inverse-primary": "#ADC7FF",
+                        "outline-variant": "#C1C6D6",
+                        "background": "#F8F9FA",
+                        "outline": "#727785",
+                        "inverse-surface": "#2E3132",
+                        "inverse-on-surface": "#F0F1F2",
+                        "primary": "#005BBF",
+                        "on-secondary-fixed-variant": "#614000",
+                        "on-secondary-container": "#694600",
+                        "error": "#BA1A1A",
+                        "surface-tint": "#005BC0",
+                        "surface-container-low": "#F3F4F5",
+                        "on-secondary": "#FFFFFF",
+                        "on-primary": "#FFFFFF",
+                        "on-error": "#FFFFFF",
+                        "on-background": "#191C1D",
+                        "tertiary-fixed": "#FFDBCB",
+                        "surface-container": "#EDEEEF",
+                        "secondary-fixed": "#FFDDAF",
+                        "on-tertiary": "#FFFFFF",
+                        "secondary": "#805600",
+                        "on-primary-fixed": "#001A41",
+                        "primary-fixed-dim": "#ADC7FF",
+                        "surface-bright": "#F8F9FA",
+                        "secondary-container": "#FDAF0B",
+                        "on-tertiary-fixed": "#341100",
+                        "primary-container": "#1A73E8",
+                        "on-primary-fixed-variant": "#004493",
+                        "tertiary-fixed-dim": "#FFB691",
+                        "error-container": "#FFDAD6",
+                        "tertiary-container": "#C55500",
+                        "surface-container-high": "#E7E8E9",
+                        "on-secondary-fixed": "#281800",
+                        "on-surface": "#191C1D",
+                        "tertiary": "#9E4300",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "surface-dim": "#D9DADB",
+                        "secondary-fixed-dim": "#FFBA43",
+                        "surface-container-lowest": "#FFFFFF",
+                        "on-primary-container": "#FFFFFF",
+                        "on-error-container": "#93000A",
+                        "surface-variant": "#E1E3E4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface antialiased mb-20">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-xl dark:bg-slate-900/90 shadow-sm flex justify-between items-center px-6 h-16 w-full">
+<div class="flex items-center gap-3">
+<button aria-label="Close" class="material-symbols-outlined text-primary active:scale-95 transition-transform">close</button>
+<h1 class="font-headline text-xl font-bold text-primary tracking-tighter">Cove Pets</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary">notifications</span>
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center overflow-hidden">
+<img alt="Resident Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a friendly young adult resident in a bright, modern setting with soft daylight hitting their face. The image is clean, high-key, and emphasizes a welcoming community vibe using a shallow depth of field. The background consists of soft out-of-focus architectural elements typical of a premium residential complex." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAoB96SFR3yP9ZAUJkPJqyynwXtu8q_tA-9Agy04-XCjL2SP_BfP-FMhx3-evBiU8-9ZQ5s6D7dG48hOYJ3E27OT2q3h_NoO-_ALzPHPoodRhW7wd_AZLzq-sT4kSZQRmWdxnrl4w4IMBTOdIU5zD2leXLHO8aJXQRvrEO92T0550z1QEpdmAMU2_vnhHb-Rf1QqxTUjKz-n_WI8IbZXnla6xBB2flhQwHTNwnVPHyZ2G7-wpZFnY8YnBUkfdpW1xw8pIlB86bW8Q"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-24 pb-12 px-6 max-w-2xl mx-auto">
+<header class="mb-8">
+<h2 class="font-headline text-3xl font-bold text-on-surface tracking-tight mb-2">Create a Meetup</h2>
+<p class="text-on-surface-variant leading-relaxed">Organize a social gathering for your furry neighbors. Whether it's a breed-specific play date or a morning park run.</p>
+</header>
+<form class="space-y-6">
+<!-- Hero Photo Upload Card -->
+<div class="relative group">
+<div class="w-full h-56 rounded-3xl bg-surface-container overflow-hidden relative flex flex-col items-center justify-center border-2 border-dashed border-outline-variant/30 hover:border-primary/50 transition-colors cursor-pointer group">
+<img alt="Cover Photo Placeholder" class="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-40 transition-opacity" data-alt="A warm and inviting photograph of multiple dogs of different breeds playing together in a sun-drenched, lush green park area within a modern residential community. The lighting is golden and soft, creating a joyful, safe atmosphere for pet activities. The composition is dynamic, showing pets in motion and capturing the spirit of a social community gathering." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4DJd3I_NkcgmBcsCQAnNQRMYX-S-sEuM_H1uXw_TpCM6Q69BRPRSS9ophqR0kf4QVHjTct5bzpBpGOmAosTBwpQ3tjVJZW_cPvIgQGZ-aX7ADObSpbkPK9_wqBp7OiyHpaEyPuxHaSVhi1Jk1J632cvvky73Kz_wOPum0GdGFE8OnOa0ZcAuO0Qr-5UUzGKBeSLUR6BBCA5zf1YiIOArrMPgRYJ_E4Ud5ekQU7CHVDmfmeEAc_pkdw-oaCMluonCIbP25wYVgRQ"/>
+<div class="relative z-10 flex flex-col items-center">
+<div class="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-primary">add_a_photo</span>
+</div>
+<span class="font-headline font-bold text-on-surface">Upload Cover Photo</span>
+<span class="text-xs text-on-surface-variant mt-1">Recommended: 16:9 Landscape</span>
+</div>
+</div>
+</div>
+<!-- Bento Grid Section: Core Details -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Meetup Title -->
+<div class="md:col-span-2 bg-surface-container-lowest p-6 rounded-3xl shadow-sm">
+<label class="font-label text-[10px] tracking-widest uppercase font-bold text-on-surface-variant block mb-2">Meetup Title</label>
+<input class="w-full bg-transparent border-none p-0 text-xl font-headline font-bold text-on-surface placeholder:text-outline-variant focus:ring-0" placeholder="e.g., Golden Retriever Play Date" type="text"/>
+</div>
+<!-- Description -->
+<div class="md:col-span-2 bg-surface-container-lowest p-6 rounded-3xl shadow-sm">
+<label class="font-label text-[10px] tracking-widest uppercase font-bold text-on-surface-variant block mb-2">Description</label>
+<textarea class="w-full bg-transparent border-none p-0 text-body text-on-surface placeholder:text-outline-variant focus:ring-0 resize-none" placeholder="Tell residents what to expect..." rows="3"></textarea>
+</div>
+<!-- Date and Time -->
+<div class="bg-surface-container-lowest p-6 rounded-3xl shadow-sm flex flex-col justify-between">
+<label class="font-label text-[10px] tracking-widest uppercase font-bold text-on-surface-variant block mb-2">Date &amp; Time</label>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">calendar_month</span>
+<input class="bg-transparent border-none p-0 text-on-surface font-medium focus:ring-0 w-full" type="datetime-local"/>
+</div>
+</div>
+<!-- Location Zone -->
+<div class="bg-surface-container-lowest p-6 rounded-3xl shadow-sm flex flex-col justify-between">
+<label class="font-label text-[10px] tracking-widest uppercase font-bold text-on-surface-variant block mb-2">Location Zone</label>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">location_on</span>
+<select class="bg-transparent border-none p-0 text-on-surface font-medium focus:ring-0 w-full appearance-none">
+<option>Central Play Area</option>
+<option>Agility Park (West)</option>
+<option>Sunset Walking Trail</option>
+<option>Indoor Pet Lounge</option>
+</select>
+</div>
+</div>
+<!-- Target Pet Type -->
+<div class="bg-surface-container-lowest p-6 rounded-3xl shadow-sm">
+<label class="font-label text-[10px] tracking-widest uppercase font-bold text-on-surface-variant block mb-2">Target Pet/Breed</label>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">pets</span>
+<select class="bg-transparent border-none p-0 text-on-surface font-medium focus:ring-0 w-full appearance-none">
+<option>All Pets Welcome</option>
+<option>Dogs: Golden Retrievers</option>
+<option>Dogs: Small Breeds</option>
+<option>Dogs: Active Mixes</option>
+<option>Cats: Indoor Social</option>
+</select>
+</div>
+</div>
+<!-- Max Participants -->
+<div class="bg-surface-container-lowest p-6 rounded-3xl shadow-sm">
+<label class="font-label text-[10px] tracking-widest uppercase font-bold text-on-surface-variant block mb-2">Max Participants</label>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">groups</span>
+<input class="bg-transparent border-none p-0 text-on-surface font-medium focus:ring-0 w-full" placeholder="20" type="number"/>
+</div>
+</div>
+</div>
+<!-- Preview Card -->
+<div class="bg-primary-fixed/30 p-6 rounded-3xl flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-white flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<div>
+<h4 class="font-headline font-bold text-on-primary-fixed">Community Tip</h4>
+<p class="text-sm text-on-primary-fixed-variant opacity-80">Events at the Central Play Area during weekends usually get the most participants!</p>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col gap-3 pt-6">
+<button class="w-full bg-primary text-white py-5 rounded-full font-headline font-bold text-lg shadow-lg shadow-primary/20 active:scale-95 transition-all" type="submit">
+                    Create Meetup
+                </button>
+<button class="w-full py-4 text-on-surface-variant font-medium hover:bg-surface-container-high transition-colors rounded-full active:scale-95" type="button">
+                    Cancel
+                </button>
+</div>
+</form>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/90 backdrop-blur-2xl dark:bg-slate-900/90 shadow-[0_-4px_24px_rgba(25,28,29,0.04)] rounded-t-xl">
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all active:scale-90 duration-150">
+<span class="material-symbols-outlined">pets</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-bold mt-1">Feed</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-5 py-1.5 active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">storefront</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-bold mt-1">Services</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all active:scale-90 duration-150">
+<span class="material-symbols-outlined">vaccines</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-bold mt-1">Health</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all active:scale-90 duration-150">
+<span class="material-symbols-outlined">park</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-bold mt-1">Parks</span>
+</div>
+</nav>
+</body></html>

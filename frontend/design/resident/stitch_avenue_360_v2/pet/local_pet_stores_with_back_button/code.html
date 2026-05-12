@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cove Pets - Local Pet Stores</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#F8F9FA",
+                        "secondary-fixed-dim": "#FFBA43",
+                        "surface-variant": "#E1E3E4",
+                        "on-primary-fixed-variant": "#004493",
+                        "on-secondary": "#FFFFFF",
+                        "on-surface-variant": "#414754",
+                        "surface": "#F8F9FA",
+                        "surface-container": "#EDEEEF",
+                        "on-tertiary-fixed": "#341100",
+                        "on-tertiary": "#FFFFFF",
+                        "on-primary": "#FFFFFF",
+                        "on-secondary-container": "#694600",
+                        "background": "#F8F9FA",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "surface-container-lowest": "#FFFFFF",
+                        "primary-fixed-dim": "#ADC7FF",
+                        "surface-container-low": "#F3F4F5",
+                        "on-primary-container": "#FFFFFF",
+                        "secondary-container": "#FDAF0B",
+                        "outline-variant": "#C1C6D6",
+                        "surface-tint": "#005BC0",
+                        "tertiary": "#9E4300",
+                        "on-tertiary-container": "#0E0200",
+                        "primary-fixed": "#D8E2FF",
+                        "primary": "#005BBF",
+                        "inverse-surface": "#2E3132",
+                        "tertiary-fixed": "#FFDBCB",
+                        "error-container": "#FFDAD6",
+                        "on-surface": "#191C1D",
+                        "on-error-container": "#93000A",
+                        "surface-container-high": "#E7E8E9",
+                        "outline": "#727785",
+                        "on-error": "#FFFFFF",
+                        "tertiary-container": "#C55500",
+                        "tertiary-fixed-dim": "#FFB691",
+                        "on-secondary-fixed": "#281800",
+                        "inverse-on-surface": "#F0F1F2",
+                        "surface-dim": "#D9DADB",
+                        "on-primary-fixed": "#001A41"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface font-body text-on-surface">
+<!-- Shared TopAppBar Component -->
+<header class="fixed top-0 w-full z-50 bg-surface/90 dark:bg-surface-dim/90 backdrop-blur-xl shadow-sm h-16 flex items-center justify-between px-6">
+<div class="flex items-center gap-3"><button class="hover:bg-surface-container-highest transition-colors active:scale-95 transition-transform p-2 rounded-full -ml-2">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<span class="material-symbols-outlined text-primary" data-icon="pets">pets</span>
+<h1 class="font-headline tracking-tight font-bold text-headline-sm text-primary">Cove Pets</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="hover:bg-surface-container-highest transition-colors active:scale-95 transition-transform p-2 rounded-full">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+</div>
+</header>
+<main class="pt-20 pb-32 px-6 max-w-4xl mx-auto">
+<!-- Search & Filter Section -->
+<section class="mb-8">
+<div class="relative group">
+<div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline" data-icon="search">search</span>
+</div>
+<input class="w-full bg-surface-container-lowest border-none rounded-xl h-14 pl-12 pr-4 shadow-sm focus:ring-2 focus:ring-primary/20 placeholder:text-on-surface-variant/50 transition-all" placeholder="Search for stores or products" type="text"/>
+</div>
+<div class="mt-6 flex gap-3 overflow-x-auto hide-scrollbar -mx-6 px-6">
+<button class="whitespace-nowrap px-6 py-2.5 rounded-full bg-primary text-on-primary font-medium text-sm transition-all hover:shadow-md">All</button>
+<button class="whitespace-nowrap px-6 py-2.5 rounded-full bg-surface-container-low text-on-surface-variant font-medium text-sm hover:bg-surface-container-high transition-all">Food</button>
+<button class="whitespace-nowrap px-6 py-2.5 rounded-full bg-surface-container-low text-on-surface-variant font-medium text-sm hover:bg-surface-container-high transition-all">Grooming</button>
+<button class="whitespace-nowrap px-6 py-2.5 rounded-full bg-surface-container-low text-on-surface-variant font-medium text-sm hover:bg-surface-container-high transition-all">Vet Supplies</button>
+<button class="whitespace-nowrap px-6 py-2.5 rounded-full bg-surface-container-low text-on-surface-variant font-medium text-sm hover:bg-surface-container-high transition-all">Accessories</button>
+</div>
+</section>
+<!-- Stores List Header -->
+<div class="flex items-center justify-between mb-6">
+<h2 class="font-headline text-xl font-bold tracking-tight text-on-surface">Nearby Pet Stores</h2>
+<button class="text-primary font-semibold text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-lg" data-icon="map">map</span>
+                View Map
+            </button>
+</div>
+<!-- Store Cards Container -->
+<div class="space-y-6">
+<!-- Store Card 1 -->
+<article class="bg-surface-container-lowest rounded-xl shadow-[0_12px_32px_rgba(25,28,29,0.06)] overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg border border-outline-variant/10">
+<div class="flex flex-col md:flex-row">
+<div class="relative h-48 md:h-auto md:w-48 flex-shrink-0">
+<img alt="Paws &amp; Whiskers" class="w-full h-full object-cover" data-alt="A brightly lit, modern pet boutique interior with natural wood shelving and neat rows of premium organic dog food. The aesthetic is clean and upscale, utilizing a soft light-mode palette of whites and warm timbers. The lighting is airy and diffused, creating a welcoming urban sanctuary atmosphere for pet owners." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKYajZJWNvzL_OBzsmRUFEt4qAcTJS_I4oDVSmBK1uVunUe5BSpgcTIBtwpN9DpsnY7Z4w_WwF-S-rgAqmRwP3eks-Kzptaoud1zOGT-sMde-Uxna8WtiwbPAX0LPV36t3foW14feY888gc-mgGQUW3boBKvR3X4RobfwYwE36MNLjelkPGqPLeBgDFYMQ-IoMYLGqPX5YUKxWMKryI3uEtpu1Pls4afOzH9n3erRft4T1pkGDcdbFNaqWe2jYlPd34QQP8FXADQ"/>
+<div class="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold">4.8</span>
+</div>
+</div>
+<div class="p-5 flex-grow">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline font-bold text-lg text-on-surface mb-1">Paws &amp; Whiskers</h3>
+<p class="text-xs tracking-widest uppercase font-semibold text-outline mb-3">Food &amp; Accessories</p>
+</div>
+<span class="text-sm font-medium text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-base" data-icon="distance">distance</span>
+                                0.8 km
+                            </span>
+</div>
+<p class="text-sm text-on-surface-variant mb-5 line-clamp-2">Premium organic nutrition and designer accessories for your urban companions.</p>
+<div class="flex gap-3">
+<button class="flex-1 py-3 px-4 rounded-full border border-primary text-primary font-semibold text-sm hover:bg-primary/5 transition-colors">Contact</button>
+<button class="flex-2 px-6 py-3 rounded-full bg-primary text-on-primary font-semibold text-sm shadow-md active:scale-95 transition-all">View Products</button>
+</div>
+</div>
+</div>
+</article>
+<!-- Store Card 2 -->
+<article class="bg-surface-container-lowest rounded-xl shadow-[0_12px_32px_rgba(25,28,29,0.06)] overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg border border-outline-variant/10">
+<div class="flex flex-col md:flex-row">
+<div class="relative h-48 md:h-auto md:w-48 flex-shrink-0">
+<img alt="The Grooming Room" class="w-full h-full object-cover" data-alt="A professional dog grooming studio featuring sleek stainless steel tubs and glass partitions. The design follows the Cove Glass aesthetic with high transparency, architectural lighting, and a crisp blue and white color scheme. A happy golden retriever is being pampered in a bright, airy environment that looks like a high-end spa." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQufy13CyOuMyVK0kJq0kp9AJL7BwUFWZjs0R4HoV63AKG4zqlErdWFQMEdUHqvCu5T-sS-58QnFk217o_GQH8Q7f-rc3AjblYLWF40I2XvqqdCIcrxsArfvVDV5oCrAUTDBgIcA-7FrXs-Z1gRqhq77UvOlU0J4IAPR3yVQqrJ-LcPOS8NQoq7ZK2AuwZO2qj7HbwKWNUM9nCGImYONPUC9z6yb7OgHClvfPHTOpUpxuRb8dkrF82JfW3F5pLzRKaU0cgEntrng"/>
+<div class="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold">4.9</span>
+</div>
+</div>
+<div class="p-5 flex-grow">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline font-bold text-lg text-on-surface mb-1">The Grooming Room</h3>
+<p class="text-xs tracking-widest uppercase font-semibold text-outline mb-3">Grooming</p>
+</div>
+<span class="text-sm font-medium text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-base" data-icon="distance">distance</span>
+                                1.2 km
+                            </span>
+</div>
+<p class="text-sm text-on-surface-variant mb-5 line-clamp-2">Expert styling and spa treatments for all breeds. Your pet's wellness is our priority.</p>
+<div class="flex gap-3">
+<button class="flex-1 py-3 px-4 rounded-full border border-primary text-primary font-semibold text-sm hover:bg-primary/5 transition-colors">Contact</button>
+<button class="flex-2 px-6 py-3 rounded-full bg-primary text-on-primary font-semibold text-sm shadow-md active:scale-95 transition-all">View Products</button>
+</div>
+</div>
+</div>
+</article>
+<!-- Store Card 3 -->
+<article class="bg-surface-container-lowest rounded-xl shadow-[0_12px_32px_rgba(25,28,29,0.06)] overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg border border-outline-variant/10">
+<div class="flex flex-col md:flex-row">
+<div class="relative h-48 md:h-auto md:w-48 flex-shrink-0">
+<img alt="Cove Pet Pharmacy" class="w-full h-full object-cover" data-alt="A modern pet pharmacy with organized glass display cases containing veterinary supplies. The interior is bright and clinical yet warm, with soft blue accent lighting and a minimalist architectural layout. Professional signage and a clear sense of medical trust are conveyed through the clean, uncluttered design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJ8d7J-3A7zpqMoHNoHsSQD5R4EDuDYnOhIheRzMSyqKQ0C8qopwLO4QfdT2FZgdQUMnF-x134s1bGmLwwozz5wx5mIacNY3kRoybSw9Jq9fluuGQsakVOBkf_U9Q8GG7V7y0cudf49CQlCi6fI6oSxwD9ZQF27RtB1eyt7vm_HYbSU62DQaxhOPX7pdv8kOnkL8UEygh1ZjrFGksNnEnBlYud3F5xdI282ruFbRfUeKvsKUzDeM9_SHh37rtPgSIu_wYzMPJLMg"/>
+<div class="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold">4.7</span>
+</div>
+</div>
+<div class="p-5 flex-grow">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline font-bold text-lg text-on-surface mb-1">Cove Pet Pharmacy</h3>
+<p class="text-xs tracking-widest uppercase font-semibold text-outline mb-3">Medicine</p>
+</div>
+<span class="text-sm font-medium text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-base" data-icon="distance">distance</span>
+                                1.5 km
+                            </span>
+</div>
+<p class="text-sm text-on-surface-variant mb-5 line-clamp-2">Trusted veterinary supplies and specialized medicine. On-site pharmacist available.</p>
+<div class="flex gap-3">
+<button class="flex-1 py-3 px-4 rounded-full border border-primary text-primary font-semibold text-sm hover:bg-primary/5 transition-colors">Contact</button>
+<button class="flex-2 px-6 py-3 rounded-full bg-primary text-on-primary font-semibold text-sm shadow-md active:scale-95 transition-all">View Products</button>
+</div>
+</div>
+</div>
+</article>
+</div>
+</main>
+<!-- Shared BottomNavBar Component -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/90 dark:bg-surface-container-lowest/90 backdrop-blur-2xl rounded-t-xl shadow-[0_-12px_32px_rgba(25,28,29,0.06)]">
+<div class="flex flex-col items-center justify-center text-on-surface-variant/70 hover:text-primary transition-all active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="dynamic_feed">dynamic_feed</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-semibold mt-1">Feed</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant/70 hover:text-primary transition-all active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="potted_plant">potted_plant</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-semibold mt-1">Pets</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant/70 hover:text-primary transition-all active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="event">event</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-semibold mt-1">Events</span>
+</div>
+<!-- Active Tab: Stores -->
+<div class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1.5 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="storefront" style="font-variation-settings: 'FILL' 1;">storefront</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-semibold mt-1">Stores</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant/70 hover:text-primary transition-all active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-semibold mt-1">Profile</span>
+</div>
+</nav>
+</body></html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Vaccination Reminder &amp; History - Cove Pets</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 40px;
+            bottom: 0;
+            width: 2px;
+            background: repeating-linear-gradient(to bottom, #C1C6D6 0, #C1C6D6 4px, transparent 4px, transparent 8px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#341100",
+                        "on-surface-variant": "#414754",
+                        "inverse-on-surface": "#F0F1F2",
+                        "tertiary-container": "#C55500",
+                        "inverse-surface": "#2E3132",
+                        "on-primary": "#FFFFFF",
+                        "tertiary": "#9E4300",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "on-tertiary": "#FFFFFF",
+                        "background": "#F8F9FA",
+                        "secondary-container": "#FDAF0B",
+                        "on-error": "#FFFFFF",
+                        "surface": "#F8F9FA",
+                        "on-secondary-fixed-variant": "#614000",
+                        "error-container": "#FFDAD6",
+                        "surface-tint": "#005BC0",
+                        "on-background": "#191C1D",
+                        "surface-container-lowest": "#FFFFFF",
+                        "tertiary-fixed-dim": "#FFB691",
+                        "surface-container-low": "#F3F4F5",
+                        "surface-variant": "#E1E3E4",
+                        "surface-container-high": "#E7E8E9",
+                        "error": "#BA1A1A",
+                        "outline-variant": "#C1C6D6",
+                        "on-primary-fixed-variant": "#004493",
+                        "primary-fixed": "#D8E2FF",
+                        "on-secondary-container": "#694600",
+                        "on-secondary-fixed": "#281800",
+                        "primary-fixed-dim": "#ADC7FF",
+                        "on-error-container": "#93000A",
+                        "primary-container": "#1A73E8",
+                        "primary": "#005BBF",
+                        "secondary-fixed": "#FFDDAF",
+                        "secondary": "#805600",
+                        "surface-bright": "#F8F9FA",
+                        "surface-container": "#EDEEEF",
+                        "on-surface": "#191C1D",
+                        "on-primary-container": "#FFFFFF",
+                        "outline": "#727785",
+                        "on-primary-fixed": "#001A41",
+                        "on-tertiary-container": "#0E0200",
+                        "on-secondary": "#FFFFFF",
+                        "inverse-primary": "#ADC7FF",
+                        "surface-dim": "#D9DADB",
+                        "tertiary-fixed": "#FFDBCB",
+                        "surface-container-highest": "#E1E3E4",
+                        "secondary-fixed-dim": "#FFBA43"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- Top App Bar (Shared) -->
+<header class="fixed top-0 left-0 w-full z-50 bg-surface-bright/90 backdrop-blur-2xl shadow-[0_12px_32px_rgba(25,28,29,0.06)]">
+<div class="flex justify-between items-center w-full px-6 h-16">
+<div class="flex items-center gap-3"><button class="-ml-2 p-2 rounded-full hover:bg-surface-container-high/20 transition-all active:scale-95 text-on-surface-variant">
+<span class="material-symbols-outlined text-2xl">chevron_left</span>
+</button>
+<span class="material-symbols-outlined text-primary text-2xl">pets</span>
+<h1 class="font-headline font-extrabold text-primary text-xl tracking-tighter">Cove Pets</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-surface-container-high/20 transition-all active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+</button>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-6 max-w-2xl mx-auto">
+<!-- Header Section -->
+<header class="mb-8">
+<div class="flex items-center gap-4 mb-2">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-primary-fixed shadow-sm">
+<img alt="Luna the Golden Retriever" class="w-full h-full object-cover" data-alt="A close-up portrait of a friendly Golden Retriever dog looking directly at the camera with a joyful expression. The background is a soft-focus urban park setting with warm, golden hour lighting that emphasizes the pet's healthy coat. The image has a professional, high-end photography aesthetic with crisp details and a clean, light-mode palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCW9xzkgX0xbeib8sfRWg2xKUsdzKA58xNMDh5M3sUGOwEsOmE6vcOpEJTrmzdEA8HL-IYv1xe4s2QPm84Wj6PCpXvCeXH_AVjUNgiN2nq_ZwSjzUqudJeKRZxz-Aowx8mz5HzG6f_2fmPEQsoSalAy8rtR8amXJu83i9yvt7g6ZWWwPWAWXGOx9xoh-WhFLk2EuoajqwhBLh7IITWc9nXb0tzWyU-GsHu2ZoYfgXaOsjFszGMXhBnAn3Nm0Xi_lRemD4-na3QUCQ"/>
+</div>
+<div>
+<h2 class="font-headline font-bold text-2xl tracking-tight text-on-surface">Luna's Vaccinations</h2>
+<p class="text-on-surface-variant text-sm font-medium">Keep your best friend safe and healthy.</p>
+</div>
+</div>
+</header>
+<!-- Upcoming Section -->
+<section class="mb-10">
+<div class="flex justify-between items-end mb-4">
+<h3 class="font-headline font-bold text-lg text-on-surface">Upcoming reminders</h3>
+<span class="text-xs font-label tracking-widest uppercase font-bold text-primary">2 Pending</span>
+</div>
+<div class="space-y-4">
+<!-- Expired Reminder Card -->
+<div class="relative overflow-hidden bg-surface-container-lowest rounded-[2rem] p-6 shadow-[0_12px_32px_rgba(25,28,29,0.06)] transition-all hover:-translate-y-1">
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-error-container text-on-error-container text-[10px] font-label font-bold tracking-widest uppercase mb-3">
+<span class="material-symbols-outlined text-xs mr-1" style="font-variation-settings: 'FILL' 1;">warning</span>
+                                Expired
+                            </span>
+<h4 class="font-headline font-bold text-xl text-on-surface">Rabies Booster</h4>
+<p class="text-on-surface-variant text-sm mt-1">Due: Oct 12, 2023</p>
+</div>
+<div class="bg-primary/5 p-3 rounded-2xl">
+<span class="material-symbols-outlined text-primary text-3xl">vaccines</span>
+</div>
+</div>
+<div class="flex items-center gap-3 mb-6 p-3 bg-surface-container-low rounded-2xl">
+<span class="material-symbols-outlined text-on-surface-variant text-xl">medical_services</span>
+<div>
+<p class="text-[10px] font-label tracking-widest uppercase text-on-surface-variant/70 font-bold">Primary Vet</p>
+<p class="text-sm font-semibold text-on-surface">Dr. Sarah Jenkins • Paws &amp; Claws Clinic</p>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<button class="flex items-center justify-center gap-2 py-3.5 px-4 bg-primary text-on-primary rounded-full font-headline font-bold text-sm transition-all active:scale-95">
+                            Mark Completed
+                        </button>
+<button class="flex items-center justify-center gap-2 py-3.5 px-4 bg-surface-container-high/40 text-on-surface rounded-full font-headline font-bold text-sm transition-all active:scale-95">
+                            Reschedule
+                        </button>
+</div>
+</div>
+<!-- Regular Reminder Card -->
+<div class="bg-surface-container-lowest rounded-[2rem] p-6 shadow-[0_12px_32px_rgba(25,28,29,0.06)] transition-all hover:-translate-y-1">
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-secondary-container/20 text-on-secondary-container text-[10px] font-label font-bold tracking-widest uppercase mb-3">
+<span class="material-symbols-outlined text-xs mr-1">schedule</span>
+                                Coming up
+                            </span>
+<h4 class="font-headline font-bold text-xl text-on-surface">Bordetella (Kennel Cough)</h4>
+<p class="text-on-surface-variant text-sm mt-1">Due: Nov 28, 2023</p>
+</div>
+<div class="bg-secondary-container/10 p-3 rounded-2xl">
+<span class="material-symbols-outlined text-secondary text-3xl">coronavirus</span>
+</div>
+</div>
+<div class="flex items-center gap-3 mb-6 p-3 bg-surface-container-low rounded-2xl">
+<span class="material-symbols-outlined text-on-surface-variant text-xl">location_on</span>
+<div>
+<p class="text-[10px] font-label tracking-widest uppercase text-on-surface-variant/70 font-bold">Location</p>
+<p class="text-sm font-semibold text-on-surface">Westside Veterinary Hospital</p>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<button class="flex items-center justify-center gap-2 py-3.5 px-4 bg-primary text-on-primary rounded-full font-headline font-bold text-sm transition-all active:scale-95 shadow-sm">
+                            Mark Completed
+                        </button>
+<button class="flex items-center justify-center gap-2 py-3.5 px-4 bg-surface-container-high/40 text-on-surface rounded-full font-headline font-bold text-sm transition-all active:scale-95">
+                            Reschedule
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Vaccination History (Timeline) -->
+<section>
+<h3 class="font-headline font-bold text-lg text-on-surface mb-6">Vaccination History</h3>
+<div class="relative space-y-8 timeline-line">
+<!-- History Item 1 -->
+<div class="relative pl-12">
+<div class="absolute left-0 top-0 w-10 h-10 bg-primary-fixed-dim/30 rounded-full flex items-center justify-center z-10 border-4 border-surface shadow-sm">
+<span class="material-symbols-outlined text-primary text-xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="bg-surface-container-lowest/60 backdrop-blur-sm rounded-3xl p-5 border border-outline-variant/15">
+<div class="flex justify-between items-start mb-2">
+<h5 class="font-headline font-bold text-on-surface">DHPP Booster</h5>
+<span class="text-[10px] font-label font-extrabold text-on-surface-variant/50 uppercase tracking-tighter">Completed</span>
+</div>
+<div class="flex items-center gap-4 text-xs text-on-surface-variant font-medium">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">calendar_month</span>
+                                Aug 14, 2023
+                            </span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">person</span>
+                                Dr. Jenkins
+                            </span>
+</div>
+</div>
+</div>
+<!-- History Item 2 -->
+<div class="relative pl-12">
+<div class="absolute left-0 top-0 w-10 h-10 bg-primary-fixed-dim/30 rounded-full flex items-center justify-center z-10 border-4 border-surface shadow-sm">
+<span class="material-symbols-outlined text-primary text-xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="bg-surface-container-lowest/60 backdrop-blur-sm rounded-3xl p-5 border border-outline-variant/15">
+<div class="flex justify-between items-start mb-2">
+<h5 class="font-headline font-bold text-on-surface">Leptospirosis</h5>
+<span class="text-[10px] font-label font-extrabold text-on-surface-variant/50 uppercase tracking-tighter">Completed</span>
+</div>
+<div class="flex items-center gap-4 text-xs text-on-surface-variant font-medium">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">calendar_month</span>
+                                May 22, 2023
+                            </span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">person</span>
+                                Dr. Miller
+                            </span>
+</div>
+</div>
+</div>
+<!-- History Item 3 -->
+<div class="relative pl-12">
+<div class="absolute left-0 top-0 w-10 h-10 bg-primary-fixed-dim/30 rounded-full flex items-center justify-center z-10 border-4 border-surface shadow-sm">
+<span class="material-symbols-outlined text-primary text-xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="bg-surface-container-lowest/60 backdrop-blur-sm rounded-3xl p-5 border border-outline-variant/15">
+<div class="flex justify-between items-start mb-2">
+<h5 class="font-headline font-bold text-on-surface">Initial Rabies</h5>
+<span class="text-[10px] font-label font-extrabold text-on-surface-variant/50 uppercase tracking-tighter">Completed</span>
+</div>
+<div class="flex items-center gap-4 text-xs text-on-surface-variant font-medium">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">calendar_month</span>
+                                Oct 12, 2022
+                            </span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">person</span>
+                                Dr. Jenkins
+                            </span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Nav Bar (Shared) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-white/90 backdrop-blur-2xl rounded-t-3xl shadow-[0_-8px_24px_rgba(25,28,29,0.04)] md:hidden">
+<div class="flex justify-around items-center px-4 pt-3 pb-6">
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 px-5 py-1.5 transition-all hover:bg-surface-container-high/30 rounded-full active:scale-90" href="#">
+<span class="material-symbols-outlined text-2xl">PhoneCall</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-bold mt-1">Feed</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-5 py-1.5 transition-all duration-300 scale-105" href="#">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">pets</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-bold mt-1">Pets</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 px-5 py-1.5 transition-all hover:bg-surface-container-high/30 rounded-full active:scale-90" href="#">
+<span class="material-symbols-outlined text-2xl">calendar_today</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-bold mt-1">Events</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 px-5 py-1.5 transition-all hover:bg-surface-container-high/30 rounded-full active:scale-90" href="#">
+<span class="material-symbols-outlined text-2xl">storefront</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-bold mt-1">Stores</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 px-5 py-1.5 transition-all hover:bg-surface-container-high/30 rounded-full active:scale-90" href="#">
+<span class="material-symbols-outlined text-2xl">person</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-bold mt-1">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>

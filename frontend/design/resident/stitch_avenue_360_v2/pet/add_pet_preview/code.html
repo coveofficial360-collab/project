@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pet Profile Preview - Cove Glass</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#694600",
+                        "secondary-fixed": "#FFDDAF",
+                        "primary-fixed-dim": "#ADC7FF",
+                        "on-primary-container": "#FFFFFF",
+                        "on-error-container": "#93000A",
+                        "surface-variant": "#E1E3E4",
+                        "surface-bright": "#F8F9FA",
+                        "surface-dim": "#D9DADB",
+                        "on-primary": "#FFFFFF",
+                        "tertiary-fixed-dim": "#FFB691",
+                        "on-tertiary": "#FFFFFF",
+                        "inverse-on-surface": "#F0F1F2",
+                        "primary": "#005BBF",
+                        "surface": "#F8F9FA",
+                        "on-secondary": "#FFFFFF",
+                        "secondary-container": "#FDAF0B",
+                        "on-secondary-fixed-variant": "#614000",
+                        "on-error": "#FFFFFF",
+                        "surface-container-low": "#F3F4F5",
+                        "on-secondary-fixed": "#281800",
+                        "on-tertiary-container": "#0E0200",
+                        "outline": "#727785",
+                        "error": "#BA1A1A",
+                        "error-container": "#FFDAD6",
+                        "surface-container-highest": "#E1E3E4",
+                        "on-primary-fixed-variant": "#004493",
+                        "inverse-primary": "#ADC7FF",
+                        "background": "#F8F9FA",
+                        "secondary-fixed-dim": "#FFBA43",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "on-tertiary-fixed": "#341100",
+                        "tertiary-fixed": "#FFDBCB",
+                        "surface-container-high": "#E7E8E9",
+                        "outline-variant": "#C1C6D6",
+                        "tertiary-container": "#C55500",
+                        "on-primary-fixed": "#001A41",
+                        "inverse-surface": "#2E3132",
+                        "on-surface-variant": "#414754",
+                        "surface-tint": "#005BC0",
+                        "surface-container": "#EDEEEF",
+                        "primary-container": "#1A73E8",
+                        "primary-fixed": "#D8E2FF",
+                        "surface-container-lowest": "#FFFFFF",
+                        "on-surface": "#191C1D",
+                        "on-background": "#191C1D",
+                        "tertiary": "#9E4300",
+                        "secondary": "#805600"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-header {
+            backdrop-filter: blur(24px);
+            background-color: rgba(248, 249, 250, 0.85);
+        }
+        .soft-elevation {
+            box-shadow: 0 12px 32px rgba(25, 28, 29, 0.06);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface">
+<div class="relative flex h-auto min-h-screen w-full flex-col bg-surface group/design-root overflow-x-hidden">
+<!-- Header: Standard Back for Focused View -->
+<header class="sticky top-0 z-50 glass-header border-b border-outline-variant/15 px-6 py-4 flex items-center justify-between">
+<button class="flex items-center justify-center size-10 rounded-full hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-on-surface">arrow_back</span>
+</button>
+<h1 class="font-headline font-bold text-lg tracking-tight">Review Profile</h1>
+<div class="w-10"></div> <!-- Spacer for balance -->
+</header>
+<!-- Progress Indicator (Step 4 of 4) -->
+<div class="flex w-full flex-row items-center justify-center gap-3 py-6 bg-surface">
+<div class="h-1.5 w-8 rounded-full bg-primary-container"></div>
+<div class="h-1.5 w-8 rounded-full bg-primary-container"></div>
+<div class="h-1.5 w-8 rounded-full bg-primary-container"></div>
+<div class="h-1.5 w-8 rounded-full bg-primary"></div>
+</div>
+<main class="flex-1 max-w-md mx-auto w-full px-6 pb-24">
+<!-- Success Celebration Header -->
+<div class="text-center mb-8">
+<div class="inline-flex items-center justify-center size-16 rounded-full bg-secondary-container/10 text-secondary mb-4">
+<span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1;">celebration</span>
+</div>
+<h2 class="font-headline text-3xl font-bold text-on-surface leading-tight">Looking Good!</h2>
+<p class="text-on-surface-variant text-sm mt-2">Everything is ready for your pet's journey.</p>
+</div>
+<!-- Profile Card Preview -->
+<div class="bg-surface-container-lowest rounded-[2rem] soft-elevation overflow-hidden border border-outline-variant/10">
+<!-- Hero Image -->
+<div class="relative h-72 w-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A portrait of a happy, fluffy golden retriever puppy sitting in a sun-drenched urban park with soft bokeh background. The lighting is warm and golden, reflecting a premium light-mode aesthetic with gentle shadows. The puppy has a bright, intelligent expression, and the overall mood is serene and welcoming, consistent with a high-end lifestyle brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRwXQAsJtHF3u4SwQnU2yCVsYrId-Rvc37WEW7YpVrx0Pk0uqx8Z0grANv5mqk1E0ARD34qGzXT6gUFCsR18KI9oq4jzy3lb2bPP_73loY9kv3EAav9ftAOX8_ANT57ZX7G5JxPHYHuoq7CDB6UT4CYOHKwHwXSQLhpOxxv1MxbOUqm9rrJRcl6xpi_MBgpjtBR9ViBBQ0j6kSM46-lwKmqPhn7NZmqDQ2Q97bV2Jl4K44tRpN1XMCj-rF2yd9ENqHbBa5zeDO4Q"/>
+<div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/60 to-transparent">
+<div class="flex items-end justify-between">
+<div>
+<h3 class="text-white font-headline text-2xl font-bold">Cooper</h3>
+<p class="text-white/80 text-sm font-medium">Golden Retriever • 2 Years</p>
+</div>
+<div class="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full border border-white/20">
+<span class="text-white text-xs font-bold uppercase tracking-widest">Male</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Info Grid -->
+<div class="p-6 space-y-6">
+<!-- Essential Specs -->
+<div class="grid grid-cols-3 gap-4">
+<div class="flex flex-col items-center p-3 rounded-2xl bg-surface-container-low border border-outline-variant/5">
+<span class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant mb-1">Weight</span>
+<span class="font-headline font-bold text-on-surface text-base">28kg</span>
+</div>
+<div class="flex flex-col items-center p-3 rounded-2xl bg-surface-container-low border border-outline-variant/5">
+<span class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant mb-1">Status</span>
+<span class="font-headline font-bold text-on-surface text-base">Active</span>
+</div>
+<div class="flex flex-col items-center p-3 rounded-2xl bg-surface-container-low border border-outline-variant/5">
+<span class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant mb-1">Microchip</span>
+<span class="font-headline font-bold text-on-surface text-base">Yes</span>
+</div>
+</div>
+<!-- Health & Habits -->
+<div class="space-y-4">
+<h4 class="text-xs font-bold uppercase tracking-widest text-primary">Health Details</h4>
+<div class="space-y-3">
+<div class="flex items-center gap-4 p-4 rounded-2xl bg-surface-container-lowest border border-outline-variant/20">
+<div class="size-10 rounded-full bg-tertiary-container/10 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">vaccines</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-bold text-on-surface">Vaccinations</p>
+<p class="text-xs text-on-surface-variant">Up to date (Next: Oct 2024)</p>
+</div>
+<span class="material-symbols-outlined text-secondary">check_circle</span>
+</div>
+<div class="flex items-center gap-4 p-4 rounded-2xl bg-surface-container-lowest border border-outline-variant/20">
+<div class="size-10 rounded-full bg-primary-container/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">medical_information</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-bold text-on-surface">Allergies</p>
+<p class="text-xs text-on-surface-variant">No known allergies</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/30">info</span>
+</div>
+</div>
+</div>
+<!-- Owner Quick Look -->
+<div class="pt-2">
+<div class="flex items-center gap-3 p-3 rounded-full bg-surface-container-high/50 border border-outline-variant/10">
+<img class="size-8 rounded-full object-cover" data-alt="A professional and friendly portrait of a young woman with a warm smile, set against a clean, architectural minimalist background. The lighting is soft and diffused, echoing the Cove Glass urban sanctuary aesthetic with a focus on natural skin tones and a high-key brightness. She is wearing modern, neutral clothing that complements the serene light-mode interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1C88VtOOA-NPDGsh6xCTaEHRfD682m-OkHoxgu_Yu5KXTxtB3dH0zHo188Lo5RKUqhN7iHYFOgOe5y8ydUs7kvw0ltrnyn0_-w2ZPqEj7KjYnWlmj2b_YrMIEfVteoYOARNb6Z8DauMd5qD3v8l7iPRd7pcPTJBDS_2iYd48oXuxo-_KIHk_Z5VHpi5uDuk7nYqdlQAw44AjlSkNshCSH7VD3nmtg1uQB2a0iX3zyjqsuscNwz7t3YsOCgcKGuey2pZLARtFocw"/>
+<div class="flex-1">
+<p class="text-xs font-semibold">Primary Contact: Sarah Miller</p>
+</div>
+<span class="material-symbols-outlined text-xs mr-2 text-on-surface-variant">edit</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="mt-10 space-y-4">
+<button class="w-full h-14 rounded-full bg-primary text-on-primary font-headline font-bold text-base shadow-lg shadow-primary/20 flex items-center justify-center gap-2 active:scale-95 transition-transform">
+                    Save Profile
+                    <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<button class="w-full h-14 rounded-full bg-surface border border-outline-variant text-on-surface font-headline font-semibold text-base active:scale-95 transition-transform">
+                    Back to Edit
+                </button>
+</div>
+</main>
+<!-- Spacer for flow -->
+<footer class="h-10"></footer>
+</div>
+</body></html>

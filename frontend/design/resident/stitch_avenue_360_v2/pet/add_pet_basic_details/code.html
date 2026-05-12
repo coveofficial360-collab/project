@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Create Pet Profile - Step 2</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#694600",
+                        "secondary-fixed": "#FFDDAF",
+                        "primary-fixed-dim": "#ADC7FF",
+                        "on-primary-container": "#FFFFFF",
+                        "on-error-container": "#93000A",
+                        "surface-variant": "#E1E3E4",
+                        "surface-bright": "#F8F9FA",
+                        "surface-dim": "#D9DADB",
+                        "on-primary": "#FFFFFF",
+                        "tertiary-fixed-dim": "#FFB691",
+                        "on-tertiary": "#FFFFFF",
+                        "inverse-on-surface": "#F0F1F2",
+                        "primary": "#005BBF",
+                        "surface": "#F8F9FA",
+                        "on-secondary": "#FFFFFF",
+                        "secondary-container": "#FDAF0B",
+                        "on-secondary-fixed-variant": "#614000",
+                        "on-error": "#FFFFFF",
+                        "surface-container-low": "#F3F4F5",
+                        "on-secondary-fixed": "#281800",
+                        "on-tertiary-container": "#0E0200",
+                        "outline": "#727785",
+                        "error": "#BA1A1A",
+                        "error-container": "#FFDAD6",
+                        "surface-container-highest": "#E1E3E4",
+                        "on-primary-fixed-variant": "#004493",
+                        "inverse-primary": "#ADC7FF",
+                        "background": "#F8F9FA",
+                        "secondary-fixed-dim": "#FFBA43",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "on-tertiary-fixed": "#341100",
+                        "tertiary-fixed": "#FFDBCB",
+                        "surface-container-high": "#E7E8E9",
+                        "outline-variant": "#C1C6D6",
+                        "tertiary-container": "#C55500",
+                        "on-primary-fixed": "#001A41",
+                        "inverse-surface": "#2E3132",
+                        "on-surface-variant": "#414754",
+                        "surface-tint": "#005BC0",
+                        "surface-container": "#EDEEEF",
+                        "primary-container": "#1A73E8",
+                        "primary-fixed": "#D8E2FF",
+                        "surface-container-lowest": "#FFFFFF",
+                        "on-surface": "#191C1D",
+                        "on-background": "#191C1D",
+                        "tertiary": "#9E4300",
+                        "secondary": "#805600"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; letter-spacing: -0.025em; }
+        .glass-header {
+            backdrop-filter: blur(24px);
+            background-color: rgba(248, 249, 250, 0.9);
+        }
+        .input-focus-ring:focus {
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(0, 91, 191, 0.15);
+            border-color: #005BBF;
+        }
+        .custom-shadow {
+            box-shadow: 0 12px 32px rgba(25, 28, 29, 0.06);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface min-h-screen flex flex-col items-center">
+<div class="w-full max-w-md min-h-screen bg-surface-container-low flex flex-col relative">
+<!-- Top Glass Header & Progress -->
+<header class="glass-header sticky top-0 z-10 px-6 pt-10 pb-6">
+<div class="flex justify-between items-center mb-6">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-lowest custom-shadow text-on-surface">
+<span class="material-icons-outlined">arrow_back</span>
+</button>
+<span class="text-on-surface-variant font-label text-[10px] uppercase tracking-widest font-semibold">Pet Registration</span>
+<div class="w-10"></div> <!-- Spacer -->
+</div>
+<div class="space-y-3">
+<div class="flex justify-between items-end">
+<h1 class="text-2xl font-bold text-on-surface">Basic Details</h1>
+<span class="text-xs font-label font-bold text-primary tracking-tighter">STEP 2 OF 4</span>
+</div>
+<!-- Progress Bar -->
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 50%;"></div>
+</div>
+</div>
+</header>
+<!-- Form Content -->
+<main class="flex-1 px-6 pt-4 pb-32 space-y-8">
+<!-- Welcome Visual -->
+<div class="relative h-32 w-full rounded-3xl overflow-hidden custom-shadow bg-primary-container group">
+<img class="w-full h-full object-cover opacity-80 mix-blend-overlay" data-alt="A cheerful and warm high-end editorial photograph of a Golden Retriever puppy looking curiously into the camera. The background is a soft-focus minimalist apartment with clean white walls and warm wooden textures, bathed in bright morning sunlight. The overall aesthetic is calm, premium, and welcoming, using a high-key lighting style consistent with a modern property management interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyGfbRxA0MbppoaKjlywdZkGH7wVmJFpOzDM73FyHHqpB4p1cj8FaHZFPa6KyB28GNqiDIkIogLrLq4parLKu8y3EvkGNLGd0G1rxG_HoJ9C-Z10nYRM2dVn83ENSII2I8FPZup_lUtRXNwWanevs0oyuXw8_OhX3D-HID9Iwpl3XbilxHnLSdXVEoZ-ceRN8oBgFOp8G--DLmRHairDnMwqFwVTjuKfio0cghntWIe-HJVA_aFMTxyjzCzZZdA2j5YD8ZdjX72A"/>
+<div class="absolute inset-0 flex flex-col justify-center px-6">
+<p class="text-white text-sm font-medium opacity-90">Let's get to know</p>
+<p class="text-white text-xl font-bold">Your Companion</p>
+</div>
+</div>
+<form class="space-y-6">
+<!-- Pet Name -->
+<div class="space-y-2">
+<label class="text-xs font-label font-bold text-on-surface-variant tracking-widest uppercase ml-1">Pet Name</label>
+<input class="w-full px-5 py-4 rounded-2xl bg-surface-container-lowest border-none custom-shadow text-on-surface placeholder:text-outline-variant font-medium input-focus-ring" placeholder="e.g. Charlie" type="text"/>
+</div>
+<!-- Pet Type & Gender Grid -->
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-2">
+<label class="text-xs font-label font-bold text-on-surface-variant tracking-widest uppercase ml-1">Type</label>
+<div class="relative">
+<select class="w-full appearance-none px-5 py-4 rounded-2xl bg-surface-container-lowest border-none custom-shadow text-on-surface font-medium input-focus-ring pr-10">
+<option>Dog</option>
+<option>Cat</option>
+<option>Bird</option>
+<option>Other</option>
+</select>
+<span class="material-icons-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-label font-bold text-on-surface-variant tracking-widest uppercase ml-1">Gender</label>
+<div class="flex p-1 bg-surface-container-highest rounded-full h-[56px]">
+<button class="flex-1 rounded-full bg-surface-container-lowest text-primary font-bold text-sm custom-shadow" type="button">Male</button>
+<button class="flex-1 rounded-full text-on-surface-variant font-medium text-sm" type="button">Female</button>
+</div>
+</div>
+</div>
+<!-- Breed -->
+<div class="space-y-2">
+<label class="text-xs font-label font-bold text-on-surface-variant tracking-widest uppercase ml-1">Breed</label>
+<input class="w-full px-5 py-4 rounded-2xl bg-surface-container-lowest border-none custom-shadow text-on-surface placeholder:text-outline-variant font-medium input-focus-ring" placeholder="e.g. Labrador Retriever" type="text"/>
+</div>
+<!-- Age -->
+<div class="space-y-2">
+<label class="text-xs font-label font-bold text-on-surface-variant tracking-widest uppercase ml-1">Age (Years)</label>
+<div class="flex items-center space-x-4">
+<input class="flex-1 accent-primary h-1.5 bg-surface-container-highest rounded-full appearance-none" max="25" min="0" type="range" value="2"/>
+<div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-primary text-white font-bold text-lg custom-shadow">
+                            2
+                        </div>
+</div>
+</div>
+</form>
+</main>
+<!-- Bottom Navigation -->
+<footer class="fixed bottom-0 left-0 right-0 max-w-md mx-auto glass-header p-6 border-t border-outline-variant/10">
+<div class="flex items-center gap-4">
+<button class="flex-1 py-4 px-6 rounded-full font-bold text-on-surface-variant bg-surface-container-high transition-all active:scale-95">
+                    Back
+                </button>
+<button class="flex-[2] py-4 px-6 rounded-full font-bold text-white bg-primary custom-shadow transition-all active:scale-95 flex items-center justify-center gap-2">
+                    Next Step
+                    <span class="material-icons text-sm">arrow_forward</span>
+</button>
+</div>
+<!-- iPhone Home Indicator Spacer -->
+<div class="h-4"></div>
+</footer>
+</div>
+</body></html>

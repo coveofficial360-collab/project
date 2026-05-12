@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Vet Directory - Cove Pets</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-container": "#1A73E8",
+                        "on-error-container": "#93000A",
+                        "background": "#F8F9FA",
+                        "error": "#BA1A1A",
+                        "on-error": "#FFFFFF",
+                        "tertiary-fixed": "#FFDBCB",
+                        "on-surface-variant": "#414754",
+                        "on-secondary-fixed-variant": "#614000",
+                        "on-primary-fixed-variant": "#004493",
+                        "tertiary-fixed-dim": "#FFB691",
+                        "surface-container-highest": "#E1E3E4",
+                        "primary-fixed-dim": "#ADC7FF",
+                        "secondary": "#805600",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "on-tertiary-fixed": "#341100",
+                        "error-container": "#FFDAD6",
+                        "tertiary": "#9E4300",
+                        "on-primary-fixed": "#001A41",
+                        "secondary-fixed": "#FFDDAF",
+                        "surface-dim": "#D9DADB",
+                        "inverse-primary": "#ADC7FF",
+                        "outline-variant": "#C1C6D6",
+                        "inverse-surface": "#2E3132",
+                        "surface": "#F8F9FA",
+                        "primary": "#005BBF",
+                        "surface-container-high": "#E7E8E9",
+                        "primary-fixed": "#D8E2FF",
+                        "surface-variant": "#E1E3E4",
+                        "on-primary-container": "#FFFFFF",
+                        "surface-bright": "#F8F9FA",
+                        "on-primary": "#FFFFFF",
+                        "inverse-on-surface": "#F0F1F2",
+                        "on-tertiary-container": "#0E0200",
+                        "on-background": "#191C1D",
+                        "on-secondary-fixed": "#281800",
+                        "on-secondary-container": "#694600",
+                        "secondary-fixed-dim": "#FFBA43",
+                        "surface-tint": "#005BC0",
+                        "tertiary-container": "#C55500",
+                        "surface-container": "#EDEEEF",
+                        "surface-container-low": "#F3F4F5",
+                        "secondary-container": "#FDAF0B",
+                        "on-surface": "#191C1D",
+                        "outline": "#727785",
+                        "on-tertiary": "#FFFFFF",
+                        "on-secondary": "#FFFFFF",
+                        "surface-container-lowest": "#FFFFFF"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-effect {
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<nav class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-xl dark:bg-background/90 shadow-sm">
+<div class="flex items-center justify-between px-6 h-16 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-2"><button class="mr-2 hover:opacity-80 transition-opacity active:scale-95 transition-transform text-primary">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<span class="material-symbols-outlined text-primary" data-icon="pets">pets</span>
+<span class="font-headline text-headline font-bold text-primary dark:text-primary-fixed-dim">Cove Pets</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="hover:opacity-80 transition-opacity active:scale-95 transition-transform text-primary">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="pt-20 px-6 max-w-7xl mx-auto space-y-8">
+<!-- Search & Header Section -->
+<header class="space-y-6">
+<div class="flex flex-col gap-1">
+<h1 class="text-3xl font-headline font-extrabold tracking-tight">Vet Directory</h1>
+<p class="text-on-surface-variant">Find professional care for your companions</p>
+</div>
+<div class="relative group">
+<div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline" data-icon="search">search</span>
+</div>
+<input class="w-full bg-surface-container-lowest border-none rounded-full py-4 pl-12 pr-6 shadow-sm focus:ring-2 focus:ring-primary/20 transition-all text-on-surface placeholder:text-outline" placeholder="Search clinics, specialties, or doctors..." type="text"/>
+</div>
+<!-- Category Filters -->
+<div class="flex items-center gap-3 overflow-x-auto pb-2 -mx-6 px-6 no-scrollbar">
+<button class="bg-primary text-on-primary px-6 py-2 rounded-full font-medium text-sm whitespace-nowrap active:scale-95 transition-transform">All</button>
+<button class="bg-surface-container-high text-on-surface-variant px-6 py-2 rounded-full font-medium text-sm whitespace-nowrap hover:bg-surface-container-highest transition-colors active:scale-95 transition-transform">Veterinary</button>
+<button class="bg-surface-container-high text-on-surface-variant px-6 py-2 rounded-full font-medium text-sm whitespace-nowrap hover:bg-surface-container-highest transition-colors active:scale-95 transition-transform">24/7 Emergency</button>
+<button class="bg-surface-container-high text-on-surface-variant px-6 py-2 rounded-full font-medium text-sm whitespace-nowrap hover:bg-surface-container-highest transition-colors active:scale-95 transition-transform">Grooming</button>
+<button class="bg-surface-container-high text-on-surface-variant px-6 py-2 rounded-full font-medium text-sm whitespace-nowrap hover:bg-surface-container-highest transition-colors active:scale-95 transition-transform">Pharmacy</button>
+</div>
+</header>
+<!-- Featured Emergency Section -->
+<section>
+<div class="relative overflow-hidden rounded-[2rem] bg-on-error-container p-1 shadow-xl">
+<div class="bg-surface-container-lowest rounded-[1.85rem] p-6 flex flex-col md:flex-row items-center gap-6">
+<div class="flex-shrink-0 relative">
+<div class="w-20 h-20 bg-error-container rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-error text-4xl" data-icon="emergency_share" style="font-variation-settings: 'FILL' 1;">emergency_share</span>
+</div>
+<div class="absolute -top-1 -right-1 flex h-6 w-6">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75"></span>
+<span class="relative inline-flex rounded-full h-6 w-6 bg-error"></span>
+</div>
+</div>
+<div class="flex-grow text-center md:text-left">
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-error/10 text-error text-[10px] font-bold tracking-widest uppercase mb-2">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                            Always Open
+                        </div>
+<h2 class="text-xl font-headline font-bold text-on-surface">24/7 Animal Emergency Center</h2>
+<p class="text-on-surface-variant text-sm mt-1">Specialized trauma care and life-saving surgeries for all pet types.</p>
+</div>
+<div class="flex flex-col gap-2 w-full md:w-auto">
+<button class="bg-error text-on-error px-8 py-3 rounded-full font-bold text-sm shadow-lg shadow-error/20 hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="call">call</span>
+                            Call Now
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Vet Listing Section -->
+<section class="space-y-6">
+<h3 class="text-lg font-headline font-bold text-on-surface flex items-center gap-2">
+                Recommended Vets
+                <span class="text-sm font-normal text-on-surface-variant">(12 nearby)</span>
+</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Vet Card 1 -->
+<article class="bg-surface-container-lowest rounded-3xl p-6 shadow-[0_12px_32px_rgba(25,28,29,0.06)] hover:-translate-y-1 transition-all duration-300 group">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-4">
+<img class="w-14 h-14 rounded-full object-cover ring-2 ring-primary/10" data-alt="A professional portrait of a male veterinarian with a friendly smile, wearing a clean white lab coat and a blue stethoscope. The background is a brightly lit, modern medical clinic with soft blue accents, embodying a clean and trustworthy healthcare atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOtH2wuFjZ1OvC6_Db_oG0M7KGLFt4u_zB7Z-_3V4HUnZpzT_oh5cXdLI6tjBQLepYUUvtvSMCrUbkAzUrNC_L_7VEnC12Jd_6fA7T3EjpDju1dpCMKCutzyx7LkniDJn6j16igbkM5vAGyR9hZBddzUoLZMvWo6mCoRfhR5SYIy8nMzUt9wjIiQzykw3ETLVDHvmcIAX4u1M3nJGTD6KKIC1lfe4PRDfLHR8fwfzI0nHyNMogP4mEQtv2LtOfImbjmzXjCB0Vug"/>
+<div>
+<h4 class="font-headline font-bold text-on-surface">Dr. Julian Vance</h4>
+<p class="text-primary text-xs font-semibold">Happy Paws Veterinary</p>
+</div>
+</div>
+<div class="flex items-center gap-1 bg-secondary-fixed text-on-secondary-fixed px-2 py-1 rounded-lg text-xs font-bold">
+<span class="material-symbols-outlined text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                            4.9
+                        </div>
+</div>
+<div class="space-y-3 mb-6">
+<div class="flex items-center gap-2 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-lg" data-icon="stethoscope">stethoscope</span>
+<span>Internal Medicine, Surgery</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-lg" data-icon="distance">distance</span>
+<span>1.2 km away</span>
+</div>
+<span class="text-green-600 bg-green-50 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Available Today</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex-grow bg-primary text-on-primary py-3 rounded-full font-bold text-sm hover:opacity-90 active:scale-95 transition-all">Book Now</button>
+<button class="p-3 rounded-full bg-surface-container-low text-primary hover:bg-primary-fixed-dim transition-colors active:scale-90">
+<span class="material-symbols-outlined" data-icon="directions">directions</span>
+</button>
+<button class="p-3 rounded-full bg-surface-container-low text-primary hover:bg-primary-fixed-dim transition-colors active:scale-90">
+<span class="material-symbols-outlined" data-icon="call">call</span>
+</button>
+</div>
+</article>
+<!-- Vet Card 2 -->
+<article class="bg-surface-container-lowest rounded-3xl p-6 shadow-[0_12px_32px_rgba(25,28,29,0.06)] hover:-translate-y-1 transition-all duration-300 group">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-4">
+<img class="w-14 h-14 rounded-full object-cover ring-2 ring-primary/10" data-alt="A professional female veterinarian smiling warmly at the camera, wearing professional clinical attire. The setting is a bright, high-end veterinary clinic with high-key lighting and a soft architectural blur in the background. The colors are serene with white and primary blue tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB55wOsKi4RE_ilOH2UmXFUb7sms3wUbkb7_mdN7AUBUOxkc9OXZp0hNcIr0BTrI7_Rq0HUZJXWKI7kmErJeDYQDxbbYouc0HP6nstyNRsI3iBzwtXwHpIOISZqMWcn6StxDh_GjPktiXqHB9WCvMKDKYei7IqtlyWkGzSt4Bv5I8XSoCcZT0v6j2Z8mvIE7c1e9_LyNw0lFqVRqGhIY5e138OPjz3vVNYdEfEi2KxB6mW1L2Q-bh9F559oYc-HwQTpejoZIq2SrA"/>
+<div>
+<h4 class="font-headline font-bold text-on-surface">Dr. Elena Rodriguez</h4>
+<p class="text-primary text-xs font-semibold">City Pet Wellness</p>
+</div>
+</div>
+<div class="flex items-center gap-1 bg-secondary-fixed text-on-secondary-fixed px-2 py-1 rounded-lg text-xs font-bold">
+<span class="material-symbols-outlined text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                            4.8
+                        </div>
+</div>
+<div class="space-y-3 mb-6">
+<div class="flex items-center gap-2 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-lg" data-icon="pets">pets</span>
+<span>Exotic Pets, Avian Specialist</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-lg" data-icon="distance">distance</span>
+<span>2.8 km away</span>
+</div>
+<span class="text-on-secondary-container bg-secondary-fixed text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded">Next: 2 PM</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex-grow bg-primary text-on-primary py-3 rounded-full font-bold text-sm hover:opacity-90 active:scale-95 transition-all">Book Now</button>
+<button class="p-3 rounded-full bg-surface-container-low text-primary hover:bg-primary-fixed-dim transition-colors active:scale-90">
+<span class="material-symbols-outlined" data-icon="directions">directions</span>
+</button>
+<button class="p-3 rounded-full bg-surface-container-low text-primary hover:bg-primary-fixed-dim transition-colors active:scale-90">
+<span class="material-symbols-outlined" data-icon="call">call</span>
+</button>
+</div>
+</article>
+<!-- Vet Card 3 -->
+<article class="bg-surface-container-lowest rounded-3xl p-6 shadow-[0_12px_32px_rgba(25,28,29,0.06)] hover:-translate-y-1 transition-all duration-300 group">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-4">
+<img class="w-14 h-14 rounded-full object-cover ring-2 ring-primary/10" data-alt="A portrait of a male veterinarian in his 40s with a confident and kind expression. He is wearing professional scrub tops in a soft blue color. The environment is a clean, modern animal hospital with sterile surfaces and warm ambient lighting. The atmosphere is calm and professional." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBBCN6te_6ukU-cIYCUGzfn0mznIx6ETQ4UXXAYrVNhR6-0nl985r_oQLhzNDAwIvliFQLAu7_efiqUHhQg7qeVde5ZAChPWuW7GgvO3J-MNgoW4wxtvp-ZUVnQMq-A29cJesr4pXsD7CrCzaqztbDfJBojfBuGk1F3MufyLN9Od0a2PbDT4OoaDs8IgKUyVNp-zEFs1ysupCAoPXCMdMd-Ozv0jyQj8rFlRkA3-e6Z2qbesSGbTLDsEUWpZkEtXswWrsH61bYyg"/>
+<div>
+<h4 class="font-headline font-bold text-on-surface">Dr. Sarah Thompson</h4>
+<p class="text-primary text-xs font-semibold">Green Valley Animal Clinic</p>
+</div>
+</div>
+<div class="flex items-center gap-1 bg-secondary-fixed text-on-secondary-fixed px-2 py-1 rounded-lg text-xs font-bold">
+<span class="material-symbols-outlined text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                            5.0
+                        </div>
+</div>
+<div class="space-y-3 mb-6">
+<div class="flex items-center gap-2 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-lg" data-icon="vaccines">vaccines</span>
+<span>Dermatology, Nutrition</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-lg" data-icon="distance">distance</span>
+<span>0.5 km away</span>
+</div>
+<span class="text-green-600 bg-green-50 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Available Today</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex-grow bg-primary text-on-primary py-3 rounded-full font-bold text-sm hover:opacity-90 active:scale-95 transition-all">Book Now</button>
+<button class="p-3 rounded-full bg-surface-container-low text-primary hover:bg-primary-fixed-dim transition-colors active:scale-90">
+<span class="material-symbols-outlined" data-icon="directions">directions</span>
+</button>
+<button class="p-3 rounded-full bg-surface-container-low text-primary hover:bg-primary-fixed-dim transition-colors active:scale-90">
+<span class="material-symbols-outlined" data-icon="call">call</span>
+</button>
+</div>
+</article>
+</div>
+</section>
+<!-- Nearby Map Visual -->
+<section class="pb-8">
+<div class="relative h-48 rounded-[2rem] overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="A stylized aerial map view of a clean urban neighborhood with lush green parks and residential buildings. The map features modern UI pins and markers for local businesses, specifically pet stores and clinics, designed with a high-fidelity and minimal aesthetic." data-location="London" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD14MQ8LGvhGrVWUosh98nCyn2qNoNd7ybZzJ4IfyS0MZYbxt_UHe6k1DN3oyFHA9YKAWOOU7-2bd-fAi-_Z2TcGg-YJgan5lSF0u-leS5j5yvistpNDXIgIyGh0YIHnhf1vQnb8KhrMs3l4Ts7AupHOf3La1kLpnudGnz14bkrG53SF3iBHOij5YUFfUKARf3gu-gAFL5KXBK6oyf8A357kq0m9uBZS1au76uByLiEKAGBd9U-bZHHLnDFW9XlPZGKaugL6qdPqw"/>
+<div class="absolute inset-0 bg-gradient-to-t from-on-surface/40 to-transparent"></div>
+<div class="absolute bottom-4 left-6 right-6 flex items-center justify-between">
+<span class="text-white font-bold text-sm bg-primary/80 backdrop-blur-md px-4 py-2 rounded-full">View Vets on Map</span>
+<button class="bg-white/90 backdrop-blur-md p-2 rounded-full text-primary shadow-lg">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-3 pb-safe bg-white/90 backdrop-blur-2xl dark:bg-surface-container-lowest/90 z-50 rounded-t-xl shadow-[0_-12px_32px_rgba(25,28,29,0.06)]">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-5 py-1 hover:bg-surface-container-high transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="rss_feed">rss_feed</span>
+<span class="font-label text-[10px] tracking-widest uppercase mt-1">Feed</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-5 py-1 hover:bg-surface-container-high transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="pets">pets</span>
+<span class="font-label text-[10px] tracking-widest uppercase mt-1">Pets</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-5 py-1 hover:bg-surface-container-high transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="event">event</span>
+<span class="font-label text-[10px] tracking-widest uppercase mt-1">Events</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-5 py-1 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="storefront" style="font-variation-settings: 'FILL' 1;">storefront</span>
+<span class="font-label text-[10px] tracking-widest uppercase mt-1">Stores</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-5 py-1 hover:bg-surface-container-high transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label text-[10px] tracking-widest uppercase mt-1">Profile</span>
+</a>
+</nav>
+<!-- Floating Action Button - suppressed as per logic for this screen type -->
+</body></html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cove Pets - Vaccination Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#341100",
+                        "on-surface-variant": "#414754",
+                        "inverse-on-surface": "#F0F1F2",
+                        "tertiary-container": "#C55500",
+                        "inverse-surface": "#2E3132",
+                        "on-primary": "#FFFFFF",
+                        "tertiary": "#9E4300",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "on-tertiary": "#FFFFFF",
+                        "background": "#F8F9FA",
+                        "secondary-container": "#FDAF0B",
+                        "on-error": "#FFFFFF",
+                        "surface": "#F8F9FA",
+                        "on-secondary-fixed-variant": "#614000",
+                        "error-container": "#FFDAD6",
+                        "surface-tint": "#005BC0",
+                        "on-background": "#191C1D",
+                        "surface-container-lowest": "#FFFFFF",
+                        "tertiary-fixed-dim": "#FFB691",
+                        "surface-container-low": "#F3F4F5",
+                        "surface-variant": "#E1E3E4",
+                        "surface-container-high": "#E7E8E9",
+                        "error": "#BA1A1A",
+                        "outline-variant": "#C1C6D6",
+                        "on-primary-fixed-variant": "#004493",
+                        "primary-fixed": "#D8E2FF",
+                        "on-secondary-container": "#694600",
+                        "on-secondary-fixed": "#281800",
+                        "primary-fixed-dim": "#ADC7FF",
+                        "on-error-container": "#93000A",
+                        "primary-container": "#1A73E8",
+                        "primary": "#005BBF",
+                        "secondary-fixed": "#FFDDAF",
+                        "secondary": "#805600",
+                        "surface-bright": "#F8F9FA",
+                        "surface-container": "#EDEEEF",
+                        "on-surface": "#191C1D",
+                        "on-primary-container": "#FFFFFF",
+                        "outline": "#727785",
+                        "on-primary-fixed": "#001A41",
+                        "on-tertiary-container": "#0E0200",
+                        "on-secondary": "#FFFFFF",
+                        "inverse-primary": "#ADC7FF",
+                        "surface-dim": "#D9DADB",
+                        "tertiary-fixed": "#FFDBCB",
+                        "surface-container-highest": "#E1E3E4",
+                        "secondary-fixed-dim": "#FFBA43"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 bg-surface-bright/90 dark:bg-surface-dim/90 backdrop-blur-2xl shadow-[0_12px_32px_rgba(25,28,29,0.06)]">
+<div class="flex justify-between items-center w-full px-6 h-16">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">pets</span>
+<h1 class="font-headline font-extrabold text-primary text-xl tracking-tighter">Cove Pets</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-surface-container-high/20 transition-all active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center">
+<span class="text-[10px] font-bold text-on-primary-container">JD</span>
+</div>
+</div>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-5xl mx-auto">
+<!-- Summary Dashboard Section -->
+<div class="mb-8">
+<h2 class="font-headline font-bold text-2xl tracking-tight text-on-surface mb-6">Vaccination Health</h2>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<!-- Total Pets -->
+<div class="bg-surface-container-lowest p-5 rounded-[2rem] shadow-sm border border-outline-variant/10">
+<div class="flex justify-between items-start mb-4">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">pets</span>
+</div>
+</div>
+<p class="text-[10px] font-bold tracking-widest uppercase text-on-surface-variant/70">Total Pets</p>
+<h3 class="text-3xl font-display font-extrabold text-on-surface mt-1">12</h3>
+</div>
+<!-- Vaccinated -->
+<div class="bg-surface-container-lowest p-5 rounded-[2rem] shadow-sm border border-outline-variant/10">
+<div class="flex justify-between items-start mb-4">
+<div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+<span class="material-symbols-outlined text-emerald-600" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<p class="text-[10px] font-bold tracking-widest uppercase text-on-surface-variant/70">Vaccinated</p>
+<h3 class="text-3xl font-display font-extrabold text-on-surface mt-1">8</h3>
+</div>
+<!-- Pending -->
+<div class="bg-surface-container-lowest p-5 rounded-[2rem] shadow-sm border border-outline-variant/10">
+<div class="flex justify-between items-start mb-4">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">pending_actions</span>
+</div>
+</div>
+<p class="text-[10px] font-bold tracking-widest uppercase text-on-surface-variant/70">Pending</p>
+<h3 class="text-3xl font-display font-extrabold text-on-surface mt-1">3</h3>
+</div>
+<!-- Upcoming -->
+<div class="bg-surface-container-lowest p-5 rounded-[2rem] shadow-sm border border-outline-variant/10">
+<div class="flex justify-between items-start mb-4">
+<div class="w-10 h-10 rounded-full bg-error-container flex items-center justify-center">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">notification_important</span>
+</div>
+</div>
+<p class="text-[10px] font-bold tracking-widest uppercase text-on-surface-variant/70">Upcoming</p>
+<h3 class="text-3xl font-display font-extrabold text-on-surface mt-1">1</h3>
+</div>
+</div>
+</div>
+<!-- Bento Grid Main Content -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Timeline Sidebar (Bento Piece) -->
+<div class="lg:col-span-2 space-y-6">
+<div class="bg-surface-container-lowest rounded-[2.5rem] p-8 shadow-sm border border-outline-variant/10">
+<div class="flex justify-between items-center mb-8">
+<h3 class="font-headline font-bold text-xl text-on-surface">Vaccination Timeline</h3>
+<button class="text-primary font-bold text-sm tracking-tight flex items-center gap-1">
+                            Filter
+                            <span class="material-symbols-outlined text-lg">filter_list</span>
+</button>
+</div>
+<!-- Vaccination List -->
+<div class="space-y-6">
+<!-- Item 1 -->
+<div class="flex items-center gap-4 group cursor-pointer">
+<div class="relative">
+<img class="w-14 h-14 rounded-2xl object-cover grayscale group-hover:grayscale-0 transition-all duration-500" data-alt="A portrait-style close-up photograph of a friendly Beagle dog with expressive brown eyes sitting in a sunlit garden. The lighting is warm and golden, reminiscent of a late afternoon sun. The background features blurred green foliage and soft pastel flowers, emphasizing a clean and serene light-mode aesthetic. The composition is professional and crisp, perfectly fitting a premium pet care dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIwofBqzz-CxzqlPfxoI_PYrsmLZWKung6QPfyktwOG-Qi1a4JCHaoghMTmRfz8KR6NI_Sdq9EjAuzOuN6vRGK_oPXAY-BxuOUhU-O1E1zVFL9i179PzYs3SQc8rgqRcPgDoKa9opmGqSr_hzKYHqHBOTE_SOlzBt0H2ShaeY4kqmzRpqYgXQjEZK3fn9TpyHGHnlwxk9bQICriw4AOM3AiDFr81XZfmxAMAFiWLWrRMjADf8-5glSRxUG5bRRigenE0H7MB-PzA"/>
+<div class="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 border-2 border-white rounded-full"></div>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-headline font-bold text-on-surface">Cooper</h4>
+<p class="text-xs text-on-surface-variant">Rabies Vaccine • Dec 12, 2023</p>
+</div>
+<span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-700">Completed</span>
+</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex items-center gap-4 group cursor-pointer">
+<div class="relative">
+<img class="w-14 h-14 rounded-2xl object-cover" data-alt="A high-resolution photograph of a majestic ginger tabby cat with bright green eyes looking directly at the camera in a modern, brightly lit apartment setting. The environment is minimalist with white walls and natural light flooding through a nearby window. The feline's fur is sharply detailed, showcasing rich textures. The overall atmosphere is calm, sophisticated, and perfectly suited for a high-end lifestyle brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5XctVpQwLDID056PH1_4ytolBjCI2P4t3vq4L0Spa0SSo2uQOHC8MHLJsGAXGDSM2r58vmTFsYGCcwl6Dgxlj3whBO84zkUbgsjoG16jc3DZX1BjUVaXIWKkmtiFsLKZ7cvDc-pGWPdaLYs3F4nRgxx9oyScmvx31NVkhCAPbSIWtCazdUO1Mb4viiTvYTnLwFvvsImmcgDGVd2AtPo3sac0MMOgThzWUE3oWeyOPQ7BPaDx2ZgQ4Bvwku-_NBA1G6ac3GPxcLA"/>
+<div class="absolute -bottom-1 -right-1 w-5 h-5 bg-secondary-container border-2 border-white rounded-full"></div>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-headline font-bold text-on-surface">Luna</h4>
+<p class="text-xs text-on-surface-variant">FVRCP Booster • Next: June 05, 2024</p>
+</div>
+<span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-secondary-fixed text-on-secondary-fixed">Pending</span>
+</div>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="flex items-center gap-4 group cursor-pointer">
+<div class="relative">
+<img class="w-14 h-14 rounded-2xl object-cover" data-alt="A charming photograph of a small white Pomeranian dog wearing a stylish blue bandana, posing in a bright and airy studio with soft, diffused lighting. The background is a clean off-white tone that enhances the light-mode UI aesthetic. The dog's expression is joyful and alert. The photo has a high-end commercial feel with vibrant but natural color saturation and deep focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfNLW6nJygHDoSDGok1IMANI36kXphMHCklb3jjvQOar9UFrBHQmQxPvIZ9HlYZzxuS0nxA0KB8pEJ4lpLL76rsjFM68MErG52x_FJ52inCIY2hJBSuNbn-E8Q4zhXCO8BE-AL0rgHepSlvypCbrCjGNY_o5ZiLQomwVZ5nsOV0qnWnYlzVDW1tKJXypUck9GYG0ij6ctoDFxa35MQ1dGDQ6SFEay_lOnBoFl2F5PWUMQWx1V48MjNKx0XWMUac8QIszQBHafndA"/>
+<div class="absolute -bottom-1 -right-1 w-5 h-5 bg-error border-2 border-white rounded-full"></div>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-headline font-bold text-on-surface">Bella</h4>
+<p class="text-xs text-on-surface-variant">DHPP Vaccination • Expired May 12</p>
+</div>
+<span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-error-container text-error">Expired</span>
+</div>
+</div>
+</div>
+<!-- Item 4 -->
+<div class="flex items-center gap-4 group cursor-pointer">
+<div class="relative">
+<img class="w-14 h-14 rounded-2xl object-cover" data-alt="A professional close-up photograph of a Golden Retriever puppy with a gentle expression, lying on a clean light-grey textured rug in a modern living room. The room is filled with soft natural light coming from large windows. The aesthetic is warm, inviting, and premium. The colors are balanced with muted tones and a few bright architectural highlights, maintaining the Cove Glass design philosophy." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-ozFbnfTg4vOqoGdnn6YXHi1D8Z8kW1VDX0oUFg2TJmwere2z3N0jVQBdbIbgKZToYyntek1o_SAouO6lqu3h70R2mXinfa5Le_nl352S8PbOIeiUGkZLOGfo0sltkHSv0mURbxGym0WbVJkkJWCvVSVMLPegHohAal8Yp7ablzFC2PKn0FzeVTvUFxsU-q8LtCXltJhSrvR2eBz9SXX74PTZk-GlLeCD-ykvZWpbDeFxmSAC0h5uq9IZxZgXIYIIy2EiPwFqyw"/>
+<div class="absolute -bottom-1 -right-1 w-5 h-5 bg-secondary-container border-2 border-white rounded-full"></div>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-headline font-bold text-on-surface">Max</h4>
+<p class="text-xs text-on-surface-variant">Bordetella • Next: July 15, 2024</p>
+</div>
+<span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-secondary-fixed text-on-secondary-fixed">Pending</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Side Cards (Bento Pieces) -->
+<div class="space-y-6">
+<!-- Appointment Promo Card -->
+<div class="bg-primary p-8 rounded-[2.5rem] text-white relative overflow-hidden group">
+<div class="relative z-10">
+<h3 class="font-headline font-bold text-xl mb-2">Book a Vet Visit</h3>
+<p class="text-primary-fixed/80 text-sm mb-6 leading-relaxed">Schedule your next vaccination round at our partner clinics and get 15% off.</p>
+<button class="bg-white text-primary px-6 py-3 rounded-full font-bold text-sm shadow-xl active:scale-95 transition-transform">
+                            Schedule Now
+                        </button>
+</div>
+<!-- Decorative Glass Orb -->
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-white/20 blur-3xl rounded-full"></div>
+<div class="absolute -bottom-20 -left-20 w-48 h-48 bg-primary-fixed-dim/30 blur-[100px] rounded-full"></div>
+</div>
+<!-- Reminders Summary -->
+<div class="bg-surface-container-low rounded-[2.5rem] p-8 border border-outline-variant/10">
+<h3 class="font-headline font-bold text-on-surface mb-6">Upcoming Reminders</h3>
+<div class="space-y-4">
+<div class="flex gap-4 p-4 bg-surface-container-lowest rounded-3xl shadow-sm">
+<div class="min-w-[48px] h-[48px] bg-secondary-container/10 rounded-2xl flex flex-col items-center justify-center text-secondary">
+<span class="text-xs font-bold uppercase">Jun</span>
+<span class="text-lg font-extrabold leading-none">05</span>
+</div>
+<div>
+<p class="text-xs font-bold text-on-surface">Luna's FVRCP</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Booster Shot</p>
+</div>
+</div>
+<div class="flex gap-4 p-4 bg-surface-container-lowest rounded-3xl shadow-sm">
+<div class="min-w-[48px] h-[48px] bg-primary/10 rounded-2xl flex flex-col items-center justify-center text-primary">
+<span class="text-xs font-bold uppercase">Jul</span>
+<span class="text-lg font-extrabold leading-none">15</span>
+</div>
+<div>
+<p class="text-xs font-bold text-on-surface">Max's Bordetella</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Annual Renewal</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl rounded-t-3xl shadow-[0_-8px_24px_rgba(25,28,29,0.04)] flex justify-around items-center px-4 pt-3 pb-6">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant/60 px-5 py-1.5 hover:bg-surface-container-high/30 rounded-full active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined mb-1">PhoneCall</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-bold">Feed</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-5 py-1.5 transition-all duration-300 scale-105 active:scale-90" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">pets</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-bold">Pets</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant/60 px-5 py-1.5 hover:bg-surface-container-high/30 rounded-full active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined mb-1">calendar_today</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-bold">Events</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant/60 px-5 py-1.5 hover:bg-surface-container-high/30 rounded-full active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined mb-1">storefront</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-bold">Stores</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant/60 px-5 py-1.5 hover:bg-surface-container-high/30 rounded-full active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined mb-1">person</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-bold">Profile</span>
+</a>
+</nav>
+</body></html>

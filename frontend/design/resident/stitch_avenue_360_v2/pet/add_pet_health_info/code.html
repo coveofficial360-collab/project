@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#694600",
+                        "secondary-fixed": "#FFDDAF",
+                        "primary-fixed-dim": "#ADC7FF",
+                        "on-primary-container": "#FFFFFF",
+                        "on-error-container": "#93000A",
+                        "surface-variant": "#E1E3E4",
+                        "surface-bright": "#F8F9FA",
+                        "surface-dim": "#D9DADB",
+                        "on-primary": "#FFFFFF",
+                        "tertiary-fixed-dim": "#FFB691",
+                        "on-tertiary": "#FFFFFF",
+                        "inverse-on-surface": "#F0F1F2",
+                        "primary": "#005BBF",
+                        "surface": "#F8F9FA",
+                        "on-secondary": "#FFFFFF",
+                        "secondary-container": "#FDAF0B",
+                        "on-secondary-fixed-variant": "#614000",
+                        "on-error": "#FFFFFF",
+                        "surface-container-low": "#F3F4F5",
+                        "on-secondary-fixed": "#281800",
+                        "on-tertiary-container": "#0E0200",
+                        "outline": "#727785",
+                        "error": "#BA1A1A",
+                        "error-container": "#FFDAD6",
+                        "surface-container-highest": "#E1E3E4",
+                        "on-primary-fixed-variant": "#004493",
+                        "inverse-primary": "#ADC7FF",
+                        "background": "#F8F9FA",
+                        "secondary-fixed-dim": "#FFBA43",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "on-tertiary-fixed": "#341100",
+                        "tertiary-fixed": "#FFDBCB",
+                        "surface-container-high": "#E7E8E9",
+                        "outline-variant": "#C1C6D6",
+                        "tertiary-container": "#C55500",
+                        "on-primary-fixed": "#001A41",
+                        "inverse-surface": "#2E3132",
+                        "on-surface-variant": "#414754",
+                        "surface-tint": "#005BC0",
+                        "surface-container": "#EDEEEF",
+                        "primary-container": "#1A73E8",
+                        "primary-fixed": "#D8E2FF",
+                        "surface-container-lowest": "#FFFFFF",
+                        "on-surface": "#191C1D",
+                        "on-background": "#191C1D",
+                        "tertiary": "#9E4300",
+                        "secondary": "#805600"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F9FA;
+        }
+        h1, h2, h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .glass-header {
+            backdrop-filter: blur(24px);
+            background-color: rgba(248, 249, 2FA, 0.9);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-surface">
+<div class="relative flex min-h-screen w-full flex-col bg-surface group/design-root overflow-x-hidden max-w-md mx-auto shadow-2xl">
+<!-- Header & Progress -->
+<header class="sticky top-0 z-50 glass-header px-6 pt-6 pb-2">
+<div class="flex items-center justify-between mb-6">
+<button class="flex items-center justify-center size-10 rounded-full bg-surface-container-low hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-on-surface">arrow_back</span>
+</button>
+<h2 class="text-on-surface text-lg font-bold leading-tight tracking-tight">Pet Profile</h2>
+<div class="size-10"></div> <!-- Spacer -->
+</div>
+<div class="flex w-full flex-row items-center justify-center gap-3 mb-4">
+<div class="h-1.5 w-full max-w-[40px] rounded-full bg-primary-container"></div>
+<div class="h-1.5 w-full max-w-[40px] rounded-full bg-primary-container"></div>
+<div class="h-1.5 w-full max-w-[40px] rounded-full bg-primary"></div>
+<div class="h-1.5 w-full max-w-[40px] rounded-full bg-outline-variant/30"></div>
+</div>
+</header>
+<main class="flex-1 px-6 py-4">
+<div class="mb-8">
+<h3 class="text-on-surface text-3xl font-extrabold leading-tight tracking-[-0.025em]">Health &amp; Safety</h3>
+<p class="text-on-surface-variant text-sm mt-2 leading-relaxed">Please provide your pet's medical information to ensure they receive the best care.</p>
+</div>
+<!-- Form Content -->
+<div class="space-y-6">
+<!-- Vaccination Toggle Card -->
+<div class="p-5 rounded-3xl bg-surface-container-lowest shadow-[0_12px_32px_rgba(25,28,29,0.04)] border border-outline-variant/10">
+<div class="flex items-center gap-4 justify-between">
+<div class="flex items-center gap-4">
+<div class="text-primary flex items-center justify-center rounded-2xl bg-primary/5 shrink-0 size-12">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shield_with_heart</span>
+</div>
+<div>
+<p class="text-on-surface text-base font-semibold leading-tight">Vaccination Status</p>
+<p class="text-on-surface-variant text-xs mt-1">Up to date with boosters</p>
+</div>
+</div>
+<div class="shrink-0">
+<label class="relative flex h-[32px] w-[56px] cursor-pointer items-center rounded-full border-none bg-surface-container-high p-1 has-[:checked]:justify-end has-[:checked]:bg-primary transition-all duration-300">
+<div class="h-full w-[24px] rounded-full bg-white shadow-sm"></div>
+<input checked="" class="invisible absolute peer" type="checkbox"/>
+</label>
+</div>
+</div>
+</div>
+<!-- Medical Notes -->
+<div class="space-y-3">
+<div class="flex items-center gap-2 px-1">
+<span class="material-symbols-outlined text-tertiary text-lg" style="font-variation-settings: 'FILL' 1;">medical_information</span>
+<p class="text-on-surface text-sm font-bold tracking-wide uppercase">Medical &amp; Dietary Notes</p>
+</div>
+<label class="flex flex-col">
+<textarea class="form-input flex w-full resize-none overflow-hidden rounded-2xl text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary border-outline-variant/30 bg-surface-container-lowest min-h-[140px] placeholder:text-on-surface-variant/50 p-4 text-sm font-medium leading-relaxed shadow-sm transition-all" placeholder="Enter allergies, chronic conditions, or special diet needs (e.g. grain-free, sensitive stomach)..."></textarea>
+</label>
+</div>
+<!-- Emergency Contact Section -->
+<div class="space-y-4 pt-4">
+<div class="flex items-center gap-2 px-1">
+<span class="material-symbols-outlined text-error text-lg" style="font-variation-settings: 'FILL' 1;">emergency</span>
+<p class="text-on-surface text-sm font-bold tracking-wide uppercase">Emergency Contact</p>
+</div>
+<div class="grid grid-cols-1 gap-4">
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline text-[20px]">person</span>
+</div>
+<input class="block w-full pl-11 pr-4 py-4 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm outline-none transition-all" placeholder="Contact Name" type="text"/>
+</div>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline text-[20px]">call</span>
+</div>
+<input class="block w-full pl-11 pr-4 py-4 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm outline-none transition-all" placeholder="Phone Number" type="tel"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Extra padding for fixed bottom buttons -->
+<div class="h-32"></div>
+</main>
+<!-- Footer Actions -->
+<footer class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md glass-header p-6 flex items-center gap-4 border-t border-outline-variant/10">
+<button class="flex-1 h-14 rounded-full bg-surface-container-high text-on-surface font-bold text-base hover:bg-surface-container-highest transition-all">
+                Back
+            </button>
+<button class="flex-[2] h-14 rounded-full bg-primary text-white font-bold text-base shadow-[0_8px_20px_rgba(0,91,191,0.25)] hover:bg-primary-container transition-all flex items-center justify-center gap-2">
+                Continue
+                <span class="material-symbols-outlined text-lg">arrow_forward</span>
+</button>
+</footer>
+</div>
+</body></html>

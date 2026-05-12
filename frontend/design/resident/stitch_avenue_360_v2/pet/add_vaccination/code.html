@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cove Pets - Add Vaccination</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&amp;family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<!-- Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#341100",
+                        "on-surface-variant": "#414754",
+                        "inverse-on-surface": "#F0F1F2",
+                        "tertiary-container": "#C55500",
+                        "inverse-surface": "#2E3132",
+                        "on-primary": "#FFFFFF",
+                        "tertiary": "#9E4300",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "on-tertiary": "#FFFFFF",
+                        "background": "#F8F9FA",
+                        "secondary-container": "#FDAF0B",
+                        "on-error": "#FFFFFF",
+                        "surface": "#F8F9FA",
+                        "on-secondary-fixed-variant": "#614000",
+                        "error-container": "#FFDAD6",
+                        "surface-tint": "#005BC0",
+                        "on-background": "#191C1D",
+                        "surface-container-lowest": "#FFFFFF",
+                        "tertiary-fixed-dim": "#FFB691",
+                        "surface-container-low": "#F3F4F5",
+                        "surface-variant": "#E1E3E4",
+                        "surface-container-high": "#E7E8E9",
+                        "error": "#BA1A1A",
+                        "outline-variant": "#C1C6D6",
+                        "on-primary-fixed-variant": "#004493",
+                        "primary-fixed": "#D8E2FF",
+                        "on-secondary-container": "#694600",
+                        "on-secondary-fixed": "#281800",
+                        "primary-fixed-dim": "#ADC7FF",
+                        "on-error-container": "#93000A",
+                        "primary-container": "#1A73E8",
+                        "primary": "#005BBF",
+                        "secondary-fixed": "#FFDDAF",
+                        "secondary": "#805600",
+                        "surface-bright": "#F8F9FA",
+                        "surface-container": "#EDEEEF",
+                        "on-surface": "#191C1D",
+                        "on-primary-container": "#FFFFFF",
+                        "outline": "#727785",
+                        "on-primary-fixed": "#001A41",
+                        "on-tertiary-container": "#0E0200",
+                        "on-secondary": "#FFFFFF",
+                        "inverse-primary": "#ADC7FF",
+                        "surface-dim": "#D9DADB",
+                        "tertiary-fixed": "#FFDBCB",
+                        "surface-container-highest": "#E1E3E4",
+                        "secondary-fixed-dim": "#FFBA43"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 bg-surface-bright/90 dark:bg-surface-dim/90 backdrop-blur-2xl shadow-[0_12px_32px_rgba(25,28,29,0.06)]">
+<div class="flex justify-between items-center w-full px-6 h-16">
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-surface-container-high/20 transition-all duration-300 active:scale-95">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-headline font-extrabold text-primary text-xl tracking-tighter">Cove Pets</h1>
+</div>
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-surface-container-high/20 transition-all duration-300 active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+</button>
+</div>
+</header>
+<main class="flex-grow pt-24 pb-32 px-6 max-w-2xl mx-auto w-full">
+<div class="mb-8">
+<h2 class="text-2xl font-bold tracking-tight text-on-surface mb-2">Vaccination Record</h2>
+<p class="text-on-surface-variant text-sm">Keep your pet's health history up to date with accurate vaccination logs.</p>
+</div>
+<form class="space-y-6">
+<!-- Pet Selection Grid -->
+<div class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm border border-outline-variant/10">
+<label class="block text-[10px] tracking-widest uppercase font-bold text-on-surface-variant mb-3">Target Pet</label>
+<div class="relative">
+<select class="w-full bg-surface-container-low border-none rounded-2xl py-4 px-5 text-on-surface appearance-none focus:ring-2 focus:ring-primary/20 transition-all">
+<option>Choose Pet</option>
+<option selected="">Luna (Golden Retriever)</option>
+<option>Oliver (Tabby Cat)</option>
+<option>Add New Pet...</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">keyboard_arrow_down</span>
+</div>
+</div>
+<!-- Main Form Info -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Vaccine Name -->
+<div class="md:col-span-2 bg-surface-container-lowest rounded-3xl p-6 shadow-sm border border-outline-variant/10">
+<label class="block text-[10px] tracking-widest uppercase font-bold text-on-surface-variant mb-3">Vaccine Name</label>
+<input class="w-full bg-surface-container-low border-none rounded-2xl py-4 px-5 text-on-surface placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-primary/20 transition-all" placeholder="e.g. Rabies, DHPP, Bordetella" type="text"/>
+</div>
+<!-- Date Pickers -->
+<div class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm border border-outline-variant/10">
+<label class="block text-[10px] tracking-widest uppercase font-bold text-on-surface-variant mb-3">Vaccination Date</label>
+<div class="relative">
+<input class="w-full bg-surface-container-low border-none rounded-2xl py-4 px-5 text-on-surface focus:ring-2 focus:ring-primary/20 transition-all" type="date"/>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm border border-outline-variant/10">
+<label class="block text-[10px] tracking-widest uppercase font-bold text-on-surface-variant mb-3">Next Due Date</label>
+<div class="relative">
+<input class="w-full bg-surface-container-low border-none rounded-2xl py-4 px-5 text-on-surface focus:ring-2 focus:ring-primary/20 transition-all" type="date"/>
+</div>
+</div>
+<!-- Clinic Info -->
+<div class="md:col-span-2 bg-surface-container-lowest rounded-3xl p-6 shadow-sm border border-outline-variant/10">
+<label class="block text-[10px] tracking-widest uppercase font-bold text-on-surface-variant mb-3">Vet Name / Clinic</label>
+<div class="flex items-center bg-surface-container-low rounded-2xl px-5">
+<span class="material-symbols-outlined text-on-surface-variant/50 mr-3">medical_services</span>
+<input class="w-full bg-transparent border-none py-4 text-on-surface placeholder:text-on-surface-variant/40 focus:ring-0 transition-all" placeholder="City Animal Hospital" type="text"/>
+</div>
+</div>
+</div>
+<!-- File Upload -->
+<div class="bg-surface-container-lowest rounded-3xl p-8 shadow-sm border-2 border-dashed border-outline-variant/30 flex flex-col items-center justify-center text-center group hover:border-primary/40 transition-all cursor-pointer">
+<div class="w-16 h-16 rounded-full bg-primary-container/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined text-primary text-3xl">photo_camera</span>
+</div>
+<h4 class="font-bold text-on-surface mb-1">Upload Vaccination Certificate</h4>
+<p class="text-xs text-on-surface-variant px-12">Capture a photo or upload a PDF from your device for easy digital access.</p>
+<input class="hidden" type="file"/>
+</div>
+</form>
+</main>
+<!-- Bottom Actions Bar -->
+<footer class="fixed bottom-0 left-0 w-full z-50 bg-white/90 backdrop-blur-2xl px-6 pt-4 pb-8 shadow-[0_-8px_24px_rgba(25,28,29,0.04)]">
+<div class="max-w-2xl mx-auto flex flex-col gap-3">
+<button class="w-full bg-primary text-on-primary py-4 rounded-full font-bold shadow-lg shadow-primary/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">save</span>
+                Save Record
+            </button>
+<button class="w-full border-2 border-primary/20 text-primary py-4 rounded-full font-bold hover:bg-primary/5 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">notification_add</span>
+                Set Reminder
+            </button>
+</div>
+</footer>
+<!-- Decorative Blurred Elements -->
+<div class="fixed -top-24 -left-24 w-96 h-96 bg-primary/5 rounded-full blur-[120px] pointer-events-none -z-10"></div>
+<div class="fixed top-1/2 -right-48 w-80 h-80 bg-secondary-container/10 rounded-full blur-[100px] pointer-events-none -z-10"></div>
+</body></html>

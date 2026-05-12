@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cove Residences - Pet Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed": "#D8E2FF",
+                        "inverse-primary": "#ADC7FF",
+                        "tertiary-fixed-dim": "#FFB691",
+                        "secondary-fixed": "#FFDDAF",
+                        "on-error-container": "#93000A",
+                        "tertiary": "#9E4300",
+                        "inverse-surface": "#2E3132",
+                        "on-primary-container": "#FFFFFF",
+                        "on-secondary-fixed": "#281800",
+                        "on-secondary-container": "#694600",
+                        "outline-variant": "#C1C6D6",
+                        "tertiary-fixed": "#FFDBCB",
+                        "primary": "#005BBF",
+                        "surface-tint": "#005BC0",
+                        "secondary-container": "#FDAF0B",
+                        "on-tertiary-fixed": "#341100",
+                        "surface-variant": "#E1E3E4",
+                        "on-secondary": "#FFFFFF",
+                        "on-primary-fixed-variant": "#004493",
+                        "on-background": "#191C1D",
+                        "surface-container-low": "#F3F4F5",
+                        "surface-container-high": "#E7E8E9",
+                        "error": "#BA1A1A",
+                        "background": "#F8F9FA",
+                        "on-primary": "#FFFFFF",
+                        "secondary-fixed-dim": "#FFBA43",
+                        "secondary": "#805600",
+                        "on-secondary-fixed-variant": "#614000",
+                        "surface-container-lowest": "#FFFFFF",
+                        "outline": "#727785",
+                        "on-error": "#FFFFFF",
+                        "surface-container": "#EDEEEF",
+                        "primary-container": "#1A73E8",
+                        "on-surface-variant": "#414754",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "on-primary-fixed": "#001A41",
+                        "tertiary-container": "#C55500",
+                        "on-tertiary": "#FFFFFF",
+                        "error-container": "#FFDAD6",
+                        "surface-dim": "#D9DADB",
+                        "surface-container-highest": "#E1E3E4",
+                        "on-surface": "#191C1D",
+                        "surface-bright": "#F8F9FA",
+                        "surface": "#F8F9FA",
+                        "primary-fixed-dim": "#ADC7FF",
+                        "on-tertiary-container": "#0E0200",
+                        "inverse-on-surface": "#F0F1F2"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-body { font-family: 'Inter', sans-serif; }
+        .glass-header {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface antialiased mb-24">
+<!-- Top Navigation Bar (Shared Component Strategy) -->
+<header class="flex justify-between items-center w-full px-6 py-4 sticky top-0 z-50 bg-surface/90 backdrop-blur-xl shadow-sm">
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant/20 transition-colors">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="text-on-surface font-headline font-bold tracking-tight text-[1.125rem]">Pet Profile</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant/20 transition-colors">
+<span class="material-symbols-outlined text-primary">share</span>
+</button>
+</header>
+<main class="max-w-2xl mx-auto px-6 pt-8 space-y-8">
+<!-- Hero Section: Cooper's Profile -->
+<section class="flex flex-col items-center text-center space-y-4">
+<div class="relative group">
+<div class="w-32 h-32 rounded-full ring-4 ring-primary-fixed p-1 bg-surface-container-lowest">
+<img alt="Cooper" class="w-full h-full object-cover rounded-full" data-alt="A cheerful Golden Retriever sitting outdoors in a sun-drenched urban park, with a soft-focus background of modern architecture. The lighting is warm and cinematic, emphasizing the dog's golden fur and bright, intelligent eyes. The overall mood is joyful, serene, and high-end, fitting the Cove Residences luxury aesthetic with its bright, airy tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiMDHx5bTWmOf_SFCztgat6hjdbT6fZguNIWh3rPK2kHGZOOwM6WWjzsnCv8li1CKHkf-R4jF7QZP_Hq9MnlJQ7_so5BSieWZ4Q69KZc5Mo18s2p4p3osgsmGr52tcdUWNB-gZb33LJU98k4J1An3H1lsS8CJI6eG-utHERKuhAcZerNtMwfHPTB4g6k6XzzPC2U3p5akRldNlvBswKy0BxK4bVKoEIlxonNarTgWYfdwsEg_dqKGOCUtb0hWs2oiwlszz-4K-QA"/>
+</div>
+<div class="absolute bottom-1 right-1 bg-primary text-on-primary w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-2 border-surface-container-lowest">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">pets</span>
+</div>
+</div>
+<div class="space-y-1">
+<h2 class="text-3xl font-headline font-extrabold tracking-tight">Cooper</h2>
+<p class="text-on-surface-variant font-medium">Golden Retriever • 2 Years • Male</p>
+<div class="inline-flex items-center gap-1.5 px-3 py-1 bg-[#E8F5E9] text-[#2E7D32] rounded-full text-xs font-bold uppercase tracking-widest mt-2">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+                    Fully Vaccinated
+                </div>
+</div>
+</section>
+<!-- Bento Grid Information -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Owner Details -->
+<div class="bg-surface-container-lowest p-5 rounded-xl shadow-sm flex items-center gap-4 hover:-translate-y-1 transition-transform duration-300">
+<div class="w-12 h-12 rounded-full overflow-hidden">
+<img alt="Alex Rivers" class="w-full h-full object-cover" data-alt="A portrait of a young professional male resident with a friendly and approachable smile, wearing a clean, minimalist charcoal grey sweater. The background is a sophisticated apartment interior with soft ambient light filtering through large windows, creating a premium and calm atmosphere typical of high-end urban living. The aesthetic is modern and clean." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbSzVCf1trZmBhTl67AatpuUDRfR_pWwj4uMuyGefkwKg-wOX-3UbAN-qvJbR7-q7RCaWzfE5EmZHhqtPeE6dWwK5M9EhDGuQ0eXbAilX2NQhGK52CeTGdzWnUZ9xHKCAKTbKTe38AeBVVcf9u9hkActLkS0RrLu2nKGMDGx4nbcBmEE-AG2d54pUANb5txg-FD3bo302XjGs_5wMv3h1n3FEdAxbfFtNWdkhLtURCgc5ZV_MsLvJoNyJtPjzpKZl44RjOUsWJZQ"/>
+</div>
+<div>
+<p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">Pet Parent</p>
+<p class="font-bold text-on-surface">Alex Rivers</p>
+<p class="text-sm text-on-surface-variant">Unit B-102</p>
+</div>
+</div>
+<!-- Emergency Contact -->
+<div class="bg-surface-container-lowest p-5 rounded-xl shadow-sm flex items-center gap-4 border-l-4 border-error hover:-translate-y-1 transition-transform duration-300">
+<div class="w-12 h-12 rounded-full bg-error-container flex items-center justify-center">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">medical_services</span>
+</div>
+<div>
+<p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">Emergency Vet</p>
+<p class="font-bold text-on-surface">Vets Near Me</p>
+<p class="text-sm text-primary font-semibold">(555) 012-3456</p>
+</div>
+</div>
+<!-- Medical Notes -->
+<div class="bg-surface-container-lowest p-5 rounded-xl shadow-sm md:col-span-2">
+<div class="flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-on-tertiary-fixed-variant">assignment</span>
+<h3 class="font-headline font-bold text-on-surface">Medical &amp; Dietary Notes</h3>
+</div>
+<p class="text-on-surface-variant text-sm leading-relaxed">
+                    Cooper has a sensitive stomach. Strictly grain-free kibble only. No chicken-based treats as they cause minor skin irritation. He is allergic to bee stings—please contact Alex immediately if he shows swelling after outdoor walks.
+                </p>
+</div>
+<!-- Favorite Activities -->
+<div class="bg-surface-container-lowest p-5 rounded-xl shadow-sm">
+<h3 class="font-headline font-bold text-on-surface mb-4">Favorite Activities</h3>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1.5 bg-primary-fixed text-on-primary-fixed text-xs font-semibold rounded-full">Fetch</span>
+<span class="px-3 py-1.5 bg-primary-fixed text-on-primary-fixed text-xs font-semibold rounded-full">Swimming</span>
+<span class="px-3 py-1.5 bg-primary-fixed text-on-primary-fixed text-xs font-semibold rounded-full">Hiking</span>
+</div>
+</div>
+<!-- Personality -->
+<div class="bg-surface-container-lowest p-5 rounded-xl shadow-sm">
+<h3 class="font-headline font-bold text-on-surface mb-4">Personality</h3>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1.5 bg-secondary-fixed text-on-secondary-fixed text-xs font-semibold rounded-full">Friendly</span>
+<span class="px-3 py-1.5 bg-secondary-fixed text-on-secondary-fixed text-xs font-semibold rounded-full">Calm</span>
+<span class="px-3 py-1.5 bg-secondary-fixed text-on-secondary-fixed text-xs font-semibold rounded-full">Good with Kids</span>
+</div>
+</div>
+</section>
+<!-- Bottom Sections -->
+<section class="space-y-6">
+<!-- Upcoming Vaccination -->
+<div class="bg-tertiary-fixed p-6 rounded-2xl shadow-sm relative overflow-hidden">
+<div class="absolute right-0 top-0 opacity-10 -mr-6 -mt-6">
+<span class="material-symbols-outlined text-[120px]">vaccines</span>
+</div>
+<div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="space-y-1">
+<p class="text-[10px] text-on-tertiary-fixed font-bold uppercase tracking-widest">Health Reminder</p>
+<h4 class="text-xl font-headline font-bold text-on-tertiary-fixed">Rabies Booster</h4>
+<p class="text-on-tertiary-fixed-variant text-sm">Due in 15 days • October 24, 2023</p>
+</div>
+<button class="bg-on-tertiary-fixed text-tertiary-fixed px-6 py-2 rounded-full font-bold text-sm shadow-md active:scale-95 transition-transform">
+                        Book Appointment
+                    </button>
+</div>
+</div>
+<!-- Recent Activity / Photos -->
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<h3 class="font-headline font-bold text-lg text-on-surface">Recent Activity</h3>
+<button class="text-primary font-bold text-sm">View Gallery</button>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div class="aspect-square rounded-xl overflow-hidden shadow-sm">
+<img alt="Cooper Playtime" class="w-full h-full object-cover" data-alt="A candid photo of a Golden Retriever playing with a colorful rope toy on a manicured green lawn. The sunlight is bright and clear, casting soft shadows. The image has a warm, high-quality residential feel, emphasizing a happy lifestyle within a modern community setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBGw2k58ojNXwDmp-RGk-Y3wDKIfRMVh-oOLqNKHdNt3Orhv_hOB-eLSFVQ8NFcMD0Wj_LxQhy6Gess5mVu9IPENxMeomErig0pkFwx7CRoYi-jfQvCzIZg6aY_ChfgxlqeLs6Ki6KjhW3YqclzQOCrOcKFPJwM9qxkt0-KurXZ8rBcRTS2-rrr0OkwR7qkTU6Z6d-7cEVRh4AFi3itKyL2yEvExuU0g8tiUUk0SYV2vvL02ZIZaT-KWJ3bIaqYwY3pLwkdFs3qw"/>
+</div>
+<div class="aspect-square rounded-xl overflow-hidden shadow-sm">
+<img alt="Cooper Nap" class="w-full h-full object-cover" data-alt="A soft-focus shot of a Golden Retriever sleeping peacefully on a plush, light-colored designer rug. The interior is modern and minimalist with clean lines and warm wooden accents. The lighting is gentle and diffused, creating a serene and cozy atmosphere that highlights a luxurious pet-friendly home." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCeMmLNr-yYeGDxslm_Al-5AdDM92aPDiah-tE6uMvzGxfo1HdFn5LePwZwDI6knZEdYxhq8XZJks5kSXLvHhigEZSXfNPsoqxEQ022lCCmBqEAqTU_9LC4uPAlyF2pcxOAfs2DiktfCPYkgMJR7lZNiC8uRaI9xWzKOSIov-x26JY9QEA92ApkutHGDZYrL01ybW4OBogVQY8TDI9pfMO0mM_t37lGAFxBC6E31pSlHU0UYep_veMgPyoft2PAb3N5QIkCHtuyjw"/>
+</div>
+<div class="aspect-square rounded-xl overflow-hidden shadow-sm">
+<img alt="Cooper Outdoors" class="w-full h-full object-cover" data-alt="A vibrant outdoor photo of a Golden Retriever looking curious at the camera while on a trail. Lush greenery and dappled sunlight through trees create a fresh, energetic mood. The image quality is sharp and professional, reflecting an active and premium urban lifestyle." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGr5YnTofjMmWZOkOXJDkHA4QpvRXAM1S89z-Op0lKY7Ng2S3--hh5m0F75MIaWWMGhT4-u2TQM3Z_TIKPMtTwXJbcAmZ3aNo6jo9fq_0jnsb8eZE7Bdg0JF8q3LTfAeVdjDqDPK2M9S9xsI2qq6C1ohM1SFzqs6iIipOxsP0RMbRtrzvudS8jiZ5JVUHSz1L6nHIpvggrgPMMSKzQMusep667KkTDBfUjhKrJFKqCCJ6QgU1Ry6E8xdJlxCPwPFHl3cKXDIEGfw"/>
+</div>
+<div class="aspect-square rounded-xl overflow-hidden shadow-sm relative">
+<img alt="Cooper Park" class="w-full h-full object-cover" data-alt="A wide-angle shot of a Golden Retriever standing proudly on a wooden bridge in a contemporary urban park. The architectural details of the bridge are clean and modern. The sky is a clear, soft blue, and the overall color palette is bright and fresh." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCELJb1YZALLNw2fiMY7GBJpPPrbIdTZqwOceNUzECk5rMpuWNDz2jreudZSjtM7XNiB0nbRrcVOAXQDhqnPkCobVbHoIGuMwF3lLP830qT_H6wb7VFXt-utRCXeHilPQCg9YHquMvdBm2ooa9idBF8ieCGoutNJTWjOnqcnemk_kOqoZHn1SUyZaockshKOT0UHnOWZLxA9XdcwMmGoqCvPRcvKLTTU1_AhsiSfJR9t9RhKmpZ6pMKmcozJ1v0gRG_Tm1L4ENgxw"/>
+<div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+<p class="text-white font-bold text-lg">+12</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer Actions -->
+<footer class="flex flex-col gap-3 py-8">
+<button class="w-full bg-primary text-on-primary py-4 rounded-full font-headline font-bold text-lg shadow-lg active:scale-[0.98] transition-transform">
+                Upload Photo
+            </button>
+<button class="w-full bg-surface-container-high text-on-surface-variant py-4 rounded-full font-headline font-bold text-lg hover:bg-surface-variant transition-colors active:scale-[0.98] transition-transform">
+                Edit Profile
+            </button>
+</footer>
+</main>
+<!-- Navigation Shell (BottomNavBar) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe bg-surface/90 backdrop-blur-xl shadow-sm">
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-primary-fixed/20 transition-all rounded-full p-2 cursor-pointer">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label text-[10px] tracking-widest uppercase mt-1">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-primary-fixed/20 transition-all rounded-full p-2 cursor-pointer">
+<span class="material-symbols-outlined">dynamic_feed</span>
+<span class="font-label text-[10px] tracking-widest uppercase mt-1">Feed</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-primary-fixed/20 transition-all rounded-full p-2 cursor-pointer">
+<span class="material-symbols-outlined">groups</span>
+<span class="font-label text-[10px] tracking-widest uppercase mt-1">Meetups</span>
+</div>
+<!-- ACTIVE TAB: Pets -->
+<div class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 active:scale-90 duration-150">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">pets</span>
+<span class="font-label text-[10px] tracking-widest uppercase mt-0.5">Pets</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-primary-fixed/20 transition-all rounded-full p-2 cursor-pointer">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label text-[10px] tracking-widest uppercase mt-1">Profile</span>
+</div>
+</nav>
+</body></html>

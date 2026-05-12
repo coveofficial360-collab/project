@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Cove Pets - Community Home</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-on-surface": "#F0F1F2",
+                      "surface-variant": "#E1E3E4",
+                      "on-primary-container": "#FFFFFF",
+                      "secondary-container": "#FDAF0B",
+                      "surface": "#F8F9FA",
+                      "surface-container-low": "#F3F4F5",
+                      "outline-variant": "#C1C6D6",
+                      "tertiary-fixed": "#FFDBCB",
+                      "surface-bright": "#F8F9FA",
+                      "on-tertiary-fixed-variant": "#783100",
+                      "on-background": "#191C1D",
+                      "surface-container-high": "#E7E8E9",
+                      "on-tertiary-container": "#0E0200",
+                      "on-surface-variant": "#414754",
+                      "on-secondary": "#FFFFFF",
+                      "surface-container": "#EDEEEF",
+                      "secondary-fixed-dim": "#FFBA43",
+                      "primary-container": "#1A73E8",
+                      "primary-fixed-dim": "#ADC7FF",
+                      "tertiary-fixed-dim": "#FFB691",
+                      "surface-dim": "#D9DADB",
+                      "primary": "#005BBF",
+                      "outline": "#727785",
+                      "on-primary": "#FFFFFF",
+                      "error-container": "#FFDAD6",
+                      "error": "#BA1A1A",
+                      "tertiary": "#9E4300",
+                      "on-tertiary-fixed": "#341100",
+                      "on-error": "#FFFFFF",
+                      "surface-container-lowest": "#FFFFFF",
+                      "surface-container-highest": "#E1E3E4",
+                      "on-surface": "#191C1D",
+                      "tertiary-container": "#C55500",
+                      "on-secondary-container": "#694600",
+                      "background": "#F8F9FA",
+                      "secondary-fixed": "#FFDDAF",
+                      "inverse-surface": "#2E3132",
+                      "surface-tint": "#005BC0",
+                      "on-primary-fixed": "#001A41",
+                      "on-secondary-fixed": "#281800",
+                      "on-primary-fixed-variant": "#004493",
+                      "on-tertiary": "#FFFFFF",
+                      "on-secondary-fixed-variant": "#614000",
+                      "on-error-container": "#93000A",
+                      "secondary": "#805600",
+                      "primary-fixed": "#D8E2FF",
+                      "inverse-primary": "#ADC7FF"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "fontFamily": {
+                      "headline": ["Plus Jakarta Sans"],
+                      "display": ["Plus Jakarta Sans"],
+                      "body": ["Inter"],
+                      "label": ["Inter"]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-6 h-16 w-full z-50 sticky top-0 bg-white/90 backdrop-blur-xl dark:bg-slate-900/90 shadow-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="pets">pets</span>
+<div class="flex flex-col">
+<h1 class="font-headline font-bold text-xl text-primary leading-tight">Cove Pets</h1>
+<div class="flex items-center gap-1 opacity-70">
+<span class="text-[10px] uppercase tracking-widest font-bold">Harbor Heights</span>
+<span class="material-symbols-outlined text-xs" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="p-2 rounded-full hover:bg-surface-variant/20 transition-colors active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="search">search</span>
+</div>
+<div class="relative p-2 rounded-full hover:bg-surface-variant/20 transition-colors active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</div>
+<img class="w-9 h-9 rounded-full object-cover border-2 border-white shadow-sm" data-alt="A professional headshot of a young adult resident for a modern apartment management app. The lighting is soft and natural, with a blurred high-end interior background. The image has a clean, premium light-mode feel with a warm and friendly atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCtcYZJ0lXmiy6GWg_CoTdQJnQHDSccn4FGb1ou7BUmVF0b97SWvDQAxAkqS52brRiA9D0nKxPHcvioF2hexavU3YKCubeLCwXBxVfVw_YbtSZxmM83OfbhX63t7-N8WLYo2obEQMYV_h-nXAxjyLyEhqUdbbmaehB8YBEoQLL-6QeONaIIAhN2CPGc5v-E70USwRT5NXuvl4foPjmgJDW_8-Ao1nhm1xUv1V87Y9_BwHr8x2QJj1-GwLMc3kKRjJgcntcWd_MUQ"/>
+</div>
+</header>
+<main class="pb-24 max-w-2xl mx-auto px-4 lg:px-0">
+<!-- Hero Section Carousel -->
+<section class="mt-6">
+<div class="relative overflow-hidden rounded-3xl aspect-[16/10] sm:aspect-[21/9] bg-gradient-to-br from-primary to-primary-container shadow-lg">
+<img class="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-60" data-alt="A beautiful golden retriever playing in a sun-drenched urban park during a community meetup. The scene is bright and cheerful, with soft golden hour lighting reflecting a premium lifestyle aesthetic. The focus is sharp on the happy dog, with a lush green lawn and modern residential buildings in the blurred background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQSce35OFLGV_AI_rRwHq2Wg41T6blU2TXIJVRIb0b7D3Jk0KVzogUk1udf9UtXsAtwiqTJXKR6ZZI0iviCUGax2GNXTJar7ec4PSDKOtte4-ZSoPQqxLJcRGblTw3MfoZ_jiMmGo9eEza4wdsv9PPIm8LsRcuJW69FijoZ082pQblPYSuHUIBYM1t_SnQOqN17DS-ygsCnhuDvPx2nP208iDu5JLZ_7qvXllrhL_B_z_Tcvp_6hyY23-ZA-i87LmYbybw2IYMQA"/>
+<div class="absolute inset-0 p-6 flex flex-col justify-end text-white bg-gradient-to-t from-black/40 to-transparent">
+<div class="flex items-center gap-2 mb-2">
+<span class="bg-secondary-container text-on-secondary-container text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Upcoming Event</span>
+</div>
+<h2 class="font-headline text-2xl font-bold leading-tight mb-1">Golden Retriever Meetup</h2>
+<p class="text-sm opacity-90 mb-4">Saturday, 4 PM • Central Play Area</p>
+<button class="bg-white text-primary font-bold px-6 py-2 rounded-full w-fit hover:scale-105 transition-transform active:scale-95 text-sm">
+                        Join Event
+                    </button>
+</div>
+</div>
+<!-- Carousel Pagination Indication -->
+<div class="flex justify-center gap-1.5 mt-4">
+<div class="w-4 h-1.5 rounded-full bg-primary"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-outline-variant"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-outline-variant"></div>
+</div>
+</section>
+<!-- Quick Stats Grid -->
+<section class="mt-8 grid grid-cols-2 gap-4">
+<div class="bg-surface-container-lowest p-4 rounded-2xl shadow-sm border border-outline-variant/10">
+<span class="text-on-surface-variant text-[10px] font-bold uppercase tracking-widest mb-1 block">Registered Pets</span>
+<div class="flex items-end gap-2">
+<span class="text-2xl font-bold font-headline">124</span>
+<span class="text-primary text-xs font-semibold mb-1 flex items-center"><span class="material-symbols-outlined text-xs" data-icon="trending_up">trending_up</span> +5</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-2xl shadow-sm border border-outline-variant/10">
+<span class="text-on-surface-variant text-[10px] font-bold uppercase tracking-widest mb-1 block">Upcoming Vacc.</span>
+<div class="flex items-end gap-2">
+<span class="text-2xl font-bold font-headline">08</span>
+<span class="text-error text-xs font-semibold mb-1">Due Soon</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-2xl shadow-sm border border-outline-variant/10">
+<span class="text-on-surface-variant text-[10px] font-bold uppercase tracking-widest mb-1 block">Pet Stores</span>
+<div class="flex items-end gap-2">
+<span class="text-2xl font-bold font-headline">05</span>
+<span class="text-on-surface-variant/60 text-xs mb-1">Nearby</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-2xl shadow-sm border border-outline-variant/10">
+<span class="text-on-surface-variant text-[10px] font-bold uppercase tracking-widest mb-1 block">Active Meetups</span>
+<div class="flex items-end gap-2">
+<span class="text-2xl font-bold font-headline">03</span>
+<span class="text-on-surface-variant/60 text-xs mb-1">Today</span>
+</div>
+</div>
+</section>
+<!-- Quick Action Grid -->
+<section class="mt-8">
+<h3 class="font-headline font-bold text-lg mb-4 px-1">Quick Actions</h3>
+<div class="grid grid-cols-4 gap-y-6">
+<div class="flex flex-col items-center gap-2 group">
+<div class="w-14 h-14 rounded-2xl bg-primary-fixed flex items-center justify-center group-active:scale-90 transition-transform shadow-sm">
+<span class="material-symbols-outlined text-primary" data-icon="pets" data-weight="fill">pets</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-tighter text-center">My Pets</span>
+</div>
+<div class="flex flex-col items-center gap-2 group">
+<div class="w-14 h-14 rounded-2xl bg-secondary-fixed flex items-center justify-center group-active:scale-90 transition-transform shadow-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="groups" data-weight="fill">groups</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-tighter text-center">Meetups</span>
+</div>
+<div class="flex flex-col items-center gap-2 group">
+<div class="w-14 h-14 rounded-2xl bg-tertiary-fixed flex items-center justify-center group-active:scale-90 transition-transform shadow-sm">
+<span class="material-symbols-outlined text-tertiary" data-icon="rss_feed">rss_feed</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-tighter text-center">Social</span>
+</div>
+<div class="flex flex-col items-center gap-2 group">
+<div class="w-14 h-14 rounded-2xl bg-surface-container-high flex items-center justify-center group-active:scale-90 transition-transform shadow-sm">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="volunteer_activism">volunteer_activism</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-tighter text-center">Adoption</span>
+</div>
+<div class="flex flex-col items-center gap-2 group">
+<div class="w-14 h-14 rounded-2xl bg-surface-container-high flex items-center justify-center group-active:scale-90 transition-transform shadow-sm">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="medical_services">medical_services</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-tighter text-center">Vet Dir.</span>
+</div>
+<div class="flex flex-col items-center gap-2 group">
+<div class="w-14 h-14 rounded-2xl bg-surface-container-high flex items-center justify-center group-active:scale-90 transition-transform shadow-sm">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="vaccines">vaccines</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-tighter text-center">Vaccine</span>
+</div>
+<div class="flex flex-col items-center gap-2 group">
+<div class="w-14 h-14 rounded-2xl bg-error-container flex items-center justify-center group-active:scale-90 transition-transform shadow-sm">
+<span class="material-symbols-outlined text-error" data-icon="search_check" data-weight="fill">search_check</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-tighter text-center">Lost &amp; Found</span>
+</div>
+<div class="flex flex-col items-center gap-2 group">
+<div class="w-14 h-14 rounded-2xl bg-surface-container-high flex items-center justify-center group-active:scale-90 transition-transform shadow-sm">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="shopping_bag">shopping_bag</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-tighter text-center">Stores</span>
+</div>
+</div>
+</section>
+<!-- Lost Pet Alert (High Priority) -->
+<section class="mt-8">
+<div class="bg-error-container/40 p-4 rounded-3xl border border-error/20 flex gap-4 items-center">
+<div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border-2 border-white">
+<img class="w-full h-full object-cover" data-alt="A portrait of a lost beagle dog with soulful eyes against a neutral outdoor background. The image is designed to evoke empathy, framed clearly for identification. It uses a clean, focused style consistent with high-visibility safety alerts in a premium community application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdok2jLQ5vkDnDvTnTE7AHsmaxEleaW6o9XVjGGO4sZPTuOWpdhYeShEgGBnswkhi3bC1xNUDaKcI4WvH2551cRBgnmihNwBCSHaX9QIIwcMaPkssv1gJJnPWNLUnVS8bSEfdNZtxiiSM6Ly4uKlrQ6OF0tMXdjCCzfkdA-lkz6DnCo9yeBLZulBa4pF-Z12aM1KczMAjJH-1LRgGdoih5kK2fAnd-Qt3v9fSPiz-zugeI0zxl2Zz0D4pb7PaGxbSZTbqvSuZOUQ"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="font-bold text-error leading-tight">LOST PET: MAX</h4>
+<span class="text-[10px] font-bold bg-error text-white px-2 py-0.5 rounded-full uppercase">Urgent</span>
+</div>
+<p class="text-xs text-on-error-container opacity-80 mt-1 line-clamp-1">Last seen near Building B basement entrance.</p>
+<button class="mt-2 text-xs font-bold text-error flex items-center gap-1">
+                        View Details <span class="material-symbols-outlined text-xs" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Trending Pets (Horizontal Scroll) -->
+<section class="mt-10 overflow-hidden">
+<div class="flex justify-between items-end mb-4 px-1">
+<h3 class="font-headline font-bold text-lg leading-none">Trending Pets</h3>
+<button class="text-xs font-bold text-primary">View All</button>
+</div>
+<div class="flex gap-4 overflow-x-auto hide-scrollbar pb-4 px-1">
+<!-- Pet Card 1 -->
+<div class="min-w-[140px] bg-surface-container-lowest rounded-3xl shadow-sm border border-outline-variant/10 overflow-hidden group">
+<div class="aspect-square overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Close up portrait of a cute French Bulldog with an inquisitive expression. The background is a soft-focus interior with warm, high-key lighting that emphasizes the premium, clean aesthetic of the Cove Pets community. The dog's coat is detailed and sharp." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDS2Bny4Cq5Oiymw60wuZnEZo4vRPNc2f9B-0QaV9V2uM-1QGS_ajxkRyrWUSin85XzcRNGV0w3SMEa3NvHcOi_aRV3FrhMr0Jz9YilFMmLaVdZjs56Tt4pRinwRnxVzruf_Lq_ZJfE99dVmH80aOW8Dw0zg81hIkXOh675FJ7k0czfOaZjTnyYSIMxeQMvrYXyuXzy35E1V6LSZQlQ7z0uNCClfSDJ0jXq4UOYW_VLxWqPjP21Td4OGnVbxs4bQ_0TCAE5nn-bGA"/>
+</div>
+<div class="p-3">
+<h5 class="font-bold text-sm">Charlie</h5>
+<p class="text-[10px] text-on-surface-variant mb-2">French Bulldog</p>
+<div class="flex items-center gap-1 text-[10px] font-bold text-on-surface-variant/60">
+<span class="material-symbols-outlined text-xs text-error" data-icon="favorite" data-weight="fill">favorite</span>
+                            428 Likes
+                        </div>
+</div>
+</div>
+<!-- Pet Card 2 -->
+<div class="min-w-[140px] bg-surface-container-lowest rounded-3xl shadow-sm border border-outline-variant/10 overflow-hidden group">
+<div class="aspect-square overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Elegant ginger tabby cat sitting gracefully on a white marble surface. The lighting is crisp and modern, creating sharp shadows and highlighting the clean, luxurious environment of a high-end society apartment. The aesthetic is sophisticated and airy." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8tbBnb9lX1HhwfyeXP6iCg1NMTWeW8I17usls73vl_NH-rdPcxNdfD50N6GVkwG9XpV__3-VTiaKKSNjzgahgWI4un3z5cicQeq1wUeOhHxiqt_WX73TuZeERqBjssKQH9zjYGzy_rmFbZdbBB5uz94um7Nkq4Qogxk4xCwm-SzLkUlHVYIQqxsEE-sh6Q0e0qZb8syJhBWzKcWzfqQDgkR02_imoMqO-uDjx-EqI5I5ohzZcygLHjKM2lvqgO9V1-OLHZlO_pg"/>
+</div>
+<div class="p-3">
+<h5 class="font-bold text-sm">Luna</h5>
+<p class="text-[10px] text-on-surface-variant mb-2">Ginger Tabby</p>
+<div class="flex items-center gap-1 text-[10px] font-bold text-on-surface-variant/60">
+<span class="material-symbols-outlined text-xs text-error" data-icon="favorite" data-weight="fill">favorite</span>
+                            315 Likes
+                        </div>
+</div>
+</div>
+<!-- Pet Card 3 -->
+<div class="min-w-[140px] bg-surface-container-lowest rounded-3xl shadow-sm border border-outline-variant/10 overflow-hidden group">
+<div class="aspect-square overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A playful border collie running across a pristine green community garden. The scene is full of energy, captured with high-speed photography to freeze the motion. The background is a modern apartment complex under a clear blue sky, evoking a sense of outdoor freedom within a city sanctuary." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1NA-VKPYdi0C6aBA9NP-a45IHJDiaPfPhIQ24w1z-GrIjsJcrQztmpbkRk_7RKWc4dZltOXZMnDA7Vve0qxUTZYti9rzldZc20_uiSdNmCrDpjLc12PqfxJPbzEw0CEm64jqUqvS8LsNYrX_s1VqSG1YMWg8s9dHA5ev98_d67KZ4PoegBuUiuYW7pfXlKOLAx8i3PrpBXG-_ZcKDBQN5CCw6rEnrK69eXE3kvgnvFhuGZOczGvdkCgTEpYA4SwZFapMEGyipCw"/>
+</div>
+<div class="p-3">
+<h5 class="font-bold text-sm">Buddy</h5>
+<p class="text-[10px] text-on-surface-variant mb-2">Border Collie</p>
+<div class="flex items-center gap-1 text-[10px] font-bold text-on-surface-variant/60">
+<span class="material-symbols-outlined text-xs text-error" data-icon="favorite" data-weight="fill">favorite</span>
+                            289 Likes
+                        </div>
+</div>
+</div>
+</div>
+</section>
+<!-- Vaccination Alerts -->
+<section class="mt-10">
+<h3 class="font-headline font-bold text-lg mb-4 px-1">Health Reminders</h3>
+<div class="space-y-3">
+<div class="bg-surface-container-lowest p-4 rounded-3xl shadow-sm border border-outline-variant/10 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full overflow-hidden shrink-0 bg-primary-container/10">
+<img class="w-full h-full object-cover" data-alt="Close-up of a small white poodle." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCq1Cv2IfXy5WWGxa2soxi_5HTUN3G8zxQeaJx_023j5OgQzJVU6FHlkPjcjb12fBAaJq8bacqCOpOQOxY0PtJY2tOQYBoM9sJA-uGZ_PUqO6Z_eG_SP1mu_G3eWzXWz9_KHrPRMhJ2rAvIy1IDfsKxRx7QwtiaJ8fwDIL-6ElxVNHPg2aRK7p2PgnEWeuA9Bh9uMJ7WoTLQLnxA5L3uQC7RawOSi8nFB-Xpl3PAXju7n6xwLTC8LoHpOfvw2r0kHnyEDa_uj6Dwg"/>
+</div>
+<div>
+<h5 class="font-bold text-sm">Milo’s Rabies Shot</h5>
+<div class="flex items-center gap-2 mt-1">
+<span class="bg-error-container text-on-error-container text-[10px] font-bold px-2 py-0.5 rounded-full">Due in 3 days</span>
+<span class="text-[10px] text-on-surface-variant/60">Nov 18, 2023</span>
+</div>
+</div>
+</div>
+<button class="bg-primary text-white text-[10px] font-bold px-4 py-2 rounded-full active:scale-95 transition-transform">Update</button>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-3xl shadow-sm border border-outline-variant/10 flex items-center justify-between opacity-70">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full overflow-hidden shrink-0 bg-secondary-container/10">
+<img class="w-full h-full object-cover" data-alt="Calico cat portrait." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAynQcoY71mUB0mkSPSP2PqIji0c86DTzIbhhHXkR7XXRVjzEjhXnIsnJNodB_p8dTR3WYJ4jG6grXd-BFpldNDX-Wbjcw-4NTyjqOPAynRiZVsSh12ujkCdSQHOlcmggFANUf8BeqeNwQCsB-JVu2lICU3YbsRzJr4DdxWxCtBNw_1gb2xTwzGubCANw9viGDqyjaulGW3RVmfpdGvs7-zqTQWmBNGuU_fOHa04Vpov2yUr1AC-oa1XINkhWt6U-cZMkZun7gM2Q"/>
+</div>
+<div>
+<h5 class="font-bold text-sm">Bella’s Annual Checkup</h5>
+<div class="flex items-center gap-2 mt-1">
+<span class="bg-surface-container-high text-on-surface-variant text-[10px] font-bold px-2 py-0.5 rounded-full">Completed</span>
+<span class="text-[10px] text-on-surface-variant/60">Oct 24, 2023</span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary" data-icon="check_circle" data-weight="fill">check_circle</span>
+</div>
+</div>
+</section>
+<!-- Social Feed Preview (Bento Style) -->
+<section class="mt-10">
+<div class="flex justify-between items-end mb-4 px-1">
+<h3 class="font-headline font-bold text-lg leading-none">Pet Social Feed</h3>
+<button class="text-xs font-bold text-primary">Explore Feed</button>
+</div>
+<div class="grid grid-cols-3 grid-rows-2 gap-2 aspect-square">
+<div class="col-span-2 row-span-2 rounded-2xl overflow-hidden relative group">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A professional quality photograph of a playful puppy lying on its back in a stylish modern living room. The room has light wood floors and minimal chic furniture, reflecting a premium urban lifestyle. The puppy's expression is joyful and engaging, perfectly suited for a high-end social media community platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6ieowJhIAtSqsDljaKwCjwaRb_zSicCGyBwHRJzrkizvo9JmlAGS_WupwnmUGAagT4XIybCeP6Xef1rDeJ5DIqUm99c8tBthDFqVN4VT_CjzI8q41ON7CSS8yi2aPwOf_yy9Kv7WMJb-irrwqKWb5grEVGsgUH8DAC7xl8YUUPFFvIOGytHSUGtiH4KOuDeXkhBKXDc4wOSeAGRz0fSvOx0pw45rQlbCD5YptRxx8eCCkRu4qJlLV-C0gIXwpQBHR43jYz8-bjQ"/>
+<div class="absolute bottom-3 left-3 flex items-center gap-1.5 text-white bg-black/20 backdrop-blur-md px-2 py-1 rounded-full text-[10px] font-bold">
+<span class="material-symbols-outlined text-xs" data-icon="favorite" data-weight="fill">favorite</span> 1.2k
+                    </div>
+</div>
+<div class="rounded-2xl overflow-hidden relative group">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A curious cat peeking out from a minimalist felt pet house. The lighting is soft and diffused, highlighting the textures of the felt and the cat's fur. The background is a clean, bright light-mode interior typical of a modern luxury apartment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOVl2FFLdm3R8e10R--wfIWte3K-4cxY4BU0gvL3TWB7MpCz3sIaFFe3NeVdoe99JamSCZxeDjGffhf3E3V8ZyM_kjd0zdaTnBwHDEfnl0TB0m1fFAGaP6_PvXw14TPixIpQ9NxKYuAru5gOEkVR1z06wmdEuRWDh0lK37GnskQe7YIXoMHqDV4eTojPi4ZInsJqIHohpxoi_BmUI_oGc-2WXS7P2i0lqfuhBmQAFgS6ibGyDGUCdwB7G2CDsFtNb_OkeR4uzzwQ"/>
+<div class="absolute inset-0 bg-black/10"></div>
+</div>
+<div class="rounded-2xl overflow-hidden relative group">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A dog wearing stylish modern pet accessories, posing in front of a colorful abstract wall mural in a neighborhood pet play area. The scene is vibrant and urban, emphasizing the community social aspect. The colors are balanced and high-fashion." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAghZtGoUqBFvcLCh0nideIZp9pSQ5JJeGlvcSv_-yXbtB0yJYmy_ZcwuXNRA9VvWpxFnsziPxX3jtDSau8z_ieQN0QtuPDl8gHFLHUAcYgrnhuTcrCAPtt7rf1S3g7bxIIidLi8ldUm10lRGAJDHkJLzo2dAiDZW0m-lykdiDLrxb7C9DiQltZA646cqxLHqf0KsadSet7KtU241ZbZM_Bab_fwIoo194rPfQ2gKI9QGuGD2iLrvZTe_CXcN0qdVvNZOXRdSQUQQ"/>
+<div class="absolute inset-0 bg-black/20 flex items-center justify-center">
+<span class="text-white font-bold text-sm">+18</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Adoption Spotlight -->
+<section class="mt-10">
+<h3 class="font-headline font-bold text-lg mb-4 px-1">Adoption Spotlight</h3>
+<div class="bg-primary-container text-white p-6 rounded-[2.5rem] relative overflow-hidden">
+<div class="relative z-10">
+<h4 class="font-headline text-2xl font-bold mb-1">Meet Cooper</h4>
+<p class="text-xs opacity-90 max-w-[60%] mb-4 italic">"I'm a 2-year old energetic mix looking for a loving home with a backyard!"</p>
+<button class="bg-white text-primary text-xs font-bold px-6 py-2 rounded-full active:scale-95 transition-transform">Schedule Visit</button>
+</div>
+<img class="absolute top-0 right-0 h-full w-[45%] object-cover object-left" data-alt="A soulful portrait of a golden retriever mix dog with gentle eyes, sitting patiently. The lighting is warm and inviting, evoking a feeling of hope and companionship. The background is softly blurred to keep all focus on the dog's expressive face, aligning with a premium adoption feature in a luxury society app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtaue9AECbDbJhO8uGm7oUovZk1UEiBV62n0B8Mf14wyW8BLw3WoDjI9i5JfhH1TOYjzJFSP4AvH9TKeRkFJf4X2G4Wrz5FYWTJcYrlBg6DgifuDAqR_Ke_V592LLUGVwj-8Ze70Eadt9Fm0M2gYyDbfknp--uoHdLcbdH-A2UdiFKkb8o3SYupaMDk3iczmsBw5SnZGe940s5QDjPaiTSAf1ykmHiMoyhpr7JYyopLsRPKG-AsSltKdO95NyFZbbB7mEFNb_07Q"/>
+<div class="absolute top-0 right-0 w-[45%] h-full bg-gradient-to-r from-primary-container to-transparent"></div>
+</div>
+</section>
+<!-- Nearby Services -->
+<section class="mt-10">
+<h3 class="font-headline font-bold text-lg mb-4 px-1">Nearby Pet Services</h3>
+<div class="space-y-4">
+<div class="flex gap-4 items-center">
+<div class="w-14 h-14 bg-surface-container-high rounded-2xl flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="medical_services">medical_services</span>
+</div>
+<div class="flex-1 border-b border-outline-variant/10 pb-4">
+<h5 class="font-bold text-sm">Paws &amp; Claws Vet Clinic</h5>
+<p class="text-[10px] text-on-surface-variant/60">0.8 km • Open until 8 PM</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/40" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="flex gap-4 items-center">
+<div class="w-14 h-14 bg-surface-container-high rounded-2xl flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="content_cut">content_cut</span>
+</div>
+<div class="flex-1 border-b border-outline-variant/10 pb-4">
+<h5 class="font-bold text-sm">Bubble Bath Groomers</h5>
+<p class="text-[10px] text-on-surface-variant/60">1.2 km • Highly Rated</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/40" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="flex gap-4 items-center">
+<div class="w-14 h-14 bg-surface-container-high rounded-2xl flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-error text-2xl" data-icon="emergency">emergency</span>
+</div>
+<div class="flex-1 pb-2">
+<h5 class="font-bold text-sm">24/7 Animal Emergency</h5>
+<p class="text-[10px] text-error font-semibold uppercase tracking-wider">Emergency Only • 3.5 km</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/40" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe bg-white/90 backdrop-blur-2xl dark:bg-slate-900/90 shadow-[0_-8px_32px_rgba(25,28,29,0.04)] rounded-t-xl">
+<button class="flex flex-col items-center justify-center bg-secondary-container/20 text-on-secondary-container dark:bg-secondary-fixed/10 dark:text-secondary-fixed-dim rounded-full px-4 py-1.5 transition-all active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="home" data-weight="fill">home</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-bold mt-0.5">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant/70 dark:text-outline-variant hover:text-primary transition-colors active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="rss_feed">rss_feed</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-bold mt-0.5">Feed</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant/70 dark:text-outline-variant hover:text-primary transition-colors active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-bold mt-0.5">Meetups</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant/70 dark:text-outline-variant hover:text-primary transition-colors active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="pets">pets</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-bold mt-0.5">Pets</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant/70 dark:text-outline-variant hover:text-primary transition-colors active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-bold mt-0.5">Profile</span>
+</button>
+</nav>
+<!-- FAB -->
+<button class="fixed right-6 bottom-24 w-14 h-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center active:scale-95 transition-transform z-40">
+<span class="material-symbols-outlined text-2xl" data-icon="add">add</span>
+</button>
+</body></html>

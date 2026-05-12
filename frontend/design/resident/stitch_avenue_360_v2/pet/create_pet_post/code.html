@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cove Pets - Create Post</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        h1, h2, h3, .font-headline {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed-variant": "#614000",
+                      "surface-tint": "#005BC0",
+                      "on-secondary-fixed": "#281800",
+                      "on-primary-fixed": "#001A41",
+                      "error": "#BA1A1A",
+                      "tertiary-fixed": "#FFDBCB",
+                      "surface-variant": "#E1E3E4",
+                      "error-container": "#FFDAD6",
+                      "tertiary-container": "#C55500",
+                      "on-tertiary-fixed": "#341100",
+                      "on-tertiary-container": "#0E0200",
+                      "on-surface": "#191C1D",
+                      "on-background": "#191C1D",
+                      "surface-container-highest": "#E1E3E4",
+                      "primary-container": "#1A73E8",
+                      "outline": "#727785",
+                      "on-primary-container": "#FFFFFF",
+                      "surface-container-high": "#E7E8E9",
+                      "primary-fixed": "#D8E2FF",
+                      "on-secondary-container": "#694600",
+                      "inverse-on-surface": "#F0F1F2",
+                      "surface-dim": "#D9DADB",
+                      "secondary-fixed-dim": "#FFBA43",
+                      "primary": "#005BBF",
+                      "on-error-container": "#93000A",
+                      "tertiary": "#9E4300",
+                      "on-error": "#FFFFFF",
+                      "surface": "#F8F9FA",
+                      "on-secondary": "#FFFFFF",
+                      "on-tertiary-fixed-variant": "#783100",
+                      "secondary-fixed": "#FFDDAF",
+                      "tertiary-fixed-dim": "#FFB691",
+                      "on-primary-fixed-variant": "#004493",
+                      "on-tertiary": "#FFFFFF",
+                      "inverse-surface": "#2E3132",
+                      "surface-bright": "#F8F9FA",
+                      "on-surface-variant": "#414754",
+                      "on-primary": "#FFFFFF",
+                      "background": "#F8F9FA",
+                      "surface-container": "#EDEEEF",
+                      "secondary-container": "#FDAF0B",
+                      "outline-variant": "#C1C6D6",
+                      "surface-container-lowest": "#FFFFFF",
+                      "secondary": "#805600",
+                      "primary-fixed-dim": "#ADC7FF",
+                      "surface-container-low": "#F3F4F5",
+                      "inverse-primary": "#ADC7FF"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "fontFamily": {
+                      "headline": ["Plus Jakarta Sans"],
+                      "display": ["Plus Jakarta Sans"],
+                      "body": ["Inter"],
+                      "label": ["Inter"]
+              }
+            },
+          }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/90 dark:bg-surface-dim/90 backdrop-blur-xl shadow-sm">
+<div class="flex justify-between items-center h-16 px-6">
+<button class="text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95 p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+<h1 class="font-headline font-bold tracking-tight text-on-surface">Create Post</h1>
+<button class="bg-primary text-on-primary font-headline font-bold px-6 py-2 rounded-full hover:opacity-90 active:scale-95 transition-all shadow-md">
+                Post
+            </button>
+</div>
+</header>
+<main class="pt-20 px-6 max-w-2xl mx-auto space-y-8">
+<!-- User Profile Summary -->
+<section class="flex items-center space-x-4 p-2">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-primary-fixed ring-2 ring-surface">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A professional studio portrait of a young man with a friendly smile, set against a soft, minimalist light grey background. The lighting is bright and even, reflecting a clean and modern app aesthetic with high clarity and a professional feel. The overall mood is approachable and trustworthy." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSLbOJb7o3_OM_MV3f0vuWCr3otY7_T7HzdT3_ezK74OJm1QCiO5b0jfIykSVJXU4yyOCpNhRvXfHyCRa-SjVketmZGoXy-M1i0iMMUh8y20uEZ4PErjVFuuBZ8HNNFfFj7_auTEWFy3TcOMJwniLWa1AX18aRxcU01X-yNNNYHWajFK3LbXnmxnb5jvMUoUZn4H7qaloJOd1a1N8JdgEr_LVcZl3BKabH8FjcspzOsn4FfnehDSmH4EmjxjcDD4J8vkt4ovrZYA"/>
+</div>
+<div>
+<h3 class="font-headline font-bold text-on-surface leading-tight">Alex Harrison</h3>
+<p class="text-xs text-on-surface-variant uppercase tracking-widest font-label font-medium">Public Post</p>
+</div>
+</section>
+<!-- Media Upload Area -->
+<section class="relative">
+<div class="aspect-square w-full rounded-[2rem] border-2 border-dashed border-outline-variant bg-surface-container-lowest flex flex-col items-center justify-center space-y-4 hover:bg-surface-container transition-colors cursor-pointer group shadow-sm">
+<div class="flex space-x-4">
+<div class="w-14 h-14 rounded-full bg-primary-fixed/30 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl" data-icon="camera">camera</span>
+</div>
+<div class="w-14 h-14 rounded-full bg-secondary-fixed/30 flex items-center justify-center text-secondary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl" data-icon="gallery_thumbnail">gallery_thumbnail</span>
+</div>
+</div>
+<div class="text-center">
+<p class="font-headline font-semibold text-on-surface">Add photos or videos</p>
+<p class="text-sm text-on-surface-variant">Drag and drop or tap to browse</p>
+</div>
+</div>
+</section>
+<!-- Caption Area -->
+<section class="space-y-3">
+<div class="bg-surface-container-lowest rounded-3xl p-4 shadow-sm border border-outline-variant/10">
+<textarea class="w-full bg-transparent border-none focus:ring-0 text-on-surface placeholder:text-on-surface-variant/60 min-h-[120px] resize-none font-body text-base" placeholder="Write a caption..."></textarea>
+<!-- Emoji Shortcuts -->
+<div class="flex items-center space-x-2 pt-3 border-t border-surface-container">
+<button class="p-2 rounded-full hover:bg-surface-container transition-colors">🐾</button>
+<button class="p-2 rounded-full hover:bg-surface-container transition-colors">🦴</button>
+<button class="p-2 rounded-full hover:bg-surface-container transition-colors">🐕</button>
+<button class="p-2 rounded-full hover:bg-surface-container transition-colors">🐱</button>
+<button class="p-2 rounded-full hover:bg-surface-container transition-colors">❤️</button>
+<div class="flex-grow"></div>
+<span class="text-[10px] text-on-surface-variant font-label tracking-widest uppercase">0/2200</span>
+</div>
+</div>
+</section>
+<!-- Tag Your Pet Section -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<h2 class="font-headline font-bold text-lg text-on-surface">Tag your pet</h2>
+<span class="text-xs text-primary font-bold uppercase tracking-widest">Select Multiple</span>
+</div>
+<div class="flex space-x-6 overflow-x-auto pb-4 no-scrollbar">
+<!-- Pet 1 -->
+<div class="flex-shrink-0 flex flex-col items-center space-y-2">
+<div class="relative w-16 h-16">
+<img alt="Pet Avatar" class="w-full h-full object-cover rounded-2xl border-2 border-primary shadow-lg" data-alt="A close-up portrait of a cheerful Golden Retriever with a soft-focus garden background. The lighting is warm and golden, capturing the vibrant texture of the dog's fur. The aesthetic is clean, high-end, and perfectly aligned with a premium pet lifestyle application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD27W-vEc3zfF1g144FgMCI9-BY66VoSp6lqQSo7BuSriH0JtURlI4CcDJ9wCt3BU-pacTX8DQJF4n3GzwxgPJIdAIaMHe7Mb8c_g1q23rKnS5d6wzcS5F9mnVwF7c_Vbn1eqFfTeqBa0htPizNkg5fomthjHbWFUo7E-XWmjlFwp725UCZvAFY8utOcguBqKcv-CX0z2HIeGI12p3C_HJMwGuWZsJpEPuwG7oJGZYixq8B1pfQlrKttjf6YjC-U-XNdd_9RwLkEA"/>
+<div class="absolute -top-1 -right-1 bg-primary text-on-primary rounded-full p-0.5 shadow-md">
+<span class="material-symbols-outlined text-xs" data-icon="check" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+</div>
+<span class="text-xs font-headline font-bold text-on-surface">Buddy</span>
+</div>
+<!-- Pet 2 -->
+<div class="flex-shrink-0 flex flex-col items-center space-y-2 opacity-60">
+<div class="w-16 h-16">
+<img alt="Pet Avatar" class="w-full h-full object-cover rounded-2xl grayscale" data-alt="An elegant portrait of a sleek black cat with striking yellow eyes, positioned against a minimalist cream background. The lighting is soft and architectural, emphasizing the animal's graceful lines and luxurious coat. This high-end photographic style complements a modern, sophisticated design system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2Y_QHXW7duaMmB39y-W_KdsTAhlJZsPmePMYqMJVlohS6F6Jvci9QmjxOweucUG_XlD5KN6D--7iOketYuKLu1bjDhr1QDfkRhXlPmI4gSuOGqLD7wFlZZcODFOltU4dIPk5SoDgSfjzTXttVv81nqGtkzuhwgHYo393CAU52Jtp6M8sgXU3C1Mw0NbnqZcK0oJJDQ_H-chF9UE_myR9N6A4Am0g52aQSPsA3vx7g0-hliohQbiWVDN68jGc_zXyUryCBmDl_gA"/>
+</div>
+<span class="text-xs font-headline font-bold text-on-surface">Luna</span>
+</div>
+<!-- Pet 3 -->
+<div class="flex-shrink-0 flex flex-col items-center space-y-2 opacity-60">
+<div class="w-16 h-16">
+<img alt="Pet Avatar" class="w-full h-full object-cover rounded-2xl grayscale" data-alt="A high-resolution photo of a small, fluffy white Pomeranian sitting on a modern blue velvet chair. The setting is a bright, airy urban apartment with clean lines and premium furniture. The lighting is natural and crisp, highlighting the dog's soft textures and friendly expression." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwzjsEWV_5O14Nl-4BeKMNolshQHzEZOwZaADeU9Hu1KG9c7JonzCczBa3ZjLSa9BAAAKI1na5555jidYb2KkAgt4DWpHDbAf8zq5Zwseo79aWO3tMU0wJZIPVaO038L5gkPITYEErwTWj5hTfQvsRFGQ_Rtc7z5hcGFS46v--HaX-QvrCUFSZIF01pyBqRJhp0W4wlILeL5dkp_auvcM80eJb85rln7bQu77K2XX2_6WrvDfBcwkOFQVEhvaiSxP1Nh2Ala8ubg"/>
+</div>
+<span class="text-xs font-headline font-bold text-on-surface">Mochi</span>
+</div>
+<!-- Add New -->
+<div class="flex-shrink-0 flex flex-col items-center space-y-2">
+<button class="w-16 h-16 rounded-2xl border-2 border-dashed border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+<span class="text-xs font-headline font-bold text-on-surface">Add</span>
+</div>
+</div>
+</section>
+<!-- Post Settings -->
+<section class="space-y-3">
+<div class="bg-surface-container-low rounded-3xl p-2 space-y-1">
+<!-- Location -->
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-2xl hover:bg-surface-container-high transition-colors cursor-pointer shadow-sm">
+<div class="flex items-center space-x-3 text-on-surface">
+<span class="material-symbols-outlined text-primary" data-icon="location_on">location_on</span>
+<span class="font-headline font-semibold">Add Location</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="chevron_right">chevron_right</span>
+</div>
+<!-- Privacy -->
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-2xl hover:bg-surface-container-high transition-colors cursor-pointer shadow-sm">
+<div class="flex items-center space-x-3 text-on-surface">
+<span class="material-symbols-outlined text-secondary" data-icon="lock">lock</span>
+<span class="font-headline font-semibold">Privacy Settings</span>
+</div>
+<div class="flex items-center space-x-2">
+<span class="text-sm text-on-surface-variant">Public</span>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl bg-white/80 dark:bg-surface-container/80 backdrop-blur-2xl shadow-[0_-12px_32px_rgba(25,28,29,0.06)] md:hidden">
+<div class="flex justify-around items-center h-20 pb-4 px-2">
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 transition-opacity active:scale-90">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label text-[10px] tracking-widest uppercase mt-1">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 transition-opacity active:scale-90">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="font-label text-[10px] tracking-widest uppercase mt-1">Explore</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 hover:opacity-80 transition-opacity active:scale-90">
+<span class="material-symbols-outlined" data-icon="add_circle" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+<span class="font-label text-[10px] tracking-widest uppercase mt-1">Create</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 transition-opacity active:scale-90">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-label text-[10px] tracking-widest uppercase mt-1">Alerts</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 transition-opacity active:scale-90">
+<span class="material-symbols-outlined" data-icon="pets">pets</span>
+<span class="font-label text-[10px] tracking-widest uppercase mt-1">Profile</span>
+</div>
+</div>
+</nav>
+</body></html>
