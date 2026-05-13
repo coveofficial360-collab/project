@@ -1,5 +1,37 @@
 part of 'admin_screens.dart';
 
+bool _isDirectoryPage(AppPage page) {
+  switch (page) {
+    case AppPage.residentDirectory:
+    case AppPage.addResident:
+      return true;
+    default:
+      return false;
+  }
+}
+
+bool _isAnnouncementsPage(AppPage page) {
+  switch (page) {
+    case AppPage.announcementsManagement:
+    case AppPage.addAnnouncement:
+      return true;
+    default:
+      return false;
+  }
+}
+
+bool _isAmenitiesPage(AppPage page) {
+  switch (page) {
+    case AppPage.adminAmenities:
+    case AppPage.adminAmenityBookings:
+    case AppPage.addAmenity:
+    case AppPage.editAmenity:
+      return true;
+    default:
+      return false;
+  }
+}
+
 bool _isMaintenancePage(AppPage page) {
   switch (page) {
     case AppPage.adminMaintenance:
@@ -9,6 +41,26 @@ bool _isMaintenancePage(AppPage page) {
     case AppPage.adminMaintenanceNotificationSettings:
     case AppPage.adminMaintenanceExport:
     case AppPage.adminMaintenanceSecurePayment:
+      return true;
+    default:
+      return false;
+  }
+}
+
+bool _isServicesPage(AppPage page) {
+  switch (page) {
+    case AppPage.adminServices:
+    case AppPage.addServiceProvider:
+      return true;
+    default:
+      return false;
+  }
+}
+
+bool _isComplaintsPage(AppPage page) {
+  switch (page) {
+    case AppPage.adminComplaints:
+    case AppPage.adminComplaintDetail:
       return true;
     default:
       return false;
@@ -31,6 +83,14 @@ bool _isTreasurerPage(AppPage page) {
   }
 }
 
+bool _isCommunityAdminPage(AppPage page) {
+  return page == AppPage.adminCommunity;
+}
+
+bool _isReportsPage(AppPage page) {
+  return page == AppPage.generateReports;
+}
+
 class AdminDrawerScreen extends StatelessWidget {
   const AdminDrawerScreen({super.key, this.currentPage = AppPage.adminDrawer});
 
@@ -48,6 +108,34 @@ class AdminDrawerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentUser = AppSession.instance.currentUser;
     final avatarUrl = currentUser?.avatarUrl ?? _adminAvatarUrl;
+    final hasDirectory =
+        currentUser?.hasFeature(AppFeatureKeys.adminDirectory) ?? true;
+    final hasAnnouncements =
+        currentUser?.hasFeature(AppFeatureKeys.adminAnnouncements) ?? true;
+    final hasAmenities =
+        currentUser?.hasFeature(AppFeatureKeys.adminAmenities) ?? true;
+    final hasMaintenance =
+        currentUser?.hasFeature(AppFeatureKeys.adminMaintenance) ?? true;
+    final hasTreasurer =
+        currentUser?.hasFeature(AppFeatureKeys.adminTreasurer) ?? true;
+    final hasServices =
+        currentUser?.hasFeature(AppFeatureKeys.adminServices) ?? true;
+    final hasComplaints =
+        currentUser?.hasFeature(AppFeatureKeys.adminComplaints) ?? true;
+    final hasCommunity =
+        currentUser?.hasFeature(AppFeatureKeys.adminCommunity) ?? true;
+    final hasReports =
+        currentUser?.hasFeature(AppFeatureKeys.adminReports) ?? true;
+    final showDirectory = hasDirectory || _isDirectoryPage(currentPage);
+    final showAnnouncements =
+        hasAnnouncements || _isAnnouncementsPage(currentPage);
+    final showAmenities = hasAmenities || _isAmenitiesPage(currentPage);
+    final showMaintenance = hasMaintenance || _isMaintenancePage(currentPage);
+    final showTreasurer = hasTreasurer || _isTreasurerPage(currentPage);
+    final showServices = hasServices || _isServicesPage(currentPage);
+    final showComplaints = hasComplaints || _isComplaintsPage(currentPage);
+    final showCommunity = hasCommunity || _isCommunityAdminPage(currentPage);
+    final showReports = hasReports || _isReportsPage(currentPage);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -173,97 +261,106 @@ class AdminDrawerScreen extends StatelessWidget {
                               AppPage.adminDrawer,
                             ),
                           ),
-                          _AdminDrawerNavItem(
-                            label: 'Resident Directory',
-                            icon: Icons.group_rounded,
-                            selected: currentPage == AppPage.residentDirectory,
-                            onTap: () => _navigateFromDrawer(
-                              context,
-                              AppPage.residentDirectory,
+                          if (showDirectory)
+                            _AdminDrawerNavItem(
+                              label: 'Resident Directory',
+                              icon: Icons.group_rounded,
+                              selected: _isDirectoryPage(currentPage),
+                              onTap: () => _navigateFromDrawer(
+                                context,
+                                AppPage.residentDirectory,
+                              ),
                             ),
-                          ),
-                          _AdminDrawerNavItem(
-                            label: 'Announcements',
-                            icon: Icons.campaign_rounded,
-                            selected:
-                                currentPage == AppPage.announcementsManagement,
-                            onTap: () => _navigateFromDrawer(
-                              context,
-                              AppPage.announcementsManagement,
+                          if (showAnnouncements)
+                            _AdminDrawerNavItem(
+                              label: 'Announcements',
+                              icon: Icons.campaign_rounded,
+                              selected: _isAnnouncementsPage(currentPage),
+                              onTap: () => _navigateFromDrawer(
+                                context,
+                                AppPage.announcementsManagement,
+                              ),
                             ),
-                          ),
-                          _AdminDrawerNavItem(
-                            label: 'Amenities',
-                            icon: Icons.apartment_rounded,
-                            selected: currentPage == AppPage.adminAmenities,
-                            onTap: () => _navigateFromDrawer(
-                              context,
-                              AppPage.adminAmenities,
+                          if (showAmenities)
+                            _AdminDrawerNavItem(
+                              label: 'Amenities',
+                              icon: Icons.apartment_rounded,
+                              selected: _isAmenitiesPage(currentPage),
+                              onTap: () => _navigateFromDrawer(
+                                context,
+                                AppPage.adminAmenities,
+                              ),
                             ),
-                          ),
-                          _AdminDrawerNavItem(
-                            label: 'Maintenance',
-                            icon: Icons.receipt_long_rounded,
-                            selected: _isMaintenancePage(currentPage),
-                            onTap: () => _navigateFromDrawer(
-                              context,
-                              AppPage.adminMaintenance,
+                          if (showMaintenance)
+                            _AdminDrawerNavItem(
+                              label: 'Maintenance',
+                              icon: Icons.receipt_long_rounded,
+                              selected: _isMaintenancePage(currentPage),
+                              onTap: () => _navigateFromDrawer(
+                                context,
+                                AppPage.adminMaintenance,
+                              ),
                             ),
-                          ),
-                          _AdminDrawerNavItem(
-                            label: 'Treasurer',
-                            icon: Icons.account_balance_wallet_rounded,
-                            selected: _isTreasurerPage(currentPage),
-                            onTap: () => _navigateFromDrawer(
-                              context,
-                              AppPage.adminTreasurerDashboard,
+                          if (showTreasurer)
+                            _AdminDrawerNavItem(
+                              label: 'Treasurer',
+                              icon: Icons.account_balance_wallet_rounded,
+                              selected: _isTreasurerPage(currentPage),
+                              onTap: () => _navigateFromDrawer(
+                                context,
+                                AppPage.adminTreasurerDashboard,
+                              ),
                             ),
-                          ),
-                          _AdminDrawerNavItem(
-                            label: 'Services',
-                            icon: Icons.handyman_rounded,
-                            selected: currentPage == AppPage.adminServices,
-                            onTap: () => _navigateFromDrawer(
-                              context,
-                              AppPage.adminServices,
+                          if (showServices)
+                            _AdminDrawerNavItem(
+                              label: 'Services',
+                              icon: Icons.handyman_rounded,
+                              selected: _isServicesPage(currentPage),
+                              onTap: () => _navigateFromDrawer(
+                                context,
+                                AppPage.adminServices,
+                              ),
                             ),
-                          ),
-                          _AdminDrawerNavItem(
-                            label: 'Complaints',
-                            icon: Icons.report_problem_rounded,
-                            selected: currentPage == AppPage.adminComplaints,
-                            onTap: () => _navigateFromDrawer(
-                              context,
-                              AppPage.adminComplaints,
+                          if (showComplaints)
+                            _AdminDrawerNavItem(
+                              label: 'Complaints',
+                              icon: Icons.report_problem_rounded,
+                              selected: _isComplaintsPage(currentPage),
+                              onTap: () => _navigateFromDrawer(
+                                context,
+                                AppPage.adminComplaints,
+                              ),
                             ),
-                          ),
-                          _AdminDrawerNavItem(
-                            label: 'Community',
-                            icon: Icons.forum_rounded,
-                            selected: currentPage == AppPage.adminCommunity,
-                            onTap: () => _navigateFromDrawer(
-                              context,
-                              AppPage.adminCommunity,
+                          if (showCommunity)
+                            _AdminDrawerNavItem(
+                              label: 'Community',
+                              icon: Icons.forum_rounded,
+                              selected: _isCommunityAdminPage(currentPage),
+                              onTap: () => _navigateFromDrawer(
+                                context,
+                                AppPage.adminCommunity,
+                              ),
                             ),
-                          ),
-                          _AdminDrawerNavItem(
-                            label: 'Generate Reports',
-                            icon: Icons.summarize_rounded,
-                            selected: currentPage == AppPage.generateReports,
-                            onTap: () => _navigateFromDrawer(
-                              context,
-                              AppPage.generateReports,
+                          if (showReports)
+                            _AdminDrawerNavItem(
+                              label: 'Generate Reports',
+                              icon: Icons.summarize_rounded,
+                              selected: _isReportsPage(currentPage),
+                              onTap: () => _navigateFromDrawer(
+                                context,
+                                AppPage.generateReports,
+                              ),
                             ),
-                          ),
-                          _AdminDrawerNavItem(
-                            label: 'Add Resident',
-                            icon: Icons.person_add_alt_1_rounded,
-                            selected: false,
-                            onTap: () => _navigateFromDrawer(
-                              context,
-                              AppPage.addResident,
+                          if (showDirectory)
+                            _AdminDrawerNavItem(
+                              label: 'Add Resident',
+                              icon: Icons.person_add_alt_1_rounded,
+                              selected: currentPage == AppPage.addResident,
+                              onTap: () => _navigateFromDrawer(
+                                context,
+                                AppPage.addResident,
+                              ),
                             ),
-                          ),
                           const SizedBox(height: 20),
                           const _AdminSupportCard(),
                         ],

@@ -1,4 +1,7 @@
 truncate table
+  public.society_feature_grants,
+  public.society_feature_catalog,
+  public.societies,
   public.marketplace_order_items,
   public.marketplace_orders,
   public.marketplace_listings,
@@ -90,6 +93,21 @@ values
     'Guard testing account for visitor verification and gate operations.'
   ),
   (
+    'superuser@gmail.com',
+    extensions.crypt('super', extensions.gen_salt('bf')),
+    'super_user',
+    'Priya Menon',
+    'Priya',
+    '+91 98888 88999',
+    null,
+    null,
+    null,
+    'active',
+    'Platform Super User',
+    null,
+    'Global super-user account used to manage societies and feature access.'
+  ),
+  (
     'alexander.sterling@gmail.com',
     extensions.crypt('resident', extensions.gen_salt('bf')),
     'resident',
@@ -164,6 +182,115 @@ values
     'https://lh3.googleusercontent.com/aida-public/AB6AXuAa9Fcyhcd6jceLaLL5PsHjvHDigIiKR46attnbZW4Cx7tpYziXKIJUmrePKwm0eVqUW4n7wgUl28pwTIDKrwH9usdM4C_FUAGnwmVcb4T7f0XO5fg0FsB7Sa2hBElLEYyt1CrZ4YBP6pfKRrCEOfbb_clPt5S2VvSD5MwTNs7Fb2ksNkXUi6I_tc1JXlQxULaY6tPmruzpP_oswQ0M6gAMJAUmHIg9alhUcskNQgPNhmFFa6jIXoqXKKWW47nT7JM-W0tQbjtIpvE',
     null
   );
+
+insert into public.societies (
+  code,
+  name,
+  status,
+  address,
+  city,
+  state,
+  pin_code,
+  notes
+)
+values
+  (
+    'cove-north',
+    'Cove North Residency',
+    'active',
+    'Tower A, Tower B, Tower C',
+    'Noida',
+    'Uttar Pradesh',
+    '201301',
+    'Primary society used for the main resident, admin, and guard demo accounts.'
+  ),
+  (
+    'cove-south',
+    'Cove South Heights',
+    'active',
+    'Tower D, Tower E',
+    'Noida',
+    'Uttar Pradesh',
+    '201302',
+    'Secondary pilot society with a trimmed feature set for RBAC testing.'
+  );
+
+insert into public.society_feature_catalog (
+  feature_key,
+  feature_group,
+  label,
+  description,
+  default_enabled,
+  sort_order
+)
+values
+  ('resident_payments', 'Resident', 'Payments', 'Resident bill payment and receipt flows.', true, 10),
+  ('resident_amenities', 'Resident', 'Amenities', 'Amenity browsing, reservations, and details.', true, 20),
+  ('resident_services', 'Resident', 'Services', 'Resident service provider directory and profiles.', true, 30),
+  ('resident_pets', 'Resident', 'Pets', 'Pet profiles, vaccination tracking, and pet community.', true, 35),
+  ('resident_community', 'Resident', 'Community', 'Ideas, meetings, and community support.', true, 40),
+  ('resident_marketplace', 'Resident', 'Marketplace', 'Buy, sell, rent, and local stores.', true, 50),
+  ('resident_complaints', 'Resident', 'Complaints', 'Resident support and complaint tracking.', true, 60),
+  ('resident_visitors', 'Resident', 'Visitors', 'Visitor pass and gate requests.', true, 70),
+  ('resident_notices', 'Resident', 'Notices', 'Notice board and push notifications.', true, 80),
+  ('admin_directory', 'Admin', 'Resident Directory', 'Resident records and household management.', true, 90),
+  ('admin_announcements', 'Admin', 'Announcements', 'Publish community notices and event updates.', true, 100),
+  ('admin_amenities', 'Admin', 'Amenities', 'Create and manage amenities.', true, 110),
+  ('admin_maintenance', 'Admin', 'Maintenance', 'Maintenance dues, reminders, and exports.', true, 120),
+  ('admin_treasurer', 'Admin', 'Treasurer', 'Vendor management, expenses, and RFQs.', true, 130),
+  ('admin_services', 'Admin', 'Services', 'Service provider directory management.', true, 140),
+  ('admin_complaints', 'Admin', 'Complaints', 'Complaint review and assignment.', true, 150),
+  ('admin_community', 'Admin', 'Community', 'Review community suggestions and meetings.', true, 160),
+  ('admin_reports', 'Admin', 'Reports', 'Generate reports and exports.', true, 170),
+  ('super_user_console', 'Platform', 'Super User Console', 'Society access control and feature governance.', true, 999);
+
+insert into public.society_feature_grants (
+  society_id,
+  feature_key,
+  is_enabled,
+  updated_by
+)
+select
+  society.id,
+  catalog.feature_key,
+  case
+    when society.code = 'cove-south' then catalog.feature_key in (
+      'resident_payments',
+      'resident_amenities',
+      'resident_services',
+      'resident_pets',
+      'resident_community',
+      'resident_complaints',
+      'resident_visitors',
+      'resident_notices',
+      'admin_directory',
+      'admin_announcements',
+      'admin_amenities',
+      'admin_maintenance',
+      'admin_services',
+      'admin_complaints',
+      'admin_community',
+      'admin_reports',
+      'super_user_console'
+    )
+    else true
+  end,
+  null
+from public.societies society
+cross join public.society_feature_catalog catalog;
+
+update public.app_users
+set society_id = (select id from public.societies where code = 'cove-north')
+where email in (
+  'user@gmail.com',
+  'admin@gmail.com',
+  'guard@gmail.com',
+  'alexander.sterling@gmail.com',
+  'elena.rodriguez@gmail.com',
+  'marcus.wainwright@gmail.com',
+  'jameson.chen@gmail.com',
+  'sarah.jenkins@gmail.com'
+);
 
 insert into public.household_members (user_id, full_name, relation, avatar_url)
 select id, 'Priya', 'Spouse', 'https://lh3.googleusercontent.com/aida-public/AB6AXuD3Uk5EaMJ3WGJLsCQIg0a8LodV8CLG2W9bMsn7CcIyoqx9U7LcfG4_VR-DfkFaZPR34SnVXHP4vBab2ZWDLOQbcCR_hElFK_EaI4SlnnL0R9rQxf11fdtxaN9chpV9j_h1PgVHoSMHdzduyg0Gd-Ya4jg2l56D-g8OxQeLhfgT_3TgQcJYCIe7Y_109_0DS4xIKG8TA2X5uKoQ4NDEz8vwaeglPMmejbSzALb6wnlkQU3nrQF8yIk1Wc79aE2fGc6Qv6GyN8TPoAPW'
@@ -1575,3 +1702,278 @@ insert into public.guard_duty_logs (
 select id, 'Delivery expected', 'Blinkit delivery rider is expected at the main gate shortly for unit B-204.', 'Blinkit Delivery', 'B-204', 'watch', now() - interval '10 minutes'
 from public.app_users
 where email = 'guard@gmail.com';
+
+insert into public.pet_profiles (
+  user_id,
+  name,
+  species,
+  breed,
+  gender,
+  birth_date,
+  weight_kg,
+  color,
+  allergies,
+  bio,
+  photo_url,
+  is_active,
+  created_at,
+  updated_at
+)
+select
+  resident.id,
+  'Cooper',
+  'dog',
+  'Golden Retriever',
+  'male',
+  current_date - 780,
+  29.5,
+  'Golden',
+  'No known allergies',
+  'Friendly and energetic. Loves morning walks and splash sessions.',
+  'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=900&q=80',
+  true,
+  now() - interval '20 days',
+  now() - interval '2 days'
+from public.app_users resident
+where resident.email = 'user@gmail.com'
+on conflict do nothing;
+
+insert into public.pet_vaccinations (
+  pet_id,
+  vaccine_name,
+  dose_label,
+  administered_on,
+  due_on,
+  veterinarian_name,
+  clinic_name,
+  notes,
+  created_at,
+  updated_at
+)
+select
+  pet.id,
+  'Rabies',
+  'Annual Booster',
+  current_date - 180,
+  current_date + 185,
+  'Dr. Kavya Menon',
+  'Cove Pet Care',
+  'No adverse reaction observed.',
+  now() - interval '10 days',
+  now() - interval '10 days'
+from public.pet_profiles pet
+join public.app_users resident on resident.id = pet.user_id
+where resident.email = 'user@gmail.com'
+  and pet.name = 'Cooper'
+on conflict do nothing;
+
+insert into public.pet_social_posts (
+  user_id,
+  pet_id,
+  title,
+  body,
+  post_kind,
+  image_url,
+  location_label,
+  likes_count,
+  comments_count,
+  created_at,
+  updated_at
+)
+select
+  resident.id,
+  pet.id,
+  'Morning playtime at the lawn',
+  'Cooper had a great run near the central lawn and made two new furry friends.',
+  'update',
+  'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=900&q=80',
+  'Central Lawn',
+  18,
+  4,
+  now() - interval '2 days',
+  now() - interval '2 days'
+from public.app_users resident
+join public.pet_profiles pet on pet.user_id = resident.id
+where resident.email = 'user@gmail.com'
+  and pet.name = 'Cooper'
+on conflict do nothing;
+
+insert into public.pet_meetups (
+  created_by,
+  title,
+  summary,
+  meetup_date,
+  start_time,
+  end_time,
+  location_label,
+  pet_size_pref,
+  attendee_limit,
+  notes,
+  status,
+  created_at,
+  updated_at
+)
+select
+  resident.id,
+  'Sunday Puppy Social',
+  'Casual play date for puppies and young dogs with hydration and toys.',
+  current_date + 3,
+  '08:00'::time,
+  '09:30'::time,
+  'Pet Lawn - Tower B',
+  'small_medium',
+  12,
+  'Bring water bowl and leash.',
+  'scheduled',
+  now() - interval '1 day',
+  now() - interval '1 day'
+from public.app_users resident
+where resident.email = 'user@gmail.com'
+on conflict do nothing;
+
+insert into public.pet_zone_bookings (
+  user_id,
+  pet_id,
+  zone_name,
+  booking_date,
+  slot_label,
+  notes,
+  status,
+  created_at,
+  updated_at
+)
+select
+  resident.id,
+  pet.id,
+  'East Play Zone',
+  current_date + 1,
+  '07:00 - 08:00',
+  'First agility session.',
+  'confirmed',
+  now() - interval '1 day',
+  now() - interval '1 day'
+from public.app_users resident
+join public.pet_profiles pet on pet.user_id = resident.id
+where resident.email = 'user@gmail.com'
+  and pet.name = 'Cooper'
+on conflict do nothing;
+
+insert into public.pet_vets (
+  full_name,
+  specialty,
+  phone,
+  clinic_name,
+  location_label,
+  rating,
+  consultation_fee,
+  availability_label,
+  image_url,
+  created_at
+)
+values
+  (
+    'Dr. Kavya Menon',
+    'General Veterinary Care',
+    '+91 98765 12001',
+    'Cove Pet Care',
+    'Sector 50, Noida',
+    4.9,
+    600,
+    'Mon-Sat • 9 AM - 8 PM',
+    'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=900&q=80',
+    now() - interval '15 days'
+  ),
+  (
+    'Dr. Rohan Sethi',
+    'Orthopedic & Rehab',
+    '+91 98111 44550',
+    'PawMotion Clinic',
+    'Sector 62, Noida',
+    4.7,
+    850,
+    'Tue-Sun • 10 AM - 7 PM',
+    'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=900&q=80',
+    now() - interval '12 days'
+  )
+on conflict do nothing;
+
+insert into public.pet_stores (
+  store_name,
+  category,
+  phone,
+  location_label,
+  rating,
+  delivery_note,
+  image_url,
+  created_at
+)
+values
+  (
+    'Paw Pantry',
+    'Food & Treats',
+    '+91 98989 32001',
+    'Sector 76, Noida',
+    4.8,
+    'Delivery in 45 minutes',
+    'https://images.unsplash.com/photo-1583511655826-05700d52f4d9?auto=format&fit=crop&w=900&q=80',
+    now() - interval '14 days'
+  ),
+  (
+    'Happy Tails Mart',
+    'Grooming & Accessories',
+    '+91 99110 22009',
+    'Sector 61, Noida',
+    4.6,
+    'Same-day delivery available',
+    'https://images.unsplash.com/photo-1581888227599-779811939961?auto=format&fit=crop&w=900&q=80',
+    now() - interval '11 days'
+  )
+on conflict do nothing;
+
+insert into public.pet_adoption_listings (
+  pet_name,
+  species,
+  breed,
+  age_label,
+  gender,
+  vaccinated,
+  location_label,
+  contact_name,
+  contact_phone,
+  summary,
+  image_url,
+  status,
+  created_at
+)
+values
+  (
+    'Milo',
+    'dog',
+    'Indie',
+    '8 months',
+    'male',
+    true,
+    'Noida, Sector 45',
+    'Rescue Circle NCR',
+    '+91 98100 33221',
+    'Playful indie pup, house-trained and good with children.',
+    'https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?auto=format&fit=crop&w=900&q=80',
+    'available',
+    now() - interval '8 days'
+  ),
+  (
+    'Luna',
+    'cat',
+    'Indian Shorthair',
+    '1 year',
+    'female',
+    true,
+    'Noida, Sector 75',
+    'Purrfect Homes',
+    '+91 98710 11993',
+    'Gentle indoor cat, vaccinated and litter trained.',
+    'https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?auto=format&fit=crop&w=900&q=80',
+    'available',
+    now() - interval '5 days'
+  )
+on conflict do nothing;

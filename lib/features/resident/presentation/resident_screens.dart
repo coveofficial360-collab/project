@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../app/app_page.dart';
+import '../../../core/access/app_features.dart';
 import '../../../core/notifications/resident_notifications_controller.dart';
 import '../../../core/session/app_session.dart';
 import '../../../core/supabase/avenue_repository.dart';
@@ -15,6 +16,7 @@ part 'resident_marketplace_screens.dart';
 part 'resident_home_screens.dart';
 part 'resident_amenities_bills_screens.dart';
 part 'resident_engagement_screens.dart';
+part 'resident_pet_screens.dart';
 
 const _residentAvatarUrl =
     'https://lh3.googleusercontent.com/aida-public/AB6AXuCJ6EpMNgN7n9bh8EVIUs7N5SOo5Yl-IMIN9XmH6Yy-5ZQFuibLZUhdy_fSA1wZksMCirCpeAxKY-X3RhGG21edbtajSTdvIKPF-bAU_cgdKsh8O4-U9Ynedpa_iOPQvDGGNY_u9vM9PIETZpc_crPtmFthrBwf51AmmWx8Ymv72rHR1kQRjARNXhFro_rBfoEztKMZBRHWwESolqtAF7ekTFs603tp08kexUAy68IjY7VYyjoJirw5E8Oxqte5m_7dGXGGMAFX3P1e';

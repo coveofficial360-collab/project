@@ -27,6 +27,25 @@ class ResidentDrawerScreen extends StatelessWidget {
       currentPage == AppPage.marketplaceStoreProducts ||
       currentPage == AppPage.marketplaceStoreOrders;
 
+  bool get _isPetSection =>
+      currentPage == AppPage.petHub ||
+      currentPage == AppPage.petSocialFeed ||
+      currentPage == AppPage.petProfile ||
+      currentPage == AppPage.addPetBasicDetails ||
+      currentPage == AppPage.addPetHealthInfo ||
+      currentPage == AppPage.addPetPhotoUpload ||
+      currentPage == AppPage.addPetPreview ||
+      currentPage == AppPage.vaccinationDashboard ||
+      currentPage == AppPage.addVaccination ||
+      currentPage == AppPage.vaccinationHistory ||
+      currentPage == AppPage.petMeetups ||
+      currentPage == AppPage.createPetMeetup ||
+      currentPage == AppPage.createPetPost ||
+      currentPage == AppPage.bookPetZone ||
+      currentPage == AppPage.petStores ||
+      currentPage == AppPage.petAdoptionCenter ||
+      currentPage == AppPage.vetDirectory;
+
   void _navigateFromDrawer(BuildContext context, AppPage targetPage) {
     Navigator.of(context).pop();
     if (targetPage == currentPage) {
@@ -37,6 +56,25 @@ class ResidentDrawerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = AppSession.instance.currentUser;
+    final hasPayments =
+        currentUser?.hasFeature(AppFeatureKeys.residentPayments) ?? true;
+    final hasComplaints =
+        currentUser?.hasFeature(AppFeatureKeys.residentComplaints) ?? true;
+    final hasNotices =
+        currentUser?.hasFeature(AppFeatureKeys.residentNotices) ?? true;
+    final hasCommunity =
+        currentUser?.hasFeature(AppFeatureKeys.residentCommunity) ?? true;
+    final hasAmenities =
+        currentUser?.hasFeature(AppFeatureKeys.residentAmenities) ?? true;
+    final hasServices =
+        currentUser?.hasFeature(AppFeatureKeys.residentServices) ?? true;
+    final hasPets = currentUser?.hasFeature(AppFeatureKeys.residentPets) ?? true;
+    final hasMarketplace =
+        currentUser?.hasFeature(AppFeatureKeys.residentMarketplace) ?? true;
+    final hasVisitors =
+        currentUser?.hasFeature(AppFeatureKeys.residentVisitors) ?? true;
+
     return AvenueScaffold(
       backgroundColor: Colors.transparent,
       body: Stack(
@@ -100,85 +138,131 @@ class ResidentDrawerScreen extends StatelessWidget {
                       backgroundColor: Color(0x1AFFBA43),
                       foregroundColor: Color(0xFFE29B00),
                     ),
-                    const SizedBox(height: 28),
-                    _DrawerItem(
-                      label: 'Dashboard',
-                      icon: Icons.dashboard_customize_rounded,
-                      selected: currentPage == AppPage.home,
-                      onTap: () => _navigateFromDrawer(context, AppPage.home),
-                    ),
-                    const SizedBox(height: 8),
-                    _DrawerItem(
-                      label: 'Payments',
-                      icon: Icons.payments_outlined,
-                      selected: currentPage == AppPage.bills,
-                      onTap: () => _navigateFromDrawer(context, AppPage.bills),
-                    ),
-                    const SizedBox(height: 8),
-                    _DrawerItem(
-                      label: 'My Complaints',
-                      icon: Icons.info_outline_rounded,
-                      selected: currentPage == AppPage.complaints,
-                      onTap: () =>
-                          _navigateFromDrawer(context, AppPage.complaints),
-                    ),
-                    const SizedBox(height: 8),
-                    _DrawerItem(
-                      label: 'Notice Board',
-                      icon: Icons.campaign_outlined,
-                      selected: currentPage == AppPage.notices,
-                      onTap: () =>
-                          _navigateFromDrawer(context, AppPage.notices),
-                    ),
-                    const SizedBox(height: 8),
-                    _DrawerItem(
-                      label: 'Community',
-                      icon: Icons.groups_rounded,
-                      selected: _isCommunitySection,
-                      onTap: () =>
-                          _navigateFromDrawer(context, AppPage.communityFeed),
-                    ),
-                    const SizedBox(height: 8),
-                    _DrawerItem(
-                      label: 'Amenities',
-                      icon: Icons.pool_rounded,
-                      selected: currentPage == AppPage.amenities,
-                      onTap: () =>
-                          _navigateFromDrawer(context, AppPage.amenities),
-                    ),
-                    const SizedBox(height: 8),
-                    _DrawerItem(
-                      label: 'Services',
-                      icon: Icons.grid_view_rounded,
-                      selected:
-                          currentPage == AppPage.residentServices ||
-                          currentPage == AppPage.residentServiceProfile,
-                      onTap: () => _navigateFromDrawer(
-                        context,
-                        AppPage.residentServices,
+                    const SizedBox(height: 20),
+                    Expanded(
+                      child: ListView(
+                        padding: EdgeInsets.zero,
+                        children: [
+                          _DrawerItem(
+                            label: 'Dashboard',
+                            icon: Icons.dashboard_customize_rounded,
+                            selected: currentPage == AppPage.home,
+                            onTap: () =>
+                                _navigateFromDrawer(context, AppPage.home),
+                          ),
+                          const SizedBox(height: 8),
+                          if (hasPayments) ...[
+                            _DrawerItem(
+                              label: 'Payments',
+                              icon: Icons.payments_outlined,
+                              selected: currentPage == AppPage.bills,
+                              onTap: () =>
+                                  _navigateFromDrawer(context, AppPage.bills),
+                            ),
+                            const SizedBox(height: 8),
+                          ],
+                          if (hasComplaints) ...[
+                            _DrawerItem(
+                              label: 'My Complaints',
+                              icon: Icons.info_outline_rounded,
+                              selected: currentPage == AppPage.complaints,
+                              onTap: () => _navigateFromDrawer(
+                                context,
+                                AppPage.complaints,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                          ],
+                          if (hasNotices) ...[
+                            _DrawerItem(
+                              label: 'Notice Board',
+                              icon: Icons.campaign_outlined,
+                              selected: currentPage == AppPage.notices,
+                              onTap: () =>
+                                  _navigateFromDrawer(context, AppPage.notices),
+                            ),
+                            const SizedBox(height: 8),
+                          ],
+                          if (hasCommunity) ...[
+                            _DrawerItem(
+                              label: 'Community',
+                              icon: Icons.groups_rounded,
+                              selected: _isCommunitySection,
+                              onTap: () => _navigateFromDrawer(
+                                context,
+                                AppPage.communityFeed,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                          ],
+                          if (hasAmenities) ...[
+                            _DrawerItem(
+                              label: 'Amenities',
+                              icon: Icons.pool_rounded,
+                              selected: currentPage == AppPage.amenities,
+                              onTap: () => _navigateFromDrawer(
+                                context,
+                                AppPage.amenities,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                          ],
+                          if (hasServices) ...[
+                            _DrawerItem(
+                              label: 'Services',
+                              icon: Icons.grid_view_rounded,
+                              selected:
+                                  currentPage == AppPage.residentServices ||
+                                  currentPage == AppPage.residentServiceProfile,
+                              onTap: () => _navigateFromDrawer(
+                                context,
+                                AppPage.residentServices,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                          ],
+                          if (hasPets) ...[
+                            _DrawerItem(
+                              label: 'Pets Community',
+                              icon: Icons.pets_rounded,
+                              selected: _isPetSection,
+                              onTap: () =>
+                                  _navigateFromDrawer(context, AppPage.petHub),
+                            ),
+                            const SizedBox(height: 8),
+                          ],
+                          if (hasMarketplace) ...[
+                            _DrawerItem(
+                              label: 'Marketplace',
+                              icon: Icons.storefront_outlined,
+                              selected: _isMarketplaceSection,
+                              onTap: () => _navigateFromDrawer(
+                                context,
+                                AppPage.marketplaceHome,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                          ],
+                          if (hasVisitors || hasComplaints || hasCommunity) ...[
+                            _DrawerItem(
+                              label: 'Support',
+                              icon: Icons.help_outline,
+                              selected: currentPage == AppPage.communitySupport,
+                              onTap: () => _navigateFromDrawer(
+                                context,
+                                AppPage.communitySupport,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                          ],
+                          const SizedBox(height: 8),
+                          const _DrawerItem(
+                            label: 'Settings',
+                            icon: Icons.settings,
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    _DrawerItem(
-                      label: 'Marketplace',
-                      icon: Icons.storefront_outlined,
-                      selected: _isMarketplaceSection,
-                      onTap: () =>
-                          _navigateFromDrawer(context, AppPage.marketplaceHome),
-                    ),
-                    const SizedBox(height: 8),
-                    _DrawerItem(
-                      label: 'Support',
-                      icon: Icons.help_outline,
-                      selected: currentPage == AppPage.communitySupport,
-                      onTap: () => _navigateFromDrawer(
-                        context,
-                        AppPage.communitySupport,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    const _DrawerItem(label: 'Settings', icon: Icons.settings),
-                    const Spacer(),
                     TextButton.icon(
                       onPressed: () =>
                           goToPage(context, AppPage.login, replace: true),

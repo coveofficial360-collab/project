@@ -49,9 +49,7 @@ class _GuardHomeScreenState extends State<GuardHomeScreen> {
         onSearch: () => _showInfo(
           'Visitor lookup search can be connected to live resident records next.',
         ),
-        onNotifications: () => _showInfo(
-          'Guard notifications can be connected once the alert center is added.',
-        ),
+        onNotifications: () => goToPage(context, AppPage.guardNotices),
         onLogout: () {
           AppSession.instance.clear();
           goToPage(context, AppPage.login, replace: true);
@@ -205,6 +203,7 @@ class _GuardHomeScreenState extends State<GuardHomeScreen> {
         onSelect: (value) => setState(() {
           _selectedTab = value;
         }),
+        onNoticesTap: () => goToPage(context, AppPage.guardNotices),
       ),
     );
   }
@@ -759,10 +758,12 @@ class _GuardBottomNavigationBar extends StatelessWidget {
   const _GuardBottomNavigationBar({
     required this.selectedTab,
     required this.onSelect,
+    this.onNoticesTap,
   });
 
   final String selectedTab;
   final ValueChanged<String> onSelect;
+  final VoidCallback? onNoticesTap;
 
   @override
   Widget build(BuildContext context) {
@@ -806,6 +807,12 @@ class _GuardBottomNavigationBar extends StatelessWidget {
               icon: Icons.fact_check_rounded,
               selected: selectedTab == 'attendance',
               onTap: () => onSelect('attendance'),
+            ),
+            _GuardBottomNavItem(
+              label: 'Notices',
+              icon: Icons.notifications_active_rounded,
+              selected: selectedTab == 'notices',
+              onTap: onNoticesTap ?? () => onSelect('notices'),
             ),
           ],
         ),

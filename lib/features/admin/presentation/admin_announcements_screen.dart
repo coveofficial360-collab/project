@@ -205,16 +205,15 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
   final AvenueRepository _repository = AvenueRepository();
   final titleController = TextEditingController();
   final bodyController = TextEditingController();
-  final audienceController = TextEditingController(text: 'All Residents');
 
   String selectedKind = 'general';
+  String selectedAudience = 'All Residents';
   bool isSubmitting = false;
 
   @override
   void dispose() {
     titleController.dispose();
     bodyController.dispose();
-    audienceController.dispose();
     super.dispose();
   }
 
@@ -246,7 +245,7 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Compose a resident notice, choose the audience, and publish it to the notice board.',
+              'Compose a notice, choose the audience, and publish it to the right notification area.',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: _AdminPalette.muted,
                 height: 1.5,
@@ -277,10 +276,16 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
                       maxLines: 6,
                     ),
                     const SizedBox(height: 12),
-                    _AdminComposerField(
-                      label: 'Audience',
-                      hintText: 'All Residents',
-                      controller: audienceController,
+                    _AdminAudienceDropdown(
+                      value: selectedAudience,
+                      onChanged: (value) {
+                        if (value == null) {
+                          return;
+                        }
+                        setState(() {
+                          selectedAudience = value;
+                        });
+                      },
                     ),
                     const SizedBox(height: 20),
                     Text(
@@ -364,14 +369,14 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
               icon: Icons.notifications_active_rounded,
               title: 'LIVE UPDATE',
               body:
-                  'Published notices appear in the resident notice board and create resident notifications.',
+                  'Resident notices appear in the resident notice board. Guard notices appear in the guard notices screen.',
             ),
             const SizedBox(height: 12),
             const _AdminInfoBanner(
               icon: Icons.group_rounded,
               title: 'AUDIENCE',
               body:
-                  'Use all residents for community notices or a focused audience label for targeted communication.',
+                  'Choose residents for community updates or guards for gate and security instructions.',
             ),
           ],
         ),
@@ -386,7 +391,7 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
 
     final title = titleController.text.trim();
     final body = bodyController.text.trim();
-    final audience = audienceController.text.trim();
+    final audience = selectedAudience.trim();
     if (title.isEmpty || body.isEmpty || audience.isEmpty) {
       showAvenueDialogMessage(
         context,
@@ -450,5 +455,55 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
       context,
     ).showSnackBar(SnackBar(content: Text(successMessage)));
     Navigator.of(context).pop(true);
+  }
+}
+
+class _AdminAudienceDropdown extends StatelessWidget {
+  const _AdminAudienceDropdown({required this.value, required this.onChanged});
+
+  final String value;
+  final ValueChanged<String?> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Audience',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            fontWeight: FontWeight.w800,
+            color: _AdminPalette.muted,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(
+            color: _AdminPalette.surface.withValues(alpha: 0.92),
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(
+              color: _AdminPalette.outline.withValues(alpha: 0.22),
+            ),
+          ),
+          child: DropdownButtonFormField<String>(
+            initialValue: value,
+            decoration: const InputDecoration(
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            ),
+            borderRadius: BorderRadius.circular(18),
+            icon: const Icon(Icons.keyboard_arrow_down_rounded),
+            items: const [
+              DropdownMenuItem<String>(
+                value: 'All Residents',
+                child: Text('Residents'),
+              ),
+              DropdownMenuItem<String>(value: 'Guards', child: Text('Guards')),
+            ],
+            onChanged: onChanged,
+          ),
+        ),
+      ],
+    );
   }
 }

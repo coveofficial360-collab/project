@@ -35,6 +35,13 @@ end $$;
 
 do $$
 begin
+  create type public.society_status as enum ('active', 'draft', 'suspended');
+exception
+  when duplicate_object then null;
+end $$;
+
+do $$
+begin
   create type public.resident_kind as enum ('owner', 'tenant', 'family');
 exception
   when duplicate_object then null;
@@ -100,6 +107,49 @@ create table if not exists public.app_users (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+create table if not exists public.societies (
+  id uuid primary key default gen_random_uuid(),
+  code text not null unique,
+  name text not null unique,
+  status public.society_status not null default 'active',
+  address text,
+  city text,
+  state text,
+  pin_code text,
+  notes text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.society_feature_catalog (
+  feature_key text primary key,
+  feature_group text not null,
+  label text not null,
+  description text not null,
+  default_enabled boolean not null default true,
+  sort_order integer not null default 0,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.society_feature_grants (
+  society_id uuid not null references public.societies(id) on delete cascade,
+  feature_key text not null references public.society_feature_catalog(feature_key) on delete cascade,
+  is_enabled boolean not null default true,
+  updated_by uuid references public.app_users(id) on delete set null,
+  updated_at timestamptz not null default now(),
+  primary key (society_id, feature_key)
+);
+
+alter table public.app_users
+add column if not exists society_id uuid;
+
+alter table public.app_users
+drop constraint if exists app_users_society_id_fkey;
+
+alter table public.app_users
+add constraint app_users_society_id_fkey
+foreign key (society_id) references public.societies(id) on delete set null;
 
 create table if not exists public.household_members (
   id uuid primary key default gen_random_uuid(),
@@ -715,6 +765,129 @@ create table if not exists public.community_support_faqs (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.pet_profiles (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.app_users(id) on delete cascade,
+  name text not null,
+  species text not null default 'dog',
+  breed text,
+  gender text,
+  birth_date date,
+  weight_kg numeric(5, 2),
+  color text,
+  microchip_id text,
+  allergies text,
+  medications text,
+  bio text,
+  photo_url text,
+  is_active boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.pet_vaccinations (
+  id uuid primary key default gen_random_uuid(),
+  pet_id uuid not null references public.pet_profiles(id) on delete cascade,
+  vaccine_name text not null,
+  dose_label text,
+  administered_on date not null,
+  due_on date,
+  veterinarian_name text,
+  clinic_name text,
+  certificate_url text,
+  notes text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.pet_social_posts (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.app_users(id) on delete cascade,
+  pet_id uuid references public.pet_profiles(id) on delete set null,
+  title text not null,
+  body text not null,
+  post_kind text not null default 'update',
+  image_url text,
+  location_label text,
+  likes_count integer not null default 0,
+  comments_count integer not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.pet_meetups (
+  id uuid primary key default gen_random_uuid(),
+  created_by uuid not null references public.app_users(id) on delete cascade,
+  title text not null,
+  summary text not null,
+  meetup_date date not null,
+  start_time time,
+  end_time time,
+  location_label text not null,
+  pet_size_pref text default 'all',
+  attendee_limit integer,
+  notes text,
+  status text not null default 'scheduled',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.pet_zone_bookings (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.app_users(id) on delete cascade,
+  pet_id uuid not null references public.pet_profiles(id) on delete cascade,
+  zone_name text not null,
+  booking_date date not null,
+  slot_label text not null,
+  notes text,
+  status text not null default 'confirmed',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.pet_vets (
+  id uuid primary key default gen_random_uuid(),
+  full_name text not null,
+  specialty text not null,
+  phone text,
+  clinic_name text,
+  location_label text,
+  rating numeric(3, 2) not null default 4.7,
+  consultation_fee numeric(10, 2),
+  availability_label text,
+  image_url text,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.pet_stores (
+  id uuid primary key default gen_random_uuid(),
+  store_name text not null,
+  category text not null,
+  phone text,
+  location_label text,
+  rating numeric(3, 2) not null default 4.6,
+  delivery_note text,
+  image_url text,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.pet_adoption_listings (
+  id uuid primary key default gen_random_uuid(),
+  pet_name text not null,
+  species text not null,
+  breed text,
+  age_label text,
+  gender text,
+  vaccinated boolean not null default false,
+  location_label text,
+  contact_name text,
+  contact_phone text,
+  summary text,
+  image_url text,
+  status text not null default 'available',
+  created_at timestamptz not null default now()
+);
+
 create table if not exists public.guard_duty_logs (
   id uuid primary key default gen_random_uuid(),
   guard_user_id uuid not null references public.app_users(id) on delete cascade,
@@ -826,6 +999,8 @@ before update on public.marketplace_orders
 for each row
 execute function public.set_updated_at();
 
+drop function if exists public.authenticate_app_user(text, text, public.app_role);
+
 create or replace function public.authenticate_app_user(
   p_email text,
   p_password text,
@@ -838,7 +1013,10 @@ returns table (
   full_name text,
   unit_number text,
   tower text,
-  status public.record_status
+  status public.record_status,
+  society_id uuid,
+  society_name text,
+  feature_keys text[]
 )
 language sql
 security definer
@@ -851,13 +1029,99 @@ as $$
     u.full_name,
     u.unit_number,
     u.tower,
-    u.status
+    u.status,
+    s.id,
+    s.name,
+    coalesce(
+      case
+        when u.role = 'super_user' then (
+          select array_agg(c.feature_key order by c.sort_order, c.label)
+          from public.society_feature_catalog c
+        )
+        when u.society_id is not null then (
+          select array_agg(g.feature_key order by c.sort_order, c.label)
+          from public.society_feature_grants g
+          join public.society_feature_catalog c on c.feature_key = g.feature_key
+          where g.society_id = u.society_id
+            and g.is_enabled = true
+        )
+        else null
+      end,
+      '{}'::text[]
+    )
   from public.app_users u
+  left join public.societies s on s.id = u.society_id
   where lower(u.email) = lower(p_email)
     and u.password_hash = extensions.crypt(p_password, u.password_hash)
     and (p_role is null or u.role = p_role)
   limit 1;
 $$;
+
+create or replace view public.super_user_societies_v as
+select
+  s.id,
+  s.code,
+  s.name,
+  s.status,
+  s.address,
+  s.city,
+  s.state,
+  s.pin_code,
+  s.notes,
+  s.created_at,
+  s.updated_at,
+  coalesce(count(u.id) filter (where u.role = 'resident'), 0) as resident_count,
+  coalesce(count(u.id) filter (where u.role = 'admin'), 0) as admin_count,
+  coalesce(count(u.id) filter (where u.role = 'guard'), 0) as guard_count,
+  coalesce(enabled.enabled_feature_count, 0) as enabled_feature_count,
+  coalesce(enabled.total_feature_count, 0) as total_feature_count
+from public.societies s
+left join public.app_users u on u.society_id = s.id
+left join lateral (
+  select
+    count(*) filter (where grant_record.is_enabled) as enabled_feature_count,
+    count(*) as total_feature_count
+  from public.society_feature_grants grant_record
+  where grant_record.society_id = s.id
+) enabled on true
+group by
+  s.id,
+  s.code,
+  s.name,
+  s.status,
+  s.address,
+  s.city,
+  s.state,
+  s.pin_code,
+  s.notes,
+  s.created_at,
+  s.updated_at,
+  enabled.enabled_feature_count,
+  enabled.total_feature_count
+order by s.name asc;
+
+create or replace view public.super_user_society_features_v as
+select
+  s.id as society_id,
+  s.code as society_code,
+  s.name as society_name,
+  c.feature_key,
+  c.feature_group,
+  c.label,
+  c.description,
+  c.default_enabled,
+  c.sort_order,
+  coalesce(g.is_enabled, c.default_enabled) as is_enabled,
+  g.updated_by,
+  updater.full_name as updated_by_name,
+  g.updated_at
+from public.societies s
+cross join public.society_feature_catalog c
+left join public.society_feature_grants g
+  on g.society_id = s.id
+  and g.feature_key = c.feature_key
+left join public.app_users updater on updater.id = g.updated_by
+order by s.name asc, c.sort_order asc, c.label asc;
 
 create or replace view public.resident_directory_v as
 select
@@ -1408,6 +1672,40 @@ from public.community_suggestion_comments c
 join public.app_users u on u.id = c.user_id
 order by c.created_at asc;
 
+drop view if exists public.resident_pet_hub_v;
+
+create or replace view public.resident_pet_hub_v as
+select
+  u.id as user_id,
+  (
+    select count(*)
+    from public.pet_profiles p
+    where p.user_id = u.id
+      and p.is_active = true
+  ) as total_pets,
+  (
+    select count(*)
+    from public.pet_vaccinations v
+    join public.pet_profiles p on p.id = v.pet_id
+    where p.user_id = u.id
+      and v.due_on is not null
+      and v.due_on <= current_date + 30
+  ) as vaccinations_due_soon,
+  (
+    select count(*)
+    from public.pet_zone_bookings b
+    where b.user_id = u.id
+      and b.booking_date >= current_date
+      and b.status in ('confirmed', 'scheduled')
+  ) as upcoming_zone_bookings,
+  (
+    select count(*)
+    from public.pet_social_posts s
+    where s.user_id = u.id
+  ) as total_posts
+from public.app_users u
+where u.role = 'resident';
+
 grant usage on schema public to anon, authenticated;
 grant select, insert, update, delete on all tables in schema public to anon, authenticated;
 grant execute on function public.authenticate_app_user(text, text, public.app_role) to anon, authenticated;
@@ -1421,6 +1719,8 @@ grant select on public.admin_vendor_directory_v to anon, authenticated;
 grant select on public.admin_expense_management_v to anon, authenticated;
 grant select on public.admin_financial_monthly_summary_v to anon, authenticated;
 grant select on public.admin_vendor_comparison_v to anon, authenticated;
+grant select on public.super_user_societies_v to anon, authenticated;
+grant select on public.super_user_society_features_v to anon, authenticated;
 grant select on public.resident_marketplace_stores_v to anon, authenticated;
 grant select on public.resident_marketplace_products_v to anon, authenticated;
 grant select on public.resident_marketplace_listings_v to anon, authenticated;
@@ -1430,9 +1730,13 @@ grant select on public.guard_gate_activity_v to anon, authenticated;
 grant select on public.community_suggestion_feed_v to anon, authenticated;
 grant select on public.admin_community_suggestion_feed_v to anon, authenticated;
 grant select on public.community_suggestion_comments_v to anon, authenticated;
+grant select on public.resident_pet_hub_v to anon, authenticated;
 
 -- Development-only setup: keep the demo app permissive without requiring RLS policies.
 alter table public.app_users disable row level security;
+alter table public.societies disable row level security;
+alter table public.society_feature_catalog disable row level security;
+alter table public.society_feature_grants disable row level security;
 alter table public.household_members disable row level security;
 alter table public.vehicles disable row level security;
 alter table public.amenities disable row level security;
@@ -1467,5 +1771,13 @@ alter table public.community_suggestion_target_residents disable row level secur
 alter table public.community_suggestion_comments disable row level security;
 alter table public.community_meetings disable row level security;
 alter table public.community_support_faqs disable row level security;
+alter table public.pet_profiles disable row level security;
+alter table public.pet_vaccinations disable row level security;
+alter table public.pet_social_posts disable row level security;
+alter table public.pet_meetups disable row level security;
+alter table public.pet_zone_bookings disable row level security;
+alter table public.pet_vets disable row level security;
+alter table public.pet_stores disable row level security;
+alter table public.pet_adoption_listings disable row level security;
 alter table public.guard_duty_logs disable row level security;
 alter table public.guard_attendance_logs disable row level security;

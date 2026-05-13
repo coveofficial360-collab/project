@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/app_page.dart';
+import '../../../core/access/app_features.dart';
 import '../../../core/session/app_session.dart';
 import '../../../core/supabase/avenue_repository.dart';
 import '../../../theme/avenue_theme.dart';

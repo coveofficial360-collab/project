@@ -182,122 +182,140 @@ class _AdminAddVendorScreenState extends State<AdminAddVendorScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Capture the core vendor profile, service scope, and contact details for finance tracking.',
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyLarge?.copyWith(color: _AdminPalette.muted),
+              _TreasurerHeroCard(
+                title: 'Add Vendor',
+                subtitle:
+                    'Create a clean vendor profile with just the essentials. The fields are grouped to feel lighter on the eye.',
+                accentLabel: 'Finance Registry',
               ),
-              const SizedBox(height: 20),
-              _AdminGlassCard(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      _TreasurerTextField(
-                        controller: _companyController,
-                        label: 'Company Name',
-                        validator: (value) =>
-                            (value == null || value.trim().isEmpty)
-                            ? 'Enter the company name'
-                            : null,
+              const SizedBox(height: 18),
+              _TreasurerSectionCard(
+                title: 'Company Details',
+                subtitle: 'Who should the treasurer team contact?',
+                child: Column(
+                  children: [
+                    _TreasurerTextField(
+                      controller: _companyController,
+                      label: 'Company Name',
+                      validator: (value) =>
+                          (value == null || value.trim().isEmpty)
+                          ? 'Enter the company name'
+                          : null,
+                    ),
+                    const SizedBox(height: 14),
+                    _TreasurerTextField(
+                      controller: _contactController,
+                      label: 'Contact Person',
+                      validator: (value) =>
+                          (value == null || value.trim().isEmpty)
+                          ? 'Enter the primary contact'
+                          : null,
+                    ),
+                    const SizedBox(height: 14),
+                    _TreasurerTextField(
+                      controller: _phoneController,
+                      label: 'Phone',
+                      keyboardType: TextInputType.phone,
+                      validator: (value) =>
+                          (value == null || value.trim().isEmpty)
+                          ? 'Enter a phone number'
+                          : null,
+                    ),
+                    const SizedBox(height: 14),
+                    _TreasurerTextField(
+                      controller: _emailController,
+                      label: 'Email',
+                      keyboardType: TextInputType.emailAddress,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              _TreasurerSectionCard(
+                title: 'Service Scope',
+                subtitle: 'Define what the vendor actually covers.',
+                child: Column(
+                  children: [
+                    DropdownButtonFormField<String>(
+                      value: _serviceType,
+                      decoration: _treasurerInputDecoration('Service Type'),
+                      items: const [
+                        DropdownMenuItem(
+                          value: 'Security',
+                          child: Text('Security'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Housekeeping',
+                          child: Text('Housekeeping'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Landscape',
+                          child: Text('Landscape'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Maintenance',
+                          child: Text('Maintenance'),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() => _serviceType = value);
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 14),
+                    _TreasurerTextField(
+                      controller: _serviceScopeController,
+                      label: 'Service Scope',
+                      maxLines: 3,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              _TreasurerSectionCard(
+                title: 'Commercial Details',
+                subtitle: 'These values help with reporting and comparisons.',
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _TreasurerTextField(
+                        controller: _monthlyCostController,
+                        label: 'Monthly Cost',
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
                       ),
-                      const SizedBox(height: 14),
-                      _TreasurerTextField(
-                        controller: _contactController,
-                        label: 'Contact Person',
-                        validator: (value) =>
-                            (value == null || value.trim().isEmpty)
-                            ? 'Enter the primary contact'
-                            : null,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _TreasurerTextField(
+                        controller: _staffCountController,
+                        label: 'Staff Count',
+                        keyboardType: TextInputType.number,
                       ),
-                      const SizedBox(height: 14),
-                      _TreasurerTextField(
-                        controller: _phoneController,
-                        label: 'Phone',
-                        keyboardType: TextInputType.phone,
-                        validator: (value) =>
-                            (value == null || value.trim().isEmpty)
-                            ? 'Enter a phone number'
-                            : null,
-                      ),
-                      const SizedBox(height: 14),
-                      _TreasurerTextField(
-                        controller: _emailController,
-                        label: 'Email',
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-                      const SizedBox(height: 14),
-                      DropdownButtonFormField<String>(
-                        value: _serviceType,
-                        decoration: _treasurerInputDecoration('Service Type'),
-                        items: const [
-                          DropdownMenuItem(
-                            value: 'Security',
-                            child: Text('Security'),
-                          ),
-                          DropdownMenuItem(
-                            value: 'Housekeeping',
-                            child: Text('Housekeeping'),
-                          ),
-                          DropdownMenuItem(
-                            value: 'Landscape',
-                            child: Text('Landscape'),
-                          ),
-                          DropdownMenuItem(
-                            value: 'Maintenance',
-                            child: Text('Maintenance'),
-                          ),
-                        ],
-                        onChanged: (value) {
-                          if (value != null) {
-                            setState(() => _serviceType = value);
-                          }
-                        },
-                      ),
-                      const SizedBox(height: 14),
-                      _TreasurerTextField(
-                        controller: _serviceScopeController,
-                        label: 'Service Scope',
-                        maxLines: 3,
-                      ),
-                      const SizedBox(height: 14),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _TreasurerTextField(
-                              controller: _monthlyCostController,
-                              label: 'Monthly Cost',
-                              keyboardType:
-                                  const TextInputType.numberWithOptions(
-                                    decimal: true,
-                                  ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: _TreasurerTextField(
-                              controller: _staffCountController,
-                              label: 'Staff Count',
-                              keyboardType: TextInputType.number,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 14),
-                      _TreasurerTextField(
-                        controller: _addressController,
-                        label: 'Address',
-                        maxLines: 2,
-                      ),
-                      const SizedBox(height: 14),
-                      _TreasurerTextField(
-                        controller: _notesController,
-                        label: 'Notes',
-                        maxLines: 4,
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              _TreasurerSectionCard(
+                title: 'Notes',
+                subtitle: 'Optional context for future reference.',
+                child: Column(
+                  children: [
+                    _TreasurerTextField(
+                      controller: _addressController,
+                      label: 'Address',
+                      maxLines: 2,
+                    ),
+                    const SizedBox(height: 14),
+                    _TreasurerTextField(
+                      controller: _notesController,
+                      label: 'Notes',
+                      maxLines: 4,
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 20),
@@ -430,6 +448,13 @@ class _AdminExpensesManagementScreenState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                _TreasurerHeroCard(
+                  title: 'Record Expense',
+                  subtitle:
+                      'Keep the entry flow simple: vendor, amount, date, and a short note.',
+                  accentLabel: 'Expense Log',
+                ),
+                const SizedBox(height: 18),
                 Wrap(
                   spacing: 12,
                   runSpacing: 12,
@@ -455,152 +480,177 @@ class _AdminExpensesManagementScreenState
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Record New Expense',
-                            style: Theme.of(context).textTheme.titleLarge
-                                ?.copyWith(fontWeight: FontWeight.w800),
-                          ),
-                          const SizedBox(height: 16),
-                          DropdownButtonFormField<String>(
-                            value: _selectedVendorId,
-                            decoration: _treasurerInputDecoration('Vendor'),
-                            items: [
-                              const DropdownMenuItem<String>(
-                                value: null,
-                                child: Text('Manual vendor entry'),
-                              ),
-                              ...vendors.map(
-                                (vendor) => DropdownMenuItem<String>(
-                                  value: vendor['vendor_id']?.toString(),
-                                  child: Text(
-                                    vendor['company_name']?.toString() ??
-                                        'Vendor',
-                                  ),
-                                ),
-                              ),
-                            ],
-                            onChanged: (value) {
-                              setState(() => _selectedVendorId = value);
-                            },
-                          ),
-                          const SizedBox(height: 14),
-                          if (_selectedVendorId == null)
-                            Column(
+                          _TreasurerSectionCard(
+                            title: 'Vendor & Category',
+                            subtitle:
+                                'Pick an existing vendor or type one manually.',
+                            child: Column(
                               children: [
-                                _TreasurerTextField(
-                                  controller: _vendorNameController,
-                                  label: 'Vendor Name',
-                                ),
-                                const SizedBox(height: 14),
-                              ],
-                            ),
-                          DropdownButtonFormField<String>(
-                            value: _category,
-                            decoration: _treasurerInputDecoration('Category'),
-                            items: const [
-                              DropdownMenuItem(
-                                value: 'Housekeeping',
-                                child: Text('Housekeeping'),
-                              ),
-                              DropdownMenuItem(
-                                value: 'Security',
-                                child: Text('Security'),
-                              ),
-                              DropdownMenuItem(
-                                value: 'Landscape',
-                                child: Text('Landscape'),
-                              ),
-                              DropdownMenuItem(
-                                value: 'Utilities',
-                                child: Text('Utilities'),
-                              ),
-                              DropdownMenuItem(
-                                value: 'Maintenance',
-                                child: Text('Maintenance'),
-                              ),
-                            ],
-                            onChanged: (value) {
-                              if (value != null) {
-                                setState(() => _category = value);
-                              }
-                            },
-                          ),
-                          const SizedBox(height: 14),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: _TreasurerTextField(
-                                  controller: _amountController,
-                                  label: 'Amount',
-                                  keyboardType:
-                                      const TextInputType.numberWithOptions(
-                                        decimal: true,
-                                      ),
-                                  validator: (value) =>
-                                      (double.tryParse(value?.trim() ?? '') ??
-                                              0) <=
-                                          0
-                                      ? 'Enter a valid amount'
-                                      : null,
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: DropdownButtonFormField<String>(
-                                  value: _paymentMode,
+                                DropdownButtonFormField<String>(
+                                  value: _selectedVendorId,
                                   decoration: _treasurerInputDecoration(
-                                    'Payment Mode',
+                                    'Vendor',
+                                  ),
+                                  items: [
+                                    const DropdownMenuItem<String>(
+                                      value: null,
+                                      child: Text('Manual vendor entry'),
+                                    ),
+                                    ...vendors.map(
+                                      (vendor) => DropdownMenuItem<String>(
+                                        value: vendor['vendor_id']?.toString(),
+                                        child: Text(
+                                          vendor['company_name']?.toString() ??
+                                              'Vendor',
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                  onChanged: (value) {
+                                    setState(() => _selectedVendorId = value);
+                                  },
+                                ),
+                                if (_selectedVendorId == null) ...[
+                                  const SizedBox(height: 14),
+                                  _TreasurerTextField(
+                                    controller: _vendorNameController,
+                                    label: 'Vendor Name',
+                                  ),
+                                ],
+                                const SizedBox(height: 14),
+                                DropdownButtonFormField<String>(
+                                  value: _category,
+                                  decoration: _treasurerInputDecoration(
+                                    'Category',
                                   ),
                                   items: const [
                                     DropdownMenuItem(
-                                      value: 'bank_transfer',
-                                      child: Text('Bank Transfer'),
+                                      value: 'Housekeeping',
+                                      child: Text('Housekeeping'),
                                     ),
                                     DropdownMenuItem(
-                                      value: 'upi',
-                                      child: Text('UPI'),
+                                      value: 'Security',
+                                      child: Text('Security'),
                                     ),
                                     DropdownMenuItem(
-                                      value: 'cash',
-                                      child: Text('Cash'),
+                                      value: 'Landscape',
+                                      child: Text('Landscape'),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: 'Utilities',
+                                      child: Text('Utilities'),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: 'Maintenance',
+                                      child: Text('Maintenance'),
                                     ),
                                   ],
                                   onChanged: (value) {
                                     if (value != null) {
-                                      setState(() => _paymentMode = value);
+                                      setState(() => _category = value);
                                     }
                                   },
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: 14),
-                          ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            title: const Text('Expense Date'),
-                            subtitle: Text(_treasurerDateLabel(_expenseDate)),
-                            trailing: const Icon(Icons.calendar_today_rounded),
-                            onTap: () async {
-                              final picked = await showDatePicker(
-                                context: context,
-                                initialDate: _expenseDate,
-                                firstDate: DateTime(2023),
-                                lastDate: DateTime(2030),
-                              );
-                              if (picked != null) {
-                                setState(() => _expenseDate = picked);
-                              }
-                            },
+                          const SizedBox(height: 16),
+                          _TreasurerSectionCard(
+                            title: 'Amount & Payment',
+                            subtitle:
+                                'The key money details are grouped together here.',
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: _TreasurerTextField(
+                                        controller: _amountController,
+                                        label: 'Amount',
+                                        keyboardType:
+                                            const TextInputType.numberWithOptions(
+                                              decimal: true,
+                                            ),
+                                        validator: (value) =>
+                                            (double.tryParse(
+                                                      value?.trim() ?? '',
+                                                    ) ??
+                                                    0) <=
+                                                0
+                                            ? 'Enter a valid amount'
+                                            : null,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: DropdownButtonFormField<String>(
+                                        value: _paymentMode,
+                                        decoration: _treasurerInputDecoration(
+                                          'Payment Mode',
+                                        ),
+                                        items: const [
+                                          DropdownMenuItem(
+                                            value: 'bank_transfer',
+                                            child: Text('Bank Transfer'),
+                                          ),
+                                          DropdownMenuItem(
+                                            value: 'upi',
+                                            child: Text('UPI'),
+                                          ),
+                                          DropdownMenuItem(
+                                            value: 'cash',
+                                            child: Text('Cash'),
+                                          ),
+                                        ],
+                                        onChanged: (value) {
+                                          if (value != null) {
+                                            setState(
+                                              () => _paymentMode = value,
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 14),
+                                ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  title: const Text('Expense Date'),
+                                  subtitle: Text(
+                                    _treasurerDateLabel(_expenseDate),
+                                  ),
+                                  trailing: const Icon(
+                                    Icons.calendar_today_rounded,
+                                  ),
+                                  onTap: () async {
+                                    final picked = await showDatePicker(
+                                      context: context,
+                                      initialDate: _expenseDate,
+                                      firstDate: DateTime(2023),
+                                      lastDate: DateTime(2030),
+                                    );
+                                    if (picked != null) {
+                                      setState(() => _expenseDate = picked);
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: 10),
-                          _TreasurerTextField(
-                            controller: _descriptionController,
-                            label: 'Description',
-                            maxLines: 3,
-                            validator: (value) =>
-                                (value == null || value.trim().isEmpty)
-                                ? 'Add a short description'
-                                : null,
+                          const SizedBox(height: 16),
+                          _TreasurerSectionCard(
+                            title: 'Description',
+                            subtitle: 'Keep the note short and useful.',
+                            child: _TreasurerTextField(
+                              controller: _descriptionController,
+                              label: 'Expense Note',
+                              maxLines: 3,
+                              validator: (value) =>
+                                  (value == null || value.trim().isEmpty)
+                                  ? 'Add a short description'
+                                  : null,
+                            ),
                           ),
                           const SizedBox(height: 18),
                           SizedBox(
@@ -1411,11 +1461,143 @@ class _TreasurerActionTile extends StatelessWidget {
   }
 }
 
+class _TreasurerHeroCard extends StatelessWidget {
+  const _TreasurerHeroCard({
+    required this.title,
+    required this.subtitle,
+    required this.accentLabel,
+  });
+
+  final String title;
+  final String subtitle;
+  final String accentLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    return _AdminGlassCard(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AvenueColors.primary.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Text(
+                      accentLabel.toUpperCase(),
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: AvenueColors.primary,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    subtitle,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: _AdminPalette.muted,
+                      height: 1.45,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 16),
+            Container(
+              width: 52,
+              height: 52,
+              decoration: BoxDecoration(
+                gradient: AvenueColors.primaryGradient,
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: const Icon(Icons.payments_rounded, color: Colors.white),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TreasurerSectionCard extends StatelessWidget {
+  const _TreasurerSectionCard({
+    required this.title,
+    required this.subtitle,
+    required this.child,
+  });
+
+  final String title;
+  final String subtitle;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return _AdminGlassCard(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              subtitle,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: _AdminPalette.muted,
+                height: 1.4,
+              ),
+            ),
+            const SizedBox(height: 16),
+            child,
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 InputDecoration _treasurerInputDecoration(String label) {
   return InputDecoration(
     labelText: label,
+    labelStyle: const TextStyle(
+      fontSize: 13,
+      fontWeight: FontWeight.w600,
+      color: _AdminPalette.muted,
+    ),
+    floatingLabelStyle: const TextStyle(
+      fontSize: 13,
+      fontWeight: FontWeight.w700,
+      color: AvenueColors.primary,
+    ),
+    floatingLabelBehavior: FloatingLabelBehavior.auto,
+    isDense: true,
+    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
     filled: true,
     fillColor: Colors.white,
+    alignLabelWithHint: true,
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(18),
       borderSide: BorderSide(color: _AdminPalette.outline),

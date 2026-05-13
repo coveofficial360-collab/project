@@ -902,3 +902,28 @@ select
   answer
 from public.community_support_faqs
 order by sort_order asc;
+
+-- Super user societies and RBAC
+select *
+from public.authenticate_app_user('superuser@gmail.com', 'super', 'super_user');
+
+select
+  name,
+  code,
+  status,
+  resident_count,
+  admin_count,
+  guard_count,
+  enabled_feature_count,
+  total_feature_count
+from public.super_user_societies_v
+order by name asc;
+
+select
+  society_name,
+  feature_group,
+  label,
+  is_enabled,
+  updated_by_name
+from public.super_user_society_features_v
+order by society_name asc, feature_group asc, label asc;

@@ -42,15 +42,133 @@ class AvenueRepository {
     final row = await _client
         .from('app_users')
         .select(
-          'id, email, full_name, status, unit_number, tower, phone, avatar_url, job_title',
+          'id, email, full_name, status, unit_number, tower, phone, avatar_url, job_title, society_id, societies(name)',
         )
         .eq('id', currentUser.id)
         .single();
 
-    return AppUser.fromProfileRow(
-      Map<String, dynamic>.from(row),
-      currentUser.role,
+    final mergedRow = Map<String, dynamic>.from(row);
+    final society = mergedRow['societies'];
+    if (society is Map) {
+      mergedRow['society_name'] = society['name'];
+    }
+
+    return AppUser.fromProfileRow(mergedRow, currentUser.role);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchSocieties() async {
+    final rows = await _client
+        .from('super_user_societies_v')
+        .select()
+        .order('name', ascending: true);
+
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchSocietyFeatureRows(
+    String societyId,
+  ) async {
+    final rows = await _client
+        .from('super_user_society_features_v')
+        .select()
+        .eq('society_id', societyId)
+        .order('sort_order', ascending: true)
+        .order('label', ascending: true);
+
+    return _castRows(rows);
+  }
+
+  Future<Map<String, dynamic>?> createSociety({
+    required String name,
+    String? code,
+    String? address,
+    String? city,
+    String? state,
+    String? pinCode,
+    String? notes,
+    String status = 'active',
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'create_society',
+      params: {
+        'p_super_user_id': currentUser.id,
+        'p_name': name.trim(),
+        'p_code': code?.trim(),
+        'p_status': status,
+        'p_address': address?.trim(),
+        'p_city': city?.trim(),
+        'p_state': state?.trim(),
+        'p_pin_code': pinCode?.trim(),
+        'p_notes': notes?.trim(),
+      },
     );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> updateSocietyFeature({
+    required String societyId,
+    required String featureKey,
+    required bool isEnabled,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'upsert_society_feature_grant',
+      params: {
+        'p_super_user_id': currentUser.id,
+        'p_society_id': societyId,
+        'p_feature_key': featureKey,
+        'p_is_enabled': isEnabled,
+      },
+    );
+
+    if (response is Map) {
+      return Map<String, dynamic>.from(response);
+    }
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> assignUserToSociety({
+    required String userId,
+    required String societyId,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'assign_user_to_society',
+      params: {
+        'p_super_user_id': currentUser.id,
+        'p_user_id': userId,
+        'p_society_id': societyId,
+      },
+    );
+
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+
+    return Map<String, dynamic>.from(response.first as Map);
   }
 
   Future<List<Map<String, dynamic>>> fetchCurrentUserBills() async {
@@ -292,9 +410,16 @@ class AvenueRepository {
         .from('notices')
         .select()
         .order('posted_at', ascending: false)
-        .limit(limit);
+        .limit(limit * 3);
 
-    return _castRows(rows);
+    return _castRows(rows)
+        .where(
+          (row) =>
+              !(row['audience']?.toString().toLowerCase().contains('guard') ??
+                  false),
+        )
+        .take(limit)
+        .toList();
   }
 
   Future<List<Map<String, dynamic>>> fetchCurrentUserPaymentMethods() async {
@@ -531,6 +656,340 @@ class AvenueRepository {
         .order('created_at', ascending: true);
 
     return _castRows(rows);
+  }
+
+  Future<Map<String, dynamic>?> fetchPetHubSummary() async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final rows = await _client
+        .from('resident_pet_hub_v')
+        .select()
+        .eq('user_id', currentUser.id)
+        .limit(1);
+    final records = _castRows(rows);
+    if (records.isEmpty) {
+      return null;
+    }
+
+    return records.first;
+  }
+
+  Future<List<Map<String, dynamic>>> fetchMyPets() async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return const [];
+    }
+
+    final rows = await _client
+        .from('pet_profiles')
+        .select()
+        .eq('user_id', currentUser.id)
+        .eq('is_active', true)
+        .order('created_at', ascending: false);
+    return _castRows(rows);
+  }
+
+  Future<Map<String, dynamic>?> fetchPetProfile(String petId) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final rows = await _client
+        .from('pet_profiles')
+        .select()
+        .eq('id', petId)
+        .eq('user_id', currentUser.id)
+        .limit(1);
+    final records = _castRows(rows);
+    if (records.isEmpty) {
+      return null;
+    }
+
+    return records.first;
+  }
+
+  Future<List<Map<String, dynamic>>> fetchPetVaccinations({
+    String? petId,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return const [];
+    }
+
+    final petIdsRows = await _client
+        .from('pet_profiles')
+        .select('id')
+        .eq('user_id', currentUser.id)
+        .eq('is_active', true);
+    final petIds = _castRows(petIdsRows)
+        .map((row) => row['id']?.toString())
+        .whereType<String>()
+        .toList();
+    if (petIds.isEmpty) {
+      return const [];
+    }
+
+    final rows = petId != null && petId.isNotEmpty
+        ? await _client
+              .from('pet_vaccinations')
+              .select()
+              .eq('pet_id', petId)
+              .order('administered_on', ascending: false)
+        : await _client
+              .from('pet_vaccinations')
+              .select()
+              .inFilter('pet_id', petIds)
+              .order('administered_on', ascending: false);
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchPetSocialPosts() async {
+    final rows = await _client
+        .from('pet_social_posts')
+        .select('*, app_users(full_name, unit_number), pet_profiles(name)')
+        .order('created_at', ascending: false);
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchPetMeetups() async {
+    final rows = await _client
+        .from('pet_meetups')
+        .select('*, app_users!pet_meetups_created_by_fkey(full_name, unit_number)')
+        .order('meetup_date', ascending: true)
+        .order('start_time', ascending: true);
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchPetZoneBookings() async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return const [];
+    }
+
+    final rows = await _client
+        .from('pet_zone_bookings')
+        .select('*, pet_profiles(name)')
+        .eq('user_id', currentUser.id)
+        .order('booking_date', ascending: true);
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchPetVets() async {
+    final rows = await _client
+        .from('pet_vets')
+        .select()
+        .order('rating', ascending: false)
+        .order('created_at', ascending: false);
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchPetStores() async {
+    final rows = await _client
+        .from('pet_stores')
+        .select()
+        .order('rating', ascending: false)
+        .order('created_at', ascending: false);
+    return _castRows(rows);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchPetAdoptionListings() async {
+    final rows = await _client
+        .from('pet_adoption_listings')
+        .select()
+        .eq('status', 'available')
+        .order('created_at', ascending: false);
+    return _castRows(rows);
+  }
+
+  Future<Map<String, dynamic>?> createPetProfile({
+    required String name,
+    required String species,
+    String? breed,
+    String? gender,
+    DateTime? birthDate,
+    double? weightKg,
+    String? color,
+    String? microchipId,
+    String? allergies,
+    String? medications,
+    String? bio,
+    String? photoUrl,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'create_pet_profile',
+      params: {
+        'p_user_id': currentUser.id,
+        'p_name': name.trim(),
+        'p_species': species.trim().toLowerCase(),
+        'p_breed': breed?.trim(),
+        'p_gender': gender?.trim(),
+        'p_birth_date': birthDate?.toIso8601String(),
+        'p_weight_kg': weightKg,
+        'p_color': color?.trim(),
+        'p_microchip_id': microchipId?.trim(),
+        'p_allergies': allergies?.trim(),
+        'p_medications': medications?.trim(),
+        'p_bio': bio?.trim(),
+        'p_photo_url': photoUrl?.trim(),
+      },
+    );
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> addPetVaccination({
+    required String petId,
+    required String vaccineName,
+    String? doseLabel,
+    DateTime? administeredOn,
+    DateTime? dueOn,
+    String? veterinarianName,
+    String? clinicName,
+    String? certificateUrl,
+    String? notes,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'add_pet_vaccination',
+      params: {
+        'p_user_id': currentUser.id,
+        'p_pet_id': petId,
+        'p_vaccine_name': vaccineName.trim(),
+        'p_dose_label': doseLabel?.trim(),
+        'p_administered_on': administeredOn?.toIso8601String(),
+        'p_due_on': dueOn?.toIso8601String(),
+        'p_veterinarian_name': veterinarianName?.trim(),
+        'p_clinic_name': clinicName?.trim(),
+        'p_certificate_url': certificateUrl?.trim(),
+        'p_notes': notes?.trim(),
+      },
+    );
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> createPetSocialPost({
+    String? petId,
+    String? title,
+    required String body,
+    String postKind = 'update',
+    String? imageUrl,
+    String? locationLabel,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'create_pet_social_post',
+      params: {
+        'p_user_id': currentUser.id,
+        'p_pet_id': petId,
+        'p_title': title?.trim(),
+        'p_body': body.trim(),
+        'p_post_kind': postKind.trim().toLowerCase(),
+        'p_image_url': imageUrl?.trim(),
+        'p_location_label': locationLabel?.trim(),
+      },
+    );
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> createPetMeetup({
+    required String title,
+    required String summary,
+    required DateTime meetupDate,
+    String? startTime,
+    String? endTime,
+    String? locationLabel,
+    String petSizePref = 'all',
+    int? attendeeLimit,
+    String? notes,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'create_pet_meetup',
+      params: {
+        'p_user_id': currentUser.id,
+        'p_title': title.trim(),
+        'p_summary': summary.trim(),
+        'p_meetup_date':
+            DateTime(
+              meetupDate.year,
+              meetupDate.month,
+              meetupDate.day,
+            ).toIso8601String(),
+        'p_start_time': startTime,
+        'p_end_time': endTime,
+        'p_location_label': locationLabel?.trim(),
+        'p_pet_size_pref': petSizePref.trim().toLowerCase(),
+        'p_attendee_limit': attendeeLimit,
+        'p_notes': notes?.trim(),
+      },
+    );
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+    return Map<String, dynamic>.from(response.first as Map);
+  }
+
+  Future<Map<String, dynamic>?> bookPetZone({
+    required String petId,
+    required String zoneName,
+    required DateTime bookingDate,
+    required String slotLabel,
+    String? notes,
+  }) async {
+    final currentUser = AppSession.instance.currentUser;
+    if (currentUser == null) {
+      return null;
+    }
+
+    final response = await _client.rpc(
+      'book_pet_zone',
+      params: {
+        'p_user_id': currentUser.id,
+        'p_pet_id': petId,
+        'p_zone_name': zoneName.trim(),
+        'p_booking_date':
+            DateTime(
+              bookingDate.year,
+              bookingDate.month,
+              bookingDate.day,
+            ).toIso8601String(),
+        'p_slot_label': slotLabel.trim(),
+        'p_notes': notes?.trim(),
+      },
+    );
+    if (response is! List || response.isEmpty) {
+      return null;
+    }
+    return Map<String, dynamic>.from(response.first as Map);
   }
 
   Future<List<Map<String, dynamic>>> fetchCommunitySuggestions() async {

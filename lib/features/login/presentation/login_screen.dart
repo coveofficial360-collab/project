@@ -218,12 +218,21 @@ class _LoginScreenState extends State<LoginScreen> {
         password: password,
         role: _selectedRole,
       );
+      final resolvedUser =
+          user ??
+          (_selectedRole == AppRole.admin
+              ? await _repository.authenticate(
+                  email: email,
+                  password: password,
+                  role: AppRole.superUser,
+                )
+              : null);
 
       if (!mounted) {
         return;
       }
 
-      if (user == null) {
+      if (resolvedUser == null) {
         setState(() {
           _errorMessage = 'Login failed. Check your role, email, and password.';
           _isSubmitting = false;
@@ -231,11 +240,12 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
 
-      AppSession.instance.setCurrentUser(user);
+      AppSession.instance.setCurrentUser(resolvedUser);
 
-      final target = switch (user.role) {
+      final target = switch (resolvedUser.role) {
         AppRole.admin => AppPage.adminDrawer,
         AppRole.guard => AppPage.guardHome,
+        AppRole.superUser => AppPage.superUserDashboard,
         AppRole.resident => AppPage.home,
       };
 
@@ -318,6 +328,12 @@ class _RoleSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const visibleRoles = <AppRole>[
+      AppRole.resident,
+      AppRole.admin,
+      AppRole.guard,
+    ];
+
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
@@ -325,7 +341,7 @@ class _RoleSelector extends StatelessWidget {
         borderRadius: BorderRadius.circular(999),
       ),
       child: Row(
-        children: AppRole.values.map((role) {
+        children: visibleRoles.map((role) {
           final isSelected = role == selectedRole;
           return Expanded(
             child: GestureDetector(

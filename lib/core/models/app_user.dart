@@ -1,7 +1,8 @@
 enum AppRole {
   resident('Resident', 'resident'),
   admin('Admin', 'admin'),
-  guard('Guard', 'guard');
+  guard('Guard', 'guard'),
+  superUser('Super User', 'super_user');
 
   const AppRole(this.label, this.dbValue);
 
@@ -28,6 +29,9 @@ class AppUser {
     this.phone,
     this.avatarUrl,
     this.jobTitle,
+    this.societyId,
+    this.societyName,
+    this.featureKeys = const [],
   });
 
   final String id;
@@ -40,10 +44,29 @@ class AppUser {
   final String? phone;
   final String? avatarUrl;
   final String? jobTitle;
+  final String? societyId;
+  final String? societyName;
+  final List<String> featureKeys;
+
+  bool hasFeature(String featureKey) {
+    if (role == AppRole.superUser) {
+      return true;
+    }
+
+    if (featureKeys.isEmpty) {
+      return true;
+    }
+
+    return featureKeys.contains(featureKey);
+  }
 
   String get subtitle {
     if (role == AppRole.guard && tower != null) {
       return tower!;
+    }
+
+    if (role == AppRole.superUser && societyName != null) {
+      return societyName!;
     }
 
     if (unitNumber != null && unitNumber!.isNotEmpty) {
@@ -82,6 +105,13 @@ class AppUser {
       status: row['status'] as String,
       unitNumber: row['unit_number'] as String?,
       tower: row['tower'] as String?,
+      societyId: row['society_id'] as String?,
+      societyName: row['society_name'] as String?,
+      featureKeys:
+          (row['feature_keys'] as List<dynamic>?)
+              ?.map((value) => value.toString())
+              .toList() ??
+          const [],
     );
   }
 
@@ -97,6 +127,8 @@ class AppUser {
       phone: row['phone'] as String?,
       avatarUrl: row['avatar_url'] as String?,
       jobTitle: row['job_title'] as String?,
+      societyId: row['society_id'] as String?,
+      societyName: row['society_name'] as String?,
     );
   }
 }

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../core/supabase/supabase_bootstrap.dart';
 import '../features/admin/presentation/admin_screens.dart';
-import '../features/admin/presentation/admin_maintenance_screens.dart';
 import '../features/guard/presentation/guard_screen.dart';
 import '../features/login/presentation/login_screen.dart';
 import '../features/resident/presentation/community_screens.dart';
 import '../features/resident/presentation/resident_maintenance_screens.dart';
 import '../features/resident/presentation/resident_screens.dart';
+import '../features/super_user/presentation/super_user_screens.dart';
 import '../features/system/presentation/launch_splash_screen.dart';
 import '../features/system/presentation/supabase_setup_screen.dart';
 import '../theme/avenue_theme.dart';
@@ -73,6 +73,10 @@ class AvenueApp extends StatelessWidget {
                 return const HomeScreen();
               case AppPage.guardHome:
                 return const GuardHomeScreen();
+              case AppPage.guardNotices:
+                return const GuardNoticesScreen();
+              case AppPage.superUserDashboard:
+                return const SuperUserDashboardScreen();
               case AppPage.amenities:
                 return const AmenitiesScreen();
               case AppPage.amenityBooking:
@@ -148,6 +152,40 @@ class AvenueApp extends StatelessWidget {
                 return ResidentServiceProfileScreen(
                   providerId: arguments['providerId']?.toString(),
                 );
+              case AppPage.petHub:
+                return const PetCommunityHubScreen();
+              case AppPage.petSocialFeed:
+                return const PetSocialFeedScreen();
+              case AppPage.petProfile:
+                return PetProfileScreen(petId: arguments['petId']?.toString());
+              case AppPage.addPetBasicDetails:
+                return const AddPetBasicDetailsScreen();
+              case AppPage.addPetHealthInfo:
+                return const AddPetHealthInfoScreen();
+              case AppPage.addPetPhotoUpload:
+                return const AddPetPhotoUploadScreen();
+              case AppPage.addPetPreview:
+                return const AddPetPreviewScreen();
+              case AppPage.vaccinationDashboard:
+                return const VaccinationDashboardScreen();
+              case AppPage.addVaccination:
+                return const AddVaccinationScreen();
+              case AppPage.vaccinationHistory:
+                return const VaccinationHistoryScreen();
+              case AppPage.petMeetups:
+                return const PetMeetupsScreen();
+              case AppPage.createPetMeetup:
+                return const CreatePetMeetupScreen();
+              case AppPage.createPetPost:
+                return const CreatePetPostScreen();
+              case AppPage.bookPetZone:
+                return const BookPetZoneScreen();
+              case AppPage.petStores:
+                return const PetStoresScreen();
+              case AppPage.petAdoptionCenter:
+                return const PetAdoptionCenterScreen();
+              case AppPage.vetDirectory:
+                return const VetDirectoryScreen();
               case AppPage.marketplaceHome:
                 return const MarketplaceHomeScreen();
               case AppPage.marketplaceProductDetails:

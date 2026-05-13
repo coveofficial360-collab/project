@@ -163,6 +163,216 @@ begin
 end;
 $$;
 
+create or replace function public.create_society(
+  p_super_user_id uuid,
+  p_name text,
+  p_code text default null,
+  p_status public.society_status default 'active',
+  p_address text default null,
+  p_city text default null,
+  p_state text default null,
+  p_pin_code text default null,
+  p_notes text default null
+)
+returns table (
+  society_id uuid,
+  code text,
+  name text,
+  status public.society_status
+)
+language plpgsql
+security definer
+set search_path = public, extensions
+as $$
+declare
+  v_is_super_user boolean;
+  v_society_id uuid;
+  v_code text := lower(regexp_replace(trim(coalesce(p_code, p_name)), '[^a-zA-Z0-9]+', '-', 'g'));
+begin
+  select exists (
+    select 1
+    from public.app_users admin_user
+    where admin_user.id = p_super_user_id
+      and admin_user.role = 'super_user'
+  )
+  into v_is_super_user;
+
+  if not v_is_super_user then
+    raise exception 'Only a super user can create societies.';
+  end if;
+
+  v_code := trim(both '-' from v_code);
+  if v_code = '' then
+    v_code := 'society-' || lower(substr(replace(gen_random_uuid()::text, '-', ''), 1, 8));
+  end if;
+
+  insert into public.societies (
+    code,
+    name,
+    status,
+    address,
+    city,
+    state,
+    pin_code,
+    notes
+  )
+  values (
+    v_code,
+    trim(p_name),
+    coalesce(p_status, 'active'),
+    nullif(trim(coalesce(p_address, '')), ''),
+    nullif(trim(coalesce(p_city, '')), ''),
+    nullif(trim(coalesce(p_state, '')), ''),
+    nullif(trim(coalesce(p_pin_code, '')), ''),
+    nullif(trim(coalesce(p_notes, '')), '')
+  )
+  returning id into v_society_id;
+
+  insert into public.society_feature_grants (
+    society_id,
+    feature_key,
+    is_enabled,
+    updated_by
+  )
+  select
+    v_society_id,
+    c.feature_key,
+    coalesce(c.default_enabled, true),
+    p_super_user_id
+  from public.society_feature_catalog c
+  on conflict (society_id, feature_key)
+  do update set
+    is_enabled = excluded.is_enabled,
+    updated_by = excluded.updated_by,
+    updated_at = now();
+
+  return query
+  select
+    v_society_id,
+    v_code,
+    trim(p_name),
+    coalesce(p_status, 'active');
+end;
+$$;
+
+create or replace function public.upsert_society_feature_grant(
+  p_super_user_id uuid,
+  p_society_id uuid,
+  p_feature_key text,
+  p_is_enabled boolean default true
+)
+returns table (
+  society_id uuid,
+  feature_key text,
+  is_enabled boolean,
+  updated_at timestamptz
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_is_super_user boolean;
+begin
+  select exists (
+    select 1
+    from public.app_users admin_user
+    where admin_user.id = p_super_user_id
+      and admin_user.role = 'super_user'
+  )
+  into v_is_super_user;
+
+  if not v_is_super_user then
+    raise exception 'Only a super user can update society features.';
+  end if;
+
+  insert into public.society_feature_grants as grant_row (
+    society_id,
+    feature_key,
+    is_enabled,
+    updated_by,
+    updated_at
+  )
+  values (
+    p_society_id,
+    trim(p_feature_key),
+    coalesce(p_is_enabled, true),
+    p_super_user_id,
+    now()
+  )
+  on conflict on constraint society_feature_grants_pkey
+  do update set
+    is_enabled = excluded.is_enabled,
+    updated_by = excluded.updated_by,
+    updated_at = now();
+
+  return query
+  select
+    grant_row.society_id,
+    grant_row.feature_key,
+    grant_row.is_enabled,
+    grant_row.updated_at
+  from public.society_feature_grants grant_row
+  where grant_row.society_id = p_society_id
+    and grant_row.feature_key = trim(p_feature_key);
+end;
+$$;
+
+create or replace function public.assign_user_to_society(
+  p_super_user_id uuid,
+  p_user_id uuid,
+  p_society_id uuid
+)
+returns table (
+  user_id uuid,
+  society_id uuid,
+  society_name text,
+  email text,
+  role public.app_role
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_is_super_user boolean;
+begin
+  select exists (
+    select 1
+    from public.app_users admin_user
+    where admin_user.id = p_super_user_id
+      and admin_user.role = 'super_user'
+  )
+  into v_is_super_user;
+
+  if not v_is_super_user then
+    raise exception 'Only a super user can assign society members.';
+  end if;
+
+  update public.app_users
+  set society_id = p_society_id,
+      updated_at = now()
+  where id = p_user_id
+  returning
+    public.app_users.id,
+    public.app_users.society_id,
+    (
+      select s.name
+      from public.societies s
+      where s.id = p_society_id
+    ),
+    public.app_users.email,
+    public.app_users.role
+  into user_id, society_id, society_name, email, role;
+
+  if user_id is null then
+    raise exception 'User was not found.';
+  end if;
+
+  return next;
+end;
+$$;
+
 drop function if exists public.create_admin_amenity(uuid, text, text, text, text, text, text, text, integer, boolean, text, text, text[]);
 
 create or replace function public.create_admin_amenity(
@@ -1750,7 +1960,7 @@ begin
     'ORD-' || to_char(now(), 'YYMMDD') || '-' || substr(replace(gen_random_uuid()::text, '-', ''), 1, 6)
   );
 
-  insert into public.marketplace_orders (
+  insert into public.marketplace_orders as mo (
     order_code,
     user_id,
     store_id,
@@ -1784,7 +1994,7 @@ begin
     now(),
     now()
   )
-  returning id, total_amount into v_order_id, v_total;
+  returning mo.id, mo.total_amount into v_order_id, v_total;
 
   insert into public.marketplace_order_items (
     order_id,
@@ -2228,6 +2438,10 @@ declare
   v_announcement_id uuid;
   v_notice_code text := 'notice-' || lower(substr(replace(gen_random_uuid()::text, '-', ''), 1, 12));
   v_audience text := lower(coalesce(p_target_audience, ''));
+  v_target_role public.app_role := case
+    when lower(coalesce(p_target_audience, '')) like '%guard%' then 'guard'::public.app_role
+    else 'resident'::public.app_role
+  end;
 begin
   insert into public.announcements (
     created_by,
@@ -2309,10 +2523,11 @@ begin
       true,
       now()
     from public.app_users u
-    where u.role = 'resident'
+    where u.role = v_target_role
       and u.status = 'active'
       and (
-        v_audience = ''
+        v_target_role = 'guard'::public.app_role
+        or v_audience = ''
         or v_audience like '%all%'
         or v_audience like '%resident%'
         or (v_audience like '%owner%' and u.resident_kind = 'owner')
@@ -2786,6 +3001,393 @@ begin
 end;
 $$;
 
+create or replace function public.create_pet_profile(
+  p_user_id uuid,
+  p_name text,
+  p_species text default 'dog',
+  p_breed text default null,
+  p_gender text default null,
+  p_birth_date date default null,
+  p_weight_kg numeric default null,
+  p_color text default null,
+  p_microchip_id text default null,
+  p_allergies text default null,
+  p_medications text default null,
+  p_bio text default null,
+  p_photo_url text default null
+)
+returns table (
+  pet_id uuid,
+  name text,
+  species text,
+  created_at timestamptz
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_pet_id uuid;
+  v_created_at timestamptz := now();
+begin
+  if not exists (
+    select 1
+    from public.app_users resident
+    where resident.id = p_user_id
+      and resident.role = 'resident'
+      and resident.status = 'active'
+  ) then
+    raise exception 'Only an active resident can add a pet profile.';
+  end if;
+
+  insert into public.pet_profiles (
+    user_id,
+    name,
+    species,
+    breed,
+    gender,
+    birth_date,
+    weight_kg,
+    color,
+    microchip_id,
+    allergies,
+    medications,
+    bio,
+    photo_url,
+    is_active,
+    created_at,
+    updated_at
+  )
+  values (
+    p_user_id,
+    trim(p_name),
+    lower(trim(coalesce(p_species, 'dog'))),
+    nullif(trim(coalesce(p_breed, '')), ''),
+    nullif(trim(coalesce(p_gender, '')), ''),
+    p_birth_date,
+    p_weight_kg,
+    nullif(trim(coalesce(p_color, '')), ''),
+    nullif(trim(coalesce(p_microchip_id, '')), ''),
+    nullif(trim(coalesce(p_allergies, '')), ''),
+    nullif(trim(coalesce(p_medications, '')), ''),
+    nullif(trim(coalesce(p_bio, '')), ''),
+    nullif(trim(coalesce(p_photo_url, '')), ''),
+    true,
+    v_created_at,
+    v_created_at
+  )
+  returning id into v_pet_id;
+
+  return query
+  select
+    v_pet_id,
+    trim(p_name),
+    lower(trim(coalesce(p_species, 'dog'))),
+    v_created_at;
+end;
+$$;
+
+create or replace function public.add_pet_vaccination(
+  p_user_id uuid,
+  p_pet_id uuid,
+  p_vaccine_name text,
+  p_dose_label text default null,
+  p_administered_on date default current_date,
+  p_due_on date default null,
+  p_veterinarian_name text default null,
+  p_clinic_name text default null,
+  p_certificate_url text default null,
+  p_notes text default null
+)
+returns table (
+  vaccination_id uuid,
+  pet_id uuid,
+  vaccine_name text,
+  due_on date
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_vaccination_id uuid;
+begin
+  if not exists (
+    select 1
+    from public.pet_profiles pet
+    where pet.id = p_pet_id
+      and pet.user_id = p_user_id
+      and pet.is_active = true
+  ) then
+    raise exception 'Pet profile was not found for this resident.';
+  end if;
+
+  insert into public.pet_vaccinations (
+    pet_id,
+    vaccine_name,
+    dose_label,
+    administered_on,
+    due_on,
+    veterinarian_name,
+    clinic_name,
+    certificate_url,
+    notes,
+    created_at,
+    updated_at
+  )
+  values (
+    p_pet_id,
+    trim(p_vaccine_name),
+    nullif(trim(coalesce(p_dose_label, '')), ''),
+    coalesce(p_administered_on, current_date),
+    p_due_on,
+    nullif(trim(coalesce(p_veterinarian_name, '')), ''),
+    nullif(trim(coalesce(p_clinic_name, '')), ''),
+    nullif(trim(coalesce(p_certificate_url, '')), ''),
+    nullif(trim(coalesce(p_notes, '')), ''),
+    now(),
+    now()
+  )
+  returning id into v_vaccination_id;
+
+  return query
+  select
+    v_vaccination_id,
+    p_pet_id,
+    trim(p_vaccine_name),
+    p_due_on;
+end;
+$$;
+
+drop function if exists public.create_pet_social_post(uuid, uuid, text, text, text, text, text);
+
+create or replace function public.create_pet_social_post(
+  p_user_id uuid,
+  p_body text,
+  p_pet_id uuid default null,
+  p_title text default null,
+  p_post_kind text default 'update',
+  p_image_url text default null,
+  p_location_label text default null
+)
+returns table (
+  post_id uuid,
+  title text,
+  post_kind text,
+  created_at timestamptz
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_post_id uuid;
+  v_created_at timestamptz := now();
+begin
+  if not exists (
+    select 1
+    from public.app_users resident
+    where resident.id = p_user_id
+      and resident.role = 'resident'
+      and resident.status = 'active'
+  ) then
+    raise exception 'Only an active resident can create pet posts.';
+  end if;
+
+  if p_pet_id is not null then
+    if not exists (
+      select 1
+      from public.pet_profiles pet
+      where pet.id = p_pet_id
+        and pet.user_id = p_user_id
+    ) then
+      raise exception 'Selected pet profile does not belong to this resident.';
+    end if;
+  end if;
+
+  insert into public.pet_social_posts (
+    user_id,
+    pet_id,
+    title,
+    body,
+    post_kind,
+    image_url,
+    location_label,
+    likes_count,
+    comments_count,
+    created_at,
+    updated_at
+  )
+  values (
+    p_user_id,
+    p_pet_id,
+    trim(coalesce(p_title, 'Pet Update')),
+    trim(p_body),
+    lower(trim(coalesce(p_post_kind, 'update'))),
+    nullif(trim(coalesce(p_image_url, '')), ''),
+    nullif(trim(coalesce(p_location_label, '')), ''),
+    0,
+    0,
+    v_created_at,
+    v_created_at
+  )
+  returning id into v_post_id;
+
+  return query
+  select
+    v_post_id,
+    trim(coalesce(p_title, 'Pet Update')),
+    lower(trim(coalesce(p_post_kind, 'update'))),
+    v_created_at;
+end;
+$$;
+
+create or replace function public.create_pet_meetup(
+  p_user_id uuid,
+  p_title text,
+  p_summary text,
+  p_meetup_date date,
+  p_start_time time default null,
+  p_end_time time default null,
+  p_location_label text default null,
+  p_pet_size_pref text default 'all',
+  p_attendee_limit integer default null,
+  p_notes text default null
+)
+returns table (
+  meetup_id uuid,
+  title text,
+  meetup_date date,
+  status text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_meetup_id uuid;
+begin
+  if not exists (
+    select 1
+    from public.app_users resident
+    where resident.id = p_user_id
+      and resident.role = 'resident'
+      and resident.status = 'active'
+  ) then
+    raise exception 'Only an active resident can create pet meetups.';
+  end if;
+
+  insert into public.pet_meetups (
+    created_by,
+    title,
+    summary,
+    meetup_date,
+    start_time,
+    end_time,
+    location_label,
+    pet_size_pref,
+    attendee_limit,
+    notes,
+    status,
+    created_at,
+    updated_at
+  )
+  values (
+    p_user_id,
+    trim(p_title),
+    trim(p_summary),
+    p_meetup_date,
+    p_start_time,
+    p_end_time,
+    nullif(trim(coalesce(p_location_label, '')), ''),
+    lower(trim(coalesce(p_pet_size_pref, 'all'))),
+    p_attendee_limit,
+    nullif(trim(coalesce(p_notes, '')), ''),
+    'scheduled',
+    now(),
+    now()
+  )
+  returning id into v_meetup_id;
+
+  return query
+  select
+    v_meetup_id,
+    trim(p_title),
+    p_meetup_date,
+    'scheduled';
+end;
+$$;
+
+create or replace function public.book_pet_zone(
+  p_user_id uuid,
+  p_pet_id uuid,
+  p_zone_name text,
+  p_booking_date date,
+  p_slot_label text,
+  p_notes text default null
+)
+returns table (
+  booking_id uuid,
+  pet_id uuid,
+  booking_date date,
+  slot_label text,
+  status text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_booking_id uuid;
+begin
+  if not exists (
+    select 1
+    from public.pet_profiles pet
+    where pet.id = p_pet_id
+      and pet.user_id = p_user_id
+      and pet.is_active = true
+  ) then
+    raise exception 'Pet profile was not found for this resident.';
+  end if;
+
+  if p_booking_date < current_date then
+    raise exception 'Pet zone bookings can only be made for today or later.';
+  end if;
+
+  insert into public.pet_zone_bookings (
+    user_id,
+    pet_id,
+    zone_name,
+    booking_date,
+    slot_label,
+    notes,
+    status,
+    created_at,
+    updated_at
+  )
+  values (
+    p_user_id,
+    p_pet_id,
+    trim(p_zone_name),
+    p_booking_date,
+    trim(p_slot_label),
+    nullif(trim(coalesce(p_notes, '')), ''),
+    'confirmed',
+    now(),
+    now()
+  )
+  returning id into v_booking_id;
+
+  return query
+  select
+    v_booking_id,
+    p_pet_id,
+    p_booking_date,
+    trim(p_slot_label),
+    'confirmed';
+end;
+$$;
+
 create or replace function public.create_guard_visitor_entry(
   p_guard_user_id uuid,
   p_visitor_name text,
@@ -3211,6 +3813,9 @@ where vp.status in ('approved', 'expected')
 order by vp.expected_arrival asc;
 
 grant execute on function public.create_resident_app_user(text, text, text, text, public.resident_kind, text, text) to anon, authenticated;
+grant execute on function public.create_society(uuid, text, text, public.society_status, text, text, text, text, text) to anon, authenticated;
+grant execute on function public.upsert_society_feature_grant(uuid, uuid, text, boolean) to anon, authenticated;
+grant execute on function public.assign_user_to_society(uuid, uuid, uuid) to anon, authenticated;
 grant execute on function public.create_visitor_pass(uuid, text, text, public.visitor_kind, timestamptz) to anon, authenticated;
 grant execute on function public.create_admin_amenity(uuid, text, text, text, text, text, text, text, integer, boolean, text, text, text[], jsonb) to anon, authenticated;
 grant execute on function public.update_admin_amenity(uuid, uuid, text, text, text, text, text, text, text, integer, boolean, text, text, text[], jsonb) to anon, authenticated;
@@ -3236,6 +3841,11 @@ grant execute on function public.review_community_suggestion(uuid, uuid, text) t
 grant execute on function public.join_community_suggestion(uuid, uuid) to anon, authenticated;
 grant execute on function public.vote_community_suggestion(uuid, uuid, text) to anon, authenticated;
 grant execute on function public.add_community_suggestion_comment(uuid, uuid, text) to anon, authenticated;
+grant execute on function public.create_pet_profile(uuid, text, text, text, text, date, numeric, text, text, text, text, text, text) to anon, authenticated;
+grant execute on function public.add_pet_vaccination(uuid, uuid, text, text, date, date, text, text, text, text) to anon, authenticated;
+grant execute on function public.create_pet_social_post(uuid, text, uuid, text, text, text, text) to anon, authenticated;
+grant execute on function public.create_pet_meetup(uuid, text, text, date, time, time, text, text, integer, text) to anon, authenticated;
+grant execute on function public.book_pet_zone(uuid, uuid, text, date, text, text) to anon, authenticated;
 grant execute on function public.create_guard_visitor_entry(uuid, text, text, text, text, public.visitor_kind, text) to anon, authenticated;
 grant execute on function public.process_guard_visitor_pass(uuid, uuid, text) to anon, authenticated;
 grant execute on function public.process_guard_qr_entry(uuid, text, text) to anon, authenticated;
